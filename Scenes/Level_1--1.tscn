@@ -1,0 +1,545 @@
+[gd_scene load_steps=16 format=2]
+
+[ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Objects/WaterWay.tres" type="TileSet" id=3]
+[ext_resource path="res://Objects/Backgrounds/BG_WaterWay.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Objects/Spike.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Objects/KillFloor.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Objects/Finish.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Visual/decor_rock_2.png" type="Texture" id=8]
+[ext_resource path="res://Visual/decor_rock_1.png" type="Texture" id=9]
+[ext_resource path="res://Visual/decor_steel_pipe.png" type="Texture" id=10]
+[ext_resource path="res://Scripts/Scroller.gd" type="Script" id=11]
+[ext_resource path="res://Visual/decor_bluree.png" type="Texture" id=12]
+[ext_resource path="res://Objects/SpinningArm.tscn" type="PackedScene" id=13]
+[ext_resource path="res://Visual/decor_steel_pipe_circle.png" type="Texture" id=14]
+[ext_resource path="res://Visual/decor_tint.png" type="Texture" id=15]
+
+[node name="Level_1--1" type="Node2D"]
+
+[node name="Camera" parent="." instance=ExtResource( 1 )]
+limit_x = Vector2( 0, 3200 )
+
+[node name="BG" parent="." instance=ExtResource( 4 )]
+bg_color = Vector3( 0, 0, 0 )
+hill_offset = Vector2( 512, 0 )
+
+[node name="DECOR_BACKGROUND_1" type="Node2D" parent="."]
+z_index = -30
+
+[node name="Wall_Far" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+scale = Vector2( 0.75, 0.75 )
+z_index = -20
+tile_set = ExtResource( 3 )
+collision_layer = 0
+collision_mask = 0
+occluder_light_mask = 0
+format = 1
+tile_data = PoolIntArray( -393180, 35, 0, -393168, 27, 0, -262145, 30, 0, -327648, 30, 0, -327612, 29, 0, -196590, 33, 0, -196555, 36, 0, -65506, 32, 0, -65470, 27, 0, 65582, 31, 0, 131110, 34, 0, 196631, 27, 0 )
+script = ExtResource( 11 )
+
+[node name="Wall_Far_Detail" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+scale = Vector2( 0.75, 0.75 )
+z_index = -20
+tile_set = ExtResource( 3 )
+collision_layer = 0
+collision_mask = 0
+occluder_light_mask = 0
+format = 1
+script = ExtResource( 11 )
+
+[node name="DECOR_WALL_FAR" type="Node2D" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+scale = Vector2( 0.75, 0.75 )
+z_index = -20
+script = ExtResource( 11 )
+
+[node name="decor_rock_1" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 714.667, -512 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 9 )
+
+[node name="decor_rock_2" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 2016, -128 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 8 )
+
+[node name="decor_rock_3" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 5194.67, 160 )
+rotation = 1.0472
+scale = Vector2( 2.5, 2.5 )
+texture = ExtResource( 9 )
+
+[node name="decor_rock_4" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 4042.67, 42.6667 )
+scale = Vector2( 2.5, 2.5 )
+texture = ExtResource( 8 )
+
+[node name="decor_bluree13" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 2826.67, 1034.67 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 12 )
+
+[node name="decor_bluree14" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( -800, 1045.33 )
+rotation = 0.0349066
+scale = Vector2( 2, 2 )
+texture = ExtResource( 12 )
+flip_h = true
+
+[node name="decor_bluree15" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 2144, 1024 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 12 )
+flip_h = true
+
+[node name="decor_bluree16" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 373.333, 906.667 )
+rotation = -0.0349066
+scale = Vector2( 2, 2 )
+texture = ExtResource( 12 )
+
+[node name="decor_bluree17" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 4757.33, 789.333 )
+rotation = 0.0349066
+scale = Vector2( 2.5, 2.5 )
+texture = ExtResource( 12 )
+flip_h = true
+
+[node name="decor_bluree18" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 4928, 1024 )
+rotation = -0.0349066
+scale = Vector2( 2.5, 2.5 )
+texture = ExtResource( 12 )
+
+[node name="decor_bluree19" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 5610.67, 864 )
+rotation = 0.0349066
+scale = Vector2( 2.5, 2.5 )
+texture = ExtResource( 12 )
+flip_h = true
+
+[node name="decor_bluree20" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 2517.33, 874.667 )
+rotation = 0.0872664
+scale = Vector2( 2.5, 2.5 )
+texture = ExtResource( 12 )
+
+[node name="decor_bluree25" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 1845.33, 949.333 )
+rotation = -0.0349066
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 12 )
+
+[node name="decor_bluree26" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( -629.333, 874.667 )
+rotation = 0.0349066
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 12 )
+flip_h = true
+
+[node name="decor_bluree27" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( -288, 906.667 )
+rotation = 0.0872664
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 12 )
+
+[node name="decor_bluree28" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 5312, 960 )
+rotation = 0.0872664
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 12 )
+
+[node name="decor_bluree21" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 3370.67, 896 )
+rotation = -0.0872665
+scale = Vector2( 3, 3 )
+texture = ExtResource( 12 )
+flip_h = true
+
+[node name="decor_bluree22" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 4096, 853.333 )
+rotation = 0.0349066
+scale = Vector2( 3, 3 )
+texture = ExtResource( 12 )
+
+[node name="decor_bluree23" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 1610.67, 736 )
+rotation = -0.0349066
+scale = Vector2( 3, 3 )
+texture = ExtResource( 12 )
+
+[node name="decor_bluree24" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 917.333, 917.333 )
+rotation = -0.0349066
+scale = Vector2( 3, 3 )
+texture = ExtResource( 12 )
+flip_h = true
+
+[node name="decor_steel_pipe9" type="Sprite" parent="DECOR_WALL_FAR"]
+position = Vector2( 1514.67, -490.667 )
+rotation = -0.261799
+scale = Vector2( 0.25, 0.25 )
+texture = ExtResource( 10 )
+flip_v = true
+
+[node name="Wall" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+z_index = -10
+tile_set = ExtResource( 3 )
+collision_layer = 0
+collision_mask = 0
+occluder_light_mask = 0
+format = 1
+tile_data = PoolIntArray( -524255, 30, 0, -524245, 34, 0, -393185, 26, 0, -393184, 47, 0, -393178, 33, 0, -327658, 27, 0, -327650, -1073741777, 0, -327649, 27, 0, -327648, 28, 0, -262114, -1073741777, 0, -262113, 26, 0, -262112, 22, 0, -262111, 22, 0, -196600, 30, 0, -196578, -1073741777, 0, -196577, 26, 0, -196576, 27, 0, -196575, 22, 0, -131066, 36, 0, -131051, 31, 0, -131041, 26, 0, -131040, 22, 0, -131009, 37, 0, -65505, 1610612783, 0, -65504, 22, 0, -65473, 38, 0, 7, 34, 0, 41, 29, 0, 62, 38, 0, 131114, 33, 0, 196613, 27, 0, 196640, 27, 0 )
+
+[node name="Wall_Detail" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+z_index = -10
+tile_set = ExtResource( 3 )
+collision_layer = 0
+collision_mask = 0
+occluder_light_mask = 0
+format = 1
+tile_data = PoolIntArray( -393185, 33, 0, -196578, 30, 0, -196545, 40, 0, -131041, 34, 0, -131010, 37, 0, -131009, 40, 0, -65504, 32, 0, -65473, 40, 0, 62, 39, 0, 65598, 39, 0 )
+
+[node name="DECOR_WALL" type="Node2D" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+z_index = -10
+
+[node name="decor_rock_1" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 2904, -208 )
+rotation = -2.09439
+scale = Vector2( 3, 3 )
+texture = ExtResource( 9 )
+flip_h = true
+
+[node name="decor_rock_2" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 2408, -31.9999 )
+rotation = -0.523598
+scale = Vector2( 3, 3 )
+texture = ExtResource( 8 )
+flip_h = true
+
+[node name="decor_rock_3" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 952, -328 )
+rotation = -0.785397
+scale = Vector2( 2, 2 )
+texture = ExtResource( 9 )
+flip_h = true
+
+[node name="decor_rock_4" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 288, -272 )
+rotation = 0.261799
+scale = Vector2( 2, 2 )
+texture = ExtResource( 8 )
+
+[node name="decor_rock_5" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 3904, -264 )
+rotation = -0.261799
+scale = Vector2( 2.5, 2.5 )
+texture = ExtResource( 9 )
+
+[node name="decor_rock_6" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 1272, 64.0001 )
+scale = Vector2( 3, 3 )
+texture = ExtResource( 8 )
+
+[node name="decor_rock_7" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 1712, 16 )
+rotation = -0.523598
+scale = Vector2( 2.5, 2.5 )
+texture = ExtResource( 9 )
+flip_h = true
+
+[node name="decor_rock_8" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( -872, 104 )
+scale = Vector2( 3, 3 )
+texture = ExtResource( 8 )
+
+[node name="decor_rock_9" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( -344, 168 )
+rotation = -0.523598
+scale = Vector2( 2.5, 2.5 )
+texture = ExtResource( 9 )
+flip_h = true
+
+[node name="decor_rock_10" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 3280, 296 )
+rotation = 1.0472
+scale = Vector2( 3, 3 )
+texture = ExtResource( 8 )
+
+[node name="decor_steel_pipe" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 960, -176 )
+rotation = 1.39626
+scale = Vector2( 1, 2.12187 )
+texture = ExtResource( 10 )
+flip_v = true
+
+[node name="decor_steel_pipe5" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 1696, 272 )
+rotation = 1.39626
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 10 )
+flip_v = true
+
+[node name="decor_steel_pipe6" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 1560, 280 )
+rotation = 1.83259
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 10 )
+flip_v = true
+
+[node name="decor_steel_pipe7" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 544, -56 )
+rotation = 2.09439
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 10 )
+flip_v = true
+
+[node name="decor_steel_pipe8" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 2304, -560 )
+rotation = 0.785397
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 10 )
+flip_v = true
+
+[node name="decor_steel_pipe2" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 2720, -256 )
+texture = ExtResource( 10 )
+
+[node name="decor_steel_pipe3" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 2768, -472 )
+rotation = 0.523598
+texture = ExtResource( 10 )
+
+[node name="decor_steel_pipe4" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 2720, -640 )
+rotation = 2.09439
+texture = ExtResource( 10 )
+
+[node name="decor_rock_11" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 752, -440 )
+rotation = 0.523598
+scale = Vector2( 3, 3 )
+texture = ExtResource( 9 )
+
+[node name="decor_rock_12" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( -56, 96 )
+rotation = 0.523598
+scale = Vector2( 3, 3 )
+texture = ExtResource( 8 )
+
+[node name="decor_rock_13" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 3672, 320 )
+rotation = -2.618
+scale = Vector2( 3, 3 )
+texture = ExtResource( 9 )
+flip_h = true
+
+[node name="decor_rock_14" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 2576, -248 )
+rotation = -2.09439
+scale = Vector2( 3, 3 )
+texture = ExtResource( 8 )
+flip_h = true
+
+[node name="decor_bluree" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 1904, 696 )
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 12 )
+
+[node name="decor_bluree2" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( -384, 728 )
+rotation = 0.0349066
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 12 )
+flip_h = true
+
+[node name="decor_bluree3" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( -776, 688 )
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 12 )
+flip_h = true
+
+[node name="decor_bluree4" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 968, 664 )
+rotation = -0.0349066
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 12 )
+
+[node name="decor_bluree5" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 2792, 560 )
+rotation = 0.0349066
+scale = Vector2( 1.875, 1.875 )
+texture = ExtResource( 12 )
+flip_h = true
+
+[node name="decor_bluree6" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 3920, 544 )
+rotation = -0.0349066
+scale = Vector2( 1.875, 1.875 )
+texture = ExtResource( 12 )
+
+[node name="decor_bluree7" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 3328, 608 )
+rotation = 0.0349066
+scale = Vector2( 1.875, 1.875 )
+texture = ExtResource( 12 )
+flip_h = true
+
+[node name="decor_bluree8" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 40, 568 )
+rotation = 0.0872664
+scale = Vector2( 1.875, 1.875 )
+texture = ExtResource( 12 )
+
+[node name="decor_bluree9" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 2256, 600 )
+rotation = -0.0872665
+scale = Vector2( 2.25, 2.25 )
+texture = ExtResource( 12 )
+flip_h = true
+
+[node name="decor_bluree10" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 504, 544 )
+rotation = 0.0349066
+scale = Vector2( 2.25, 2.25 )
+texture = ExtResource( 12 )
+
+[node name="decor_bluree11" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( -936, 648 )
+rotation = -0.0349066
+scale = Vector2( 2.25, 2.25 )
+texture = ExtResource( 12 )
+
+[node name="decor_bluree12" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 1512, 560 )
+rotation = -0.0349066
+scale = Vector2( 2.25, 2.25 )
+texture = ExtResource( 12 )
+flip_h = true
+
+[node name="decor_steel_pipe_circle" type="Sprite" parent="DECOR_WALL"]
+position = Vector2( 1632, 288 )
+scale = Vector2( 0.563, 0.563 )
+texture = ExtResource( 14 )
+
+[node name="DANGER" type="Node2D" parent="."]
+
+[node name="KillFloor" parent="DANGER" instance=ExtResource( 6 )]
+position = Vector2( 0, 960 )
+
+[node name="KillFloor3" parent="DANGER" instance=ExtResource( 6 )]
+position = Vector2( 4352, 0 )
+rotation = -1.57079
+
+[node name="KillFloor2" parent="DANGER" instance=ExtResource( 6 )]
+position = Vector2( -1152, 0 )
+rotation = 1.57079
+
+[node name="SpinningArm" parent="DANGER" instance=ExtResource( 13 )]
+position = Vector2( 1632, 288 )
+lenght = 0.5
+
+[node name="Spike" parent="DANGER/SpinningArm" instance=ExtResource( 5 )]
+position = Vector2( 0, -128 )
+scale = Vector2( 1.5, 1.5 )
+
+[node name="Spike2" parent="DANGER" instance=ExtResource( 5 )]
+position = Vector2( 704, -128 )
+scale = Vector2( 4, 4 )
+
+[node name="Spike3" parent="DANGER" instance=ExtResource( 5 )]
+position = Vector2( 1216, -224 )
+scale = Vector2( 3, 3 )
+
+[node name="Spike4" parent="DANGER" instance=ExtResource( 5 )]
+position = Vector2( 2048, -192 )
+scale = Vector2( 4, 4 )
+
+[node name="Spike10" parent="DANGER" instance=ExtResource( 5 )]
+position = Vector2( 2816, -576 )
+scale = Vector2( 4, 4 )
+pre_pos = {
+
+}
+
+[node name="Spike5" parent="DANGER" instance=ExtResource( 5 )]
+position = Vector2( 1984, -64 )
+scale = Vector2( 2, 2 )
+
+[node name="Spike9" parent="DANGER" instance=ExtResource( 5 )]
+position = Vector2( 1600, 352 )
+scale = Vector2( 2, 2 )
+pre_pos = {
+
+}
+
+[node name="Spike6" parent="DANGER" instance=ExtResource( 5 )]
+position = Vector2( 1984, -320 )
+scale = Vector2( 2, 2 )
+pre_pos = {
+
+}
+
+[node name="Spike11" parent="DANGER" instance=ExtResource( 5 )]
+position = Vector2( 2624, -704 )
+scale = Vector2( 2, 2 )
+pre_pos = {
+
+}
+
+[node name="Spike7" parent="DANGER" instance=ExtResource( 5 )]
+position = Vector2( 2720, -136 )
+scale = Vector2( 1.5, 1.5 )
+
+[node name="Spike8" parent="DANGER" instance=ExtResource( 5 )]
+position = Vector2( 2720, -376 )
+scale = Vector2( 1.5, 1.5 )
+pre_pos = {
+
+}
+
+[node name="Ground_Detail_Back" type="TileMap" parent="."]
+tile_set = ExtResource( 3 )
+format = 1
+tile_data = PoolIntArray( 33, 1610612782, 0 )
+
+[node name="Ground" type="TileMap" parent="."]
+tile_set = ExtResource( 3 )
+format = 1
+tile_data = PoolIntArray( -458722, 26, 0, -458721, -1610612689, 0, -458694, -1610612714, 0, -458693, -1610612690, 0, -393186, 43, 0, -262111, -1073741778, 0, -196607, 22, 0, -196606, -1610612690, 0, -196575, -1073741778, 0, -131071, 22, 0, -131039, 22, 0, -65535, 1610612782, 0, -65506, 27, 0, -65503, 22, 0, -65474, 37, 0, 30, 26, 0, 33, -1073741778, 0, 65550, 22, 0, 65551, 22, 0, 131086, 22, 0, 131087, 1610612782, 0, 131120, 22, 0, 262133, 22, 0, 262134, 22, 0, 262135, 22, 0, 327669, 22, 0, 327670, 22, 0, 327671, -1610612690, 0, 262169, 27, 0, 262170, -1610612689, 0, 393205, 1610612782, 0, 393206, 22, 0, 393207, -1610612690, 0, 327705, 26, 0 )
+
+[node name="DECOR_GROUND_MID" type="Node2D" parent="."]
+
+[node name="Ground_Detail" type="TileMap" parent="."]
+tile_set = ExtResource( 3 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+tile_data = PoolIntArray( -458722, 30, 0, -458694, 12, 0, -196607, 16, 0, -196606, 12, 0, -131071, 12, 0, -65474, 39, 0, 30, 31, 0, 65550, 16, 0, 65551, 12, 0, 131086, 12, 0, 131120, 12, 0, 262133, 3, 0, 262134, 3, 0, 262135, 16, 0, 327669, 4, 0, 327670, 16, 0, 327671, 12, 0, 393205, 5, 0, 393206, 12, 0, 327705, 35, 0 )
+
+[node name="Ghost" parent="." instance=ExtResource( 2 )]
+visible = false
+ghost = true
+
+[node name="Player" parent="." instance=ExtResource( 2 )]
+position = Vector2( -608, 192 )
+
+[node name="Finish" parent="." instance=ExtResource( 7 )]
+position = Vector2( 3760, -384 )
+scale = Vector2( 1, -1 )
+par = 10.0
+
+[node name="DECOR_GROUND" type="Node2D" parent="."]
+
+[node name="decor_tint" type="Sprite" parent="."]
+modulate = Color( 1, 1, 1, 0.0784314 )
+position = Vector2( 1576, -360 )
+scale = Vector2( 5.4375, 5.1875 )
+texture = ExtResource( 15 )
