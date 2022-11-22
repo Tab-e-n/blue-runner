@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Scripts/Player.gd" type="Script" id=18]
+
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 8, 8 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 8, 8 )
+
+[node name="Player" type="KinematicBody2D"]
+script = ExtResource( 18 )
+
+[node name="trail" type="Line2D" parent="."]
+visible = false
+position = Vector2( 0, -88 )
+width = 15.0
+width_curve = SubResource( 1 )
+default_color = Color( 0.117647, 0.341176, 0.611765, 1 )
+
+[node name="col_1" type="CollisionShape2D" parent="."]
+visible = false
+z_index = 1
+shape = SubResource( 2 )
+
+[node name="col_visual" type="Polygon2D" parent="col_1"]
+position = Vector2( -1.58946e-07, -1.19209e-07 )
+color = Color( 1, 0, 0, 0.486275 )
+polygon = PoolVector2Array( -8, -8, 8, -8, 8, 8, -8, 8 )
+
+[node name="col_2" type="CollisionShape2D" parent="."]
+visible = false
+z_index = 1
+shape = SubResource( 3 )
+disabled = true
+
+[node name="col_visual" type="Polygon2D" parent="col_2"]
+position = Vector2( 0, -4.76837e-07 )
+color = Color( 1, 0, 0, 0.486275 )
+polygon = PoolVector2Array( -8, -8, 8, -8, 8, 8, -8, 8 )
+
+[node name="pointer" type="Polygon2D" parent="."]
+color = Color( 0, 0.415686, 1, 1 )
+polygon = PoolVector2Array( 0, 0, -32, -64, 32, -64 )
