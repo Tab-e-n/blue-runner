@@ -1,6 +1,6 @@
 # Sonic Runner
 Hey kdy bude blue update?
-nemam tuseni ale tady je repozitar.
+Nemam tuseni ale tady je repozitar.
 
 # Jak muzu modifikovat / hrat tuto hru z tohoto repozitare?
 
