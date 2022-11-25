@@ -353,7 +353,7 @@ par = 6.5
 
 [node name="Portal" parent="." instance=ExtResource( 21 )]
 position = Vector2( 864, 2336 )
-unlock = "level_1-B"
+unlock = "Level_1-B"
 
 [node name="DECOR_GROUND" type="Node2D" parent="."]
 

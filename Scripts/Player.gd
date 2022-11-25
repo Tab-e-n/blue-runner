@@ -27,6 +27,7 @@ var current_sound : String = ""
 
 var break_breakables : bool = false
 var break_just_happened : bool = false
+var punted : bool = false
 
 func _ready():
 	$pointer.visible = false
@@ -109,6 +110,7 @@ func _physics_process(delta):
 				global.level_completion[_name] = [null, null, 1]
 
 func collision_default_effects(collider_type : int, collider):
+	punted = false
 	
 	var Layers : Array = []
 	Layers.resize(20)
@@ -175,6 +177,7 @@ func punt(boost : Vector2):
 		momentum.y = boost.y
 	
 	state = "air"
+	punted = true
 
 func play_sound(sound_name : String):
 	if sound_name != "" and !ghost:
