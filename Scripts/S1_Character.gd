@@ -29,7 +29,6 @@ var force_slide : bool = false
 var super_slide : bool = false
 var dropping : int = 0
 var saved_momentum : float = 0
-var facing : String
 
 const jump_buffer_constant : int = 5
 var jump_buffer : int = 0
@@ -40,7 +39,7 @@ var ground_buffer : int = 0
 var last_anim : String = "Default"
 var state_air : int = 0
 var wall_anim : int = 1
-var last_facing : String = facing
+var last_facing : String
 
 var trail : PoolVector2Array = []
 var trail_converted : PoolVector2Array = []
@@ -48,7 +47,7 @@ var trail_converted : PoolVector2Array = []
 export var idle_anim_timer : int = -1
 
 func _ready():
-	facing = player.facing
+	last_facing = player.facing
 	
 	$Anim.current_animation = "Enter"
 	
@@ -115,6 +114,7 @@ func _physics_process(_delta):
 		if player.state == "air" and $Anim.current_animation != "Enter":
 			sliding = 0
 			#if is_on_ceiling() and dropping: sliding = dropping
+		
 		if (player.is_on_floor() or player.move_and_collide(Vector2(0,1), false, true, true)) and player.state != "air":
 			player.momentum.y = 1
 		else: player.state = "air"
@@ -122,10 +122,10 @@ func _physics_process(_delta):
 		# MOVEMENT
 		if Input.is_action_pressed("left") and sliding == 0 and dropping == 0:
 			if player.momentum.x > -max_speed: player.momentum.x -= acceleration - round(player.momentum.x / acc_dividor)
-			if dropping == 0 and !on_wall: facing = "left"
+			if dropping == 0 and !on_wall: player.facing = "left"
 		if Input.is_action_pressed("right") and sliding == 0 and dropping == 0:
 			if player.momentum.x < max_speed: player.momentum.x += acceleration - round(player.momentum.x / acc_dividor)
-			if dropping == 0 and !on_wall: facing = "right"
+			if dropping == 0 and !on_wall: player.facing = "right"
 		
 		# SPECIAL ABILITIES
 		if sliding > 0: sliding -= 1
@@ -158,9 +158,9 @@ func _physics_process(_delta):
 				sliding = 0
 			
 			var facing_multiplier : int
-			if facing == "left":
+			if player.facing == "left":
 				facing_multiplier = -1
-			if facing == "right":
+			if player.facing == "right":
 				facing_multiplier = 1
 			
 			if super_slide and saved_momentum > max_speed * 1.35:
@@ -175,9 +175,9 @@ func _physics_process(_delta):
 				force_slide = true
 			
 		if dropping > 0:
-			if facing == "left":
+			if player.facing == "left":
 				player.momentum.x = -round(max_speed * 0.5)
-			if facing == "right":
+			if player.facing == "right":
 				player.momentum.x = round(max_speed * 0.5)
 			player.momentum.y += gravity_down
 		
@@ -185,7 +185,7 @@ func _physics_process(_delta):
 		if ground_buffer != 0: ground_buffer -= 1
 		if ground_buffer == 1: jump_amount = jump_amount_max - 1
 		
-		if player.is_on_wall():
+		if player.is_on_wall() and !player.punted:
 			player.momentum.x = 0
 			jump_amount = jump_amount_max - 1
 		
@@ -202,7 +202,7 @@ func _physics_process(_delta):
 					jump_amount = jump_amount_max - 1
 					# warning-ignore:integer_division
 					player.momentum.x = -max_speed / 1.5
-					facing = "left"
+					player.facing = "left"
 					# warning-ignore:narrowing_conversion
 					jump(jump_power * 1.075)
 					jump_buffer = 0
@@ -211,7 +211,7 @@ func _physics_process(_delta):
 					jump_amount = jump_amount_max - 1
 					# warning-ignore:integer_division
 					player.momentum.x = max_speed / 1.5
-					facing = "right"
+					player.facing = "right"
 					# warning-ignore:narrowing_conversion
 					jump(jump_power * 1.075)
 					jump_buffer = 0
@@ -220,7 +220,7 @@ func _physics_process(_delta):
 				jump_amount -= 1
 				jump(jump_power)
 				#jump_buffer = 0
-		if Input.is_action_just_released("jump") and !gravity_switch:
+		if Input.is_action_just_released("jump") and !gravity_switch and !player.punted:
 			gravity_switch = true
 			if player.momentum.y < -200: player.momentum.y = -200
 		
@@ -245,7 +245,7 @@ func _physics_process(_delta):
 			if dropping > 0:
 				$Anim.current_animation = "Drop"
 			elif on_wall:
-				if (facing == "left" and on_wall_left) or (facing == "right" and on_wall_right):
+				if (player.facing == "left" and on_wall_left) or (player.facing == "right" and on_wall_right):
 					wall_anim = -1
 				$Anim.current_animation = "On_Wall"
 			elif Input.is_action_pressed("jump") and !gravity_switch:
@@ -268,7 +268,7 @@ func _physics_process(_delta):
 				particle_summon(Vector2(0, 0), 0)
 				player.play_sound("land")
 			if player.momentum.x != 0 and !on_wall:
-				if $Anim.current_animation != "Walk" or last_facing != facing:
+				if $Anim.current_animation != "Walk" or last_facing != player.facing:
 					$Anim.stop()
 					$Anim.current_animation = "Walk"
 			else:
@@ -287,9 +287,9 @@ func _physics_process(_delta):
 					idle_anim_timer = 30 * g.rand.randi_range(7, 11)
 		
 		last_anim = $Anim.current_animation
-		last_facing = facing
+		last_facing = player.facing
 		
-		if facing == "left":
+		if player.facing == "left":
 			scale = Vector2(-0.5 * wall_anim, scale.y)
 		else:
 			scale = Vector2(0.5 * wall_anim, scale.y)
@@ -307,11 +307,6 @@ func _physics_process(_delta):
 	
 	# - - - DEATH STATE - - -
 	elif player.dead:
-		
-		#$Old/spr_PlayerRight.visible = false
-		#$Old/spr_PlayerRight_Alt.visible = false
-		#$Old/spr_PlayerRight_Dead.visible = true
-		#$Old/spr_PlayerRight_Dead.flip_h = facing == "left"
 		scale = Vector2(scale.x, 0.5)
 		if $Anim.current_animation!="Death": player.play_sound("explosion")
 		$Anim.play("Death")

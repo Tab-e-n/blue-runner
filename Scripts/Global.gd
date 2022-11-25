@@ -14,10 +14,10 @@ var level_completion = {
 	"*timer_on" : false,
 	"*first_time_load" : true,
 	"*unlocked" : {
-		"level_1-A" : false,
-		"level_1-B" : false,
-		"level_1-C" : false,
-		"level_1--1" : false,
+		"Level_1-A" : false,
+		"Level_1-B" : false,
+		"Level_1-C" : false,
+		"Level_1--1" : false,
 	},
 }
 
@@ -237,12 +237,12 @@ func key_names(key : int):
 
 func unlock_check():
 	var test : int = 0
-	if !level_completion["*unlocked"]["level_1--1"]:
+	if !level_completion["*unlocked"]["Level_1--1"]:
 		test = 0
 		for i in range(15):
 			if level_completion.has("Level_1-" + String(i)): if level_completion["Level_1-" + String(i)][0] != null:
 				test+=1
-		if test>=15: level_completion["*unlocked"]["level_1--1"] = true
+		if test>=15: level_completion["*unlocked"]["Level_1--1"] = true
 
 func save_game(timer : float = 0, par : float = 0, collectible : int = 0, level = null, recording : Dictionary = {}):
 	
@@ -313,11 +313,15 @@ func update_old_save():
 	if !level_completion.has("*return"): level_completion["*return"] = null
 	if !level_completion.has("*first_time_load"): level_completion["*first_time_load"] = false
 	if !level_completion.has("*unlocked"): level_completion["*unlocked"] = {
-		"level_1-A" : false,
-		"level_1-B" : false,
-		"level_1-C" : false,
-		"level_1--1" : false,
+		"Level_1-A" : false,
+		"Level_1-B" : false,
+		"Level_1-C" : false,
+		"Level_1--1" : false,
 	}
+	if !level_completion["*unlocked"].has("Level_1-A"): level_completion["*unlocked"]["Level_1-A"] = false
+	if !level_completion["*unlocked"].has("Level_1-B"): level_completion["*unlocked"]["Level_1-B"] = false
+	if !level_completion["*unlocked"].has("Level_1-C"): level_completion["*unlocked"]["Level_1-C"] = false
+	if !level_completion["*unlocked"].has("Level_1--1"): level_completion["*unlocked"]["Level_1--1"] = false
 
 func keep_settings():
 	var settings : Dictionary = {}
@@ -333,10 +337,10 @@ func keep_settings():
 	settings["*return"] = level_completion["*return"]
 	settings["*first_time_load"] = level_completion["*first_time_load"]
 	settings["*unlocked"] = {
-		"level_1-A" : false,
-		"level_1-B" : false,
-		"level_1-C" : false,
-		"level_1--1" : false,
+		"Level_1-A" : false,
+		"Level_1-B" : false,
+		"Level_1-C" : false,
+		"Level_1--1" : false,
 	}
 	return settings
 

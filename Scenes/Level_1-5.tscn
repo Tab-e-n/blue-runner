@@ -330,7 +330,7 @@ par = 7.5
 
 [node name="Portal" parent="." instance=ExtResource( 20 )]
 position = Vector2( 864, 480 )
-unlock = "level_1-A"
+unlock = "Level_1-A"
 
 [node name="Funny_Layer" type="TileMap" parent="."]
 tile_set = ExtResource( 3 )
