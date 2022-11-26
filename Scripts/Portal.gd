@@ -35,9 +35,9 @@ func _process(_delta):
 
 func teleport(timer : float, collectible : int):
 	# warning-ignore:return_value_discarded
+	if unlock != "": $"/root/Global".level_completion["*unlocked"][unlock] = true
 	
 	if name == "Portal":
-		if unlock != "": $"/root/Global".level_completion["*unlocked"][unlock] = true
 		$"/root/Global".save_game()
 		
 		get_tree().change_scene(tele_destination)

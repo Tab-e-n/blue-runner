@@ -1,0 +1,19 @@
+1.1
+NEW ADDITIONS
+ - Sound
+ - New Levels
+	- Level_1-A (1-B coming soon)
+ - Added portals that unlock those new levels
+ - Added a option to turn on a onscreen timer while gaming
+
+ - Levels now track your death count
+ - Added hints about what to press
+ - Added an explanation to bonuses in the help menu
+ - Replays are now saved with different names
+
+ - Ghost now has a trail
+ - Added WaterWay logo
+
+BUG FIXES
+ - Fixed Level 13 not having kill floors
+ - Fixed game not being on github 

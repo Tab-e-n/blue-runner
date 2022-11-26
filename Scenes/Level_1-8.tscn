@@ -7,7 +7,7 @@
 [ext_resource path="res://Objects/Decor/Waterfall.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Objects/KillFloor.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Visual/decor_rock_1.png" type="Texture" id=7]
-[ext_resource path="res://Objects/WaterWay.tres" type="TileSet" id=8]
+[ext_resource path="res://Objects/Tilesets/WaterWay.tres" type="TileSet" id=8]
 [ext_resource path="res://Visual/decor_rock_2.png" type="Texture" id=9]
 [ext_resource path="res://Visual/decor_steel_pipe.png" type="Texture" id=10]
 [ext_resource path="res://Visual/decor_dirt_rock_1.png" type="Texture" id=11]
@@ -21,6 +21,7 @@
 [ext_resource path="res://Objects/Portal.tscn" type="PackedScene" id=19]
 [ext_resource path="res://Objects/Finish.tscn" type="PackedScene" id=33]
 [ext_resource path="res://Objects/Spike.tscn" type="PackedScene" id=35]
+
 
 [node name="Level_1-8" type="Node2D"]
 

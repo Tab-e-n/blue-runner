@@ -7,7 +7,7 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 40, 16 )
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=2]
 resource_name = "Bounce"
 tracks/0/type = "method"
 tracks/0/path = NodePath(".:Functions")
@@ -36,7 +36,7 @@ tracks/1/keys = {
 "times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
-"values": [ Vector2( 1, 1 ), Vector2( 1.15, 0.85 ), Vector2( 1, 1.15 ), Vector2( 1, 1 ) ]
+"values": [ Vector2( 1, 1 ), Vector2( 1.25, 0.85 ), Vector2( 1, 1.15 ), Vector2( 1, 1 ) ]
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath("mushroom:self_modulate")
@@ -231,7 +231,7 @@ tracks/17/keys = {
 "values": [ true, false ]
 }
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=3]
 resource_name = "Glow"
 length = 8.0
 tracks/0/type = "value"
@@ -257,37 +257,32 @@ texture = ExtResource( 2 )
 offset = Vector2( 0, -40 )
 
 [node name="mushroom_star" type="Sprite" parent="."]
-visible = false
 position = Vector2( 43, -40 )
-rotation = 3.14159
+rotation = 1.5708
 scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 3 )
 
 [node name="mushroom_star2" type="Sprite" parent="."]
-visible = false
 position = Vector2( 1.19209e-07, -29 )
-rotation = 2.0944
+rotation = 0.523599
 scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 3 )
 
 [node name="mushroom_star3" type="Sprite" parent="."]
-visible = false
 position = Vector2( -30, -33 )
-rotation = -2.61799
+rotation = -1.0472
 scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 3 )
 
 [node name="mushroom_star4" type="Sprite" parent="."]
-visible = false
 position = Vector2( 25, -33 )
-rotation = -3.66519
+rotation = -2.0944
 scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 3 )
 
 [node name="mushroom_star5" type="Sprite" parent="."]
-visible = false
 position = Vector2( -45, -40 )
-rotation = 4.18879
+rotation = 2.61799
 scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 3 )
 
@@ -296,6 +291,6 @@ position = Vector2( 0, -48 )
 shape = SubResource( 1 )
 
 [node name="anim" type="AnimationPlayer" parent="."]
-anims/Bounce = SubResource( 5 )
-anims/Glow = SubResource( 4 )
+anims/Bounce = SubResource( 2 )
+anims/Glow = SubResource( 3 )
 [connection signal="body_entered" from="." to="." method="_on_Mushroom_body_entered"]

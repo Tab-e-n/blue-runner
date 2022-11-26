@@ -2376,14 +2376,14 @@ level_symbol = ExtResource( 21 )
 position = Vector2( -192, 608 )
 scale = Vector2( 1.2, 1.2 )
 level = 15
-level_name = "Level_A"
+level_name = "Level_1-A"
 level_symbol = ExtResource( 4 )
 
 [node name="Level_16" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 64, 608 )
 scale = Vector2( 1.2, 1.2 )
 level = 16
-level_name = "Level_1-B"
+level_name = "Level_Oop"
 level_symbol = ExtResource( 12 )
 locked = true
 
