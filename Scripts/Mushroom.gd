@@ -1,6 +1,7 @@
 extends Area2D
 
 export var boost_strenght : int = 0
+export var overwrite_momentum : bool = false
 
 var boost : Vector2 = Vector2(0, 0)
 var pause_timer : int = cos(position.x + position.y) * 100
@@ -24,7 +25,7 @@ func _physics_process(_delta):
 
 func _on_Mushroom_body_entered(body):
 	if body.name == "Player":
-		body.punt(boost)
+		body.punt(boost, overwrite_momentum)
 		$anim.stop()
 		$anim.play("Bounce")
 

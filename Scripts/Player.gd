@@ -147,7 +147,7 @@ func collision_default_effects(collider_type : int, collider):
 		if Layers[4]:
 			finish(collider)
 
-func punt(boost : Vector2):
+func punt(boost : Vector2, overwrite_momentum : bool):
 	#var sign_ = sign(boost.x)
 	#if boost.x * sign_ > momentum.x * sign_:
 	#	momentum.x = boost.x
@@ -160,7 +160,9 @@ func punt(boost : Vector2):
 	#else:
 	#	momentum.y += round(boost.y / 4)
 	
-	if sign(momentum.x) == sign(boost.x):
+	if overwrite_momentum:
+		momentum.x = boost.x
+	elif sign(momentum.x) == sign(boost.x):
 		if abs(boost.x) - 20 > abs(momentum.x):
 			momentum.x = boost.x
 		elif abs(boost.x) - 20 < abs(momentum.x):
@@ -168,7 +170,9 @@ func punt(boost : Vector2):
 	elif sign(boost.x) != 0:
 		momentum.x = boost.x
 	
-	if sign(momentum.y) == sign(boost.y):
+	if overwrite_momentum:
+		momentum.y = boost.y
+	elif sign(momentum.y) == sign(boost.y):
 		if abs(boost.y) - 20 > abs(momentum.y):
 			momentum.y = boost.y
 		elif abs(boost.y) - 20 < abs(momentum.y):

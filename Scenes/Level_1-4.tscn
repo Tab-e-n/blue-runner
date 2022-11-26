@@ -1,6 +1,6 @@
 [gd_scene load_steps=21 format=2]
 
-[ext_resource path="res://Objects/WaterWay.tres" type="TileSet" id=1]
+[ext_resource path="res://Objects/Tilesets/WaterWay.tres" type="TileSet" id=1]
 [ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Objects/Backgrounds/BG_WaterWay.tscn" type="PackedScene" id=4]
@@ -20,6 +20,7 @@
 [ext_resource path="res://Objects/Decor/Waterfall.tscn" type="PackedScene" id=18]
 [ext_resource path="res://Visual/decor_bluree.png" type="Texture" id=19]
 [ext_resource path="res://Visual/decor_tint.png" type="Texture" id=20]
+
 
 [node name="Level_1-4" type="Node2D"]
 

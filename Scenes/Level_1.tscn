@@ -29,12 +29,13 @@
 [ext_resource path="res://Visual/decor_cloud.png" type="Texture" id=27]
 [ext_resource path="res://Scripts/cloud.gd" type="Script" id=28]
 [ext_resource path="res://Objects/Decor/Light_Point.tscn" type="PackedScene" id=29]
-[ext_resource path="res://Objects/WaterWay.tres" type="TileSet" id=30]
+[ext_resource path="res://Objects/Tilesets/WaterWay.tres" type="TileSet" id=30]
 [ext_resource path="res://Visual/decor_bluree.png" type="Texture" id=31]
 [ext_resource path="res://Objects/Backgrounds/BG_WaterWay.tscn" type="PackedScene" id=32]
 [ext_resource path="res://Objects/Finish.tscn" type="PackedScene" id=33]
 [ext_resource path="res://Objects/Spike.tscn" type="PackedScene" id=34]
 [ext_resource path="res://Objects/Collectible.tscn" type="PackedScene" id=35]
+
 
 
 
