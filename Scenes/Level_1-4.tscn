@@ -21,14 +21,12 @@
 [ext_resource path="res://Visual/decor_bluree.png" type="Texture" id=19]
 [ext_resource path="res://Visual/decor_tint.png" type="Texture" id=20]
 
-
 [node name="Level_1-4" type="Node2D"]
 
 [node name="Camera" parent="." instance=ExtResource( 3 )]
 limit_x = Vector2( 0, 3072 )
 
 [node name="BG" parent="." instance=ExtResource( 4 )]
-position = Vector2( -16, 0 )
 bg_color = Vector3( 0.408, 0.553, 0.846 )
 hill_offset = Vector2( 192, 576 )
 sun_position = Vector2( 0, -88 )
@@ -290,9 +288,6 @@ scale = Vector2( 2, 2 )
 [node name="Spike2" parent="DANGER" instance=ExtResource( 5 )]
 position = Vector2( 2496, 224 )
 scale = Vector2( 2, 2 )
-pre_pos = {
-
-}
 
 [node name="Spike3" parent="DANGER" instance=ExtResource( 5 )]
 position = Vector2( 1568, -512 )

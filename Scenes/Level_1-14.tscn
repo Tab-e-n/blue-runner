@@ -22,7 +22,6 @@
 [ext_resource path="res://Objects/Track.tscn" type="PackedScene" id=20]
 [ext_resource path="res://Objects/Portal.tscn" type="PackedScene" id=21]
 
-
 [node name="Level_1-14" type="Node2D"]
 
 [node name="Camera" parent="." instance=ExtResource( 1 )]
@@ -354,6 +353,7 @@ par = 6.5
 
 [node name="Portal" parent="." instance=ExtResource( 21 )]
 position = Vector2( 864, 2336 )
+tele_destination = "res://Scenes/Level_1-B.tscn"
 unlock = "Level_1-B"
 
 [node name="DECOR_GROUND" type="Node2D" parent="."]

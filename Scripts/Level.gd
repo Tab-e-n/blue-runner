@@ -10,27 +10,35 @@ export var level_locked : Texture
 export var level_done : Texture
 export var level_perfect : Texture
 
+onready var global : Control = $"/root/Global"
+
 var time : float = 0
 var par : float = 0
 
 func _ready():
-	reload()
+	#reload()
+	pass
 
 func _process(_delta):
 	pass
 
 func reload():
+	var temp = global.load_level_dat_file(level_name, true)
+	if temp != null:
+		var temp_level_symbol = load("res://Visual/Menu/level_" + temp["level_icon"] + ".png")
+		if temp_level_symbol != null: level_symbol = temp_level_symbol
+	
 	$symbol.texture = level_symbol
 	$icon.texture = level_normal
 	$boltcollect.visible = false
 	if locked:
 		$icon.texture = level_locked
-	elif $"/root/Global".level_completion.has(level_name): if $"/root/Global".level_completion[level_name][0] != null:
-		time = $"/root/Global".level_completion[level_name][0]
-		par = $"/root/Global".level_completion[level_name][1]
+	elif global.level_completion.has(level_name): if global.level_completion[level_name][0] != null:
+		time = global.level_completion[level_name][0]
+		par = global.level_completion[level_name][1]
 		
 		$boltcollect/Anim.stop()
-		if $"/root/Global".level_completion.has(String((world - 1) * 20 + level)):
+		if global.level_completion.has(String((world - 1) * 20 + level)):
 			$boltcollect.visible = true
 			$boltcollect/Anim.play("Idle")
 		

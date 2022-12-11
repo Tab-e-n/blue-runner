@@ -41,6 +41,7 @@ var state_air : int = 0
 var wall_anim : int = 1
 var last_facing : String
 
+export var trail_color : Color = Color(1, 1, 1, 1)
 var trail : PoolVector2Array = []
 var trail_converted : PoolVector2Array = []
 
@@ -52,6 +53,7 @@ func _ready():
 	$Anim.current_animation = "Enter"
 	
 	trail_node.visible = true
+	trail_node.modulate = trail_color
 	trail.resize(40)
 	for i in range(trail.size()):
 		trail[i] = player.position
@@ -147,7 +149,8 @@ func _physics_process(_delta):
 					player.play_sound("ding")
 					dropping = 1
 					particle_summon(Vector2(0, -64), 0, 1)
-			player.break_breakables = dropping > 0
+			if dropping > 0: player.break_breakables = true
+			elif sliding > 0: player.break_breakables = false
 		else:
 			if dropping == 1: dropping = 2
 			player.break_breakables = false
@@ -220,7 +223,7 @@ func _physics_process(_delta):
 				jump_amount -= 1
 				jump(jump_power)
 				#jump_buffer = 0
-		if Input.is_action_just_released("jump") and !gravity_switch and !player.punted:
+		if Input.is_action_just_released("jump") and !gravity_switch and !player.punted and sliding == 0:
 			gravity_switch = true
 			if player.momentum.y < -200: player.momentum.y = -200
 		

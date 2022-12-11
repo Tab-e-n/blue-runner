@@ -17,9 +17,10 @@ script = ExtResource( 18 )
 [node name="trail" type="Line2D" parent="."]
 visible = false
 position = Vector2( 0, -88 )
+points = PoolVector2Array( -216, -96 )
 width = 15.0
 width_curve = SubResource( 1 )
-default_color = Color( 0.117647, 0.341176, 0.611765, 1 )
+default_color = Color( 1, 1, 1, 1 )
 
 [node name="col_1" type="CollisionShape2D" parent="."]
 visible = false

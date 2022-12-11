@@ -19,7 +19,6 @@
 [ext_resource path="res://Visual/decor_tint.png" type="Texture" id=17]
 [ext_resource path="res://Objects/KillFloor.tscn" type="PackedScene" id=18]
 
-
 [node name="Level_1-13" type="Node2D"]
 
 [node name="Camera" parent="." instance=ExtResource( 1 )]
@@ -268,9 +267,6 @@ timer = 70
 [node name="Spike" parent="DANGER/SpinningArm4" instance=ExtResource( 4 )]
 position = Vector2( 0, -256 )
 scale = Vector2( 3, 3 )
-pre_pos = {
-
-}
 
 [node name="SpinningArm2" parent="DANGER" instance=ExtResource( 5 )]
 position = Vector2( -640, 384 )
@@ -279,9 +275,6 @@ lenght = 0.5
 [node name="Spike" parent="DANGER/SpinningArm2" instance=ExtResource( 4 )]
 position = Vector2( 0, -128 )
 scale = Vector2( 2, 2 )
-pre_pos = {
-
-}
 
 [node name="SpinningArm7" parent="DANGER" instance=ExtResource( 5 )]
 position = Vector2( 672, -128 )
@@ -290,9 +283,6 @@ lenght = 0.5
 [node name="Spike" parent="DANGER/SpinningArm7" instance=ExtResource( 4 )]
 position = Vector2( 0, -128 )
 scale = Vector2( 2, 2 )
-pre_pos = {
-
-}
 
 [node name="SpinningArm3" parent="DANGER" instance=ExtResource( 5 )]
 position = Vector2( -256, 576 )
@@ -303,9 +293,6 @@ lenght = 0.5
 [node name="Spike" parent="DANGER/SpinningArm3" instance=ExtResource( 4 )]
 position = Vector2( 0, -128 )
 scale = Vector2( 2, 2 )
-pre_pos = {
-
-}
 
 [node name="SpinningArm6" parent="DANGER" instance=ExtResource( 5 )]
 position = Vector2( 320, 192 )
@@ -316,9 +303,6 @@ lenght = 0.5
 [node name="Spike" parent="DANGER/SpinningArm6" instance=ExtResource( 4 )]
 position = Vector2( 0, -128 )
 scale = Vector2( 2, 2 )
-pre_pos = {
-
-}
 
 [node name="SpinningArm9" parent="DANGER" instance=ExtResource( 5 )]
 position = Vector2( 704, -576 )
@@ -329,9 +313,6 @@ lenght = 0.5
 [node name="Spike" parent="DANGER/SpinningArm9" instance=ExtResource( 4 )]
 position = Vector2( 0, -128 )
 scale = Vector2( 2, 2 )
-pre_pos = {
-
-}
 
 [node name="SpinningArm5" parent="DANGER" instance=ExtResource( 5 )]
 position = Vector2( 672, 800 )
@@ -341,9 +322,6 @@ lenght = 0.75
 [node name="Spike" parent="DANGER/SpinningArm5" instance=ExtResource( 4 )]
 position = Vector2( 0, -192 )
 scale = Vector2( 2, 2 )
-pre_pos = {
-
-}
 
 [node name="SpinningArm8" parent="DANGER" instance=ExtResource( 5 )]
 position = Vector2( 1120, -160 )
@@ -353,9 +331,6 @@ lenght = 0.75
 [node name="Spike" parent="DANGER/SpinningArm8" instance=ExtResource( 4 )]
 position = Vector2( 0, -192 )
 scale = Vector2( 2, 2 )
-pre_pos = {
-
-}
 
 [node name="Spike" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 576, -160 )
@@ -364,23 +339,14 @@ scale = Vector2( 3, 3 )
 [node name="Spike2" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 96, 96 )
 scale = Vector2( 3, 3 )
-pre_pos = {
-
-}
 
 [node name="Spike3" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( -768, 256 )
 scale = Vector2( 4, 4 )
-pre_pos = {
-
-}
 
 [node name="Spike4" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 576, -320 )
 scale = Vector2( 4, 4 )
-pre_pos = {
-
-}
 
 [node name="KillFloor" parent="DANGER" instance=ExtResource( 18 )]
 position = Vector2( -1664, 448 )
