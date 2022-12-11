@@ -137,6 +137,7 @@ func collision_default_effects(collider_type : int, collider):
 	
 	if Layers[0] and Layers[4] and break_breakables:
 		instance_from_id(get_slide_collision(collider).collider_id).break_active = true
+		instance_from_id(get_slide_collision(collider).collider_id).break_position = position
 		break_just_happened = true
 	
 	if Layers[2]:

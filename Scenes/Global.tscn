@@ -9,3 +9,11 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+set_filename = "Level_Test_Mush"
+set_data = {
+"creator": "Tabin",
+"dependencies": [ "" ],
+"level_icon": "questionmark",
+"level_name": "World Two Test Zone",
+"official": false
+}

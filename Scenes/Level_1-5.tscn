@@ -21,7 +21,6 @@
 [ext_resource path="res://Objects/Track.tscn" type="PackedScene" id=19]
 [ext_resource path="res://Objects/Portal.tscn" type="PackedScene" id=20]
 
-
 [node name="Level_1-5" type="Node2D"]
 
 [node name="Camera" parent="." instance=ExtResource( 1 )]
@@ -98,8 +97,8 @@ scale = Vector2( 1, 1.375 )
 texture = ExtResource( 8 )
 
 [node name="decor_steel_pipe4" type="Sprite" parent="DECOR_WALL"]
-position = Vector2( 533.597, 167.442 )
-rotation = 0.872665
+position = Vector2( 520, 176 )
+rotation = 1.0472
 scale = Vector2( 1, 1.95593 )
 texture = ExtResource( 8 )
 
@@ -240,7 +239,7 @@ position = Vector2( 512, -288 )
 scale = Vector2( 3, 3 )
 
 [node name="Spike14" parent="DANGER" instance=ExtResource( 5 )]
-position = Vector2( 704, 32 )
+position = Vector2( 704, 64 )
 scale = Vector2( 1.5, 1.5 )
 
 [node name="Spike8" parent="DANGER" instance=ExtResource( 5 )]
@@ -331,6 +330,7 @@ par = 7.5
 
 [node name="Portal" parent="." instance=ExtResource( 20 )]
 position = Vector2( 864, 480 )
+tele_destination = "res://Scenes/Level_1-A.tscn"
 unlock = "Level_1-A"
 
 [node name="Funny_Layer" type="TileMap" parent="."]

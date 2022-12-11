@@ -5,7 +5,6 @@
 [ext_resource path="res://Visual/Old/spr_PlayerRight.png" type="Texture" id=3]
 [ext_resource path="res://Visual/Old/spr_PlayerRight_Alt - kopie.png" type="Texture" id=4]
 
-
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 22.5806, 29.1667 )
 

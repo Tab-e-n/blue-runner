@@ -16,7 +16,7 @@ func _ready():
 #	pass
 
 func _input(event):
-	if event is InputEventKey and event.pressed:
+	if event is InputEventKey and event.pressed and $t/anim.current_animation != "in":
 		if current_key < 8:
 			global.change_input(current_key, event)
 			current_key += 1

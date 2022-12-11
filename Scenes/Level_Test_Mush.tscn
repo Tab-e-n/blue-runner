@@ -103,12 +103,12 @@ position = Vector2( 256, -1664 )
 rotation = -0.785397
 
 [node name="BreakableGlass" parent="DANGER" instance=ExtResource( 2 )]
-position = Vector2( -832, 320 )
-scale = Vector2( 3, 0.5 )
+position = Vector2( -800, 320 )
+scale = Vector2( 2.5, 0.5 )
 
 [node name="BreakableGlass2" parent="DANGER" instance=ExtResource( 2 )]
-position = Vector2( 448, 320 )
-scale = Vector2( 3, 0.5 )
+position = Vector2( 480, 320 )
+scale = Vector2( 2.5, 0.5 )
 
 [node name="Ground_Detail_Back" type="TileMap" parent="."]
 tile_set = ExtResource( 7 )
@@ -133,6 +133,7 @@ ghost = true
 
 [node name="Player" parent="." instance=ExtResource( 1 )]
 position = Vector2( -224, 320 )
+character_name = "XT9"
 
 [node name="Portal" parent="." instance=ExtResource( 3 )]
 position = Vector2( -576, -1536 )

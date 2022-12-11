@@ -43,6 +43,9 @@ func _process(_delta):
 			"SELECT":
 				$AnimationPlayer.play("SELECT-MAIN")
 				menu = "MAIN"
+			"CHARACTER":
+				$AnimationPlayer.play("CHARACTER-SELECT")
+				menu = "SELECT"
 			"OPTION":
 				pass
 			"HELP":
@@ -75,6 +78,8 @@ func _process(_delta):
 	match(menu):
 		"SELECT":
 			$SELECT.menu_update()
+		"CHARACTER":
+			$CHARACTER.menu_update()
 		"MAIN":
 			$MAIN.menu_update()
 		"OPTION":

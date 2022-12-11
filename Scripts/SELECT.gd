@@ -62,11 +62,24 @@ func menu_update():
 	selected_level_name = get_node("L/Level_" + String(selected_level)).level_name
 	
 	if parent.move:
+		var level_dat = global.load_level_dat_file(selected_level_name)
 		$Level_Descriptor/level_name.text = selected_level_name
+		$Level_Descriptor/creator.text = ""
+		if get_node("L/Level_" + String(selected_level)).locked == true:
+				$Level_Descriptor/level_name.text = "LOCKED"
+		elif level_dat != null:
+			$Level_Descriptor/level_name.text = level_dat["level_name"]
+			if level_dat["official"]:
+				if level_dat["creator"] != "Tabin": 
+					$Level_Descriptor/creator.text = "My thanks goes to " + level_dat["creator"] + " for making this!"
+			else:
+				$Level_Descriptor/creator.text = "  Creator:" + level_dat["creator"]
+		
 		$Level_Descriptor/best_time.text = "Best time: ???"
-		$Level_Descriptor/par.text = " "
-		$Level_Descriptor/deaths.text = " "
-		$Level_Descriptor/replay.text = " "
+		$Level_Descriptor/par.text = ""
+		$Level_Descriptor/deaths.text = ""
+		$Level_Descriptor/replay.text = ""
+		
 		if global.level_completion.has(selected_level_name):
 			if global.level_completion[selected_level_name][0] != null:
 				var timer : float = global.level_completion[selected_level_name][0]
@@ -110,10 +123,17 @@ func reload_all_levels():
 	$anim.stop()
 	$anim.play("WaterWay")
 
-func start_level():
-	global.current_level = selected_level_name
-	# warning-ignore:return_value_discarded
-	get_tree().change_scene("res://Scenes/" + selected_level_name + ".tscn")
+func character_select():
+	if global.level_completion["*char_select_active"]:
+		parent.get_node("AnimationPlayer").play("SELECT-CHARACTER")
+		parent.menu = "CHARACTER"
+		$Cursor/AnimationPlayer.play("Reset")
+		selected = false
+		parent.get_node("CHARACTER").selected_level = selected_level_name
+	else:
+		global.current_level = selected_level_name
+		# warning-ignore:return_value_discarded
+		get_tree().change_scene("res://Scenes/" + selected_level_name + ".tscn")
 
 func completion_percentage():
 	var completion : int = 0

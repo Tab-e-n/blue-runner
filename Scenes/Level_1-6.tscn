@@ -22,7 +22,6 @@
 [ext_resource path="res://Visual/decor_tint.png" type="Texture" id=20]
 [ext_resource path="res://Objects/Track.tscn" type="PackedScene" id=21]
 
-
 [node name="Level_1-6" type="Node2D"]
 
 [node name="Camera" parent="." instance=ExtResource( 1 )]
@@ -94,9 +93,9 @@ scale = Vector2( 1, 1.625 )
 texture = ExtResource( 9 )
 
 [node name="decor_steel_pipe5" type="Sprite" parent="DECOR_WALL"]
-position = Vector2( 448, -192 )
-rotation = -0.785398
-scale = Vector2( 1, 2.3 )
+position = Vector2( 477.492, -396.61 )
+rotation = -1.83259
+scale = Vector2( 1, 1.875 )
 texture = ExtResource( 9 )
 
 [node name="decor_steel_pipe3" type="Sprite" parent="DECOR_WALL"]
@@ -277,10 +276,6 @@ time = 60
 
 [node name="Spike" parent="DANGER/Track" instance=ExtResource( 4 )]
 scale = Vector2( 3, 3 )
-time = 60
-time_internal = 60
-time_direction = false
-positions = [ Vector2( -32, 192 ), Vector2( -32, -192 ) ]
 
 [node name="Track3" parent="DANGER" instance=ExtResource( 21 )]
 position = Vector2( -704, -896 )
@@ -289,20 +284,15 @@ time = 90
 
 [node name="Spike2" parent="DANGER/Track3" instance=ExtResource( 4 )]
 scale = Vector2( 2, 2 )
-time = 90
-positions = [ Vector2( -384, -960 ), Vector2( -704, -896 ) ]
 
 [node name="Track2" parent="DANGER" instance=ExtResource( 21 )]
-position = Vector2( 640, 0 )
-points = PoolVector2Array( -384, -384, 0, 0 )
+position = Vector2( 696, -456 )
+points = PoolVector2Array( -440, 120, 0, 0 )
 time = 60
 time_internal = 10
 
 [node name="Spike3" parent="DANGER/Track2" instance=ExtResource( 4 )]
 scale = Vector2( 2.5, 2.5 )
-time = 60
-time_internal = 10
-positions = [ Vector2( 256, -384 ), Vector2( 640, 0 ) ]
 
 [node name="Track4" parent="DANGER" instance=ExtResource( 21 )]
 position = Vector2( 128, -416 )
@@ -311,10 +301,6 @@ time = 60
 
 [node name="Spike4" parent="DANGER/Track4" instance=ExtResource( 4 )]
 scale = Vector2( 2, 2 )
-time = 60
-time_internal = 60
-time_direction = false
-positions = [ Vector2( -192, -416 ), Vector2( 128, -416 ) ]
 
 [node name="Track5" parent="DANGER" instance=ExtResource( 21 )]
 position = Vector2( -384, -896 )
@@ -324,8 +310,6 @@ time = 60
 [node name="Spike5" parent="DANGER/Track5" instance=ExtResource( 4 )]
 position = Vector2( -3.05176e-05, 0 )
 scale = Vector2( 2.5, 2.5 )
-time = 60
-positions = [ Vector2( -384, -896 ), Vector2( -384, -512 ) ]
 
 [node name="Spike6" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( -320, -1024 )
@@ -334,37 +318,22 @@ scale = Vector2( 4, 4 )
 [node name="Spike8" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 224, 480 )
 scale = Vector2( 4, 4 )
-pre_pos = {
-
-}
 
 [node name="Spike7" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 768, -512 )
 scale = Vector2( 3.5, 3.5 )
-pre_pos = {
-
-}
 
 [node name="Spike9" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( -192, -384 )
 scale = Vector2( 1.5, 1.5 )
-pre_pos = {
-
-}
 
 [node name="Spike10" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 192, -640 )
 scale = Vector2( 2, 2 )
-pre_pos = {
-
-}
 
 [node name="Spike11" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 192, -896 )
 scale = Vector2( 2, 2 )
-pre_pos = {
-
-}
 
 [node name="KillFloor2" parent="DANGER" instance=ExtResource( 7 )]
 position = Vector2( 1152, -192 )
@@ -587,6 +556,7 @@ scale = Vector2( 2.5, 2.5 )
 texture = ExtResource( 16 )
 
 [node name="light_plane" type="Sprite" parent="."]
+visible = false
 modulate = Color( 1, 1, 1, 0.0784314 )
 position = Vector2( -32, 164 )
 scale = Vector2( 2.52344, 3.32813 )
