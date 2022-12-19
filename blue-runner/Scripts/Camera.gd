@@ -40,6 +40,9 @@ func _ready():
 	if speedometer_active: visible_timer = false
 	$info.visible = speedometer_active or visible_timer
 	$speed.visible = speedometer_active
+	
+	$camera_inputs/continue.text = $"/root/Global".key_names(4)
+	$camera_inputs/reset.text = $"/root/Global".key_names(6)
 
 func _physics_process(_delta):
 	if color_timer < 12:
@@ -151,6 +154,6 @@ func end_zoom_in(target : Node2D, tele, timer : float):
 		
 		# warning-ignore:integer_division
 		# warning-ignore:integer_division
-		$border_thing/text.text = String(minutes)+":"+String(seconds/10)+String(seconds%10)+"."+String(decimal/10)+String(decimal%10)
+		$border_thing/camera_square/timer.text = String(minutes)+":"+String(seconds/10)+String(seconds%10)+"."+String(decimal/10)+String(decimal%10)
 	else:
-		$border_thing/text.text = "too much"
+		$border_thing/camera_square/timer.text = "too much"

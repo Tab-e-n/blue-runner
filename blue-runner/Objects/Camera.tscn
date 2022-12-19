@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Scripts/Camera.gd" type="Script" id=1]
 [ext_resource path="res://Visual/camera_black_border_thing.png" type="Texture" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://Visual/camera_inputs.png" type="Texture" id=4]
 [ext_resource path="res://Text/Text_Black.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Text/Text_White.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Visual/camera_square.png" type="Texture" id=7]
 
 [sub_resource type="Animation" id=1]
 resource_name = "End Zoom In"
@@ -23,11 +24,15 @@ visible = false
 z_index = 100
 texture = ExtResource( 2 )
 
-[node name="text" parent="border_thing" instance=ExtResource( 5 )]
+[node name="camera_square" type="Sprite" parent="border_thing"]
+position = Vector2( 256, 288 )
+texture = ExtResource( 7 )
+
+[node name="timer" parent="border_thing/camera_square" instance=ExtResource( 5 )]
 margin_left = -108.0
-margin_top = 304.0
-margin_right = -912.0
-margin_bottom = -400.0
+margin_top = -56.0
+margin_right = -332.0
+margin_bottom = -128.0
 custom_colors/default_color = Color( 0.917647, 0.933333, 0.952941, 1 )
 text = "00:00.00"
 
@@ -51,6 +56,20 @@ visible = false
 position = Vector2( 0, 80 )
 z_index = 100
 texture = ExtResource( 4 )
+
+[node name="continue" parent="camera_inputs" instance=ExtResource( 6 )]
+margin_left = -456.0
+margin_top = 288.0
+margin_right = -189.0
+margin_bottom = -416.0
+rect_scale = Vector2( 0.75, 0.75 )
+
+[node name="reset" parent="camera_inputs" instance=ExtResource( 6 )]
+margin_left = -456.0
+margin_top = 336.0
+margin_right = -189.0
+margin_bottom = -368.0
+rect_scale = Vector2( 0.75, 0.75 )
 
 [node name="Fade" type="Polygon2D" parent="."]
 visible = false
