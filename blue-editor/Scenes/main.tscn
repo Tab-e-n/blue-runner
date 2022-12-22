@@ -1,0 +1,1422 @@
+[gd_scene load_steps=38 format=2]
+
+[ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=1]
+[ext_resource path="res://Visual/Editor/editor_paintbrush.png" type="Texture" id=2]
+[ext_resource path="res://Visual/Editor/editor_paintbrush_enabled.png" type="Texture" id=3]
+[ext_resource path="res://Visual/Editor/editor_cog.png" type="Texture" id=4]
+[ext_resource path="res://Visual/Editor/editor_eraser.png" type="Texture" id=5]
+[ext_resource path="res://Visual/Editor/editor_eraser_enabled.png" type="Texture" id=6]
+[ext_resource path="res://Visual/Editor/editor_cog_enabled.png" type="Texture" id=7]
+[ext_resource path="res://Visual/Editor/editor_slider.png" type="Texture" id=8]
+[ext_resource path="res://Visual/Editor/editor_slider_enabled.png" type="Texture" id=9]
+[ext_resource path="res://Text/Text_Editor.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Visual/Editor/editor_left.png" type="Texture" id=11]
+[ext_resource path="res://Visual/Editor/editor_left_enabled.png" type="Texture" id=12]
+[ext_resource path="res://Visual/Editor/editor_right.png" type="Texture" id=13]
+[ext_resource path="res://Visual/Editor/editor_right_enabled.png" type="Texture" id=14]
+[ext_resource path="res://Visual/Editor/editor_slider_vertical_enabled.png" type="Texture" id=15]
+[ext_resource path="res://Visual/Editor/editor_slider_vertical.png" type="Texture" id=16]
+[ext_resource path="res://Visual/Editor/editor_new.png" type="Texture" id=17]
+[ext_resource path="res://Visual/Editor/editor_save_enabled.png" type="Texture" id=18]
+[ext_resource path="res://Visual/Editor/editor_load.png" type="Texture" id=19]
+[ext_resource path="res://Visual/Editor/editor_new_enabled.png" type="Texture" id=20]
+[ext_resource path="res://Visual/Editor/editor_save.png" type="Texture" id=21]
+[ext_resource path="res://Visual/Editor/editor_load_enabled.png" type="Texture" id=22]
+[ext_resource path="res://Visual/Editor/editor_more.png" type="Texture" id=23]
+[ext_resource path="res://Visual/Editor/editor_more_enabled.png" type="Texture" id=24]
+[ext_resource path="res://Control/style_none.tres" type="StyleBox" id=25]
+[ext_resource path="res://Control/style_normal.tres" type="StyleBox" id=26]
+[ext_resource path="res://Visual/Editor/editor_missing.png" type="Texture" id=27]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Control
+
+onready var level_name : LineEdit = $GUI/File/Panel/name_edit
+onready var creator : LineEdit = $GUI/File/Panel/creator_edit
+onready var official : CheckBox = $GUI/File/Panel/official_edit
+onready var level_icon : OptionButton = $GUI/File/Panel/icon_edit
+var dependencies : Array
+onready var tilesets : OptionButton = $GUI/File/Panel/tileset_edit
+onready var bg : OptionButton = $GUI/File/Panel/bg_edit
+
+onready var place_tiles : TileMap = $GUI/Place/Panel/tab_tiles
+var place_decor : Dictionary
+
+var place_tiles_items : Array
+var place_objects_items : Array
+var place_decor_items : Array
+const PLACE_ITEM_AMOUNT : int = 16
+
+onready var items_scroll : VScrollBar = $GUI/Items/Panel/scroll
+onready var items_decor_directory : OptionButton = $GUI/Items/Panel/decor_directory
+
+var mods_installed : Array
+
+enum {PLACEMODE_MOVE, PLACEMODE_PAINT, PLACEMODE_ERASER, PLACEMODE_COG}
+var place_current_mode : int = PLACEMODE_MOVE
+
+enum {PLACE_TILES, PLACE_OBJECTS, PLACE_DECOR}
+var place_current_tab : int = PLACE_TILES
+
+var user_directory : String = \"user://sonicRunnerEditor\"
+# Max 8 faves per category
+# Each tileset has its own 8 faves under its name
+var favorite : Dictionary = {
+	\"Objects\" : [],
+	\"Decor\" : [],
+}
+# Mirror recent in style, however with 16 instead of 8 things
+var recent : Dictionary = {
+	\"Objects\" : [],
+	\"Decor\" : [],
+}
+
+# Here lies what will be saved in the .dat file of levels,
+# Delete once you have the .dat save code ready
+var level_data : Dictionary = {
+	\"level_name\" : \"[name]\",
+	\"creator\" : \"Tabin\",
+	\"official\" : true,
+	\"level_icon\" : [\"questionmark\",\"res:/\"],
+	\"dependencies\" : [],
+}
+
+func _ready():
+	load_game()
+	load_editor_prop()
+	
+	tileset_changed(tilesets.get_item_index(tilesets.get_selected_id()))
+	
+	update_object_items()
+	
+	for i in place_decor.keys():
+		items_decor_directory.add_item(i)
+	update_itemspanel_decor(0, false)
+	update_decor_items()
+	
+	_on_tab_move()
+
+func _process(_delta):
+	var window = get_viewport().get_visible_rect().end
+	$GUI.margin_right = window.x / 2
+	$GUI.margin_left = window.x / -2
+	$GUI.margin_bottom = window.y / 2
+	$GUI.margin_top = window.y / -2
+
+func _exit_tree():
+	save_game()
+
+func save_game():
+	
+	var savefile = File.new()
+	var temp = {}
+	
+	temp[\"favorite\"] = favorite.duplicate()
+	temp[\"recent\"] = recent.duplicate()
+	
+	savefile.open(user_directory, File.WRITE)
+	savefile.store_line(to_json(temp))
+	savefile.close()
+
+func load_game(fail = true):
+	
+	var loadfile = File.new()
+	var temp = {}
+	
+	if not loadfile.file_exists(user_directory) or fail: # does file exist
+		save_game()
+		return
+	
+	loadfile.open(user_directory, File.READ)
+	
+	while loadfile.get_position() < loadfile.get_len():
+		var parsedData = parse_json(loadfile.get_line())
+		
+		temp = parsedData
+	
+	loadfile.close()
+	
+	#print(\"load: \", temp)
+	
+	favorite = temp[\"favorite\"].duplicate()
+	recent = temp[\"recent\"].duplicate()
+
+func load_editor_prop():
+	# This section of code loads the names of certain objects,
+	# Their actual data will be loaded once needed
+	var directory : Directory = Directory.new()
+	var current_file : String
+	
+	# VANILLA
+	
+	print(\"scanning vanilla tilesets\")
+	directory.open(\"res://Objects/Tilesets\")
+	directory.list_dir_begin(true)
+	
+	current_file = directory.get_next()
+	while current_file != \"\":
+		print(\"found tileset: \" + current_file)
+		tilesets.add_item(current_file)
+		tilesets.set_item_metadata(tilesets.get_item_count() - 1, \"res:/\")
+		current_file = directory.get_next()
+	
+	# BG
+	print(\"scanning vanilla backgrounds\")
+	directory.open(\"res://Objects/Backgrounds\")
+	directory.list_dir_begin(true)
+	
+	current_file = directory.get_next()
+	while current_file != \"\":
+		print(\"found background: \" + current_file)
+		bg.add_item(current_file)
+		bg.set_item_metadata(bg.get_item_count() - 1, \"res:/\")
+		current_file = directory.get_next()
+	
+	# Other Objects
+	# Decor
+	print(\"scanning vanilla decor\")
+	place_decor[\"res://Visual/\"] = []
+	var directories_to_visit : Array = [\"res://Visual/\"]
+	
+	while directories_to_visit.size() > 0:
+		var current_directory : String = directories_to_visit[0]
+		print(\"looking through: \" + current_directory)
+		directory.open(current_directory)
+		directory.list_dir_begin(true)
+		current_file = directory.get_next()
+		while current_file != \"\":
+			if directory.current_is_dir():
+				print(\"found folder: \" + current_file)
+				place_decor[current_directory + current_file + \"/\"] = []
+				directories_to_visit.append(current_directory + current_file + \"/\")
+			elif current_file.ends_with(\".png\"):
+				#print(\"found decor: \" + current_file)
+				place_decor[current_directory].append(current_directory + current_file)
+			current_file = directory.get_next()
+		directories_to_visit.pop_front()
+	
+	# MODS
+	
+	print(\"scanning mods\")
+	var check_exist = directory.open(\"Mods\")
+	
+	if check_exist == OK:
+		print(\"user has mods installed\")
+		
+		directory.list_dir_begin(true)
+		current_file = directory.get_next()
+		while current_file != \"\":
+			mods_installed.append(current_file)
+			current_file = directory.get_next()
+	else:
+		print(\"no mods found, or an error occured\")
+	
+	for mod_name in mods_installed:
+		print(\"found mod: \" + mod_name)
+		directory.open(\"Mods/\" + mod_name)
+		
+		# Tilesets
+		print(\"scanning for tilesets\")
+		check_exist = directory.open(\"Mods/\" + mod_name + \"/Objects/Tilesets\")
+		
+		if check_exist == OK:
+			tilesets.add_item(\" - \" + mod_name + \" - \")
+			tilesets.set_item_disabled(tilesets.get_item_count() - 1, true)
+			directory.list_dir_begin(true)
+			
+			current_file = directory.get_next()
+			while current_file != \"\":
+				print(\"found tileset: \" + current_file)
+				tilesets.add_item(current_file)
+				tilesets.set_item_metadata(tilesets.get_item_count() - 1, \"Mods/\" + mod_name)
+				current_file = directory.get_next()
+		
+		# BG
+		print(\"scanning for backgrounds\")
+		check_exist = directory.open(\"Mods/\" + mod_name + \"/Objects/Backgrounds\")
+		
+		if check_exist == OK:
+			bg.add_item(\" - \" + mod_name + \" - \")
+			bg.set_item_disabled(bg.get_item_count() - 1, true)
+			directory.list_dir_begin(true)
+			
+			current_file = directory.get_next()
+			while current_file != \"\":
+				print(\"found background: \" + current_file)
+				bg.add_item(current_file)
+				bg.set_item_metadata(bg.get_item_count() - 1, \"Mods/\" + mod_name)
+				current_file = directory.get_next()
+		
+		# Other Objects
+		# Visuals
+		print(\"scanning for decor\")
+		check_exist = directory.open(\"Mods/\" + mod_name + \"/Visual/\")
+		if check_exist == OK:
+			place_decor[\"Mods/\" + mod_name + \"/Visual/\"] = []
+			directories_to_visit = [\"Mods/\" + mod_name + \"/Visual/\"]
+		
+		while directories_to_visit.size() > 0:
+			var current_directory : String = directories_to_visit[0]
+			print(\"looking through: \" + current_directory)
+			directory.open(current_directory)
+			directory.list_dir_begin(true)
+			current_file = directory.get_next()
+			while current_file != \"\":
+				if directory.current_is_dir():
+					print(\"found folder: \" + current_file)
+					place_decor[current_directory + current_file + \"/\"] = []
+					directories_to_visit.append(current_directory + current_file + \"/\")
+				elif !current_file.ends_with(\".import\"):
+					#print(\"found decor: \" + current_file)
+					place_decor[current_directory].append(current_directory + current_file)
+				current_file = directory.get_next()
+			directories_to_visit.pop_front()
+
+func create_new_level():
+	pass
+	#TBA
+
+func tileset_changed(index):
+	var tileset_path : String = tilesets.get_selected_metadata() + \"/Objects/Tilesets/\" + tilesets.get_item_text(index)
+	place_tiles.tile_set = load(tileset_path)
+	update_tile_items(tilesets.get_item_text(index))
+
+# PLACE FUNCTIONS
+func update_tile_items(tileset_name : String):
+	if favorite.has(tileset_name):
+		place_tiles_items = favorite[tileset_name].duplicate()
+	if recent.has(tileset_name):
+		for i in range(recent[tileset_name].size() - place_tiles_items.size()):
+			place_tiles_items.append(recent[tileset_name][i])
+	for _i in range(PLACE_ITEM_AMOUNT - place_tiles_items.size()):
+		place_tiles_items.append(-1)
+	
+	for x in range(PLACE_ITEM_AMOUNT):
+		var y : int = 0
+		if x > 7: y = 1
+		place_tiles.set_cell(x - y * 8, 1 - y, place_tiles_items[x])
+func update_object_items():
+	place_objects_items = favorite[\"Objects\"].duplicate()
+	for i in range(recent[\"Objects\"].size() - place_objects_items.size()):
+		place_objects_items.append(recent[\"Objects\"][i])
+	for _i in range(PLACE_ITEM_AMOUNT - place_objects_items.size()):
+		place_objects_items.append(-1)
+	# TBA
+func update_decor_items():
+	place_decor_items = favorite[\"Decor\"].duplicate()
+	for i in range(recent[\"Decor\"].size() - place_decor_items.size()):
+		place_decor_items.append(recent[\"Decor\"][i])
+	for _i in range(PLACE_ITEM_AMOUNT - place_decor_items.size()):
+		place_decor_items.append(\"\")
+	
+	for i in range(PLACE_ITEM_AMOUNT):
+		var current_sprite : Sprite = get_node(\"GUI/Place/Panel/tab_decor/\" + String(i))
+		
+		if place_decor_items[i] == \"\":
+			current_sprite.texture = load(\"res://Visual/Editor/editor_empty.png\")
+		else:
+			var loaded_texture : Texture = load(place_decor_items[i])
+			if loaded_texture == null:
+				current_sprite.texture = load(\"res://Visual/Editor/editor_missing.png\")
+			else:
+				current_sprite.texture = loaded_texture
+			scale_down_sprite(current_sprite)
+
+func scale_down_sprite(item : Sprite):
+	item.scale = Vector2(1, 1)
+	var item_rect : Vector2 = item.get_rect().size
+	if item_rect.x > item_rect.y:
+		item.scale.x = 1 / (item_rect.x / 64)
+	else:
+		item.scale.x = 1 / (item_rect.y / 64)
+	item.scale.y = item.scale.x
+
+func _on_mode_toggled(button_pressed, mode):
+	if button_pressed:
+		place_current_mode = mode
+		if !mode == PLACEMODE_PAINT:
+			$GUI/Place/Panel/paint.pressed = false
+		if !mode == PLACEMODE_ERASER:
+			$GUI/Place/Panel/eraser.pressed = false
+		if !mode == PLACEMODE_COG:
+			$GUI/Place/Panel/cog.pressed = false
+	else:
+		place_current_mode = PLACEMODE_MOVE
+
+func _on_tab_move(direction : int = 0):
+	place_current_tab += direction
+	if place_current_tab < PLACE_TILES:
+		place_current_tab = PLACE_DECOR
+	if place_current_tab > PLACE_DECOR:
+		place_current_tab = PLACE_TILES
+	
+	place_tiles.visible = false
+	$GUI/Place/Panel/tab_decor.visible = false
+	$GUI/Items/Panel/items.visible = true
+	$GUI/Items/Panel/decor_directory.visible = false
+	$GUI/Items/Panel/objects_directory.visible = false
+	match(place_current_tab):
+		PLACE_TILES:
+			$GUI/Place/Panel/tab_text.text = \"Tiles\"
+			place_tiles.visible = true
+			$GUI/Items/Panel/items.visible = false
+		PLACE_OBJECTS:
+			$GUI/Place/Panel/tab_text.text = \"Objects\"
+			$GUI/Items/Panel/objects_directory.visible = true
+		PLACE_DECOR:
+			$GUI/Place/Panel/tab_text.text = \"Decor\"
+			$GUI/Place/Panel/tab_decor.visible = true
+			$GUI/Items/Panel/decor_directory.visible = true
+			change_items_decor(items_scroll.value, items_decor_directory.get_item_text(items_decor_directory.selected))
+
+func _place_item_selected(index):
+	match(place_current_tab):
+		PLACE_TILES:
+			$GUI/Place/Panel/tab_tiles/temp_selected_tile.text = String(index)
+			place_tiles.set_cell(-1, 0, place_tiles_items[index])
+		PLACE_OBJECTS:
+			prepare_item_for_placing()
+		PLACE_DECOR:
+			prepare_item_for_placing()
+
+func prepare_item_for_placing():
+	pass
+	#TBA
+
+# ITEMS FUNC
+func update_itemspanel_decor(index : int, change_items : bool = true):
+	var selected_directory : String = items_decor_directory.get_item_text(index)
+	# warning-ignore:integer_division
+	var row_amount : int = int(place_decor[selected_directory].size()) / 7 + 1
+	if row_amount > 7:
+		items_scroll.max_value = row_amount - 6
+	else:
+		items_scroll.max_value = 1
+	items_scroll.value = 0
+	
+	if change_items: change_items_decor(items_scroll.value, selected_directory)
+
+func change_items_decor(current_row, directory):
+	for x in range(7): for y in range(7):
+		var sprite_index : int = x+(y+current_row)*7
+		var loaded_texture : Texture
+		var sprite = get_node(\"GUI/Items/Panel/items/\" + String(x) + String(y))
+		if sprite_index < place_decor[directory].size():
+			loaded_texture = load(place_decor[directory][sprite_index])
+		else:
+			loaded_texture = load(\"res://Visual/Editor/editor_empty.png\")
+		sprite.texture = loaded_texture
+		scale_down_sprite(sprite)
+
+func _on_items_scroll_scrolling():
+	change_items_decor(items_scroll.value, items_decor_directory.get_item_text(items_decor_directory.selected))
+"
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends Control
+
+func _on_slider_toggled(button_pressed):
+	if button_pressed:
+		$Animation.play(\"Focus\")
+	else:
+		$Animation.play(\"Unfocus\")
+"
+
+[sub_resource type="Animation" id=3]
+resource_name = "Focus"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:rect_position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -456, -72 ), Vector2( -456, -8 ) ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "Unfocus"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:rect_position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -456, -8 ), Vector2( -456, -72 ) ]
+}
+
+[sub_resource type="GDScript" id=10]
+script/source = "extends Control
+
+onready var more : TextureButton = get_parent().get_node(\"Place/Panel/more\")
+
+func _on_exit_pressed():
+	more.pressed = false
+	$Animation.play(\"Unfocus\")
+
+func _on_more_toggled(button_pressed):
+	if button_pressed:
+		$Animation.play(\"Focus\")
+	else:
+		$Animation.play(\"Unfocus\")
+"
+
+[sub_resource type="Animation" id=8]
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:rect_position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 8, -200 ), Vector2( -456, -200 ) ]
+}
+
+[sub_resource type="Animation" id=9]
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:rect_position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -456, -200 ), Vector2( 8, -200 ) ]
+}
+
+[sub_resource type="GDScript" id=5]
+script/source = "extends Control
+
+func _on_slider_toggled(button_pressed):
+	if button_pressed:
+		$Animation.play(\"Focus\")
+	else:
+		$Animation.play(\"Unfocus\")
+"
+
+[sub_resource type="Animation" id=6]
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:rect_position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -528, -200 ), Vector2( -8, -200 ) ]
+}
+
+[sub_resource type="Animation" id=7]
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:rect_position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -8, -200 ), Vector2( -528, -200 ) ]
+}
+
+[node name="main" type="Control"]
+margin_right = 1024.0
+margin_bottom = 768.0
+script = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 512, 384 )
+current = true
+
+[node name="Level" type="Node2D" parent="."]
+
+[node name="GUI" type="Control" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -512.0
+margin_top = -384.0
+margin_right = 512.0
+margin_bottom = 384.0
+theme = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Place" type="Control" parent="GUI"]
+anchor_left = 0.5
+anchor_right = 0.5
+script = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="GUI/Place"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -456.0
+margin_top = -72.0
+margin_right = 456.0
+margin_bottom = 72.0
+rect_pivot_offset = Vector2( 8, 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="slider" type="TextureButton" parent="GUI/Place/Panel"]
+margin_left = 40.0
+margin_top = 144.0
+margin_right = 168.0
+margin_bottom = 176.0
+toggle_mode = true
+texture_normal = ExtResource( 8 )
+texture_pressed = ExtResource( 9 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="paint" type="TextureButton" parent="GUI/Place/Panel"]
+margin_left = 8.0
+margin_top = 72.0
+margin_right = 72.0
+margin_bottom = 136.0
+toggle_mode = true
+pressed = true
+texture_normal = ExtResource( 2 )
+texture_pressed = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="eraser" type="TextureButton" parent="GUI/Place/Panel"]
+margin_left = 72.0
+margin_top = 72.0
+margin_right = 136.0
+margin_bottom = 136.0
+toggle_mode = true
+texture_normal = ExtResource( 5 )
+texture_pressed = ExtResource( 6 )
+
+[node name="cog" type="TextureButton" parent="GUI/Place/Panel"]
+margin_left = 136.0
+margin_top = 72.0
+margin_right = 200.0
+margin_bottom = 136.0
+toggle_mode = true
+texture_normal = ExtResource( 4 )
+texture_pressed = ExtResource( 7 )
+
+[node name="more" type="TextureButton" parent="GUI/Place/Panel"]
+margin_left = 840.0
+margin_top = 72.0
+margin_right = 904.0
+margin_bottom = 136.0
+toggle_mode = true
+texture_normal = ExtResource( 23 )
+texture_pressed = ExtResource( 24 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="tab_text" parent="GUI/Place/Panel" instance=ExtResource( 10 )]
+margin_left = 48.0
+margin_top = 24.0
+margin_bottom = -56.0
+text = "Tiles"
+
+[node name="tab_left" type="TextureButton" parent="GUI/Place/Panel"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 40.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 11 )
+texture_pressed = ExtResource( 12 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="tab_right" type="TextureButton" parent="GUI/Place/Panel"]
+margin_left = 168.0
+margin_top = 8.0
+margin_right = 200.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 13 )
+texture_pressed = ExtResource( 14 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="tab" type="Panel" parent="GUI/Place/Panel"]
+margin_left = 328.0
+margin_top = 8.0
+margin_right = 840.0
+margin_bottom = 136.0
+custom_styles/panel = ExtResource( 26 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="tab_tiles" type="TileMap" parent="GUI/Place/Panel"]
+position = Vector2( 328, 8 )
+centered_textures = true
+format = 1
+
+[node name="temp_selected_tile" parent="GUI/Place/Panel/tab_tiles" instance=ExtResource( 10 )]
+margin_left = -128.0
+margin_right = 0.0
+margin_bottom = 64.0
+text = "0"
+
+[node name="tab_decor" type="Node2D" parent="GUI/Place/Panel"]
+position = Vector2( 328, 8 )
+
+[node name="0" type="Sprite" parent="GUI/Place/Panel/tab_decor"]
+position = Vector2( 32, 96 )
+
+[node name="1" type="Sprite" parent="GUI/Place/Panel/tab_decor"]
+position = Vector2( 96, 96 )
+
+[node name="2" type="Sprite" parent="GUI/Place/Panel/tab_decor"]
+position = Vector2( 160, 96 )
+
+[node name="3" type="Sprite" parent="GUI/Place/Panel/tab_decor"]
+position = Vector2( 224, 96 )
+
+[node name="4" type="Sprite" parent="GUI/Place/Panel/tab_decor"]
+position = Vector2( 288, 96 )
+
+[node name="5" type="Sprite" parent="GUI/Place/Panel/tab_decor"]
+position = Vector2( 352, 96 )
+
+[node name="6" type="Sprite" parent="GUI/Place/Panel/tab_decor"]
+position = Vector2( 416, 96 )
+
+[node name="7" type="Sprite" parent="GUI/Place/Panel/tab_decor"]
+position = Vector2( 480, 96 )
+
+[node name="8" type="Sprite" parent="GUI/Place/Panel/tab_decor"]
+position = Vector2( 32, 32 )
+
+[node name="9" type="Sprite" parent="GUI/Place/Panel/tab_decor"]
+position = Vector2( 96, 32 )
+
+[node name="10" type="Sprite" parent="GUI/Place/Panel/tab_decor"]
+position = Vector2( 160, 32 )
+
+[node name="11" type="Sprite" parent="GUI/Place/Panel/tab_decor"]
+position = Vector2( 224, 32 )
+
+[node name="12" type="Sprite" parent="GUI/Place/Panel/tab_decor"]
+position = Vector2( 288, 32 )
+
+[node name="13" type="Sprite" parent="GUI/Place/Panel/tab_decor"]
+position = Vector2( 352, 32 )
+
+[node name="14" type="Sprite" parent="GUI/Place/Panel/tab_decor"]
+position = Vector2( 416, 32 )
+
+[node name="15" type="Sprite" parent="GUI/Place/Panel/tab_decor"]
+position = Vector2( 480, 32 )
+
+[node name="item" type="Control" parent="GUI/Place/Panel"]
+margin_left = 328.0
+margin_top = 8.0
+margin_right = 840.0
+margin_bottom = 136.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="0" type="Button" parent="GUI/Place/Panel/item"]
+margin_top = 64.0
+margin_right = 64.0
+margin_bottom = 128.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 25 )
+custom_styles/normal = ExtResource( 25 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="1" type="Button" parent="GUI/Place/Panel/item"]
+margin_left = 64.0
+margin_top = 64.0
+margin_right = 128.0
+margin_bottom = 128.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 25 )
+custom_styles/normal = ExtResource( 25 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="2" type="Button" parent="GUI/Place/Panel/item"]
+margin_left = 128.0
+margin_top = 64.0
+margin_right = 192.0
+margin_bottom = 128.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 25 )
+custom_styles/normal = ExtResource( 25 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="3" type="Button" parent="GUI/Place/Panel/item"]
+margin_left = 192.0
+margin_top = 64.0
+margin_right = 256.0
+margin_bottom = 128.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 25 )
+custom_styles/normal = ExtResource( 25 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="4" type="Button" parent="GUI/Place/Panel/item"]
+margin_left = 256.0
+margin_top = 64.0
+margin_right = 320.0
+margin_bottom = 128.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 25 )
+custom_styles/normal = ExtResource( 25 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="5" type="Button" parent="GUI/Place/Panel/item"]
+margin_left = 320.0
+margin_top = 64.0
+margin_right = 384.0
+margin_bottom = 128.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 25 )
+custom_styles/normal = ExtResource( 25 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="6" type="Button" parent="GUI/Place/Panel/item"]
+margin_left = 384.0
+margin_top = 64.0
+margin_right = 448.0
+margin_bottom = 128.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 25 )
+custom_styles/normal = ExtResource( 25 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="7" type="Button" parent="GUI/Place/Panel/item"]
+margin_left = 448.0
+margin_top = 64.0
+margin_right = 512.0
+margin_bottom = 128.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 25 )
+custom_styles/normal = ExtResource( 25 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="8" type="Button" parent="GUI/Place/Panel/item"]
+margin_right = 64.0
+margin_bottom = 64.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 25 )
+custom_styles/normal = ExtResource( 25 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="9" type="Button" parent="GUI/Place/Panel/item"]
+margin_left = 64.0
+margin_right = 128.0
+margin_bottom = 64.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 25 )
+custom_styles/normal = ExtResource( 25 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="10" type="Button" parent="GUI/Place/Panel/item"]
+margin_left = 128.0
+margin_right = 192.0
+margin_bottom = 64.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 25 )
+custom_styles/normal = ExtResource( 25 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="11" type="Button" parent="GUI/Place/Panel/item"]
+margin_left = 192.0
+margin_right = 256.0
+margin_bottom = 64.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 25 )
+custom_styles/normal = ExtResource( 25 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="12" type="Button" parent="GUI/Place/Panel/item"]
+margin_left = 256.0
+margin_right = 320.0
+margin_bottom = 64.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 25 )
+custom_styles/normal = ExtResource( 25 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="13" type="Button" parent="GUI/Place/Panel/item"]
+margin_left = 320.0
+margin_right = 384.0
+margin_bottom = 64.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 25 )
+custom_styles/normal = ExtResource( 25 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="14" type="Button" parent="GUI/Place/Panel/item"]
+margin_left = 384.0
+margin_right = 448.0
+margin_bottom = 64.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 25 )
+custom_styles/normal = ExtResource( 25 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="15" type="Button" parent="GUI/Place/Panel/item"]
+margin_left = 448.0
+margin_right = 512.0
+margin_bottom = 64.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 25 )
+custom_styles/normal = ExtResource( 25 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Animation" type="AnimationPlayer" parent="GUI/Place"]
+anims/Focus = SubResource( 3 )
+anims/Unfocus = SubResource( 4 )
+
+[node name="Items" type="Control" parent="GUI"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+script = SubResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="GUI/Items"]
+margin_left = 8.0
+margin_top = -200.0
+margin_right = 472.0
+margin_bottom = 328.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="exit" type="TextureButton" parent="GUI/Items/Panel"]
+margin_left = 392.0
+margin_top = 8.0
+margin_right = 456.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 27 )
+texture_pressed = ExtResource( 27 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="items" type="Control" parent="GUI/Items/Panel"]
+margin_left = 8.0
+margin_top = 72.0
+margin_right = 8.0
+margin_bottom = 72.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="00" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 32, 32 )
+texture = ExtResource( 27 )
+
+[node name="10" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 96, 32 )
+texture = ExtResource( 27 )
+
+[node name="20" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 160, 32 )
+texture = ExtResource( 27 )
+
+[node name="30" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 224, 32 )
+texture = ExtResource( 27 )
+
+[node name="40" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 288, 32 )
+texture = ExtResource( 27 )
+
+[node name="50" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 352, 32 )
+texture = ExtResource( 27 )
+
+[node name="60" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 416, 32 )
+texture = ExtResource( 27 )
+
+[node name="01" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 32, 96 )
+texture = ExtResource( 27 )
+
+[node name="11" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 96, 96 )
+texture = ExtResource( 27 )
+
+[node name="21" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 160, 96 )
+texture = ExtResource( 27 )
+
+[node name="31" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 224, 96 )
+texture = ExtResource( 27 )
+
+[node name="41" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 288, 96 )
+texture = ExtResource( 27 )
+
+[node name="51" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 352, 96 )
+texture = ExtResource( 27 )
+
+[node name="61" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 416, 96 )
+texture = ExtResource( 27 )
+
+[node name="02" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 32, 160 )
+texture = ExtResource( 27 )
+
+[node name="12" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 96, 160 )
+texture = ExtResource( 27 )
+
+[node name="22" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 160, 160 )
+texture = ExtResource( 27 )
+
+[node name="32" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 224, 160 )
+texture = ExtResource( 27 )
+
+[node name="42" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 288, 160 )
+texture = ExtResource( 27 )
+
+[node name="52" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 352, 160 )
+texture = ExtResource( 27 )
+
+[node name="62" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 416, 160 )
+texture = ExtResource( 27 )
+
+[node name="03" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 32, 224 )
+texture = ExtResource( 27 )
+
+[node name="13" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 96, 224 )
+texture = ExtResource( 27 )
+
+[node name="23" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 160, 224 )
+texture = ExtResource( 27 )
+
+[node name="33" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 224, 224 )
+texture = ExtResource( 27 )
+
+[node name="43" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 288, 224 )
+texture = ExtResource( 27 )
+
+[node name="53" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 352, 224 )
+texture = ExtResource( 27 )
+
+[node name="63" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 416, 224 )
+texture = ExtResource( 27 )
+
+[node name="04" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 32, 288 )
+texture = ExtResource( 27 )
+
+[node name="14" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 96, 288 )
+texture = ExtResource( 27 )
+
+[node name="24" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 160, 288 )
+texture = ExtResource( 27 )
+
+[node name="34" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 224, 288 )
+texture = ExtResource( 27 )
+
+[node name="44" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 288, 288 )
+texture = ExtResource( 27 )
+
+[node name="54" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 352, 288 )
+texture = ExtResource( 27 )
+
+[node name="64" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 416, 288 )
+texture = ExtResource( 27 )
+
+[node name="05" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 32, 352 )
+texture = ExtResource( 27 )
+
+[node name="15" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 96, 352 )
+texture = ExtResource( 27 )
+
+[node name="25" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 160, 352 )
+texture = ExtResource( 27 )
+
+[node name="35" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 224, 352 )
+texture = ExtResource( 27 )
+
+[node name="45" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 288, 352 )
+texture = ExtResource( 27 )
+
+[node name="55" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 352, 352 )
+texture = ExtResource( 27 )
+
+[node name="65" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 416, 352 )
+texture = ExtResource( 27 )
+
+[node name="06" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 32, 416 )
+texture = ExtResource( 27 )
+
+[node name="16" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 96, 416 )
+texture = ExtResource( 27 )
+
+[node name="26" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 160, 416 )
+texture = ExtResource( 27 )
+
+[node name="36" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 224, 416 )
+texture = ExtResource( 27 )
+
+[node name="46" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 288, 416 )
+texture = ExtResource( 27 )
+
+[node name="56" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 352, 416 )
+texture = ExtResource( 27 )
+
+[node name="66" type="Sprite" parent="GUI/Items/Panel/items"]
+position = Vector2( 416, 416 )
+texture = ExtResource( 27 )
+
+[node name="scroll" type="VScrollBar" parent="GUI/Items/Panel"]
+margin_left = -8.0
+margin_top = 72.0
+margin_right = 8.0
+margin_bottom = 520.0
+max_value = 1.0
+step = 1.0
+page = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="decor_directory" type="OptionButton" parent="GUI/Items/Panel"]
+margin_left = 8.0
+margin_top = 24.0
+margin_right = 392.0
+margin_bottom = 58.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="objects_directory" type="OptionButton" parent="GUI/Items/Panel"]
+visible = false
+margin_left = 8.0
+margin_top = 24.0
+margin_right = 392.0
+margin_bottom = 58.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Animation" type="AnimationPlayer" parent="GUI/Items"]
+anims/Focus = SubResource( 8 )
+anims/Unfocus = SubResource( 9 )
+
+[node name="Edit" type="Control" parent="GUI"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="File" type="Control" parent="GUI"]
+anchor_top = 0.5
+anchor_bottom = 0.5
+script = SubResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="GUI/File"]
+margin_left = -8.0
+margin_top = -200.0
+margin_right = 520.0
+margin_bottom = 136.0
+rect_pivot_offset = Vector2( 520, 328 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="slider" type="TextureButton" parent="GUI/File/Panel"]
+margin_left = 528.0
+margin_top = 104.0
+margin_right = 560.0
+margin_bottom = 232.0
+toggle_mode = true
+pressed = true
+texture_normal = ExtResource( 16 )
+texture_pressed = ExtResource( 15 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="new" type="TextureButton" parent="GUI/File/Panel"]
+margin_left = 136.0
+margin_top = 8.0
+margin_right = 200.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 17 )
+texture_pressed = ExtResource( 20 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="load" type="TextureButton" parent="GUI/File/Panel"]
+margin_left = 232.0
+margin_top = 8.0
+margin_right = 296.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 19 )
+texture_pressed = ExtResource( 22 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="save" type="TextureButton" parent="GUI/File/Panel"]
+margin_left = 328.0
+margin_top = 8.0
+margin_right = 392.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 21 )
+texture_pressed = ExtResource( 18 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="name" parent="GUI/File/Panel" instance=ExtResource( 10 )]
+margin_left = 56.0
+margin_top = 88.0
+margin_right = -312.0
+margin_bottom = -184.0
+text = "Name"
+
+[node name="name_edit" type="LineEdit" parent="GUI/File/Panel"]
+margin_left = 136.0
+margin_top = 88.0
+margin_right = 504.0
+margin_bottom = 122.0
+text = "Level_Default"
+caret_blink = true
+caret_blink_speed = 0.5
+
+[node name="creator" parent="GUI/File/Panel" instance=ExtResource( 10 )]
+margin_left = 16.0
+margin_top = 136.0
+margin_right = -272.0
+margin_bottom = -136.0
+text = "Creator"
+
+[node name="creator_edit" type="LineEdit" parent="GUI/File/Panel"]
+margin_left = 136.0
+margin_top = 136.0
+margin_right = 504.0
+margin_bottom = 170.0
+text = "Tabin"
+caret_blink = true
+caret_blink_speed = 0.5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="official" parent="GUI/File/Panel" instance=ExtResource( 10 )]
+margin_left = 24.0
+margin_top = 184.0
+margin_right = -280.0
+margin_bottom = -88.0
+text = "Official"
+
+[node name="official_edit" type="CheckBox" parent="GUI/File/Panel"]
+margin_left = 136.0
+margin_top = 176.0
+margin_right = 184.0
+margin_bottom = 224.0
+pressed = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="icon" parent="GUI/File/Panel" instance=ExtResource( 10 )]
+margin_left = 200.0
+margin_top = 184.0
+margin_right = -184.0
+margin_bottom = -88.0
+text = "Icon"
+
+[node name="icon_edit" type="OptionButton" parent="GUI/File/Panel"]
+margin_left = 272.0
+margin_top = 184.0
+margin_right = 504.0
+margin_bottom = 218.0
+text = "questionmark"
+items = [ "0", null, false, 0, null, "1", null, false, 1, null, "2", null, false, 2, null, "3", null, false, 3, null, "4", null, false, 4, null, "5", null, false, 5, null, "6", null, false, 6, null, "7", null, false, 7, null, "8", null, false, 8, null, "9", null, false, 9, null, "10", null, false, 10, null, "11", null, false, 11, null, "12", null, false, 12, null, "13", null, false, 13, null, "14", null, false, 14, null, "15", null, false, 15, null, "-1", null, false, 16, null, "A", null, false, 17, null, "B", null, false, 18, null, "C", null, false, 19, null, "boss", null, false, 20, null, "questionmark", null, false, 21, null ]
+selected = 21
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="tileset" parent="GUI/File/Panel" instance=ExtResource( 10 )]
+margin_left = 32.0
+margin_top = 232.0
+margin_right = -288.0
+margin_bottom = -40.0
+text = "Tileset"
+
+[node name="tileset_edit" type="OptionButton" parent="GUI/File/Panel"]
+margin_left = 136.0
+margin_top = 232.0
+margin_right = 504.0
+margin_bottom = 266.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="bg" parent="GUI/File/Panel" instance=ExtResource( 10 )]
+margin_left = 96.0
+margin_top = 280.0
+margin_right = -352.0
+margin_bottom = 8.0
+text = "BG"
+
+[node name="bg_edit" type="OptionButton" parent="GUI/File/Panel"]
+margin_left = 136.0
+margin_top = 280.0
+margin_right = 504.0
+margin_bottom = 314.0
+text = "none"
+items = [ "none", null, false, 0, null ]
+selected = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Animation" type="AnimationPlayer" parent="GUI/File"]
+anims/Focus = SubResource( 6 )
+anims/Unfocus = SubResource( 7 )
+[connection signal="toggled" from="GUI/Place/Panel/slider" to="GUI/Place" method="_on_slider_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="_on_mode_toggled" binds= [ 1 ]]
+[connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="_on_mode_toggled" binds= [ 2 ]]
+[connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="_on_mode_toggled" binds= [ 3 ]]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
+[connection signal="pressed" from="GUI/Place/Panel/tab_left" to="." method="_on_tab_move" binds= [ -1 ]]
+[connection signal="pressed" from="GUI/Place/Panel/tab_right" to="." method="_on_tab_move" binds= [ 1 ]]
+[connection signal="pressed" from="GUI/Place/Panel/item/0" to="." method="_place_item_selected" binds= [ 0 ]]
+[connection signal="pressed" from="GUI/Place/Panel/item/1" to="." method="_place_item_selected" binds= [ 1 ]]
+[connection signal="pressed" from="GUI/Place/Panel/item/2" to="." method="_place_item_selected" binds= [ 2 ]]
+[connection signal="pressed" from="GUI/Place/Panel/item/3" to="." method="_place_item_selected" binds= [ 3 ]]
+[connection signal="pressed" from="GUI/Place/Panel/item/4" to="." method="_place_item_selected" binds= [ 4 ]]
+[connection signal="pressed" from="GUI/Place/Panel/item/5" to="." method="_place_item_selected" binds= [ 5 ]]
+[connection signal="pressed" from="GUI/Place/Panel/item/6" to="." method="_place_item_selected" binds= [ 6 ]]
+[connection signal="pressed" from="GUI/Place/Panel/item/7" to="." method="_place_item_selected" binds= [ 7 ]]
+[connection signal="pressed" from="GUI/Place/Panel/item/8" to="." method="_place_item_selected" binds= [ 8 ]]
+[connection signal="pressed" from="GUI/Place/Panel/item/9" to="." method="_place_item_selected" binds= [ 9 ]]
+[connection signal="pressed" from="GUI/Place/Panel/item/10" to="." method="_place_item_selected" binds= [ 10 ]]
+[connection signal="pressed" from="GUI/Place/Panel/item/11" to="." method="_place_item_selected" binds= [ 11 ]]
+[connection signal="pressed" from="GUI/Place/Panel/item/12" to="." method="_place_item_selected" binds= [ 12 ]]
+[connection signal="pressed" from="GUI/Place/Panel/item/13" to="." method="_place_item_selected" binds= [ 13 ]]
+[connection signal="pressed" from="GUI/Place/Panel/item/14" to="." method="_place_item_selected" binds= [ 14 ]]
+[connection signal="pressed" from="GUI/Place/Panel/item/15" to="." method="_place_item_selected" binds= [ 15 ]]
+[connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
+[connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="_on_items_scroll_scrolling"]
+[connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="update_itemspanel_decor"]
+[connection signal="item_selected" from="GUI/Items/Panel/objects_directory" to="." method="update_itemspanel_decor"]
+[connection signal="toggled" from="GUI/File/Panel/slider" to="GUI/File" method="_on_slider_toggled"]
+[connection signal="pressed" from="GUI/File/Panel/new" to="." method="create_new_level"]
+[connection signal="item_selected" from="GUI/File/Panel/tileset_edit" to="." method="tileset_changed"]

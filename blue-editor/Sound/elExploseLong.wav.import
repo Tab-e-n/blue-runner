@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/elExploseLong.wav-5e92679b10e5dc890e8ecc8088b8836d.sample"
+
+[deps]
+
+source_file="res://Sound/elExploseLong.wav"
+dest_files=[ "res://.import/elExploseLong.wav-5e92679b10e5dc890e8ecc8088b8836d.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

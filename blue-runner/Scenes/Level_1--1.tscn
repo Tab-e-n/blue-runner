@@ -16,7 +16,6 @@
 [ext_resource path="res://Visual/decor_steel_pipe_circle.png" type="Texture" id=14]
 [ext_resource path="res://Visual/decor_tint.png" type="Texture" id=15]
 
-
 [node name="Level_1--1" type="Node2D"]
 
 [node name="Camera" parent="." instance=ExtResource( 1 )]
@@ -34,6 +33,7 @@ modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
 scale = Vector2( 0.75, 0.75 )
 z_index = -20
 tile_set = ExtResource( 3 )
+centered_textures = true
 collision_layer = 0
 collision_mask = 0
 occluder_light_mask = 0
@@ -46,6 +46,7 @@ modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
 scale = Vector2( 0.75, 0.75 )
 z_index = -20
 tile_set = ExtResource( 3 )
+centered_textures = true
 collision_layer = 0
 collision_mask = 0
 occluder_light_mask = 0
@@ -191,6 +192,7 @@ flip_v = true
 modulate = Color( 0.6, 0.6, 0.6, 1 )
 z_index = -10
 tile_set = ExtResource( 3 )
+centered_textures = true
 collision_layer = 0
 collision_mask = 0
 occluder_light_mask = 0
@@ -201,6 +203,7 @@ tile_data = PoolIntArray( -524255, 30, 0, -524245, 34, 0, -393185, 26, 0, -39318
 modulate = Color( 0.6, 0.6, 0.6, 1 )
 z_index = -10
 tile_set = ExtResource( 3 )
+centered_textures = true
 collision_layer = 0
 collision_mask = 0
 occluder_light_mask = 0
@@ -466,9 +469,6 @@ scale = Vector2( 4, 4 )
 [node name="Spike10" parent="DANGER" instance=ExtResource( 5 )]
 position = Vector2( 2816, -576 )
 scale = Vector2( 4, 4 )
-pre_pos = {
-
-}
 
 [node name="Spike5" parent="DANGER" instance=ExtResource( 5 )]
 position = Vector2( 1984, -64 )
@@ -477,23 +477,14 @@ scale = Vector2( 2, 2 )
 [node name="Spike9" parent="DANGER" instance=ExtResource( 5 )]
 position = Vector2( 1600, 352 )
 scale = Vector2( 2, 2 )
-pre_pos = {
-
-}
 
 [node name="Spike6" parent="DANGER" instance=ExtResource( 5 )]
 position = Vector2( 1984, -320 )
 scale = Vector2( 2, 2 )
-pre_pos = {
-
-}
 
 [node name="Spike11" parent="DANGER" instance=ExtResource( 5 )]
 position = Vector2( 2624, -704 )
 scale = Vector2( 2, 2 )
-pre_pos = {
-
-}
 
 [node name="Spike7" parent="DANGER" instance=ExtResource( 5 )]
 position = Vector2( 2720, -136 )
@@ -502,17 +493,16 @@ scale = Vector2( 1.5, 1.5 )
 [node name="Spike8" parent="DANGER" instance=ExtResource( 5 )]
 position = Vector2( 2720, -376 )
 scale = Vector2( 1.5, 1.5 )
-pre_pos = {
-
-}
 
 [node name="Ground_Detail_Back" type="TileMap" parent="."]
 tile_set = ExtResource( 3 )
+centered_textures = true
 format = 1
 tile_data = PoolIntArray( 33, 1610612782, 0 )
 
 [node name="Ground" type="TileMap" parent="."]
 tile_set = ExtResource( 3 )
+centered_textures = true
 format = 1
 tile_data = PoolIntArray( -458722, 26, 0, -458721, -1610612689, 0, -458694, -1610612714, 0, -458693, -1610612690, 0, -393186, 43, 0, -262111, -1073741778, 0, -196607, 22, 0, -196606, -1610612690, 0, -196575, -1073741778, 0, -131071, 22, 0, -131039, 22, 0, -65535, 1610612782, 0, -65506, 27, 0, -65503, 22, 0, -65474, 37, 0, 30, 26, 0, 33, -1073741778, 0, 65550, 22, 0, 65551, 22, 0, 131086, 22, 0, 131087, 1610612782, 0, 131120, 22, 0, 262133, 22, 0, 262134, 22, 0, 262135, 22, 0, 327669, 22, 0, 327670, 22, 0, 327671, -1610612690, 0, 262169, 27, 0, 262170, -1610612689, 0, 393205, 1610612782, 0, 393206, 22, 0, 393207, -1610612690, 0, 327705, 26, 0 )
 
@@ -520,6 +510,7 @@ tile_data = PoolIntArray( -458722, 26, 0, -458721, -1610612689, 0, -458694, -161
 
 [node name="Ground_Detail" type="TileMap" parent="."]
 tile_set = ExtResource( 3 )
+centered_textures = true
 collision_layer = 0
 collision_mask = 0
 format = 1
