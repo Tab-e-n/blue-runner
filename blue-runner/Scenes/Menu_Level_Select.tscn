@@ -1,4 +1,4 @@
-[gd_scene load_steps=88 format=2]
+[gd_scene load_steps=86 format=2]
 
 [ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Objects/Backgrounds/BG_WaterWay.tscn" type="PackedScene" id=2]
@@ -48,13 +48,13 @@
 [ext_resource path="res://Visual/Menu/menu_help_goal.png" type="Texture" id=46]
 [ext_resource path="res://Visual/Menu/menu_help_s1_special.png" type="Texture" id=47]
 [ext_resource path="res://Visual/Menu/menu_help_s1_dropslide.png" type="Texture" id=48]
-[ext_resource path="res://Text/Lacrimae.tres" type="DynamicFont" id=49]
 [ext_resource path="res://Scripts/REPLAY.gd" type="Script" id=50]
 [ext_resource path="res://Visual/Menu/menu_help_bonus.png" type="Texture" id=51]
 [ext_resource path="res://Visual/Menu/menu_waterway.png" type="Texture" id=52]
 [ext_resource path="res://Visual/Menu/completion_filling.png" type="Texture" id=53]
 [ext_resource path="res://Visual/Menu/completion_outline.png" type="Texture" id=54]
 [ext_resource path="res://Scripts/CHARACTER.gd" type="Script" id=55]
+[ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=56]
 
 [sub_resource type="Animation" id=1]
 resource_name = "AAA_RESET"
@@ -1403,13 +1403,7 @@ tracks/0/keys = {
 "values": [ Vector2( 0, -424 ), Vector2( 0, -408 ), Vector2( 0, -424 ) ]
 }
 
-[sub_resource type="StyleBoxFlat" id=19]
-bg_color = Color( 0.117647, 0.341176, 0.611765, 1 )
-
-[sub_resource type="StyleBoxFlat" id=20]
-bg_color = Color( 0.145098, 0.141176, 0.27451, 1 )
-
-[sub_resource type="Animation" id=21]
+[sub_resource type="Animation" id=19]
 length = 0.1
 step = 0.05
 tracks/0/type = "value"
@@ -1425,7 +1419,7 @@ tracks/0/keys = {
 "values": [ Vector2( 0, 608 ), Vector2( 0, 624 ), Vector2( 0, 608 ) ]
 }
 
-[sub_resource type="Animation" id=22]
+[sub_resource type="Animation" id=20]
 length = 0.1
 step = 0.05
 tracks/0/type = "value"
@@ -1441,7 +1435,7 @@ tracks/0/keys = {
 "values": [ Vector2( 0, -608 ), Vector2( 0, -624 ), Vector2( 0, -608 ) ]
 }
 
-[sub_resource type="Animation" id=23]
+[sub_resource type="Animation" id=21]
 length = 6.0
 loop = true
 tracks/0/type = "value"
@@ -1469,7 +1463,7 @@ tracks/1/keys = {
 "values": [ Color( 0, 0.596078, 0.858824, 1 ), Color( 0, 0.596078, 0.858824, 0 ) ]
 }
 
-[sub_resource type="Animation" id=24]
+[sub_resource type="Animation" id=22]
 length = 7.0
 loop = true
 tracks/0/type = "value"
@@ -1497,7 +1491,7 @@ tracks/1/keys = {
 "values": [ Color( 0.12549, 0.207843, 0.384314, 1 ), Color( 0.12549, 0.207843, 0.384314, 0 ) ]
 }
 
-[sub_resource type="Animation" id=25]
+[sub_resource type="Animation" id=23]
 length = 0.5
 step = 0.05
 tracks/0/type = "value"
@@ -1551,7 +1545,7 @@ tracks/3/keys = {
 "values": [ Color( 0.145098, 0.141176, 0.27451, 1 ), Color( 0.145098, 0.141176, 0.27451, 1 ), Color( 0.0235294, 0.901961, 0.631373, 1 ), Color( 0.145098, 0.141176, 0.27451, 1 ) ]
 }
 
-[sub_resource type="Animation" id=26]
+[sub_resource type="Animation" id=24]
 length = 0.7
 step = 0.05
 tracks/0/type = "value"
@@ -1591,7 +1585,7 @@ tracks/2/keys = {
 "values": [ Vector2( 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=27]
+[sub_resource type="Animation" id=25]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("sprite:color")
@@ -1618,7 +1612,7 @@ tracks/1/keys = {
 "values": [ Vector2( 1, 1 ), Vector2( 0, 1 ), Vector2( 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=28]
+[sub_resource type="Animation" id=26]
 length = 0.3
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:scale")
@@ -1645,7 +1639,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[sub_resource type="Animation" id=29]
+[sub_resource type="Animation" id=27]
 length = 0.3
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:scale")
@@ -1672,7 +1666,7 @@ tracks/1/keys = {
 "values": [ true, true ]
 }
 
-[sub_resource type="Animation" id=30]
+[sub_resource type="Animation" id=28]
 length = 0.2
 tracks/0/type = "value"
 tracks/0/path = NodePath("menu_button1:position")
@@ -1879,7 +1873,7 @@ tracks/16/keys = {
 "values": [ Color( 0.145098, 0.141176, 0.27451, 1 ), Color( 0.0156863, 0.0235294, 0.133333, 1 ) ]
 }
 
-[sub_resource type="Animation" id=31]
+[sub_resource type="Animation" id=29]
 length = 0.2
 loop = true
 tracks/0/type = "value"
@@ -2099,7 +2093,7 @@ tracks/17/keys = {
 "values": [ Color( 0.0156863, 0.0235294, 0.133333, 1 ) ]
 }
 
-[sub_resource type="Animation" id=32]
+[sub_resource type="Animation" id=30]
 length = 0.2
 step = 0.05
 tracks/0/type = "value"
@@ -2361,6 +2355,7 @@ position = Vector2( -672, 320 )
 texture = ExtResource( 6 )
 
 [node name="menu_button" type="Sprite" parent="SELECT/Level_Descriptor"]
+modulate = Color( 0.87451, 0.901961, 0.937255, 1 )
 position = Vector2( 0, -270 )
 scale = Vector2( 0.625, 0.625 )
 texture = ExtResource( 28 )
@@ -2656,14 +2651,8 @@ texture = ExtResource( 35 )
 [node name="replay_list" type="ItemList" parent="REPLAY"]
 margin_left = -832.0
 margin_top = -576.0
-margin_right = 832.0
-margin_bottom = 576.0
-custom_styles/bg_focus = SubResource( 19 )
-custom_styles/bg = SubResource( 20 )
-custom_fonts/font = ExtResource( 49 )
-custom_colors/guide_color = Color( 0.145098, 0.141176, 0.27451, 1 )
-custom_colors/font_color_selected = Color( 0.917647, 0.933333, 0.952941, 1 )
-custom_colors/font_color = Color( 0.917647, 0.933333, 0.952941, 1 )
+rect_scale = Vector2( 2, 2 )
+theme = ExtResource( 56 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3016,8 +3005,8 @@ text = "<- Drop
 for a bit"
 
 [node name="anim" type="AnimationPlayer" parent="HELP"]
-anims/down = SubResource( 21 )
-anims/up = SubResource( 22 )
+anims/down = SubResource( 19 )
+anims/up = SubResource( 20 )
 
 [node name="OPTION" type="Node2D" parent="."]
 scale = Vector2( 1e-05, 1e-05 )
@@ -3030,7 +3019,7 @@ scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 27 )
 
 [node name="Anim" type="AnimationPlayer" parent="OPTION/menu_circle2"]
-anims/Animate = SubResource( 23 )
+anims/Animate = SubResource( 21 )
 
 [node name="menu_circle" type="Sprite" parent="OPTION"]
 modulate = Color( 0.12549, 0.207843, 0.384314, 0 )
@@ -3039,7 +3028,7 @@ scale = Vector2( 2, 2 )
 texture = ExtResource( 27 )
 
 [node name="Anim" type="AnimationPlayer" parent="OPTION/menu_circle"]
-anims/Animate = SubResource( 24 )
+anims/Animate = SubResource( 22 )
 
 [node name="menu_rectangle" type="Sprite" parent="OPTION"]
 modulate = Color( 0, 0.596078, 0.858824, 1 )
@@ -3055,9 +3044,9 @@ color = Color( 0.145098, 0.141176, 0.27451, 1 )
 polygon = PoolVector2Array( 0, 0, -24, -48, 24, -48 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="OPTION/Cursor2"]
-anims/Go_In = SubResource( 25 )
-anims/Refuse = SubResource( 26 )
-anims/Spin = SubResource( 27 )
+anims/Go_In = SubResource( 23 )
+anims/Refuse = SubResource( 24 )
+anims/Spin = SubResource( 25 )
 
 [node name="main" type="Node2D" parent="OPTION"]
 
@@ -3240,13 +3229,13 @@ scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 34 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="MAIN/menu_confirmation"]
-anims/popdown = SubResource( 28 )
-anims/popup = SubResource( 29 )
+anims/popdown = SubResource( 26 )
+anims/popup = SubResource( 27 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="MAIN"]
-anims/Down = SubResource( 30 )
-anims/StandBy = SubResource( 31 )
-anims/Up = SubResource( 32 )
+anims/Down = SubResource( 28 )
+anims/StandBy = SubResource( 29 )
+anims/Up = SubResource( 30 )
 
 [node name="controls2" type="RichTextLabel" parent="."]
 visible = false

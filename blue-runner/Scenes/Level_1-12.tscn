@@ -19,7 +19,6 @@
 [ext_resource path="res://Visual/decor_dirt_rock_4.png" type="Texture" id=17]
 [ext_resource path="res://Visual/decor_dirt_rock_3.png" type="Texture" id=18]
 
-
 [node name="Level_1-12" type="Node2D"]
 
 [node name="Camera" parent="." instance=ExtResource( 1 )]
@@ -38,6 +37,7 @@ modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
 scale = Vector2( 0.75, 0.75 )
 z_index = -20
 tile_set = ExtResource( 3 )
+centered_textures = true
 collision_layer = 0
 collision_mask = 0
 occluder_light_mask = 0
@@ -49,6 +49,7 @@ modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
 scale = Vector2( 0.75, 0.75 )
 z_index = -20
 tile_set = ExtResource( 3 )
+centered_textures = true
 collision_layer = 0
 collision_mask = 0
 occluder_light_mask = 0
@@ -63,6 +64,7 @@ z_index = -20
 modulate = Color( 0.6, 0.6, 0.6, 1 )
 z_index = -10
 tile_set = ExtResource( 3 )
+centered_textures = true
 collision_layer = 0
 collision_mask = 0
 occluder_light_mask = 0
@@ -73,6 +75,7 @@ tile_data = PoolIntArray( -786403, -1073741804, 0, -786399, -1610612716, 0, -720
 modulate = Color( 0.6, 0.6, 0.6, 1 )
 z_index = -10
 tile_set = ExtResource( 3 )
+centered_textures = true
 collision_layer = 0
 collision_mask = 0
 occluder_light_mask = 0
@@ -340,135 +343,78 @@ scale = Vector2( 3.5, 3.5 )
 [node name="Spike2" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 1440, -96 )
 scale = Vector2( 3.5, 3.5 )
-pre_pos = {
-
-}
 
 [node name="Spike4" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 2464, 416 )
 scale = Vector2( 3.5, 3.5 )
-pre_pos = {
-
-}
 
 [node name="Spike5" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 2784, 64 )
 scale = Vector2( 3.5, 3.5 )
-pre_pos = {
-
-}
 
 [node name="Spike8" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 4064, 216 )
 scale = Vector2( 3.5, 3.5 )
-pre_pos = {
-
-}
 
 [node name="Spike6" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 3264, -160 )
 scale = Vector2( 3, 3 )
-pre_pos = {
-
-}
 
 [node name="Spike13" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 2336, -192 )
 scale = Vector2( 2.5, 2.5 )
-pre_pos = {
-
-}
 
 [node name="Spike20" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 3456, 576 )
 scale = Vector2( 2.5, 2.5 )
-pre_pos = {
-
-}
 
 [node name="Spike14" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( -128, 96 )
 scale = Vector2( 2.5, 2.5 )
-pre_pos = {
-
-}
 
 [node name="Spike7" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 3360, 320 )
 scale = Vector2( 3, 3 )
-pre_pos = {
-
-}
 
 [node name="Spike3" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 1920, -128 )
 scale = Vector2( 3, 3 )
-pre_pos = {
-
-}
 
 [node name="Spike9" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 1664, 704 )
 scale = Vector2( 2, 2 )
-pre_pos = {
-
-}
 
 [node name="Spike12" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 2240, -128 )
 scale = Vector2( 2, 2 )
-pre_pos = {
-
-}
 
 [node name="Spike15" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 1920, -256 )
 scale = Vector2( 2, 2 )
-pre_pos = {
-
-}
 
 [node name="Spike16" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 1536, 128 )
 scale = Vector2( 1.5, 1.5 )
-pre_pos = {
-
-}
 
 [node name="Spike18" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 3584, 576 )
 scale = Vector2( 1.5, 1.5 )
-pre_pos = {
-
-}
 
 [node name="Spike17" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 1344, 64 )
 scale = Vector2( 2.5, 2.5 )
-pre_pos = {
-
-}
 
 [node name="Spike10" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 1664, 576 )
 scale = Vector2( 3, 3 )
-pre_pos = {
-
-}
 
 [node name="Spike11" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 2104, -31.9999 )
 scale = Vector2( 3, 3 )
-pre_pos = {
-
-}
 
 [node name="Spike19" parent="DANGER" instance=ExtResource( 4 )]
 position = Vector2( 3968, 384 )
 scale = Vector2( 3, 3 )
-pre_pos = {
-
-}
 
 [node name="KillFloor" parent="DANGER" instance=ExtResource( 7 )]
 position = Vector2( 1800, 960 )
@@ -487,10 +433,12 @@ rotation = -1.57079
 
 [node name="Ground_Detail_Back" type="TileMap" parent="."]
 tile_set = ExtResource( 3 )
+centered_textures = true
 format = 1
 
 [node name="Ground" type="TileMap" parent="."]
 tile_set = ExtResource( 3 )
+centered_textures = true
 format = 1
 tile_data = PoolIntArray( -917474, 18, 0, -917472, 18, 0, -851938, 18, 0, -851936, 18, 0, -786402, 18, 0, -786401, 18, 0, -786400, 18, 0, -720866, 18, 0, -720865, 18, 0, -720864, 18, 0, -655330, 18, 0, -655329, 18, 0, -655328, 18, 0, -589794, 18, 0, -589793, 18, 0, -589792, 18, 0, -524258, 18, 0, -524257, 18, 0, -524256, 18, 0, -458722, 18, 0, -458721, 18, 0, -458720, 18, 0, -393186, 18, 0, -393185, 18, 0, -393184, 18, 0, -327650, 26, 0, -327649, 18, 0, -327648, 18, 0, -262114, 43, 0, -262113, 18, 0, -262112, 18, 0, -196578, 27, 0, -196577, 26, 0, -196576, 18, 0, -196573, 26, 0, -196572, 27, 0, -131042, 26, 0, -131041, 28, 0, -131040, 27, 0, -131037, 26, 0, -131036, 18, 0, -65515, 26, 0, -65514, 18, 0, -65513, 43, 0, -65506, 18, 0, -65505, 18, 0, -65504, 27, 0, -65501, 18, 0, -65500, 18, 0, 65534, 28, 0, 65535, 27, 0, 0, 18, 0, 13, 18, 0, 14, 18, 0, 21, 27, 0, 22, 26, 0, 23, 26, 0, 30, 18, 0, 31, 18, 0, 32, 26, 0, 35, 18, 0, 36, 18, 0, 131061, 18, 0, 131062, 18, 0, 131063, 18, 0, 131064, 18, 0, 131070, 26, 0, 131071, 26, 0, 65536, 26, 0, 65541, 18, 0, 65542, 18, 0, 65549, 18, 0, 65550, 18, 0, 65557, 18, 0, 65558, 27, 0, 65559, 28, 0, 65578, 26, 0, 65579, 27, 0, 65580, 26, 0, 196597, 18, 0, 196598, 18, 0, 196599, 18, 0, 196600, 18, 0, 196606, 43, 0, 196607, 18, 0, 131072, 18, 0, 131077, 18, 0, 131078, 18, 0, 131114, 18, 0, 131115, 26, 0, 131116, 43, 0, 262133, 18, 0, 262134, 18, 0, 262135, 18, 0, 262136, 18, 0, 196650, 18, 0, 196651, 18, 0, 196652, 18, 0, 196676, 18, 0, 196677, 18, 0, 196678, 18, 0, 327669, 18, 0, 327670, 18, 0, 327671, 18, 0, 327672, 18, 0, 262186, 18, 0, 262187, 18, 0, 262188, 18, 0, 262206, 43, 0, 262207, 26, 0, 262208, 27, 0, 262212, 18, 0, 262213, 18, 0, 262214, 18, 0, 393205, 18, 0, 393206, 18, 0, 393207, 18, 0, 393208, 18, 0, 327722, 18, 0, 327723, 18, 0, 327724, 18, 0, 327732, 26, 0, 327733, 18, 0, 327734, 18, 0, 327735, 18, 0, 327742, 18, 0, 327743, 27, 0, 327744, 28, 0, 327748, 18, 0, 327749, 18, 0, 327750, 18, 0, 458741, 18, 0, 458742, 18, 0, 458743, 18, 0, 458744, 18, 0, 393258, 18, 0, 393259, 18, 0, 393260, 18, 0, 393268, 27, 0, 393269, 26, 0, 393270, 18, 0, 393271, 18, 0, 393278, 18, 0, 393279, 26, 0, 393280, 18, 0, 393284, 18, 0, 393285, 18, 0, 393286, 18, 0, 524277, 18, 0, 524278, 18, 0, 524279, 18, 0, 524280, 18, 0, 458778, 18, 0, 458779, 18, 0, 458780, 18, 0, 458781, 18, 0, 458782, 18, 0, 458789, 27, 0, 458790, 26, 0, 458791, 26, 0, 458794, 18, 0, 458795, 18, 0, 458796, 18, 0, 458804, 18, 0, 458805, 28, 0, 458806, 27, 0, 458807, 18, 0, 458820, 18, 0, 458821, 18, 0, 458822, 18, 0, 589813, 22, 0, 589814, 22, 0, 589815, 18, 0, 589816, 18, 0, 524314, 26, 0, 524315, 18, 0, 524316, 18, 0, 524317, 18, 0, 524318, 18, 0, 524325, 28, 0, 524326, 18, 0, 524327, 18, 0, 524340, 18, 0, 524341, 26, 0, 524342, 27, 0, 524343, 26, 0, 524356, 18, 0, 524357, 18, 0, 524358, 18, 0, 655349, 22, 0, 655350, 22, 0, 655351, 22, 0, 655352, 22, 0, 589850, 26, 0, 589851, 28, 0, 589852, 18, 0, 589853, 18, 0, 589854, 18, 0, 589861, 18, 0, 589862, 18, 0, 589863, 18, 0, 589892, 22, 0, 589893, 18, 0, 589894, 18, 0, 720885, 22, 0, 720886, 22, 0, 720887, 22, 0, 720888, 22, 0, 655386, 26, 0, 655387, 18, 0, 655388, 18, 0, 655389, 18, 0, 655390, 22, 0, 655428, 22, 0, 655429, 22, 0, 655430, 18, 0, 786421, 22, 0, 786422, 22, 0, 786423, 22, 0, 786424, 22, 0, 720922, 27, 0, 720923, 18, 0, 720924, 18, 0, 720925, 22, 0, 720926, 22, 0, 720964, 22, 0, 720965, 22, 0, 720966, 22, 0, 851957, 18, 0, 851960, 18, 0, 786458, 18, 0, 786462, 18, 0, 786500, 18, 0, 786502, 18, 0, 917493, 18, 0, 917496, 18, 0, 851994, 18, 0, 851998, 18, 0, 852036, 18, 0, 852038, 18, 0, 983029, 18, 0, 983032, 18, 0, 917530, 18, 0, 917534, 18, 0, 917572, 18, 0, 917574, 18, 0 )
 
@@ -498,6 +446,7 @@ tile_data = PoolIntArray( -917474, 18, 0, -917472, 18, 0, -851938, 18, 0, -85193
 
 [node name="Ground_Detail" type="TileMap" parent="."]
 tile_set = ExtResource( 3 )
+centered_textures = true
 collision_layer = 0
 collision_mask = 0
 format = 1

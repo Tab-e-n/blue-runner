@@ -23,10 +23,15 @@ func _process(_delta):
 	pass
 
 func reload():
-	var temp = global.load_level_dat_file(level_name, true)
-	if temp != null:
-		var temp_level_symbol = load("res://Visual/Menu/level_" + temp["level_icon"] + ".png")
+	var temp : Dictionary = global.load_level_dat_file(level_name, true)
+	var type : int = typeof(temp["level_icon"])
+	var temp_level_symbol
+	if type == TYPE_ARRAY:
+		temp_level_symbol = load(temp["level_icon"][1] + "/Visual/Menu/level_" + temp["level_icon"][0] + ".png")
+	elif type == TYPE_STRING:
+		temp_level_symbol = load("res://Visual/Menu/level_" + temp["level_icon"] + ".png")
 		if temp_level_symbol != null: level_symbol = temp_level_symbol
+	
 	
 	$symbol.texture = level_symbol
 	$icon.texture = level_normal
