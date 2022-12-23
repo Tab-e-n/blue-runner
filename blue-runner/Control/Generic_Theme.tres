@@ -16,13 +16,12 @@
 [ext_resource path="res://Control/style_scroll_vertical.tres" type="StyleBox" id=14]
 [ext_resource path="res://Control/style_focused_filled.tres" type="StyleBox" id=15]
 
-
 [resource]
 default_font = ExtResource( 3 )
 Button/colors/font_color = Color( 0.917647, 0.933333, 0.952941, 1 )
 Button/colors/font_color_disabled = Color( 0.917647, 0.933333, 0.952941, 0.2 )
 Button/colors/font_color_hover = Color( 0.917647, 0.933333, 0.952941, 1 )
-Button/colors/font_color_pressed = Color( 0.917647, 0.933333, 0.952941, 1 )
+Button/colors/font_color_pressed = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 Button/constants/hseparation = 2
 Button/fonts/font = null
 Button/styles/disabled = null
@@ -111,7 +110,7 @@ VScrollBar/icons/decrement = null
 VScrollBar/icons/decrement_highlight = null
 VScrollBar/icons/increment = null
 VScrollBar/icons/increment_highlight = null
-VScrollBar/styles/grabber = ExtResource( 1 )
+VScrollBar/styles/grabber = ExtResource( 6 )
 VScrollBar/styles/grabber_highlight = ExtResource( 15 )
 VScrollBar/styles/grabber_pressed = ExtResource( 9 )
 VScrollBar/styles/scroll = ExtResource( 14 )

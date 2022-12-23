@@ -2,28 +2,28 @@
 
 [ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Objects/Backgrounds/BG_WaterWay.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Visual/Menu/level_C.png" type="Texture" id=3]
-[ext_resource path="res://Visual/Menu/level_A.png" type="Texture" id=4]
-[ext_resource path="res://Visual/Menu/level_boss.png" type="Texture" id=5]
+[ext_resource path="res://Visual/Level/C.png" type="Texture" id=3]
+[ext_resource path="res://Visual/Level/A.png" type="Texture" id=4]
+[ext_resource path="res://Visual/Level/boss.png" type="Texture" id=5]
 [ext_resource path="res://Visual/Menu/menu_descriptor.png" type="Texture" id=6]
-[ext_resource path="res://Visual/Menu/level_4.png" type="Texture" id=7]
-[ext_resource path="res://Visual/Menu/level_1.png" type="Texture" id=8]
-[ext_resource path="res://Visual/Menu/level_6.png" type="Texture" id=9]
-[ext_resource path="res://Visual/Menu/level_3.png" type="Texture" id=10]
-[ext_resource path="res://Visual/Menu/level_7.png" type="Texture" id=11]
-[ext_resource path="res://Visual/Menu/level_B.png" type="Texture" id=12]
-[ext_resource path="res://Visual/Menu/level_11.png" type="Texture" id=13]
-[ext_resource path="res://Visual/Menu/level_12.png" type="Texture" id=14]
-[ext_resource path="res://Visual/Menu/level_2.png" type="Texture" id=15]
-[ext_resource path="res://Visual/Menu/level_5.png" type="Texture" id=16]
-[ext_resource path="res://Visual/Menu/level_9.png" type="Texture" id=17]
-[ext_resource path="res://Visual/Menu/level_8.png" type="Texture" id=18]
-[ext_resource path="res://Visual/Menu/level_10.png" type="Texture" id=19]
-[ext_resource path="res://Visual/Menu/level_13.png" type="Texture" id=20]
-[ext_resource path="res://Visual/Menu/level_14.png" type="Texture" id=21]
+[ext_resource path="res://Visual/Level/4.png" type="Texture" id=7]
+[ext_resource path="res://Visual/Level/1.png" type="Texture" id=8]
+[ext_resource path="res://Visual/Level/6.png" type="Texture" id=9]
+[ext_resource path="res://Visual/Level/3.png" type="Texture" id=10]
+[ext_resource path="res://Visual/Level/7.png" type="Texture" id=11]
+[ext_resource path="res://Visual/Level/B.png" type="Texture" id=12]
+[ext_resource path="res://Visual/Level/11.png" type="Texture" id=13]
+[ext_resource path="res://Visual/Level/12.png" type="Texture" id=14]
+[ext_resource path="res://Visual/Level/2.png" type="Texture" id=15]
+[ext_resource path="res://Visual/Level/5.png" type="Texture" id=16]
+[ext_resource path="res://Visual/Level/9.png" type="Texture" id=17]
+[ext_resource path="res://Visual/Level/8.png" type="Texture" id=18]
+[ext_resource path="res://Visual/Level/10.png" type="Texture" id=19]
+[ext_resource path="res://Visual/Level/13.png" type="Texture" id=20]
+[ext_resource path="res://Visual/Level/14.png" type="Texture" id=21]
 [ext_resource path="res://Scripts/Menu_Level_Select.gd" type="Script" id=22]
 [ext_resource path="res://Objects/Level.tscn" type="PackedScene" id=23]
-[ext_resource path="res://Visual/Menu/level_-1.png" type="Texture" id=24]
+[ext_resource path="res://Visual/Level/-1.png" type="Texture" id=24]
 [ext_resource path="res://Scripts/SELECT.gd" type="Script" id=25]
 [ext_resource path="res://Scripts/MAIN.gd" type="Script" id=26]
 [ext_resource path="res://Visual/Menu/menu_circle.png" type="Texture" id=27]
@@ -55,6 +55,26 @@
 [ext_resource path="res://Visual/Menu/completion_outline.png" type="Texture" id=54]
 [ext_resource path="res://Scripts/CHARACTER.gd" type="Script" id=55]
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=56]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 [sub_resource type="Animation" id=1]
 resource_name = "AAA_RESET"

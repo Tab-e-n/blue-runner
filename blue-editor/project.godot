@@ -21,11 +21,28 @@ config/use_custom_user_dir=true
 config/custom_user_dir_name="HowDoesOneName"
 config/icon="res://icon.png"
 
+[autoload]
+
+data="*res://Scenes/data.tscn"
+
 [display]
 
 window/size/height=768
 window/stretch/mode="2d"
 window/stretch/aspect="expand"
+
+[input]
+
+mouse_left={
+"deadzone": 0.5,
+"events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
+ ]
+}
+mouse_right={
+"deadzone": 0.5,
+"events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":2,"pressed":false,"doubleclick":false,"script":null)
+ ]
+}
 
 [rendering]
 
