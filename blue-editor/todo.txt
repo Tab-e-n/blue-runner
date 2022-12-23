@@ -1,0 +1,39 @@
+FILE
+.dat level properties editable
+creating new level
+saving level
+
+loading level
+PLACE
+Switching modes
+Switching tabs
+Items
+Recent system
+Favorite system
+movin around tghe level
+
+placin tiles
+placin decor
+Object representations
+placin objects
+that empty space? LAYERS go there
+
+ITEMS
+selectin directory
+selectin items
+practically done
+
+Edit
+untouche
+
+Editin proprerties of objects and decor and variations of tiles
+
+EDITOR OTHER
+untouche
+
+shortcuts and the focus thingies
+menu for other editors
+mod loader
+level groups - make in sonic runner and specil editor for them
+level group editor
+after all that you done with level editor and can continou makon levels for SR

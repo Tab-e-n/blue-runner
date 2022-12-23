@@ -1,0 +1,321 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Control
+
+var tilesets : Array
+var bg : Array
+var level_icon :  Array
+var place_decor : Dictionary
+var place_objects : Dictionary
+var characters : Array
+
+var user_directory : String = \"user://sonicRunnerEditor\"
+
+var mods_installed : Array
+var mods_enabled : Dictionary
+
+var settings : Dictionary = {
+	\"level_editor_gui_additional_info\" : false,
+}
+# Max 8 faves per category
+# Each tileset has its own 8 faves under its name
+var favorite : Dictionary = {
+	\"Objects\" : [],
+	\"Decor\" : [],
+}
+# Mirror recent in style, however with 16 instead of 8 things
+var recent : Dictionary = {
+	\"Objects\" : [],
+	\"Decor\" : [],
+}
+
+# Here lies what will be saved in the .dat file of levels,
+# Delete once you have the .dat save code ready
+var level_data : Dictionary = {
+	\"level_name\" : \"[name]\",
+	\"creator\" : \"Tabin\",
+	\"official\" : true,
+	\"level_icon\" : [\"questionmark\",\"res:/\"],
+	\"dependencies\" : [],
+}
+
+var mod_data : Dictionary = {
+	\"mod_name\" : \"Default Mod\",
+	\"creator\" : \"Tabin\",
+	\"description\" : \"An example of how a mod should look.\",
+	\"dependencies\" : [],
+	\"active\" : true,
+}
+
+func _ready():
+	OS.min_window_size = Vector2(640, 480)
+	print(\"data ready\")
+	load_game()
+	load_editor_vanilla()
+	load_editor_mods()
+
+func _process(_delta):
+	pass
+
+func _exit_tree():
+	save_game()
+
+func save_game():
+	print(\"saving game\")
+	var savefile = File.new()
+	var temp = {}
+	
+	temp[\"favorite\"] = favorite.duplicate()
+	temp[\"recent\"] = recent.duplicate()
+	temp[\"settings\"] = settings.duplicate()
+	
+	savefile.open(user_directory, File.WRITE)
+	savefile.store_line(to_json(temp))
+	savefile.close()
+
+func load_game(fail = false):
+	print(\"loading game\")
+	var loadfile = File.new()
+	var temp = {}
+	
+	if not loadfile.file_exists(user_directory) or fail: # does file exist
+		save_game()
+		return
+	
+	loadfile.open(user_directory, File.READ)
+	
+	while loadfile.get_position() < loadfile.get_len():
+		var parsedData = parse_json(loadfile.get_line())
+		
+		temp = parsedData
+	
+	loadfile.close()
+	
+	#print(\"load: \", temp)
+	
+	favorite = load_transfer(favorite,\"favorite\",temp)
+	recent = load_transfer(recent,\"recent\",temp)
+	settings = load_transfer(settings,\"settings\",temp)
+
+func load_transfer(section : Dictionary, section_name : String, temp : Dictionary):
+	if !temp.has(section_name): temp[section_name] = section.duplicate()
+	else:
+		for i in section.keys():
+			if !temp[section_name].has(i): temp[section_name][i] = section[i]
+	return temp[section_name].duplicate()
+
+func load_editor_vanilla():
+	var directory : Directory = Directory.new()
+	var current_file : String
+	var directories_to_visit : Array
+	
+	print(\"scanning vanilla characters\")
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(\"res://Objects/Player/characters.dat\"): # does file exist
+		print(\"character file was found\")
+		loadfile.open(\"res://Objects/Player/characters.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		characters = temp[\"characters\"]
+		loadfile.close()
+	else:
+		print(\"no character file found\")
+	
+	print(\"scanning vanilla tilesets\")
+	scan_single_directory(\"res:/\", \"/Objects/Tilesets/\", tilesets, \".tres\", \"tileset\")
+	
+	# BG
+	print(\"scanning vanilla backgrounds\")
+	scan_single_directory(\"res:/\", \"/Objects/Backgrounds/\", bg, \".tscn\", \"background\")
+	
+	# Other Objects
+	print(\"scanning vanilla objects\")
+	scan_multi_directory(\"res:/\", \"/Objects/\", place_objects, \".tscn\", [\"Tilesets\", \"Backgrounds\"])
+	
+	# Level Icon
+	print(\"scanning vanilla level icons\")
+	scan_single_directory(\"res:/\", \"/Visual/Level/\", level_icon, \".png\", \"icon\")
+	
+	# Decor
+	print(\"scanning vanilla decor\")
+	scan_multi_directory(\"res:/\", \"/Visual/\", place_decor, \".png\")
+
+func load_editor_mods():
+	var directory : Directory = Directory.new()
+	var current_file : String
+	var directories_to_visit : Array
+	
+	print(\"scanning mods\")
+	var check_exist = directory.open(\"Mods\")
+	
+	if check_exist == OK:
+		print(\"user has mods installed\")
+		
+		directory.list_dir_begin(true)
+		current_file = directory.get_next()
+		while current_file != \"\":
+			mods_installed.append(current_file)
+			current_file = directory.get_next()
+	else:
+		print(\"no mods found, or an error occured\")
+	
+	for mod_name in mods_installed.duplicate():
+		mods_enabled[mod_name] = [true, false]
+	for mod_name in mods_installed.duplicate():
+		var enabled = load_mods_data_files(mod_name)
+		if typeof(enabled) == TYPE_INT: enabled = false
+		mods_enabled[mod_name][0] = enabled
+	for mod_name in mods_installed.duplicate():
+		if !mods_enabled[mod_name][0]:
+			mods_installed.erase(mod_name)
+	
+	for mod_name in mods_installed:
+		print(\"current mod: \" + mod_name)
+		directory.open(\"Mods/\" + mod_name)
+		
+		# Characters
+		print(\"scanning vanilla characters\")
+		var loadfile = File.new()
+		var temp = {}
+		
+		if loadfile.file_exists(\"Mods/\" + mod_name + \"/Objects/Player/characters.dat\"): # does file exist
+			print(\"character file was found\")
+			loadfile.open(\"Mods/\" + mod_name + \"/Objects/Player/characters.dat\", File.READ)
+			
+			while loadfile.get_position() < loadfile.get_len():
+				var parsedData = parse_json(loadfile.get_line())
+				
+				temp = parsedData
+			for i in temp[\"characters\"]: characters.append(i)
+			loadfile.close()
+		else:
+			print(\"no character file found\")
+		
+		# Tilesets
+		print(\"scanning for tilesets\")
+		scan_single_directory(\"Mods/\" + mod_name, \"/Objects/Tilesets/\", tilesets, \".tres\", \"tileset\")
+		
+		# BG
+		print(\"scanning for backgrounds\")
+		scan_single_directory(\"Mods/\" + mod_name, \"/Objects/Backgrounds/\", bg, \".tscn\", \"background\")
+		
+		# Other Objects
+		print(\"scanning for objects\")
+		scan_multi_directory(\"Mods/\" + mod_name, \"/Objects/\", place_objects, \".tscn\", [\"Tilesets\", \"Backgrounds\", \"Player\"])
+		
+		# Level Icons
+		print(\"scanning for level icons\")
+		scan_single_directory(\"Mods/\" + mod_name, \"/Visual/Level/\", level_icon, \".png\", \"icon\")
+		
+		# Visuals
+		print(\"scanning for decor\")
+		scan_multi_directory(\"Mods/\" + mod_name, \"/Visual/\", place_decor, \".png\")
+
+func scan_single_directory(main_directory : String, sub_directory : String, storage : Array, file_type : String, file_descriptor : String):
+	var directory : Directory = Directory.new()
+	var check_exist = directory.open(main_directory + sub_directory)
+	var current_file
+	
+	if check_exist == OK:
+		directory.list_dir_begin(true)
+		
+		current_file = directory.get_next()
+		while current_file != \"\":
+			if current_file.ends_with(file_type):
+				print(\"found \" + file_descriptor + \": \" + current_file)
+				storage.append([current_file, main_directory])
+			current_file = directory.get_next()
+
+func scan_multi_directory(main_directory : String, start_directory : String, storage : Dictionary, file_type : String, exclude_directories : Array = []):
+	var directory : Directory = Directory.new()
+	var directories_to_visit : Array
+	var check_exist = directory.open(main_directory + start_directory)
+	var current_file
+	
+	if check_exist == OK:
+		storage[main_directory + start_directory] = []
+		directories_to_visit = [main_directory + start_directory]
+	
+	while directories_to_visit.size() > 0:
+		var current_directory : String = directories_to_visit[0]
+		print(\"looking through: \" + current_directory)
+		directory.open(current_directory)
+		directory.list_dir_begin(true)
+		current_file = directory.get_next()
+		while current_file != \"\":
+			if directory.current_is_dir():
+				print(\"found folder: \" + current_file)
+				if !(current_directory == main_directory + start_directory and exclude_directories.has(current_file)): 
+					storage[current_directory + current_file + \"/\"] = []
+					directories_to_visit.append(current_directory + current_file + \"/\")
+			elif current_file.ends_with(file_type):
+				storage[current_directory].append(current_directory + current_file)
+			current_file = directory.get_next()
+		directories_to_visit.pop_front()
+
+func load_mods_data_files(mod_name : String):
+	if mods_enabled[mod_name][0] and mods_enabled[mod_name][1]:
+		return true
+	if !mods_enabled[mod_name][0] and mods_enabled[mod_name][1]:
+		return false
+	if mods_enabled[mod_name][0] and !mods_enabled[mod_name][1]:
+		var loadfile = File.new()
+		var temp = {}
+		if loadfile.file_exists(\"Mods/\" + mod_name + \"/mod.dat\"): # does file exist
+			
+			
+			loadfile.open(\"Mods/\" + mod_name + \"/mod.dat\", File.READ)
+			
+			while loadfile.get_position() < loadfile.get_len():
+				var parsedData = parse_json(loadfile.get_line())
+				
+				temp = parsedData
+			
+			loadfile.close()
+		else:
+			print(mod_name + \" has no data file\")
+			mods_enabled[mod_name][1] = true
+			return false
+		if !temp[\"active\"]:
+			print(mod_name + \" is disabled\")
+			mods_enabled[mod_name][1] = true
+			return false
+		
+		mods_enabled[mod_name][0] = false
+		for i in temp[\"dependencies\"]:
+			if !mods_installed.has(i):
+				print(mod_name + \" is dependent on a mod that isn't installed\")
+				mods_enabled[mod_name][1] = true
+				return false
+			else:
+				var check = load_mods_data_files(i)
+				if typeof(check) == TYPE_INT:
+					print(mod_name + \" was in a cyclical dependancy\")
+					mods_enabled[mod_name][1] = true
+					return 2
+				if check == false:
+					print(mod_name + \" is dependent on a mod that isn't enabled\")
+					mods_enabled[mod_name][1] = true
+					return false
+		
+		print(mod_name + \" is enabled\")
+		mods_enabled[mod_name][1] = true
+		return true
+		
+	if !mods_enabled[mod_name][0] and !mods_enabled[mod_name][1]:
+		return 2
+"
+
+[node name="data" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
