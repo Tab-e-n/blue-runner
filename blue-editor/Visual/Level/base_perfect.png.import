@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/level_done.png-33c35552d332016810df02e157ba7d40.stex"
+path="res://.import/base_perfect.png-6ee5c202645c6692cb1db46dcf5d5990.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Visual/Menu/level_done.png"
-dest_files=[ "res://.import/level_done.png-33c35552d332016810df02e157ba7d40.stex" ]
+source_file="res://Visual/Level/base_perfect.png"
+dest_files=[ "res://.import/base_perfect.png-6ee5c202645c6692cb1db46dcf5d5990.stex" ]
 
 [params]
 

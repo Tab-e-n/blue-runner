@@ -54,6 +54,7 @@ onready var level_name : LineEdit = $GUI/File/Panel/name_edit
 onready var creator : LineEdit = $GUI/File/Panel/creator_edit
 onready var official : CheckBox = $GUI/File/Panel/official_edit
 onready var level_icon : OptionButton = $GUI/File/Panel/icon_edit
+onready var level_base : OptionButton = $GUI/File/Panel/base_edit
 var dependencies : Array
 onready var tilesets : OptionButton = $GUI/File/Panel/tileset_edit
 onready var bg : OptionButton = $GUI/File/Panel/bg_edit
@@ -133,6 +134,7 @@ func _ready():
 	ready_optionbutton_setup(tilesets, data.tilesets)
 	ready_optionbutton_setup(bg, data.bg)
 	ready_optionbutton_setup(level_icon, data.level_icon)
+	#ready_optionbutton_setup(level_base, data.level_base)
 	
 	for i in level_layers:
 		var layer_color = Color(1, 1, 1, 1)
@@ -255,17 +257,32 @@ func create_new_level():
 	level.add_child(camera)
 	camera.set_owner(level)
 
-func save_level():
+func save_level(level_filename : String = \"Level\"):
 	level_position_hinge = level.position
 	level_scale_hinge = level.scale
 	level.position = Vector2(0, 0)
 	level.scale = Vector2(1, 1)
+	
+	var save_path : String = \"res://Scenes/\"  # \"user://SRLevels/\"
 	var packed_scene = PackedScene.new()
 	packed_scene.pack(level)
-	ResourceSaver.save(\"res://Scenes/Level.tscn\", packed_scene) # \"user://SRLevels/level.tscn\"
+	ResourceSaver.save(save_path + level_filename + \".tscn\", packed_scene)
 	
 	level.position = level_position_hinge
 	level.scale = level_scale_hinge
+	
+	var savefile = File.new()
+	var temp = {}
+	
+	temp[\"level_name\"] = level_name.text
+	temp[\"creator\"] = creator.text
+	temp[\"official\"] = official.pressed
+	temp[\"level_icon\"] = [level_icon.get_item_text(level_icon.selected),level_icon.get_selected_metadata()]
+	temp[\"dependencies\"] = []
+	
+	savefile.open(save_path + level_filename + \".dat\", File.WRITE)
+	savefile.store_line(to_json(temp))
+	savefile.close()
 
 func tileset_changed(index):
 	var tileset : String = tilesets.get_item_text(index)
@@ -1144,7 +1161,7 @@ __meta__ = {
 [node name="Panel" type="Panel" parent="GUI/File"]
 margin_left = -528.0
 margin_top = -200.0
-margin_bottom = 136.0
+margin_bottom = 232.0
 rect_pivot_offset = Vector2( 520, 328 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -1152,9 +1169,9 @@ __meta__ = {
 
 [node name="slider" type="TextureButton" parent="GUI/File/Panel"]
 margin_left = 528.0
-margin_top = 104.0
+margin_top = 136.0
 margin_right = 560.0
-margin_bottom = 232.0
+margin_bottom = 264.0
 toggle_mode = true
 texture_normal = ExtResource( 16 )
 texture_pressed = ExtResource( 15 )
@@ -1248,31 +1265,13 @@ __meta__ = {
 }
 
 [node name="icon" parent="GUI/File/Panel" instance=ExtResource( 10 )]
-margin_left = 200.0
-margin_top = 184.0
-margin_right = -184.0
-margin_bottom = -88.0
+margin_left = 64.0
+margin_top = 232.0
+margin_right = -320.0
+margin_bottom = -40.0
 text = "Icon"
 
 [node name="icon_edit" type="OptionButton" parent="GUI/File/Panel"]
-margin_left = 272.0
-margin_top = 184.0
-margin_right = 504.0
-margin_bottom = 218.0
-text = "questionmark"
-clip_text = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="tileset" parent="GUI/File/Panel" instance=ExtResource( 10 )]
-margin_left = 32.0
-margin_top = 232.0
-margin_right = -288.0
-margin_bottom = -40.0
-text = "Tileset"
-
-[node name="tileset_edit" type="OptionButton" parent="GUI/File/Panel"]
 margin_left = 136.0
 margin_top = 232.0
 margin_right = 504.0
@@ -1282,18 +1281,52 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="bg" parent="GUI/File/Panel" instance=ExtResource( 10 )]
-margin_left = 96.0
+[node name="base" parent="GUI/File/Panel" instance=ExtResource( 10 )]
+margin_left = 64.0
 margin_top = 280.0
-margin_right = -352.0
+margin_right = -320.0
 margin_bottom = 8.0
-text = "BG"
+text = "Base"
 
-[node name="bg_edit" type="OptionButton" parent="GUI/File/Panel"]
+[node name="base_edit" type="OptionButton" parent="GUI/File/Panel"]
 margin_left = 136.0
 margin_top = 280.0
 margin_right = 504.0
 margin_bottom = 314.0
+clip_text = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="tileset" parent="GUI/File/Panel" instance=ExtResource( 10 )]
+margin_left = 32.0
+margin_top = 328.0
+margin_right = -288.0
+margin_bottom = 56.0
+text = "Tileset"
+
+[node name="tileset_edit" type="OptionButton" parent="GUI/File/Panel"]
+margin_left = 136.0
+margin_top = 328.0
+margin_right = 504.0
+margin_bottom = 362.0
+clip_text = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="bg" parent="GUI/File/Panel" instance=ExtResource( 10 )]
+margin_left = 96.0
+margin_top = 376.0
+margin_right = -352.0
+margin_bottom = 104.0
+text = "BG"
+
+[node name="bg_edit" type="OptionButton" parent="GUI/File/Panel"]
+margin_left = 136.0
+margin_top = 376.0
+margin_right = 504.0
+margin_bottom = 410.0
 text = "none"
 clip_text = true
 items = [ "none", null, false, 0, null ]

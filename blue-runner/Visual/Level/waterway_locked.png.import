@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/level_neutral.png-8798742d197861d253f7d6ac9736623f.stex"
+path="res://.import/waterway_locked.png-702ad59b19a401dec87fd175b86c8b91.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Visual/Menu/level_neutral.png"
-dest_files=[ "res://.import/level_neutral.png-8798742d197861d253f7d6ac9736623f.stex" ]
+source_file="res://Visual/Level/waterway_locked.png"
+dest_files=[ "res://.import/waterway_locked.png-702ad59b19a401dec87fd175b86c8b91.stex" ]
 
 [params]
 
