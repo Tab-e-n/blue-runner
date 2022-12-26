@@ -35,7 +35,7 @@ func _process(_delta):
 
 func teleport(timer : float, collectible : int):
 	# warning-ignore:return_value_discarded
-	if unlock != "": $"/root/Global".level_completion["*unlocked"][unlock] = true
+	if unlock != "": $"/root/Global".unlocked[unlock] = true
 	
 	if name == "Portal":
 		$"/root/Global".save_game()

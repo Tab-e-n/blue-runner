@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/level_locked.png-a24f93330d4a9d5268e02f9780369193.stex"
+path="res://.import/base_locked.png-d1b3cfae82def0a4b02001b114ae3d9f.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Visual/Menu/level_locked.png"
-dest_files=[ "res://.import/level_locked.png-a24f93330d4a9d5268e02f9780369193.stex" ]
+source_file="res://Visual/Level/base_locked.png"
+dest_files=[ "res://.import/base_locked.png-d1b3cfae82def0a4b02001b114ae3d9f.stex" ]
 
 [params]
 

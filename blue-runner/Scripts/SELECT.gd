@@ -111,10 +111,10 @@ func menu_update():
 
 func reload_all_levels():
 	global.unlock_check()
-	$L/Level_15.locked = !global.level_completion["*unlocked"]["Level_1-A"]
-	$L/Level_16.locked = !global.level_completion["*unlocked"]["Level_1-B"]
-	$L/Level_18.locked = !global.level_completion["*unlocked"]["Level_1-C"]
-	$L/Level_19.locked = !global.level_completion["*unlocked"]["Level_1--1"]
+	$L/Level_15.locked = !global.unlocked["Level_1-A"]
+	$L/Level_16.locked = !global.unlocked["Level_1-B"]
+	$L/Level_18.locked = !global.unlocked["Level_1-C"]
+	$L/Level_19.locked = !global.unlocked["Level_1--1"]
 	for i in range(20): get_node("L/Level_" + String(i)).reload()
 	
 	var comp_number : int = completion_percentage()
@@ -124,7 +124,7 @@ func reload_all_levels():
 	$anim.play("WaterWay")
 
 func character_select():
-	if global.level_completion["*char_select_active"]:
+	if global.unlocked["*char_select_active"]:
 		parent.get_node("AnimationPlayer").play("SELECT-CHARACTER")
 		parent.menu = "CHARACTER"
 		$Cursor/AnimationPlayer.play("Reset")
@@ -146,8 +146,8 @@ func completion_percentage():
 				if global.level_completion[level_string][0] < global.level_completion[level_string][1] and global.level_completion[level_string][1] != 0:
 					completion += 1
 					#print("par " + String(i))
-		if global.level_completion["*unlocked"].has(level_string):
-			if global.level_completion["*unlocked"][level_string]:
+		if global.unlocked.has(level_string):
+			if global.unlocked[level_string]:
 				completion += 1
 				#print("unlocked " + String(i))
 		if global.level_completion.has(String((current_world-1)*20 + i)):

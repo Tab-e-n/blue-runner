@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=2]
@@ -6,7 +6,6 @@
 [ext_resource path="res://Objects/Tilesets/WaterWay.tres" type="TileSet" id=4]
 [ext_resource path="res://Objects/Backgrounds/BG_WaterWay.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Objects/Spike.tscn" type="PackedScene" id=6]
-[ext_resource path="res://Objects/Decor/Light_Point.tscn" type="PackedScene" id=7]
 [ext_resource path="res://Objects/Finish.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Visual/decor_bluree.png" type="Texture" id=9]
 [ext_resource path="res://Visual/decor_rock_1.png" type="Texture" id=10]
@@ -30,10 +29,6 @@ limit_x = Vector2( 0, 1152 )
 bg_color = Vector3( 0.404, 0.526, 0.873 )
 hill_offset = Vector2( 448, 576 )
 sun_position = Vector2( 0, -108 )
-
-[node name="Light2" parent="." instance=ExtResource( 7 )]
-position = Vector2( 56, -1744 )
-scale = Vector2( 3, 3 )
 
 [node name="DECOR_BACKGROUND_1" type="Node2D" parent="."]
 z_index = -30
