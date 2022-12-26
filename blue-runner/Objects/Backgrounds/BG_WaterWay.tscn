@@ -6,15 +6,12 @@
 [ext_resource path="res://Scripts/BG_WaterWay.gd" type="Script" id=5]
 [ext_resource path="res://Visual/BG/bg_hills_2.png" type="Texture" id=6]
 
-
-[node name="BG" type="Polygon2D"]
+[node name="BG" type="Node2D"]
 z_index = -100
-polygon = PoolVector2Array( -1024, 768, 1024, 768, 1024, -768, -1024, -768 )
 script = ExtResource( 5 )
 
-[node name="blur1" type="Polygon2D" parent="."]
-color = Color( 0, 0, 0, 0.501961 )
-polygon = PoolVector2Array( -1024, 768, 1024, 768, 1024, -768, -1024, -768 )
+[node name="back" type="Polygon2D" parent="."]
+polygon = PoolVector2Array( -1024, -768, 1024, -768, 1024, 768, -1024, 768 )
 
 [node name="sun_gradient" type="Sprite" parent="."]
 scale = Vector2( 2, 2 )

@@ -14,6 +14,7 @@ onready var global : Control = $"/root/Global"
 
 var time : float = 0
 var par : float = 0
+var level_base : Array
 
 func _ready():
 	#reload()
@@ -26,13 +27,21 @@ func reload():
 	var temp : Dictionary = global.load_level_dat_file(level_name, true)
 	var type : int = typeof(temp["level_icon"])
 	var temp_level_symbol
+	
 	if type == TYPE_ARRAY:
 		temp_level_symbol = load(temp["level_icon"][1] + "/Visual/Level/" + temp["level_icon"][0])
 	elif type == TYPE_STRING:
 		temp_level_symbol = load("res://Visual/Level/" + temp["level_icon"] + ".png")
 	if temp_level_symbol != null: level_symbol = temp_level_symbol
-	
 	$symbol.texture = level_symbol
+	
+	if level_base[1]+level_base[0] != temp["level_base"][1]+temp["level_base"][0]:
+		
+		level_normal = load(temp["level_icon"][1] + "/Visual/Level/" + temp["level_icon"][0] + ".png")
+		level_locked
+		level_done
+		level_perfect
+	
 	$icon.texture = level_normal
 	$boltcollect.visible = false
 	if locked:

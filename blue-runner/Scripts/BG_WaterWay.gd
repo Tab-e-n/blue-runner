@@ -1,4 +1,4 @@
-extends Polygon2D
+extends Node2D
 
 export var bg_color : Vector3 = Vector3(1, 1, 1)
 export var hill_offset : Vector2 = Vector2(512, 576)
@@ -15,7 +15,7 @@ func _ready():
 		
 		scale = camera.zoom / 2
 	
-	color = Color(bg_color.x, bg_color.y, bg_color.z, 1)
+	$back.color = Color(bg_color.x / 2, bg_color.y / 2, bg_color.z / 2, 1)
 	$bg3.modulate = Color(bg_color.x, bg_color.y, bg_color.z, 1)
 	$bg3/bg2.modulate = Color(bg_color.x, bg_color.y, bg_color.z, 1)
 	$bg3/bg2/bg1.modulate = Color(bg_color.x, bg_color.y, bg_color.z, 1)
