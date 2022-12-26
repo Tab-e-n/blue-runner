@@ -25,7 +25,7 @@ var visible_timer : bool = false
 func _ready():
 	$Fade.visible = true
 	$border.visible = true
-	visible_timer = $"/root/Global".options["*timer_on"]
+	visible_timer = $"/root/Global".level_completion["*timer_on"]
 	
 	if get_parent().has_node("BG"):
 		bg = get_parent().get_node("BG")

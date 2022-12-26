@@ -14,7 +14,6 @@ func _ready():
 	for i in range(20):
 		if get_node("SELECT/L/Level_" + String(i)).level_name == global.current_level:
 			$SELECT.selected_level = i
-			$SELECT.visible = true
 			start = false
 	if start or global.replay_menu:
 		$menu_circle_2.scale = Vector2(2.75, 2.75)

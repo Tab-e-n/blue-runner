@@ -19,28 +19,24 @@ export var set_data = {
 #game Stuff
 var user_directory : String = "user://sonicRunner"
 var level_completion = {
-}
-var unlocked = {
-	"*char_select_active" : false,
-	"Level_1-A" : false,
-	"Level_1-B" : false,
-	"Level_1-C" : false,
-	"Level_1--1" : false,
-}
-var options = {
-}
-var default_options = {
-	"*left" : KEY_LEFT,
-	"*right" : KEY_RIGHT,
-	"*up" : KEY_UP,
-	"*down" : KEY_DOWN,
-	"*jump" : KEY_SPACE,
-	"*special" : KEY_CONTROL,
-	"*reset" : KEY_ENTER,
-	"*return" : KEY_ESCAPE,
+	"*left" : null,
+	"*right" : null,
+	"*up" : null,
+	"*down" : null,
+	"*jump" : null,
+	"*special" : null,
+	"*reset" : null,
+	"*return" : null,
 	"*ghosts_on" : false,
 	"*timer_on" : false,
 	"*first_time_load" : true,
+	"*unlocked" : {
+		"Level_1-A" : false,
+		"Level_1-B" : false,
+		"Level_1-C" : false,
+		"Level_1--1" : false,
+	},
+	"*char_select_active" : false,
 }
 
 var rand : RandomNumberGenerator = RandomNumberGenerator.new()
@@ -79,30 +75,30 @@ func _ready():
 		last_input_events = InputMap.get_action_list("default").duplicate()
 		
 		# The every binding that has already been bound replaces the defaults
-		if options["*left"] != null:
+		if level_completion["*left"] != null:
 			last_input_events[0] = InputEventKey.new()
-			last_input_events[0].scancode = options["*left"]
-		if options["*right"] != null:
+			last_input_events[0].scancode = level_completion["*left"]
+		if level_completion["*right"] != null:
 			last_input_events[1] = InputEventKey.new()
-			last_input_events[1].scancode = options["*right"]
-		if options["*up"] != null:
+			last_input_events[1].scancode = level_completion["*right"]
+		if level_completion["*up"] != null:
 			last_input_events[2] = InputEventKey.new()
-			last_input_events[2].scancode = options["*up"]
-		if options["*down"] != null:
+			last_input_events[2].scancode = level_completion["*up"]
+		if level_completion["*down"] != null:
 			last_input_events[3] = InputEventKey.new()
-			last_input_events[3].scancode = options["*down"]
-		if options["*jump"] != null:
+			last_input_events[3].scancode = level_completion["*down"]
+		if level_completion["*jump"] != null:
 			last_input_events[4] = InputEventKey.new()
-			last_input_events[4].scancode = options["*jump"]
-		if options["*special"] != null:
+			last_input_events[4].scancode = level_completion["*jump"]
+		if level_completion["*special"] != null:
 			last_input_events[5] = InputEventKey.new()
-			last_input_events[5].scancode = options["*special"]
-		if options["*reset"] != null:
+			last_input_events[5].scancode = level_completion["*special"]
+		if level_completion["*reset"] != null:
 			last_input_events[6] = InputEventKey.new()
-			last_input_events[6].scancode = options["*reset"]
-		if options["*return"] != null:
+			last_input_events[6].scancode = level_completion["*reset"]
+		if level_completion["*return"] != null:
 			last_input_events[7] = InputEventKey.new()
-			last_input_events[7].scancode = options["*return"]
+			last_input_events[7].scancode = level_completion["*return"]
 		
 		# Then it actualy binds the shit
 		for i in range(8):
@@ -144,19 +140,19 @@ func change_input(input_id : int, new_input):
 	InputMap.action_add_event(input_string, new_input)
 	
 	last_input_events[input_id] = new_input
-	options["*" + input_string] = new_input.scancode
+	level_completion["*" + input_string] = new_input.scancode
 
 func key_names(key : int):
 	var key_number
 	match key:
-		0: key_number = options["*left"]
-		1: key_number = options["*right"]
-		2: key_number = options["*up"]
-		3: key_number = options["*down"]
-		4: key_number = options["*jump"]
-		5: key_number = options["*special"]
-		6: key_number = options["*reset"]
-		7: key_number = options["*return"]
+		0: key_number = level_completion["*left"]
+		1: key_number = level_completion["*right"]
+		2: key_number = level_completion["*up"]
+		3: key_number = level_completion["*down"]
+		4: key_number = level_completion["*jump"]
+		5: key_number = level_completion["*special"]
+		6: key_number = level_completion["*reset"]
+		7: key_number = level_completion["*return"]
 	
 	if key_number >= 33 and key_number <= 255: return char(key_number)
 	else: match(key_number):
@@ -272,12 +268,12 @@ func key_names(key : int):
 
 func unlock_check():
 	var test : int = 0
-	if !unlocked["Level_1--1"]:
+	if !level_completion["*unlocked"]["Level_1--1"]:
 		test = 0
 		for i in range(15):
 			if level_completion.has("Level_1-" + String(i)): if level_completion["Level_1-" + String(i)][0] != null:
 				test+=1
-		if test>=15: unlocked["Level_1--1"] = true
+		if test>=15: level_completion["*unlocked"]["Level_1--1"] = true
 
 func save_game(timer : float = 0, par : float = 0, collectible : int = 0, level = null, recording : Dictionary = {}):
 	
@@ -299,22 +295,14 @@ func save_game(timer : float = 0, par : float = 0, collectible : int = 0, level 
 	if collectible != 0:
 		temp[String(collectible)] = 0
 	
-	var temp_full = {
-		"level_completion" : {},
-		"options" : {},
-		"unlocked" : {},
-	}
 	level_completion = temp.duplicate()
-	temp_full["level_completion"] = temp.duplicate()
-	temp_full["options"] = options.duplicate()
-	temp_full["unlocked"] = unlocked.duplicate()
 	
-	temp_full = update_old_save(temp_full.duplicate())
+	update_old_save()
 	
-	#print("save: ", temp_full)
+	#print("save: ", temp)
 	
 	savefile.open(user_directory, File.WRITE)
-	savefile.store_line(to_json(temp_full))
+	savefile.store_line(to_json(temp))
 	savefile.close()
 	
 	if level != null: condicional_save_replay(level + "_Best", recording)
@@ -339,39 +327,55 @@ func load_game():
 	
 	#print("load: ", temp)
 	
-	temp = update_old_save(temp.duplicate())
-	level_completion = temp["level_completion"].duplicate()
-	options = temp["options"].duplicate()
-	unlocked = temp["unlocked"].duplicate()
+	level_completion = temp.duplicate()
+	
+	update_old_save()
 
-func update_old_save(save : Dictionary):
-	if !save.has("options"):
-		var settings : Dictionary = {}
-		for i in default_options.keys():
-			settings[i] = save[i]
-			save.erase(i)
-		var unlocks : Dictionary = save["*unlocked"].duplicate()
-		save.erase("*unlocked")
-		unlocks["*char_select_active"] = save["*char_select_active"]
-		save.erase("*char_select_active")
-		var levels : Dictionary = save.duplicate()
-		save.clear()
-		save["level_completion"] = levels.duplicate()
-		save["unlocked"] = unlocks.duplicate()
-		save["options"] = settings.duplicate()
-		
-	if !save["options"].has("*ghosts_on"): save["options"]["*ghosts_on"] = false
-	if !save["options"].has("*timer_on"): save["options"]["*timer_on"] = false
-	if !save["options"].has("*left"): save["options"]["*left"] = null
-	if !save["options"].has("*right"): save["options"]["*right"] = null
-	if !save["options"].has("*up"): save["options"]["*up"] = null
-	if !save["options"].has("*down"): save["options"]["*down"] = null
-	if !save["options"].has("*jump"): save["options"]["*jump"] = null
-	if !save["options"].has("*special"): save["options"]["*special"] = null
-	if !save["options"].has("*reset"): save["options"]["*reset"] = null
-	if !save["options"].has("*return"): save["options"]["*return"] = null
-	if !save["options"].has("*first_time_load"): save["options"]["*first_time_load"] = false
-	return save
+func update_old_save():
+	if !level_completion.has("*ghosts_on"): level_completion["*ghosts_on"] = false
+	if !level_completion.has("*timer_on"): level_completion["*timer_on"] = false
+	if !level_completion.has("*left"): level_completion["*left"] = null
+	if !level_completion.has("*right"): level_completion["*right"] = null
+	if !level_completion.has("*up"): level_completion["*up"] = null
+	if !level_completion.has("*down"): level_completion["*down"] = null
+	if !level_completion.has("*jump"): level_completion["*jump"] = null
+	if !level_completion.has("*special"): level_completion["*special"] = null
+	if !level_completion.has("*reset"): level_completion["*reset"] = null
+	if !level_completion.has("*return"): level_completion["*return"] = null
+	if !level_completion.has("*first_time_load"): level_completion["*first_time_load"] = false
+	if !level_completion.has("*unlocked"): level_completion["*unlocked"] = {
+		"Level_1-A" : false,
+		"Level_1-B" : false,
+		"Level_1-C" : false,
+		"Level_1--1" : false,
+	}
+	if !level_completion["*unlocked"].has("Level_1-A"): level_completion["*unlocked"]["Level_1-A"] = false
+	if !level_completion["*unlocked"].has("Level_1-B"): level_completion["*unlocked"]["Level_1-B"] = false
+	if !level_completion["*unlocked"].has("Level_1-C"): level_completion["*unlocked"]["Level_1-C"] = false
+	if !level_completion["*unlocked"].has("Level_1--1"): level_completion["*unlocked"]["Level_1--1"] = false
+	if !level_completion.has("*char_select_active"): level_completion["*char_select_active"] = false
+
+func keep_settings():
+	var settings : Dictionary = {}
+	settings["*ghosts_on"] = level_completion["*ghosts_on"]
+	settings["*timer_on"] = level_completion["*timer_on"]
+	settings["*left"] = level_completion["*left"]
+	settings["*right"] = level_completion["*right"]
+	settings["*up"] = level_completion["*up"]
+	settings["*down"] = level_completion["*down"]
+	settings["*jump"] = level_completion["*jump"]
+	settings["*special"] = level_completion["*special"]
+	settings["*reset"] = level_completion["*reset"]
+	settings["*return"] = level_completion["*return"]
+	settings["*first_time_load"] = level_completion["*first_time_load"]
+	settings["*unlocked"] = {
+		"Level_1-A" : false,
+		"Level_1-B" : false,
+		"Level_1-C" : false,
+		"Level_1--1" : false,
+	}
+	settings["*char_select_active"] = false
+	return settings
 
 func condicional_save_replay(replay_name, recording : Dictionary):
 	if load_replay(replay_name, true):

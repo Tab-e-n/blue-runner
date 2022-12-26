@@ -56,6 +56,26 @@
 [ext_resource path="res://Scripts/CHARACTER.gd" type="Script" id=55]
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=56]
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 [sub_resource type="Animation" id=1]
 resource_name = "AAA_RESET"
 length = 0.1
@@ -227,78 +247,6 @@ tracks/13/keys = {
 "update": 0,
 "values": [ Vector2( -936, 1592 ) ]
 }
-tracks/14/type = "value"
-tracks/14/path = NodePath("SELECT:visible")
-tracks/14/interp = 1
-tracks/14/loop_wrap = true
-tracks/14/imported = false
-tracks/14/enabled = true
-tracks/14/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ false ]
-}
-tracks/15/type = "value"
-tracks/15/path = NodePath("CHARACTER:visible")
-tracks/15/interp = 1
-tracks/15/loop_wrap = true
-tracks/15/imported = false
-tracks/15/enabled = true
-tracks/15/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ false ]
-}
-tracks/16/type = "value"
-tracks/16/path = NodePath("REPLAY:visible")
-tracks/16/interp = 1
-tracks/16/loop_wrap = true
-tracks/16/imported = false
-tracks/16/enabled = true
-tracks/16/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ false ]
-}
-tracks/17/type = "value"
-tracks/17/path = NodePath("HELP:visible")
-tracks/17/interp = 1
-tracks/17/loop_wrap = true
-tracks/17/imported = false
-tracks/17/enabled = true
-tracks/17/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ false ]
-}
-tracks/18/type = "value"
-tracks/18/path = NodePath("OPTION:visible")
-tracks/18/interp = 1
-tracks/18/loop_wrap = true
-tracks/18/imported = false
-tracks/18/enabled = true
-tracks/18/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ false ]
-}
-tracks/19/type = "value"
-tracks/19/path = NodePath("MAIN:visible")
-tracks/19/interp = 1
-tracks/19/loop_wrap = true
-tracks/19/imported = false
-tracks/19/enabled = true
-tracks/19/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ true ]
-}
 
 [sub_resource type="Animation" id=2]
 resource_name = "CHARACTER-SELECT"
@@ -338,30 +286,6 @@ tracks/2/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ Vector2( -480, 824 ), Vector2( -936, 1592 ) ]
-}
-tracks/3/type = "value"
-tracks/3/path = NodePath("SELECT:visible")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/keys = {
-"times": PoolRealArray( 0, 0.4 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, true ]
-}
-tracks/4/type = "value"
-tracks/4/path = NodePath("CHARACTER:visible")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/keys = {
-"times": PoolRealArray( 0, 0.4 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, false ]
 }
 
 [sub_resource type="Animation" id=3]
@@ -513,30 +437,6 @@ tracks/7/keys = {
 "update": 0,
 "values": [ Vector2( 1, 1 ), Vector2( 1.5, 1 ), Vector2( 0.5, 1.5 ), Vector2( 1e-05, 1e-05 ) ]
 }
-tracks/8/type = "value"
-tracks/8/path = NodePath("HELP:visible")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/keys = {
-"times": PoolRealArray( 0, 0.6 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, false ]
-}
-tracks/9/type = "value"
-tracks/9/path = NodePath("MAIN:visible")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/keys = {
-"times": PoolRealArray( 0, 0.6 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, true ]
-}
 
 [sub_resource type="Animation" id=5]
 length = 0.6
@@ -636,30 +536,6 @@ tracks/7/keys = {
 "update": 0,
 "values": [ Vector2( 0, 0 ), Vector2( 0.5, 1.5 ), Vector2( 1.5, 1 ), Vector2( 1, 1 ) ]
 }
-tracks/8/type = "value"
-tracks/8/path = NodePath("MAIN:visible")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/keys = {
-"times": PoolRealArray( 0, 0.6 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, false ]
-}
-tracks/9/type = "value"
-tracks/9/path = NodePath("HELP:visible")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/keys = {
-"times": PoolRealArray( 0, 0.6 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, true ]
-}
 
 [sub_resource type="Animation" id=6]
 length = 0.6
@@ -758,30 +634,6 @@ tracks/7/keys = {
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
 "values": [ Vector2( 0, 0 ), Vector2( 1.5, 0.5 ), Vector2( 1, 1.5 ), Vector2( 1, 1 ) ]
-}
-tracks/8/type = "value"
-tracks/8/path = NodePath("OPTION:visible")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/keys = {
-"times": PoolRealArray( 0, 0.6 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, true ]
-}
-tracks/9/type = "value"
-tracks/9/path = NodePath("MAIN:visible")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/keys = {
-"times": PoolRealArray( 0, 0.6 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, false ]
 }
 
 [sub_resource type="Animation" id=7]
@@ -894,30 +746,6 @@ tracks/8/keys = {
 "update": 1,
 "values": [ true, false ]
 }
-tracks/9/type = "value"
-tracks/9/path = NodePath("REPLAY:visible")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/keys = {
-"times": PoolRealArray( 0, 0.6 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, true ]
-}
-tracks/10/type = "value"
-tracks/10/path = NodePath("MAIN:visible")
-tracks/10/interp = 1
-tracks/10/loop_wrap = true
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/keys = {
-"times": PoolRealArray( 0, 0.6 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, false ]
-}
 
 [sub_resource type="Animation" id=8]
 length = 0.6
@@ -1004,30 +832,6 @@ tracks/6/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ Vector2( -4.76837e-07, -64 ), Vector2( -3008, -320 ) ]
-}
-tracks/7/type = "value"
-tracks/7/path = NodePath("SELECT:visible")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/keys = {
-"times": PoolRealArray( 0, 0.6 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, true ]
-}
-tracks/8/type = "value"
-tracks/8/path = NodePath("MAIN:visible")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/keys = {
-"times": PoolRealArray( 0, 0.6 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, false ]
 }
 
 [sub_resource type="Animation" id=9]
@@ -1128,30 +932,6 @@ tracks/7/keys = {
 "update": 0,
 "values": [ Vector2( 1, 1 ), Vector2( 1, 1.5 ), Vector2( 1.5, 0.5 ), Vector2( 1e-05, 1e-05 ) ]
 }
-tracks/8/type = "value"
-tracks/8/path = NodePath("OPTION:visible")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/keys = {
-"times": PoolRealArray( 0, 0.6 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, false ]
-}
-tracks/9/type = "value"
-tracks/9/path = NodePath("MAIN:visible")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/keys = {
-"times": PoolRealArray( 0, 0.6 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, true ]
-}
 
 [sub_resource type="Animation" id=10]
 length = 0.6
@@ -1251,30 +1031,6 @@ tracks/7/keys = {
 "update": 0,
 "values": [ Vector2( 1, 1 ), Vector2( 1, 1.5 ), Vector2( 1.5, 0.5 ), Vector2( 1e-05, 1e-05 ) ]
 }
-tracks/8/type = "value"
-tracks/8/path = NodePath("REPLAY:visible")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/keys = {
-"times": PoolRealArray( 0, 0.6 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, false ]
-}
-tracks/9/type = "value"
-tracks/9/path = NodePath("MAIN:visible")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/keys = {
-"times": PoolRealArray( 0, 0.6 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, true ]
-}
 
 [sub_resource type="Animation" id=11]
 resource_name = "SELECT-CHARACTER"
@@ -1314,30 +1070,6 @@ tracks/2/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ Vector2( -936, 1592 ), Vector2( -480, 824 ) ]
-}
-tracks/3/type = "value"
-tracks/3/path = NodePath("SELECT:visible")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/keys = {
-"times": PoolRealArray( 0, 0.5 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, false ]
-}
-tracks/4/type = "value"
-tracks/4/path = NodePath("CHARACTER:visible")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/keys = {
-"times": PoolRealArray( 0, 0.5 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, true ]
 }
 
 [sub_resource type="Animation" id=12]
@@ -1425,30 +1157,6 @@ tracks/6/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ Vector2( -3008, -320 ), Vector2( 0, -64 ) ]
-}
-tracks/7/type = "value"
-tracks/7/path = NodePath("SELECT:visible")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/keys = {
-"times": PoolRealArray( 0, 0.6 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, false ]
-}
-tracks/8/type = "value"
-tracks/8/path = NodePath("MAIN:visible")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/keys = {
-"times": PoolRealArray( 0, 0.6 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, true ]
 }
 
 [sub_resource type="Animation" id=13]
@@ -1572,18 +1280,6 @@ tracks/9/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ Vector2( 1, 1 ) ]
-}
-tracks/10/type = "value"
-tracks/10/path = NodePath("REPLAY:visible")
-tracks/10/interp = 1
-tracks/10/loop_wrap = true
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ true ]
 }
 
 [sub_resource type="Animation" id=14]
@@ -2655,7 +2351,6 @@ limit_x = Vector2( -2048, 0 )
 limit_y = Vector2( 0, 2048 )
 
 [node name="SELECT" type="Node2D" parent="."]
-visible = false
 script = ExtResource( 25 )
 
 [node name="BG_0" parent="SELECT" instance=ExtResource( 2 )]
@@ -2919,7 +2614,6 @@ color = Color( 0.0156863, 0.0235294, 0.133333, 0 )
 polygon = PoolVector2Array( -1024, 768, 1024, 768, 1024, -768, -1024, -768 )
 
 [node name="CHARACTER" type="Node2D" parent="."]
-visible = false
 position = Vector2( 2264, 1320 )
 script = ExtResource( 55 )
 
@@ -2964,9 +2658,9 @@ scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 35 )
 
 [node name="REPLAY" type="Node2D" parent="."]
-visible = false
 scale = Vector2( 1e-05, 1e-05 )
 script = ExtResource( 50 )
+reset = false
 
 [node name="menu_circle_2" type="Sprite" parent="REPLAY"]
 modulate = Color( 0.12549, 0.0823529, 0.2, 1 )
@@ -3001,7 +2695,6 @@ text = "Switch mode with "
 scroll_active = true
 
 [node name="HELP" type="Node2D" parent="."]
-visible = false
 scale = Vector2( 1e-05, 1e-05 )
 script = ExtResource( 43 )
 
@@ -3336,7 +3029,6 @@ anims/down = SubResource( 19 )
 anims/up = SubResource( 20 )
 
 [node name="OPTION" type="Node2D" parent="."]
-visible = false
 scale = Vector2( 1e-05, 1e-05 )
 script = ExtResource( 36 )
 
