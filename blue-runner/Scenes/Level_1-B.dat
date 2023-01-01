@@ -1,1 +1,1 @@
-{"creator":"Tabin","dependencies":[""],"level_name":"Crystal Spinner","official":true,"level_icon":"B"}
+{"creator":"Tabin","dependencies":[],"level_base":["waterway","res:/"],"level_icon":["B.png","res:/"],"level_name":"Crystal Spinner","official":true}

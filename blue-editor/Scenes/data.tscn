@@ -6,6 +6,7 @@ script/source = "extends Control
 var tilesets : Array
 var bg : Array
 var level_icon :  Array
+var level_base :  Array
 var place_decor : Dictionary
 var place_objects : Dictionary
 var characters : Array
@@ -16,7 +17,16 @@ var mods_installed : Array
 var mods_enabled : Dictionary
 
 var settings : Dictionary = {
-	\"level_editor_gui_additional_info\" : false,
+	\"editor_gui_additional_info\" : false,
+	\"level_save_path\" : \"user://SRLevels/\",
+	\"editor_default_layer\" : 2,
+	\"editor_default_sublayer\" : 1,
+	\"editor_default_layer_data\" : {
+		\"background\" : [[0.376471, 0.376471, 0.376471, 1], [0.75, 0.75]],
+		\"back\" : [[0.6, 0.6, 0.6, 1], [1, 1]],
+		\"center\" : [[1, 1, 1, 1], [1, 1]],
+		\"front\" : [[1, 1, 1, 1], [1, 1]],
+	}
 }
 # Max 8 faves per category
 # Each tileset has its own 8 faves under its name
@@ -37,6 +47,7 @@ var level_data : Dictionary = {
 	\"creator\" : \"Tabin\",
 	\"official\" : true,
 	\"level_icon\" : [\"questionmark\",\"res:/\"],
+	\"level_base\" : [\"base\",\"res:/\"],
 	\"dependencies\" : [],
 }
 
@@ -49,8 +60,13 @@ var mod_data : Dictionary = {
 }
 
 func _ready():
-	OS.min_window_size = Vector2(640, 480)
 	print(\"data ready\")
+	OS.min_window_size = Vector2(640, 480)
+	
+	var dir = Directory.new()
+	dir.open(\"user://\")
+	if !dir.dir_exists(\"SRLevels\"): dir.make_dir(\"SRLevels\")
+	
 	load_game()
 	load_editor_vanilla()
 	load_editor_mods()
@@ -111,21 +127,7 @@ func load_editor_vanilla():
 	var directories_to_visit : Array
 	
 	print(\"scanning vanilla characters\")
-	var loadfile = File.new()
-	var temp = {}
-	
-	if loadfile.file_exists(\"res://Objects/Player/characters.dat\"): # does file exist
-		print(\"character file was found\")
-		loadfile.open(\"res://Objects/Player/characters.dat\", File.READ)
-		
-		while loadfile.get_position() < loadfile.get_len():
-			var parsedData = parse_json(loadfile.get_line())
-			
-			temp = parsedData
-		characters = temp[\"characters\"]
-		loadfile.close()
-	else:
-		print(\"no character file found\")
+	load_dat_file(\"res:/\", \"/Objects/Player/\", characters, \"characters\")
 	
 	print(\"scanning vanilla tilesets\")
 	scan_single_directory(\"res:/\", \"/Objects/Tilesets/\", tilesets, \".tres\", \"tileset\")
@@ -141,6 +143,9 @@ func load_editor_vanilla():
 	# Level Icon
 	print(\"scanning vanilla level icons\")
 	scan_single_directory(\"res:/\", \"/Visual/Level/\", level_icon, \".png\", \"icon\")
+	
+	print(\"scanning vanilla level base\")
+	load_dat_file(\"res:/\", \"/Visual/Level/\", level_base, \"base\")
 	
 	# Decor
 	print(\"scanning vanilla decor\")
@@ -181,21 +186,7 @@ func load_editor_mods():
 		
 		# Characters
 		print(\"scanning vanilla characters\")
-		var loadfile = File.new()
-		var temp = {}
-		
-		if loadfile.file_exists(\"Mods/\" + mod_name + \"/Objects/Player/characters.dat\"): # does file exist
-			print(\"character file was found\")
-			loadfile.open(\"Mods/\" + mod_name + \"/Objects/Player/characters.dat\", File.READ)
-			
-			while loadfile.get_position() < loadfile.get_len():
-				var parsedData = parse_json(loadfile.get_line())
-				
-				temp = parsedData
-			for i in temp[\"characters\"]: characters.append(i)
-			loadfile.close()
-		else:
-			print(\"no character file found\")
+		load_dat_file(\"Mods/\" + mod_name, \"/Objects/Player/\", characters, \"characters\")
 		
 		# Tilesets
 		print(\"scanning for tilesets\")
@@ -213,9 +204,30 @@ func load_editor_mods():
 		print(\"scanning for level icons\")
 		scan_single_directory(\"Mods/\" + mod_name, \"/Visual/Level/\", level_icon, \".png\", \"icon\")
 		
+		print(\"scanning for level base\")
+		load_dat_file(\"Mods/\" + mod_name, \"/Visual/Level/\", level_base, \"base\")
+		
 		# Visuals
 		print(\"scanning for decor\")
 		scan_multi_directory(\"Mods/\" + mod_name, \"/Visual/\", place_decor, \".png\")
+
+func load_dat_file(main_directory : String, sub_directory : String, storage : Array, file_type : String):
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(main_directory + sub_directory + file_type + \".dat\"): # does file exist
+		print(file_type + \" file was found\")
+		loadfile.open(main_directory + sub_directory + file_type + \".dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		if temp.has(\"*\" + file_type):
+			for i in temp[\"*\" + file_type]: storage.append([i,main_directory])
+		loadfile.close()
+	else:
+		print(\"no \" + file_type + \" file found\")
 
 func scan_single_directory(main_directory : String, sub_directory : String, storage : Array, file_type : String, file_descriptor : String):
 	var directory : Directory = Directory.new()

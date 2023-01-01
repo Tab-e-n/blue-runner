@@ -28,6 +28,7 @@ data="*res://Scenes/data.tscn"
 [display]
 
 window/size/height=768
+window/size/fullscreen=true
 window/stretch/mode="2d"
 window/stretch/aspect="expand"
 
@@ -46,4 +47,5 @@ mouse_right={
 
 [rendering]
 
+environment/default_clear_color=Color( 0.0156863, 0.0235294, 0.133333, 1 )
 environment/default_environment="res://default_env.tres"

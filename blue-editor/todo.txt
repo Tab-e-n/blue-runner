@@ -11,8 +11,10 @@ Items
 Recent system
 Favorite system
 movin around tghe level
-
 placin tiles
+removin tiles
+"editing tiles"
+
 placin decor
 Object representations
 placin objects
