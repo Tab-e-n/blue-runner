@@ -39,7 +39,7 @@ func _ready():
 	replay = global.replay
 	if ghost:
 		if !global.race_mode:
-			if !global.load_replay(global.current_level + "_Best", true) or !global.level_completion["*ghosts_on"]:
+			if !global.load_replay(global.current_level + "_Best", true) or !global.options["*ghosts_on"]:
 				queue_free()
 				return
 		replay = true

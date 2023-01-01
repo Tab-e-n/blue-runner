@@ -29,7 +29,6 @@ Global="*res://Scenes/Global.tscn"
 
 window/size/height=768
 window/size/resizable=false
-window/size/fullscreen=true
 window/stretch/mode="viewport"
 window/stretch/aspect="keep_height"
 
@@ -107,5 +106,5 @@ default={
 
 [rendering]
 
-environment/default_clear_color=Color( 0.301961, 0.301961, 0.301961, 1 )
+environment/default_clear_color=Color( 0.0156863, 0.0235294, 0.133333, 1 )
 environment/default_environment="res://default_env.tres"

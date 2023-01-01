@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=2]
+[gd_scene load_steps=48 format=2]
 
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=1]
 [ext_resource path="res://Visual/Editor/editor_paintbrush.png" type="Texture" id=2]
@@ -30,6 +30,7 @@
 [ext_resource path="res://Visual/Editor/editor_cross_enabled.png" type="Texture" id=28]
 [ext_resource path="res://Visual/Editor/editor_star.png" type="Texture" id=29]
 [ext_resource path="res://Visual/mushroom_star.png" type="Texture" id=30]
+[ext_resource path="res://Visual/Editor/editor_grid.png" type="Texture" id=31]
 [ext_resource path="res://Control/style_none.tres" type="StyleBox" id=32]
 
 [sub_resource type="GDScript" id=1]
@@ -47,6 +48,7 @@ enum {LAYER_BACKGROUND,LAYER_BACK,LAYER_CENTER,LAYER_FRONT}
 var level_layers : Array = [\"background\", \"back\", \"center\", \"front\"]
 var level_layer_data : Dictionary
 var mouse_hinge : Vector2
+var level_mouse_position : Vector2
 var level_position_hinge : Vector2
 var level_scale_hinge : Vector2
 
@@ -65,6 +67,10 @@ var place_current_mode : int = PLACEMODE_MOVE
 enum {PLACE_TILES, PLACE_OBJECTS, PLACE_DECOR}
 var place_current_tab : int = PLACE_TILES
 
+var place_current_layer : int = LAYER_CENTER
+var place_current_sublayer : int = 1
+var place_current_tilemap : TileMap
+
 onready var favorite_mode : TextureButton = $GUI/Place/Panel/favorite
 
 onready var place_tiles : TileMap = $GUI/Place/Panel/tab_tiles
@@ -73,6 +79,11 @@ var place_tiles_items : Array
 var place_objects_items : Array
 var place_decor_items : Array
 const PLACE_ITEM_AMOUNT : int = 16
+
+var place_selected_tile : int = -1
+var place_tile_mods : Array = [false, false, false]
+
+onready var place_selected_decor : Sprite = $GUI/cursor/decor
 
 onready var items_scroll : VScrollBar = $GUI/Items/Panel/scroll
 var items_scroll_last_value : int = 0
@@ -84,11 +95,11 @@ const ITEMS_ITEM_AMOUNT : int = 49
 func _ready():
 	print(\"main ready\")
 	# Create bulk nodes
-	
+
 	for i in range(ITEMS_ITEM_AMOUNT):
 		# warning-ignore:integer_division
 		var position : Vector2 = Vector2(i % 7 * 64, int(i) / 7 * 64)
-		
+
 		var button : Button = Button.new()
 		button.name = String(i)
 		button.rect_position = position
@@ -100,16 +111,16 @@ func _ready():
 		button.add_stylebox_override(\"disabled\",style_disabled)
 		button.add_stylebox_override(\"normal\",style_none)
 		$GUI/Items/Panel/buttons.add_child(button)
-		
+
 		var image : Sprite = Sprite.new()
 		image.name = String(i)
 		image.position = position + Vector2(32, 32)
 		$GUI/Items/Panel/items.add_child(image)
-	
+
 	for i in range(PLACE_ITEM_AMOUNT):
 		# warning-ignore:integer_division
 		var position : Vector2 = Vector2(i % 8 * 64, (1 - int(i) / 8) * 64)
-		
+
 		var button : Button = Button.new()
 		button.name = String(i)
 		button.rect_position = position
@@ -121,7 +132,7 @@ func _ready():
 		button.add_stylebox_override(\"disabled\",style_disabled)
 		button.add_stylebox_override(\"normal\",style_none)
 		$GUI/Place/Panel/item.add_child(button)
-		
+
 		var image : Sprite = Sprite.new()
 		image.name = String(i)
 		image.position = position + Vector2(32, 32)
@@ -130,37 +141,64 @@ func _ready():
 		image2.name = String(i)
 		image2.position = position + Vector2(32, 32)
 		$GUI/Place/Panel/tab_objects.add_child(image2)
+
+	for i in range(8):
+		# warning-ignore:integer_division
+		# warning-ignore:integer_division
+		# warning-ignore:integer_division
+		var position : Vector2 = Vector2((i % 2) * 64, (i / 2) * 64)
+
+		var button : Button = Button.new()
+		button.name = String(i)
+		button.rect_position = position
+		button.rect_size = Vector2(64, 64)
+		# warning-ignore:return_value_discarded
+		button.connect(\"pressed\", self, \"tile_mods_changed\", [i])
+		button.add_stylebox_override(\"hover\",style_none)
+		button.add_stylebox_override(\"pressed\",style_none)
+		button.add_stylebox_override(\"disabled\",style_disabled)
+		button.add_stylebox_override(\"normal\",style_none)
+		$GUI/Edit_Tiles/Panel/buttons.add_child(button)
 	
 	ready_optionbutton_setup(tilesets, data.tilesets)
 	ready_optionbutton_setup(bg, data.bg)
 	ready_optionbutton_setup(level_icon, data.level_icon)
-	#ready_optionbutton_setup(level_base, data.level_base)
-	
+	ready_optionbutton_setup(level_base, data.level_base)
+
+	var temp_layer_data = data.settings[\"editor_default_layer_data\"].duplicate()
 	for i in level_layers:
-		var layer_color = Color(1, 1, 1, 1)
-		var layer_scale = Vector2(1, 1)
-		if i == level_layers[LAYER_BACKGROUND]:
-			layer_color = Color(0.376471, 0.376471, 0.376471, 1)
-			layer_scale = Vector2(0.75, 0.75)
-		if i == level_layers[LAYER_BACK]:
-			layer_color = Color(0.6, 0.6, 0.6, 1)
-		level_layer_data[i] = [layer_color, layer_scale]
+		level_layer_data[i] = []
+		level_layer_data[i].append(Color(temp_layer_data[i][0][0],temp_layer_data[i][0][1],temp_layer_data[i][0][2],temp_layer_data[i][0][3]))
+		level_layer_data[i].append(Vector2(temp_layer_data[i][1][0],temp_layer_data[i][1][1]))
+		if i == level_layers[LAYER_BACKGROUND]: level_layer_data[i].append(-40)
+		if i == level_layers[LAYER_BACK]: level_layer_data[i].append(-20)
+		if i == level_layers[LAYER_CENTER]: level_layer_data[i].append(0)
+		if i == level_layers[LAYER_FRONT]: level_layer_data[i].append(40)
 	create_new_level()
+	
+	place_current_layer = data.settings[\"editor_default_layer\"]
+	place_current_sublayer = data.settings[\"editor_default_sublayer\"]
+	
+	change_tilemap()
+	$GUI/cursor_tiled/sublayer.text = String(place_current_sublayer)
+	get_node(\"GUI/Edit_Tiles/Panel/sublayer_\" + String(place_current_sublayer)).pressed = true
+	get_node(\"GUI/Place/Panel/layer_\" + String(place_current_layer)).pressed = true
 	
 	# Update nodes according to save
 	tileset_changed(tilesets.get_item_index(tilesets.get_selected_id()))
-	
+
+
 	for i in data.place_objects.keys():
 		items_objects_directory.add_item(i)
 	#place_update_items(PLACE_OBJECTS)
-	
+
 	for i in data.place_decor.keys():
 		items_decor_directory.add_item(i)
 	#place_update_items(PLACE_DECOR)
-	
+
 	place_tab_move()
-	
-	if data.settings[\"level_editor_gui_additional_info\"]:
+
+	if data.settings[\"editor_gui_additional_info\"]:
 		$GUI/mouse.visible = true
 		$GUI/window.visible = true
 		$GUI/actual.visible = true
@@ -185,20 +223,24 @@ func _process(_delta):
 	level_input.margin_left = $GUI.margin_left
 	level_input.margin_bottom = $GUI.margin_bottom
 	level_input.margin_top = $GUI.margin_top
-	
+
 	var mouse_pos : Vector2 = get_viewport().get_mouse_position()
+	level_mouse_position.x = (-level.position.x + mouse_pos.x - window.x / 2) / level.scale.x
+	level_mouse_position.y = (-level.position.y + mouse_pos.y - window.y / 2) / level.scale.y
+
+	if Input.is_action_just_released(\"mouse_left\"):
+		level_input.pressed = false
+	if Input.is_action_just_released(\"mouse_right\"):
+		level_input.pressed = false
+
 	match place_current_mode:
 		PLACEMODE_MOVE:
-			if Input.is_action_just_released(\"mouse_left\"):
-				level_input.pressed = false
 			if level_input.pressed and Input.is_action_pressed(\"mouse_left\"):
 				if Input.is_action_just_pressed(\"mouse_left\"):
 					mouse_hinge = mouse_pos
 					level_position_hinge = level.position
 				level.position = level_position_hinge + (mouse_pos - mouse_hinge)
-			
-			if Input.is_action_just_released(\"mouse_right\"):
-				level_input.pressed = false
+
 			if level_input.pressed and Input.is_action_pressed(\"mouse_right\"):
 				if Input.is_action_just_pressed(\"mouse_right\"):
 					mouse_hinge = mouse_pos
@@ -209,17 +251,67 @@ func _process(_delta):
 				if level.scale.y < 0.1: level.scale.y = 0.1
 				if level.scale.y > 10: level.scale.y = 10
 				level.scale.x = level.scale.y
-				
+
 				level.position = level_position_hinge * (level.scale / level_scale_hinge)
 		PLACEMODE_PAINT:
-			pass
+			if level_input.pressed and Input.is_action_pressed(\"mouse_left\"):
+				if Input.is_action_just_pressed(\"mouse_left\"):
+					if place_current_tab == PLACE_DECOR:
+						level_add_decor()
+				if place_current_tab == PLACE_TILES:
+					level_draw_tile(place_selected_tile)
+				
+
+			if level_input.pressed and Input.is_action_pressed(\"mouse_right\"):
+				if Input.is_action_just_pressed(\"mouse_right\"):
+					mouse_hinge = mouse_pos
+					level_position_hinge = level.position
+				level.position = level_position_hinge + (mouse_pos - mouse_hinge)
 		PLACEMODE_ERASER:
-			pass
+			if level_input.pressed and Input.is_action_pressed(\"mouse_left\"):
+				if Input.is_action_just_pressed(\"mouse_left\"):
+					pass
+				if place_current_tab == PLACE_TILES:
+					level_draw_tile(-1)
+
+			if level_input.pressed and Input.is_action_pressed(\"mouse_right\"):
+				if Input.is_action_just_pressed(\"mouse_right\"):
+					mouse_hinge = mouse_pos
+					level_position_hinge = level.position
+				level.position = level_position_hinge + (mouse_pos - mouse_hinge)
 		PLACEMODE_COG:
-			pass
-	$GUI/position.text = \"x \" + String(stepify((-level.position.x + mouse_pos.x - window.x / 2) / level.scale.y, 1)) + \" y \" + String(stepify((-level.position.y + mouse_pos.y - window.y / 2) / level.scale.y, 1))
+			if level_input.pressed and Input.is_action_pressed(\"mouse_left\"):
+				if Input.is_action_just_pressed(\"mouse_left\"):
+					if place_current_tab == PLACE_TILES:
+						var tile_pos = place_current_tilemap.world_to_map(level_mouse_position / place_current_tilemap.scale)
+						place_tile_mods[0] = place_current_tilemap.is_cell_x_flipped(tile_pos.x, tile_pos.y)
+						place_tile_mods[1] = place_current_tilemap.is_cell_y_flipped(tile_pos.x, tile_pos.y)
+						place_tile_mods[2] = place_current_tilemap.is_cell_transposed(tile_pos.x, tile_pos.y)
+						tile_select(place_current_tilemap.get_cellv(tile_pos))
+						place_update_tiles(tilesets.get_item_text(tilesets.selected))
+						place_mode_toggled(true, PLACEMODE_PAINT, true)
+
+	if $GUI/cursor_tiled.visible:
+		$GUI/cursor_tiled.scale = level.scale * level_layer_data[level_layers[place_current_layer]][1]
+		$GUI/cursor_tiled.position = (place_current_tilemap.map_to_world(place_current_tilemap.world_to_map(level_mouse_position / place_current_tilemap.scale), false) * place_current_tilemap.scale + level.position / level.scale + Vector2(32, 32) * place_current_tilemap.scale) * level.scale + (window / 2)
+		$GUI/cursor_tiled.modulate = level_layer_data[level_layers[place_current_layer]][0]
+		$GUI/cursor_tiled/selected_tile.z_index = level_layer_data[level_layers[place_current_layer]][2] - 100
+	if $GUI/cursor.visible:
+		$GUI/cursor.scale = level.scale
+		$GUI/cursor.position = mouse_pos
+		$GUI/cursor.modulate = level_layer_data[level_layers[place_current_layer]][0]
+		$GUI/cursor.z_index = level_layer_data[level_layers[place_current_layer]][2] - 100
+	if $GUI/cursor.visible and place_selected_decor.visible:
+		place_selected_decor.scale.x = $GUI/Edit_Decor/Panel/scale_x.value
+		place_selected_decor.scale.y = $GUI/Edit_Decor/Panel/scale_y.value
+		place_selected_decor.rotation_degrees = $GUI/Edit_Decor/Panel/rotation.value
+		place_selected_decor.z_index = $GUI/Edit_Decor/Panel/z_index.value
+		place_selected_decor.flip_h = $GUI/Edit_Decor/Panel/flip_h.pressed
+		place_selected_decor.flip_v = $GUI/Edit_Decor/Panel/flip_v.pressed
+		place_selected_decor.modulate = $GUI/Edit_Decor/Panel/color.color
+	$GUI/position.text = \"x \" + String(stepify(level_mouse_position.x, 1)) + \" y \" + String(stepify(level_mouse_position.y, 1))
 	$GUI/zoom.text = \"zoom \" + String(stepify(1 / level.scale.y, 0.01))
-	if data.settings[\"level_editor_gui_additional_info\"]:
+	if data.settings[\"editor_gui_additional_info\"]:
 		$GUI/mouse.text = \"mouse x \" + String(stepify(mouse_pos.x, 1)) + \" y \" + String(stepify(mouse_pos.y, 1))
 		$GUI/window.text = \"window size x \" + String(stepify(window.x, 1)) + \" y \" + String(stepify(window.y, 1))
 		$GUI/actual.text = \"cam pos x \" + String(stepify(-level.position.x / level.scale.y, 1)) + \" y \" + String(stepify(-level.position.y / level.scale.y, 1))
@@ -227,15 +319,27 @@ func _process(_delta):
 func create_new_level():
 	for i in level.get_children():
 		level.remove_child(i)
-	
+
 	var tileset : TileSet = load(tilesets.get_selected_metadata() + \"/Objects/Tilesets/\" + tilesets.get_item_text(tilesets.selected))
-	
+
 	for layer in range(level_layers.size()):
+		var current_z = level_layer_data[level_layers[layer]][2]
+		
 		var new_objects_layer : Node2D = Node2D.new()
 		level.add_child(new_objects_layer)
 		new_objects_layer.name = \"objects_\" + level_layers[layer]
 		new_objects_layer.modulate = level_layer_data[level_layers[layer]][0]
+		new_objects_layer.z_index = current_z
+		new_objects_layer.use_parent_material = true
 		new_objects_layer.set_owner(level)
+		
+		var new_decor_layer : Node2D = Node2D.new()
+		level.add_child(new_decor_layer)
+		new_decor_layer.name = \"decor_\" + level_layers[layer]
+		new_decor_layer.modulate = level_layer_data[level_layers[layer]][0]
+		new_decor_layer.z_index = current_z
+		new_decor_layer.use_parent_material = true
+		new_decor_layer.set_owner(level)
 		
 		for i in range(LEVEL_TILE_SUBLAYER_AMOUNT):
 			var new_tilemap : TileMap = TileMap.new()
@@ -243,14 +347,10 @@ func create_new_level():
 			new_tilemap.name = \"tiles_\" + level_layers[layer] + \"_\" + String(i)
 			new_tilemap.modulate = level_layer_data[level_layers[layer]][0]
 			new_tilemap.scale = level_layer_data[level_layers[layer]][1]
+			new_tilemap.z_index = current_z
 			new_tilemap.tile_set = tileset
+			new_tilemap.use_parent_material = true
 			new_tilemap.set_owner(level)
-		
-		var new_decor_layer : Node2D = Node2D.new()
-		level.add_child(new_decor_layer)
-		new_decor_layer.name = \"decor_\" + level_layers[layer]
-		new_decor_layer.modulate = level_layer_data[level_layers[layer]][0]
-		new_decor_layer.set_owner(level)
 	
 	var packed_camera : PackedScene = load(\"res://Objects/Camera.tscn\")
 	var camera : Node2D = packed_camera.instance()
@@ -262,25 +362,25 @@ func save_level(level_filename : String = \"Level\"):
 	level_scale_hinge = level.scale
 	level.position = Vector2(0, 0)
 	level.scale = Vector2(1, 1)
-	
-	var save_path : String = \"res://Scenes/\"  # \"user://SRLevels/\"
+
 	var packed_scene = PackedScene.new()
 	packed_scene.pack(level)
-	ResourceSaver.save(save_path + level_filename + \".tscn\", packed_scene)
-	
+	ResourceSaver.save(data.settings[\"level_save_path\"] + level_filename + \".tscn\", packed_scene)
+
 	level.position = level_position_hinge
 	level.scale = level_scale_hinge
-	
+
 	var savefile = File.new()
 	var temp = {}
-	
+
 	temp[\"level_name\"] = level_name.text
 	temp[\"creator\"] = creator.text
 	temp[\"official\"] = official.pressed
 	temp[\"level_icon\"] = [level_icon.get_item_text(level_icon.selected),level_icon.get_selected_metadata()]
+	temp[\"level_base\"] = [level_base.get_item_text(level_base.selected),level_base.get_selected_metadata()]
 	temp[\"dependencies\"] = []
-	
-	savefile.open(save_path + level_filename + \".dat\", File.WRITE)
+
+	savefile.open(data.settings[\"level_save_path\"] + level_filename + \".dat\", File.WRITE)
 	savefile.store_line(to_json(temp))
 	savefile.close()
 
@@ -290,6 +390,8 @@ func tileset_changed(index):
 	var tileset_resource : TileSet = load(tileset_path)
 	place_tiles.tile_set = tileset_resource
 	$GUI/Items/Panel/tiles.tile_set = tileset_resource
+	$GUI/cursor_tiled/selected_tile.tile_set = tileset_resource
+	$GUI/Edit_Tiles/Panel/tile_visual.tile_set = tileset_resource
 	if !data.favorite.has(tileset): data.favorite[tileset] = []
 	if !data.recent.has(tileset): data.recent[tileset] = []
 	place_update_tiles(tileset)
@@ -309,6 +411,46 @@ func convert_object_into_sprite(path : String):
 	if item_texture_place == \"res:\": item_texture_place = \"res:/\"
 	return item_texture_place + \"/Visual/Objects/\" + item_texture_name + \".png\"
 
+func tile_select(tile_num : int):
+	place_selected_tile = tile_num
+	$GUI/cursor_tiled/selected_tile.set_cell(0, 0, tile_num, place_tile_mods[0], place_tile_mods[1], place_tile_mods[2])
+	for i in range(8):
+		# warning-ignore:integer_division
+		# warning-ignore:integer_division
+		# warning-ignore:integer_division
+		# warning-ignore:integer_division
+		$GUI/Edit_Tiles/Panel/tile_visual.set_cell(i % 2, i / 2, tile_num, i % 2 == 1, i % 4 > 1, int(i) / 4 == 1)
+
+func tile_mods_changed(id : int):
+	place_tile_mods[0] = id % 2 == 1
+	place_tile_mods[1] = id % 4 > 1
+	# warning-ignore:integer_division
+	place_tile_mods[2] = id / 4 == 1
+	$GUI/cursor_tiled/selected_tile.set_cell(0, 0, place_selected_tile, place_tile_mods[0], place_tile_mods[1], place_tile_mods[2])
+	place_update_tiles(tilesets.get_item_text(tilesets.selected))
+
+func layer_changed(button_pressed, layer : int):
+	if button_pressed:
+		place_current_layer = layer
+		for i in range(4):
+			if i != layer: get_node(\"GUI/Place/Panel/layer_\" + String(i)).pressed = false
+		change_tilemap()
+	elif place_current_layer == layer:
+		get_node(\"GUI/Place/Panel/layer_\" + String(layer)).pressed = true
+
+func sublayer_changed(button_pressed, layer : int):
+	if button_pressed:
+		place_current_sublayer = layer
+		for i in range(LEVEL_TILE_SUBLAYER_AMOUNT):
+			if i != layer: get_node(\"GUI/Edit_Tiles/Panel/sublayer_\" + String(i)).pressed = false
+		$GUI/cursor_tiled/sublayer.text = String(layer)
+		change_tilemap()
+	elif place_current_sublayer == layer:
+		get_node(\"GUI/Edit_Tiles/Panel/sublayer_\" + String(layer)).pressed = true
+
+func change_tilemap():
+	place_current_tilemap = get_node(\"Game/Level/tiles_\" + level_layers[place_current_layer] + \"_\" + String(place_current_sublayer))
+
 # LEVEL FUNCTIONS
 func level_recieved_input(_button_pressed):
 	match place_current_mode:
@@ -320,6 +462,24 @@ func level_recieved_input(_button_pressed):
 			pass
 		PLACEMODE_COG:
 			pass
+
+func level_draw_tile(tile : int):
+	var tile_pos : Vector2 = place_current_tilemap.world_to_map(level_mouse_position / place_current_tilemap.scale)
+	place_current_tilemap.set_cellv(tile_pos, tile, place_tile_mods[0], place_tile_mods[1], place_tile_mods[2])
+
+func level_add_decor():
+	var new_decor : Sprite = Sprite.new()
+	get_node(\"Game/Level/decor_\" + level_layers[place_current_layer]).add_child(new_decor)
+	new_decor.position = level_mouse_position
+	new_decor.texture = place_selected_decor.texture
+	new_decor.scale = place_selected_decor.scale
+	new_decor.rotation_degrees = place_selected_decor.rotation_degrees
+	new_decor.modulate = place_selected_decor.modulate
+	new_decor.z_index = place_selected_decor.z_index
+	new_decor.flip_h = place_selected_decor.flip_h
+	new_decor.flip_v = place_selected_decor.flip_v
+	new_decor.use_parent_material = true
+	new_decor.set_owner(level)
 
 # PLACE FUNCTIONS
 func place_update_tiles(tileset_name : String):
@@ -336,14 +496,14 @@ func place_update_tiles(tileset_name : String):
 			place_tiles_items.append(data.recent[tileset_name][i])
 	for _i in range(PLACE_ITEM_AMOUNT - place_tiles_items.size()):
 		place_tiles_items.append(-1)
-	
+
 	for i in range(8): get_node(\"GUI/Place/Panel/item/fav_\" + String(i)).visible = fav_size > i
-	
+
 	for x in range(PLACE_ITEM_AMOUNT):
 		var y : int = 0
 		if x > 7: y = 1
-		place_tiles.set_cell(x - y * 8, 1 - y, place_tiles_items[x])
-		
+		place_tiles.set_cell(x - y * 8, 1 - y, place_tiles_items[x], place_tile_mods[0], place_tile_mods[1], place_tile_mods[2])
+
 		var button : Button = get_node(\"GUI/Place/Panel/item/\" + String(x))
 		button.hint_tooltip = \"\"
 		if place_tiles_items[x] == -1:
@@ -373,9 +533,9 @@ func place_update_items(tab : int):
 			place_decor_items.append(data.recent[\"Decor\"][i])
 		for _i in range(PLACE_ITEM_AMOUNT - place_decor_items.size()):
 			place_decor_items.append(\"\")
-	
+
 	for i in range(8): get_node(\"GUI/Place/Panel/item/fav_\" + String(i)).visible = fav_size > i
-	
+
 	for i in range(PLACE_ITEM_AMOUNT):
 		var current_sprite : Sprite
 		if tab == PLACE_OBJECTS:
@@ -383,7 +543,7 @@ func place_update_items(tab : int):
 		elif tab == PLACE_DECOR:
 			current_sprite = get_node(\"GUI/Place/Panel/tab_decor/\" + String(i))
 		var button : Button = get_node(\"GUI/Place/Panel/item/\" + String(i))
-		
+
 		if (tab == PLACE_OBJECTS and place_objects_items[i] == \"\") or (tab == PLACE_DECOR and place_decor_items[i] == \"\"):
 			current_sprite.texture = texture_empty
 			button.hint_tooltip = \"\"
@@ -401,20 +561,29 @@ func place_update_items(tab : int):
 			else:
 				current_sprite.texture = loaded_texture
 			scale_down_sprite(current_sprite)
-			
+
 			button.disabled = false
 
-func place_mode_toggled(button_pressed, mode):
+func place_mode_toggled(button_pressed, mode, scripted : bool = false):
 	if button_pressed:
 		place_current_mode = mode
-		if !mode == PLACEMODE_PAINT:
-			$GUI/Place/Panel/paint.pressed = false
-		if !mode == PLACEMODE_ERASER:
-			$GUI/Place/Panel/eraser.pressed = false
-		if !mode == PLACEMODE_COG:
-			$GUI/Place/Panel/cog.pressed = false
-	else:
+	elif place_current_mode == mode:
 		place_current_mode = PLACEMODE_MOVE
+	
+	if !place_current_mode == PLACEMODE_PAINT:
+		$GUI/Place/Panel/paint.pressed = false
+		$GUI/cursor_tiled/selected_tile.visible = false
+	else:
+		if scripted: $GUI/Place/Panel/paint.pressed = true
+		$GUI/cursor_tiled/selected_tile.visible = true
+	if !place_current_mode == PLACEMODE_ERASER:
+		$GUI/Place/Panel/eraser.pressed = false
+	else:
+		if scripted: $GUI/Place/Panel/eraser.pressed = true
+	if !place_current_mode == PLACEMODE_COG:
+		$GUI/Place/Panel/cog.pressed = false
+	else:
+		if scripted: $GUI/Place/Panel/cog.pressed = true
 
 func place_tab_move(direction : int = 0):
 	place_current_tab += direction
@@ -422,7 +591,7 @@ func place_tab_move(direction : int = 0):
 		place_current_tab = PLACE_DECOR
 	if place_current_tab > PLACE_DECOR:
 		place_current_tab = PLACE_TILES
-	
+
 	match(place_current_tab):
 		PLACE_TILES:
 			$GUI/Place/Panel/tab_text.text = \"Tiles\"
@@ -430,10 +599,15 @@ func place_tab_move(direction : int = 0):
 			$GUI/Place/Panel/tab_decor.visible = false
 			$GUI/Place/Panel/tab_objects.visible = false
 			
+			$GUI/Edit_Tiles.visible = true
+			
 			$GUI/Items/Panel/items.visible = false
 			$GUI/Items/Panel/decor_directory.visible = false
 			$GUI/Items/Panel/objects_directory.visible = false
 			items_tiles.visible = true
+			
+			$GUI/cursor_tiled.visible = true
+			$GUI/cursor.visible = false
 			
 			place_update_tiles(tilesets.get_item_text(tilesets.selected))
 		PLACE_OBJECTS:
@@ -442,20 +616,32 @@ func place_tab_move(direction : int = 0):
 			$GUI/Place/Panel/tab_decor.visible = false
 			$GUI/Place/Panel/tab_objects.visible = true
 			
+			$GUI/Edit_Tiles.visible = false
+			
 			$GUI/Items/Panel/items.visible = true
 			$GUI/Items/Panel/decor_directory.visible = false
 			$GUI/Items/Panel/objects_directory.visible = true
 			items_tiles.visible = false
+			
+			$GUI/cursor_tiled.visible = false
+			$GUI/cursor.visible = true
+			$GUI/cursor/decor.visible = false
 		PLACE_DECOR:
 			$GUI/Place/Panel/tab_text.text = \"Decor\"
 			place_tiles.visible = false
 			$GUI/Place/Panel/tab_decor.visible = true
 			$GUI/Place/Panel/tab_objects.visible = false
 			
+			$GUI/Edit_Tiles.visible = false
+			
 			$GUI/Items/Panel/items.visible = true
 			$GUI/Items/Panel/decor_directory.visible = true
 			$GUI/Items/Panel/objects_directory.visible = false
 			items_tiles.visible = false
+			
+			$GUI/cursor_tiled.visible = false
+			$GUI/cursor.visible = true
+			$GUI/cursor/decor.visible = true
 	if place_current_tab != PLACE_TILES:
 		place_update_items(place_current_tab)
 	if $GUI/Items.visible: items_update_panel(-1, place_current_tab)
@@ -467,12 +653,12 @@ func place_item_selected(index):
 				toggle_favorite(tilesets.get_item_text(tilesets.selected), place_tiles_items[index])
 				place_update_tiles(tilesets.get_item_text(tilesets.selected))
 			else:
-				pass
+				tile_select(place_tiles_items[index])
 		PLACE_OBJECTS:
 			if favorite_mode.pressed:
 				toggle_favorite(\"Objects\", place_objects_items[index])
 				place_update_items(PLACE_OBJECTS)
-				
+
 			else:
 				prepare_item_for_placing()
 		PLACE_DECOR:
@@ -480,7 +666,7 @@ func place_item_selected(index):
 				toggle_favorite(\"Decor\", place_decor_items[index])
 				place_update_items(PLACE_DECOR)
 			else:
-				prepare_item_for_placing()
+				place_selected_decor.texture = load(place_decor_items[index])
 
 func prepare_item_for_placing():
 	pass
@@ -503,13 +689,13 @@ func items_update_panel(index : int, tab : int, change_items : bool = true):
 		selected_directory = items_decor_directory.get_item_text(index)
 		# warning-ignore:integer_division
 		row_amount = int(data.place_decor[selected_directory].size()) / 7 + 1
-	
+
 	if row_amount > 7:
 		items_scroll.max_value = row_amount - 6
 	else:
 		items_scroll.max_value = 1
 	items_scroll.value = 0
-	
+
 	if change_items:
 		if tab == PLACE_TILES:
 			# warning-ignore:narrowing_conversion
@@ -523,7 +709,7 @@ func items_update_items(current_row, directory, tab):
 		var loaded_texture : Texture
 		var sprite : Sprite = get_node(\"GUI/Items/Panel/items/\" + String(i))
 		var button : Button = get_node(\"GUI/Items/Panel/buttons/\" + String(i))
-		
+
 		button.hint_tooltip = \"\"
 		if tab == PLACE_OBJECTS:
 			if sprite_index < data.place_objects[directory].size():
@@ -533,13 +719,13 @@ func items_update_items(current_row, directory, tab):
 			if sprite_index < data.place_decor[directory].size():
 				loaded_texture = load(data.place_decor[directory][sprite_index])
 				button.hint_tooltip = data.place_decor[directory][sprite_index]
-		else: 
+		else:
 			loaded_texture = texture_empty
 		if loaded_texture == null:
 			loaded_texture = texture_missing
 		sprite.texture = loaded_texture
 		scale_down_sprite(sprite)
-		
+
 		if tab == PLACE_OBJECTS:
 			button.disabled = sprite_index >= data.place_objects[directory].size()
 		else:
@@ -549,7 +735,7 @@ func items_update_tiles(current_row : int):
 	for i in range(ITEMS_ITEM_AMOUNT):
 		if i < items_tiles.tile_set.get_tiles_ids().size():
 			# warning-ignore:integer_division
-			items_tiles.set_cell(i % 7, int(i) / 7, items_tiles.tile_set.get_tiles_ids()[i+current_row*7])
+			items_tiles.set_cell(i % 7, int(i) / 7, items_tiles.tile_set.get_tiles_ids()[i+current_row*7], place_tile_mods[0], place_tile_mods[1], place_tile_mods[2])
 		get_node(\"GUI/Items/Panel/buttons/\" + String(i)).disabled = i+current_row*7 >= items_tiles.tile_set.get_tiles_ids().size()
 
 func items_button_pressed(index):
@@ -562,6 +748,7 @@ func items_button_pressed(index):
 			else:
 				push_to_recent(tileset, tile)
 			place_update_tiles(tileset)
+			tile_select(tile)
 		PLACE_OBJECTS:
 			var object : String = data.place_objects[items_objects_directory.get_item_text(items_objects_directory.selected)][index + items_scroll.value * 7]
 			if favorite_mode.pressed:
@@ -613,6 +800,13 @@ func items_focus_toggled(button_pressed):
 	if button_pressed:
 		items_update_panel(-1, place_current_tab)
 
+# EDIT FUNC
+
+
+# FILE FUNC
+func file_exit_pressed():
+	get_tree().change_scene(\"res://Scenes/dat_creator.tscn\")
+
 "
 
 [sub_resource type="GDScript" id=2]
@@ -660,6 +854,91 @@ tracks/0/keys = {
 [sub_resource type="GDScript" id=5]
 script/source = "extends Control
 
+var focused : bool = false
+
+func _on_more_toggled(button_pressed):
+	if focused:
+		if button_pressed:
+			$Animation.play(\"Unfocus\")
+		else:
+			$Animation.play(\"Focus\")
+
+func _on_slider_toggled(button_pressed):
+	if button_pressed:
+		$Animation.play(\"Focus\")
+		focused = true
+	else:
+		$Animation.play(\"Unfocus\")
+		focused = false
+"
+
+[sub_resource type="Animation" id=6]
+resource_name = "Focus"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:rect_position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, -200 ), Vector2( -200, -200 ) ]
+}
+
+[sub_resource type="Animation" id=7]
+resource_name = "Unfocus"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:rect_position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -200, -200 ), Vector2( 0, -200 ) ]
+}
+
+[sub_resource type="Animation" id=14]
+resource_name = "Focus"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:rect_position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, -200 ), Vector2( -200, -200 ) ]
+}
+
+[sub_resource type="Animation" id=15]
+resource_name = "Unfocus"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:rect_position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -200, -200 ), Vector2( 0, -200 ) ]
+}
+
+[sub_resource type="GDScript" id=8]
+script/source = "extends Control
+
 onready var more : TextureButton = get_parent().get_node(\"Place/Panel/more\")
 
 func _on_exit_pressed():
@@ -673,7 +952,7 @@ func _on_more_toggled(button_pressed):
 		$Animation.play(\"Unfocus\")
 "
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=9]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -700,7 +979,7 @@ tracks/1/keys = {
 "values": [ true, true ]
 }
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=10]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -727,7 +1006,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[sub_resource type="GDScript" id=8]
+[sub_resource type="GDScript" id=11]
 script/source = "extends Control
 
 func _on_slider_toggled(button_pressed):
@@ -737,7 +1016,7 @@ func _on_slider_toggled(button_pressed):
 		$Animation.play(\"Unfocus\")
 "
 
-[sub_resource type="Animation" id=9]
+[sub_resource type="Animation" id=12]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -752,7 +1031,7 @@ tracks/0/keys = {
 "values": [ Vector2( -528, -200 ), Vector2( -8, -200 ) ]
 }
 
-[sub_resource type="Animation" id=10]
+[sub_resource type="Animation" id=13]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -781,6 +1060,7 @@ current = true
 
 [node name="Game" type="Node2D" parent="."]
 position = Vector2( 512, 384 )
+z_index = -100
 
 [node name="Level" type="Node2D" parent="Game"]
 scale = Vector2( 0.5, 0.5 )
@@ -798,6 +1078,26 @@ theme = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="cursor_tiled" type="Node2D" parent="GUI"]
+
+[node name="editor_grid" type="Sprite" parent="GUI/cursor_tiled"]
+texture = ExtResource( 31 )
+
+[node name="selected_tile" type="TileMap" parent="GUI/cursor_tiled"]
+visible = false
+position = Vector2( -32, -32 )
+format = 1
+
+[node name="sublayer" parent="GUI/cursor_tiled" instance=ExtResource( 10 )]
+margin_left = 8.0
+margin_right = 56.0
+margin_bottom = 64.0
+text = "2"
+
+[node name="cursor" type="Node2D" parent="GUI"]
+
+[node name="decor" type="Sprite" parent="GUI/cursor"]
 
 [node name="position" parent="GUI" instance=ExtResource( 10 )]
 margin_top = 736.0
@@ -942,6 +1242,50 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="layer_0" type="Button" parent="GUI/Place/Panel"]
+margin_left = 200.0
+margin_top = 8.0
+margin_right = 328.0
+margin_bottom = 42.0
+toggle_mode = true
+text = "BG"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="layer_1" type="Button" parent="GUI/Place/Panel"]
+margin_left = 200.0
+margin_top = 72.0
+margin_right = 328.0
+margin_bottom = 106.0
+toggle_mode = true
+text = "Back"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="layer_2" type="Button" parent="GUI/Place/Panel"]
+margin_left = 200.0
+margin_top = 104.0
+margin_right = 328.0
+margin_bottom = 138.0
+toggle_mode = true
+text = "Center"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="layer_3" type="Button" parent="GUI/Place/Panel"]
+margin_left = 200.0
+margin_top = 40.0
+margin_right = 328.0
+margin_bottom = 74.0
+toggle_mode = true
+text = "Front"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="tab_text" parent="GUI/Place/Panel" instance=ExtResource( 10 )]
 margin_left = 48.0
 margin_top = 24.0
@@ -1039,13 +1383,210 @@ texture = ExtResource( 30 )
 anims/Focus = SubResource( 3 )
 anims/Unfocus = SubResource( 4 )
 
-[node name="Items" type="Control" parent="GUI"]
+[node name="Edit_Tiles" type="Control" parent="GUI"]
 visible = false
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 script = SubResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="GUI/Edit_Tiles"]
+margin_top = -200.0
+margin_right = 208.0
+margin_bottom = 200.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="slider" type="TextureButton" parent="GUI/Edit_Tiles/Panel"]
+margin_left = -32.0
+margin_top = 136.0
+margin_bottom = 264.0
+toggle_mode = true
+texture_normal = ExtResource( 16 )
+texture_pressed = ExtResource( 15 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="back" type="Panel" parent="GUI/Edit_Tiles/Panel"]
+margin_left = 40.0
+margin_top = 104.0
+margin_right = 168.0
+margin_bottom = 360.0
+custom_styles/panel = ExtResource( 26 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="tile_visual" type="TileMap" parent="GUI/Edit_Tiles/Panel"]
+position = Vector2( 40, 104 )
+format = 1
+
+[node name="buttons" type="Control" parent="GUI/Edit_Tiles/Panel"]
+margin_left = 40.0
+margin_top = 104.0
+margin_right = 168.0
+margin_bottom = 360.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="sublayer" parent="GUI/Edit_Tiles/Panel" instance=ExtResource( 10 )]
+margin_left = 40.0
+margin_top = 8.0
+margin_right = 88.0
+margin_bottom = -328.0
+text = "Sublayer"
+
+[node name="sublayer_0" type="Button" parent="GUI/Edit_Tiles/Panel"]
+margin_left = 8.0
+margin_top = 40.0
+margin_right = 72.0
+margin_bottom = 74.0
+toggle_mode = true
+text = "0"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="sublayer_1" type="Button" parent="GUI/Edit_Tiles/Panel"]
+margin_left = 72.0
+margin_top = 40.0
+margin_right = 136.0
+margin_bottom = 74.0
+toggle_mode = true
+text = "1"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="sublayer_2" type="Button" parent="GUI/Edit_Tiles/Panel"]
+margin_left = 136.0
+margin_top = 40.0
+margin_right = 200.0
+margin_bottom = 74.0
+toggle_mode = true
+text = "2"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Animation" type="AnimationPlayer" parent="GUI/Edit_Tiles"]
+anims/Focus = SubResource( 6 )
+anims/Unfocus = SubResource( 7 )
+
+[node name="Edit_Decor" type="Control" parent="GUI"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="GUI/Edit_Decor"]
+margin_left = -296.0
+margin_top = -200.0
+margin_right = 8.0
+margin_bottom = 72.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="GUI/Edit_Decor/Panel" instance=ExtResource( 10 )]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 240.0
+margin_bottom = 192.0
+text = "Scale x:
+Scale y:
+Rotation: 
+Flip h:
+Flip v:
+Z Index:
+Color:"
+
+[node name="scale_x" type="SpinBox" parent="GUI/Edit_Decor/Panel"]
+margin_left = 160.0
+margin_top = 16.0
+margin_right = 288.0
+margin_bottom = 50.0
+step = 0.05
+value = 1.0
+
+[node name="scale_y" type="SpinBox" parent="GUI/Edit_Decor/Panel"]
+margin_left = 160.0
+margin_top = 48.0
+margin_right = 288.0
+margin_bottom = 82.0
+step = 0.05
+value = 1.0
+
+[node name="rotation" type="SpinBox" parent="GUI/Edit_Decor/Panel"]
+margin_left = 160.0
+margin_top = 80.0
+margin_right = 288.0
+margin_bottom = 114.0
+min_value = -360.0
+max_value = 360.0
+step = 1.0
+
+[node name="flip_h" type="CheckBox" parent="GUI/Edit_Decor/Panel"]
+margin_left = 152.0
+margin_top = 104.0
+margin_right = 200.0
+margin_bottom = 152.0
+
+[node name="flip_v" type="CheckBox" parent="GUI/Edit_Decor/Panel"]
+margin_left = 152.0
+margin_top = 136.0
+margin_right = 200.0
+margin_bottom = 184.0
+
+[node name="z_index" type="SpinBox" parent="GUI/Edit_Decor/Panel"]
+margin_left = 160.0
+margin_top = 176.0
+margin_right = 288.0
+margin_bottom = 210.0
+min_value = -20.0
+max_value = 20.0
+step = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="color" type="ColorPickerButton" parent="GUI/Edit_Decor/Panel"]
+margin_left = 160.0
+margin_top = 208.0
+margin_right = 192.0
+margin_bottom = 242.0
+color = Color( 1, 1, 1, 1 )
+
+[node name="Animation" type="AnimationPlayer" parent="GUI/Edit_Decor"]
+anims/Focus = SubResource( 14 )
+anims/Unfocus = SubResource( 15 )
+
+[node name="Edit" type="Control" parent="GUI"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Items" type="Control" parent="GUI"]
+visible = false
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+script = SubResource( 8 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -1138,22 +1679,13 @@ __meta__ = {
 }
 
 [node name="Animation" type="AnimationPlayer" parent="GUI/Items"]
-anims/Focus = SubResource( 6 )
-anims/Unfocus = SubResource( 7 )
-
-[node name="Edit" type="Control" parent="GUI"]
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-__meta__ = {
-"_edit_use_anchors_": false
-}
+anims/Focus = SubResource( 9 )
+anims/Unfocus = SubResource( 10 )
 
 [node name="File" type="Control" parent="GUI"]
 anchor_top = 0.5
 anchor_bottom = 0.5
-script = SubResource( 8 )
+script = SubResource( 11 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -1180,9 +1712,9 @@ __meta__ = {
 }
 
 [node name="new" type="TextureButton" parent="GUI/File/Panel"]
-margin_left = 136.0
+margin_left = 192.0
 margin_top = 8.0
-margin_right = 200.0
+margin_right = 256.0
 margin_bottom = 72.0
 texture_normal = ExtResource( 17 )
 texture_pressed = ExtResource( 20 )
@@ -1191,9 +1723,9 @@ __meta__ = {
 }
 
 [node name="load" type="TextureButton" parent="GUI/File/Panel"]
-margin_left = 232.0
+margin_left = 288.0
 margin_top = 8.0
-margin_right = 296.0
+margin_right = 352.0
 margin_bottom = 72.0
 texture_normal = ExtResource( 19 )
 texture_pressed = ExtResource( 22 )
@@ -1202,12 +1734,23 @@ __meta__ = {
 }
 
 [node name="save" type="TextureButton" parent="GUI/File/Panel"]
-margin_left = 328.0
+margin_left = 384.0
 margin_top = 8.0
-margin_right = 392.0
+margin_right = 448.0
 margin_bottom = 72.0
 texture_normal = ExtResource( 21 )
 texture_pressed = ExtResource( 18 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="exit" type="TextureButton" parent="GUI/File/Panel"]
+margin_left = 40.0
+margin_top = 8.0
+margin_right = 104.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 25 )
+texture_pressed = ExtResource( 28 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -1227,6 +1770,9 @@ margin_bottom = 122.0
 text = "Level_Default"
 caret_blink = true
 caret_blink_speed = 0.5
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="creator" parent="GUI/File/Panel" instance=ExtResource( 10 )]
 margin_left = 16.0
@@ -1336,17 +1882,26 @@ __meta__ = {
 }
 
 [node name="Animation" type="AnimationPlayer" parent="GUI/File"]
-anims/Focus = SubResource( 9 )
-anims/Unfocus = SubResource( 10 )
+anims/Focus = SubResource( 12 )
+anims/Unfocus = SubResource( 13 )
 [connection signal="toggled" from="GUI/Level" to="." method="level_recieved_input"]
 [connection signal="toggled" from="GUI/Place/Panel/slider" to="GUI/Place" method="_on_slider_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
+[connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
+[connection signal="toggled" from="GUI/Place/Panel/layer_2" to="." method="layer_changed" binds= [ 2 ]]
+[connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="pressed" from="GUI/Place/Panel/tab_left" to="." method="place_tab_move" binds= [ -1 ]]
 [connection signal="pressed" from="GUI/Place/Panel/tab_right" to="." method="place_tab_move" binds= [ 1 ]]
+[connection signal="toggled" from="GUI/Edit_Tiles/Panel/slider" to="GUI/Edit_Tiles" method="_on_slider_toggled"]
+[connection signal="toggled" from="GUI/Edit_Tiles/Panel/sublayer_0" to="." method="sublayer_changed" binds= [ 0 ]]
+[connection signal="toggled" from="GUI/Edit_Tiles/Panel/sublayer_1" to="." method="sublayer_changed" binds= [ 1 ]]
+[connection signal="toggled" from="GUI/Edit_Tiles/Panel/sublayer_2" to="." method="sublayer_changed" binds= [ 2 ]]
 [connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
 [connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="items_scroll_scrolling"]
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]
@@ -1354,4 +1909,5 @@ anims/Unfocus = SubResource( 10 )
 [connection signal="toggled" from="GUI/File/Panel/slider" to="GUI/File" method="_on_slider_toggled"]
 [connection signal="pressed" from="GUI/File/Panel/new" to="." method="create_new_level"]
 [connection signal="pressed" from="GUI/File/Panel/save" to="." method="save_level"]
+[connection signal="pressed" from="GUI/File/Panel/exit" to="." method="file_exit_pressed"]
 [connection signal="item_selected" from="GUI/File/Panel/tileset_edit" to="." method="tileset_changed"]

@@ -25,7 +25,7 @@ var visible_timer : bool = false
 func _ready():
 	$Fade.visible = true
 	$border.visible = true
-	visible_timer = $"/root/Global".level_completion["*timer_on"]
+	visible_timer = $"/root/Global".options["*timer_on"]
 	
 	if get_parent().has_node("BG"):
 		bg = get_parent().get_node("BG")
@@ -93,10 +93,8 @@ func _physics_process(_delta):
 		$border_thing.scale.x = zoom.x + (zoom.x * 0.5) / end_timer_const * end_timer
 		$border_thing.scale.y = zoom.y + (zoom.y * 0.5) / end_timer_const * end_timer
 		
-		$u_done_it.scale = $border_thing.scale
 		$camera_inputs.scale = $border_thing.scale
 		
-		$u_done_it.position.y = -200.0 / end_timer_const * end_timer
 		$camera_inputs.position.y = 80.0 / end_timer_const * end_timer
 		
 		position.x = cam_target.position.x + (end_pos_begin.x - cam_target.position.x) / end_timer_const * end_timer
@@ -140,10 +138,8 @@ func end_zoom_in(target : Node2D, tele, timer : float):
 	end_zoom_begin = zoom.x
 	end_pos_begin = position
 	$border_thing.visible = true
-	$u_done_it.visible = true
 	$camera_inputs.visible = true
 	$border_thing.scale = zoom * 4
-	$u_done_it.scale = zoom * 4
 	$camera_inputs.scale = zoom * 4
 	
 	$border_thing/replay.text = "SAVE REPLAY - " + $"/root/Global".key_names(5)

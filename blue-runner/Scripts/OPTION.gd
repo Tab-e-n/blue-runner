@@ -61,8 +61,8 @@ func menu_update():
 	$main.visible = current_page == "main"
 	$controls.visible = current_page == "controls"
 	
-	$main/ghosts/check.visible = global.level_completion["*ghosts_on"]
-	$main/timer/check.visible = global.level_completion["*timer_on"]
+	$main/ghosts/check.visible = global.options["*ghosts_on"]
+	$main/timer/check.visible = global.options["*timer_on"]
 	
 	$Cursor2.position = cursor_positions[selected_option]
 	
@@ -78,9 +78,9 @@ func _input(event):
 func option_selected():
 	var last_pos = cursor_positions.size() - 1
 	if delete_confirmation: 
-		var temp_save = global.keep_settings()
 		global.level_completion.clear()
-		global.level_completion = temp_save.duplicate()
+		for i in global.unlocked.keys():
+			global.unlocked[i] = false
 		global.save_game()
 		
 		parent.get_node("SELECT").reload_all_levels()
@@ -89,9 +89,9 @@ func option_selected():
 		delete_confirmation = false
 	elif current_page == "main": match(selected_option):
 		0:
-			global.level_completion["*ghosts_on"] = !global.level_completion["*ghosts_on"]
+			global.options["*ghosts_on"] = !global.options["*ghosts_on"]
 		1:
-			global.level_completion["*timer_on"] = !global.level_completion["*timer_on"]
+			global.options["*timer_on"] = !global.options["*timer_on"]
 		2:
 			current_page = "controls"
 			selected_option = 0
@@ -110,14 +110,14 @@ func option_selected():
 			options_limit = page_limit_main
 		else:
 			match(selected_option):
-				0: global.level_completion["*left"] = KEY_UNKNOWN
-				1: global.level_completion["*right"] = KEY_UNKNOWN
-				2: global.level_completion["*up"] = KEY_UNKNOWN
-				3: global.level_completion["*down"] = KEY_UNKNOWN
-				4: global.level_completion["*a"] = KEY_UNKNOWN
-				5: global.level_completion["*b"] = KEY_UNKNOWN
-				6: global.level_completion["*reset"] = KEY_UNKNOWN
-				7: global.level_completion["*return"] = KEY_UNKNOWN
+				0: global.options["*left"] = KEY_UNKNOWN
+				1: global.options["*right"] = KEY_UNKNOWN
+				2: global.options["*up"] = KEY_UNKNOWN
+				3: global.options["*down"] = KEY_UNKNOWN
+				4: global.options["*a"] = KEY_UNKNOWN
+				5: global.options["*b"] = KEY_UNKNOWN
+				6: global.options["*reset"] = KEY_UNKNOWN
+				7: global.options["*return"] = KEY_UNKNOWN
 			key_set = selected_option
 			update_key_controls()
 
