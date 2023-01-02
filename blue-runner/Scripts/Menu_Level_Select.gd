@@ -22,6 +22,7 @@ func _ready():
 		$MAIN.position = Vector2(2048, -768)
 		$MAIN.rotation_degrees = 0
 		$SELECT/BG_MENU.color.a = 1
+		$SELECT.visible = false
 		menu = "MAIN"
 		
 		if global.replay_menu:

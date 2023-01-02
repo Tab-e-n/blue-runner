@@ -120,8 +120,6 @@ func reload_all_levels():
 	var comp_number : int = completion_percentage()
 	$completion_filling/text.text = String(comp_number * 2) + "%"
 	$completion_filling/bar.scale.x = float(comp_number) / 50
-	$anim.stop()
-	$anim.play("WaterWay")
 
 func character_select():
 	if global.unlocked["*char_select_active"]:

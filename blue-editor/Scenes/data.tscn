@@ -17,8 +17,16 @@ var mods_installed : Array
 var mods_enabled : Dictionary
 
 var settings : Dictionary = {
-	\"level_editor_gui_additional_info\" : false,
+	\"editor_gui_additional_info\" : false,
 	\"level_save_path\" : \"user://SRLevels/\",
+	\"editor_default_layer\" : 2,
+	\"editor_default_sublayer\" : 1,
+	\"editor_default_layer_data\" : {
+		\"background\" : [[0.376471, 0.376471, 0.376471, 1], [0.75, 0.75]],
+		\"back\" : [[0.6, 0.6, 0.6, 1], [1, 1]],
+		\"center\" : [[1, 1, 1, 1], [1, 1]],
+		\"front\" : [[1, 1, 1, 1], [1, 1]],
+	}
 }
 # Max 8 faves per category
 # Each tileset has its own 8 faves under its name

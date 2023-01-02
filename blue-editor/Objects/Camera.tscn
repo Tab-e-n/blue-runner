@@ -12,6 +12,7 @@ border_width_bottom = 10
 border_color = Color( 0.25098, 0.25098, 1, 0.498039 )
 
 [node name="Camera" type="Node2D"]
+z_index = 100
 script = ExtResource( 1 )
 
 [node name="camera_zoom" type="Panel" parent="."]
