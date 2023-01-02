@@ -187,7 +187,6 @@ func _ready():
 	# Update nodes according to save
 	tileset_changed(tilesets.get_item_index(tilesets.get_selected_id()))
 
-
 	for i in data.place_objects.keys():
 		items_objects_directory.add_item(i)
 	#place_update_items(PLACE_OBJECTS)
@@ -204,6 +203,7 @@ func _ready():
 		$GUI/actual.visible = true
 
 func ready_optionbutton_setup(option_button : OptionButton, data_array : Array):
+	print(data_array)
 	var last_directory : String = \"res:/\"
 	for i in data_array:
 		if last_directory != i[1]:
@@ -227,12 +227,12 @@ func _process(_delta):
 	var mouse_pos : Vector2 = get_viewport().get_mouse_position()
 	level_mouse_position.x = (-level.position.x + mouse_pos.x - window.x / 2) / level.scale.x
 	level_mouse_position.y = (-level.position.y + mouse_pos.y - window.y / 2) / level.scale.y
-
+	
 	if Input.is_action_just_released(\"mouse_left\"):
 		level_input.pressed = false
 	if Input.is_action_just_released(\"mouse_right\"):
 		level_input.pressed = false
-
+	
 	match place_current_mode:
 		PLACEMODE_MOVE:
 			if level_input.pressed and Input.is_action_pressed(\"mouse_left\"):

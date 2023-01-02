@@ -72,4 +72,3 @@ func reload():
 			$icon.texture = load(level_dat["level_icon"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][2])
 	else:
 		$icon.texture = load(level_dat["level_icon"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][0])
-
