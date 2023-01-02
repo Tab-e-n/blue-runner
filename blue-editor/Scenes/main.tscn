@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=2]
+[gd_scene load_steps=49 format=2]
 
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=1]
 [ext_resource path="res://Visual/Editor/editor_paintbrush.png" type="Texture" id=2]
@@ -65,6 +65,7 @@ enum {PLACEMODE_MOVE, PLACEMODE_PAINT, PLACEMODE_ERASER, PLACEMODE_COG}
 var place_current_mode : int = PLACEMODE_MOVE
 
 enum {PLACE_TILES, PLACE_OBJECTS, PLACE_DECOR}
+var place_tabs : Array = [\"tiles\", \"objects\", \"decor\"]
 var place_current_tab : int = PLACE_TILES
 
 var place_current_layer : int = LAYER_CENTER
@@ -203,7 +204,6 @@ func _ready():
 		$GUI/actual.visible = true
 
 func ready_optionbutton_setup(option_button : OptionButton, data_array : Array):
-	print(data_array)
 	var last_directory : String = \"res:/\"
 	for i in data_array:
 		if last_directory != i[1]:
@@ -225,8 +225,8 @@ func _process(_delta):
 	level_input.margin_top = $GUI.margin_top
 
 	var mouse_pos : Vector2 = get_viewport().get_mouse_position()
-	level_mouse_position.x = (-level.position.x + mouse_pos.x - window.x / 2) / level.scale.x
-	level_mouse_position.y = (-level.position.y + mouse_pos.y - window.y / 2) / level.scale.y
+	level_mouse_position.x = stepify((-level.position.x + mouse_pos.x - window.x / 2) / level.scale.x, 1)
+	level_mouse_position.y = stepify((-level.position.y + mouse_pos.y - window.y / 2) / level.scale.y, 1)
 	
 	if Input.is_action_just_released(\"mouse_left\"):
 		level_input.pressed = false
@@ -270,10 +270,10 @@ func _process(_delta):
 		PLACEMODE_ERASER:
 			if level_input.pressed and Input.is_action_pressed(\"mouse_left\"):
 				if Input.is_action_just_pressed(\"mouse_left\"):
-					pass
+					level_remove_closest_item()
 				if place_current_tab == PLACE_TILES:
 					level_draw_tile(-1)
-
+			
 			if level_input.pressed and Input.is_action_pressed(\"mouse_right\"):
 				if Input.is_action_just_pressed(\"mouse_right\"):
 					mouse_hinge = mouse_pos
@@ -302,14 +302,14 @@ func _process(_delta):
 		$GUI/cursor.modulate = level_layer_data[level_layers[place_current_layer]][0]
 		$GUI/cursor.z_index = level_layer_data[level_layers[place_current_layer]][2] - 100
 	if $GUI/cursor.visible and place_selected_decor.visible:
-		place_selected_decor.scale.x = $GUI/Edit_Decor/Panel/scale_x.value
-		place_selected_decor.scale.y = $GUI/Edit_Decor/Panel/scale_y.value
-		place_selected_decor.rotation_degrees = $GUI/Edit_Decor/Panel/rotation.value
-		place_selected_decor.z_index = $GUI/Edit_Decor/Panel/z_index.value
-		place_selected_decor.flip_h = $GUI/Edit_Decor/Panel/flip_h.pressed
-		place_selected_decor.flip_v = $GUI/Edit_Decor/Panel/flip_v.pressed
-		place_selected_decor.modulate = $GUI/Edit_Decor/Panel/color.color
-	$GUI/position.text = \"x \" + String(stepify(level_mouse_position.x, 1)) + \" y \" + String(stepify(level_mouse_position.y, 1))
+		place_selected_decor.scale.x = $GUI/Edit_Items/Panel/scale_x.value
+		place_selected_decor.scale.y = $GUI/Edit_Items/Panel/scale_y.value
+		place_selected_decor.rotation_degrees = $GUI/Edit_Items/Panel/rotation.value
+		place_selected_decor.z_index = $GUI/Edit_Items/Panel/z_index.value
+		place_selected_decor.flip_h = $GUI/Edit_Items/Panel/decor/flip_h.pressed
+		place_selected_decor.flip_v = $GUI/Edit_Items/Panel/decor/flip_v.pressed
+		place_selected_decor.modulate = $GUI/Edit_Items/Panel/color.color
+	$GUI/position.text = \"x \" + String(level_mouse_position.x) + \" y \" + String(level_mouse_position.y)
 	$GUI/zoom.text = \"zoom \" + String(stepify(1 / level.scale.y, 0.01))
 	if data.settings[\"editor_gui_additional_info\"]:
 		$GUI/mouse.text = \"mouse x \" + String(stepify(mouse_pos.x, 1)) + \" y \" + String(stepify(mouse_pos.y, 1))
@@ -421,6 +421,12 @@ func tile_select(tile_num : int):
 		# warning-ignore:integer_division
 		$GUI/Edit_Tiles/Panel/tile_visual.set_cell(i % 2, i / 2, tile_num, i % 2 == 1, i % 4 > 1, int(i) / 4 == 1)
 
+func decor_select(texture_filename : String):
+	var texture = load(texture_filename)
+	place_selected_decor.texture = texture
+	$GUI/Edit_Items/Panel/item.texture = texture
+	scale_down_sprite($GUI/Edit_Items/Panel/item)
+
 func tile_mods_changed(id : int):
 	place_tile_mods[0] = id % 2 == 1
 	place_tile_mods[1] = id % 4 > 1
@@ -480,6 +486,25 @@ func level_add_decor():
 	new_decor.flip_v = place_selected_decor.flip_v
 	new_decor.use_parent_material = true
 	new_decor.set_owner(level)
+
+func level_remove_closest_item():
+	var node_group : Node2D = get_node(\"Game/Level/\" + place_tabs[place_current_tab] + \"_\" + level_layers[place_current_layer])
+	var closest_node : Node
+	var shortest_distance : float
+	for node in node_group.get_children():
+		var d : Vector2 = node.position - level_mouse_position
+		var distance : float = sqrt(d.x * d.x + d.y * d.y)
+		var rect : Vector2
+		if place_current_tab == PLACE_DECOR:
+			rect = node.get_rect().size * node.scale / Vector2(2, 2)
+		if place_current_tab == PLACE_OBJECTS:
+			pass
+		if abs(d.x) <= rect.x and abs(d.y) <= rect.y and (shortest_distance > distance or closest_node == null):
+			closest_node = node
+			shortest_distance = distance
+	
+	if closest_node != null:
+		closest_node.queue_free()
 
 # PLACE FUNCTIONS
 func place_update_tiles(tileset_name : String):
@@ -570,12 +595,14 @@ func place_mode_toggled(button_pressed, mode, scripted : bool = false):
 	elif place_current_mode == mode:
 		place_current_mode = PLACEMODE_MOVE
 	
+	$GUI/cursor/decor.visible = false
 	if !place_current_mode == PLACEMODE_PAINT:
 		$GUI/Place/Panel/paint.pressed = false
 		$GUI/cursor_tiled/selected_tile.visible = false
 	else:
 		if scripted: $GUI/Place/Panel/paint.pressed = true
 		$GUI/cursor_tiled/selected_tile.visible = true
+		$GUI/cursor/decor.visible = place_current_tab == PLACE_DECOR
 	if !place_current_mode == PLACEMODE_ERASER:
 		$GUI/Place/Panel/eraser.pressed = false
 	else:
@@ -599,8 +626,6 @@ func place_tab_move(direction : int = 0):
 			$GUI/Place/Panel/tab_decor.visible = false
 			$GUI/Place/Panel/tab_objects.visible = false
 			
-			$GUI/Edit_Tiles.visible = true
-			
 			$GUI/Items/Panel/items.visible = false
 			$GUI/Items/Panel/decor_directory.visible = false
 			$GUI/Items/Panel/objects_directory.visible = false
@@ -616,8 +641,6 @@ func place_tab_move(direction : int = 0):
 			$GUI/Place/Panel/tab_decor.visible = false
 			$GUI/Place/Panel/tab_objects.visible = true
 			
-			$GUI/Edit_Tiles.visible = false
-			
 			$GUI/Items/Panel/items.visible = true
 			$GUI/Items/Panel/decor_directory.visible = false
 			$GUI/Items/Panel/objects_directory.visible = true
@@ -632,8 +655,6 @@ func place_tab_move(direction : int = 0):
 			$GUI/Place/Panel/tab_decor.visible = true
 			$GUI/Place/Panel/tab_objects.visible = false
 			
-			$GUI/Edit_Tiles.visible = false
-			
 			$GUI/Items/Panel/items.visible = true
 			$GUI/Items/Panel/decor_directory.visible = true
 			$GUI/Items/Panel/objects_directory.visible = false
@@ -641,10 +662,17 @@ func place_tab_move(direction : int = 0):
 			
 			$GUI/cursor_tiled.visible = false
 			$GUI/cursor.visible = true
-			$GUI/cursor/decor.visible = true
+			$GUI/cursor/decor.visible = place_current_mode == PLACEMODE_PAINT
 	if place_current_tab != PLACE_TILES:
 		place_update_items(place_current_tab)
 	if $GUI/Items.visible: items_update_panel(-1, place_current_tab)
+	
+	if place_current_tab == PLACE_TILES:
+		$GUI/Edit_Tiles.focus_toggle(true)
+		$GUI/Edit_Items.focus_toggle(false)
+	else:
+		$GUI/Edit_Tiles.focus_toggle(false)
+		$GUI/Edit_Items.focus_toggle(true)
 
 func place_item_selected(index):
 	match(place_current_tab):
@@ -666,7 +694,7 @@ func place_item_selected(index):
 				toggle_favorite(\"Decor\", place_decor_items[index])
 				place_update_items(PLACE_DECOR)
 			else:
-				place_selected_decor.texture = load(place_decor_items[index])
+				decor_select(place_decor_items[index])
 
 func prepare_item_for_placing():
 	pass
@@ -761,6 +789,7 @@ func items_button_pressed(index):
 				toggle_favorite(\"Decor\", decor)
 			else:
 				push_to_recent(\"Decor\", decor)
+			decor_select(decor)
 	if place_current_tab != PLACE_TILES:
 		place_update_items(place_current_tab)
 
@@ -863,11 +892,11 @@ func _on_more_toggled(button_pressed):
 		else:
 			$Animation.play(\"Focus\")
 
-func _on_slider_toggled(button_pressed):
-	if button_pressed:
+func focus_toggle(toggle):
+	if toggle and !focused:
 		$Animation.play(\"Focus\")
 		focused = true
-	else:
+	elif !toggle and focused:
 		$Animation.play(\"Unfocus\")
 		focused = false
 "
@@ -887,6 +916,18 @@ tracks/0/keys = {
 "update": 0,
 "values": [ Vector2( 0, -200 ), Vector2( -200, -200 ) ]
 }
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, true ]
+}
 
 [sub_resource type="Animation" id=7]
 resource_name = "Unfocus"
@@ -903,8 +944,41 @@ tracks/0/keys = {
 "update": 0,
 "values": [ Vector2( -200, -200 ), Vector2( 0, -200 ) ]
 }
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
 
-[sub_resource type="Animation" id=14]
+[sub_resource type="GDScript" id=16]
+script/source = "extends Control
+
+var focused : bool = false
+
+func _on_more_toggled(button_pressed):
+	if focused:
+		if button_pressed:
+			$Animation.play(\"Unfocus\")
+		else:
+			$Animation.play(\"Focus\")
+
+func focus_toggle(toggle):
+	if toggle and !focused:
+		$Animation.play(\"Focus\")
+		focused = true
+	elif !toggle and focused:
+		$Animation.play(\"Unfocus\")
+		focused = false
+"
+
+[sub_resource type="Animation" id=8]
 resource_name = "Focus"
 length = 0.4
 tracks/0/type = "value"
@@ -917,10 +991,22 @@ tracks/0/keys = {
 "times": PoolRealArray( 0, 0.4 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Vector2( 0, -200 ), Vector2( -200, -200 ) ]
+"values": [ Vector2( 0, -200 ), Vector2( -296, -200 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, true ]
 }
 
-[sub_resource type="Animation" id=15]
+[sub_resource type="Animation" id=9]
 resource_name = "Unfocus"
 length = 0.4
 tracks/0/type = "value"
@@ -933,10 +1019,22 @@ tracks/0/keys = {
 "times": PoolRealArray( 0, 0.4 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Vector2( -200, -200 ), Vector2( 0, -200 ) ]
+"values": [ Vector2( -296, -200 ), Vector2( 0, -200 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
 }
 
-[sub_resource type="GDScript" id=8]
+[sub_resource type="GDScript" id=10]
 script/source = "extends Control
 
 onready var more : TextureButton = get_parent().get_node(\"Place/Panel/more\")
@@ -952,7 +1050,7 @@ func _on_more_toggled(button_pressed):
 		$Animation.play(\"Unfocus\")
 "
 
-[sub_resource type="Animation" id=9]
+[sub_resource type="Animation" id=11]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -979,7 +1077,7 @@ tracks/1/keys = {
 "values": [ true, true ]
 }
 
-[sub_resource type="Animation" id=10]
+[sub_resource type="Animation" id=12]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -1006,7 +1104,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[sub_resource type="GDScript" id=11]
+[sub_resource type="GDScript" id=13]
 script/source = "extends Control
 
 func _on_slider_toggled(button_pressed):
@@ -1016,7 +1114,7 @@ func _on_slider_toggled(button_pressed):
 		$Animation.play(\"Unfocus\")
 "
 
-[sub_resource type="Animation" id=12]
+[sub_resource type="Animation" id=14]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -1031,7 +1129,7 @@ tracks/0/keys = {
 "values": [ Vector2( -528, -200 ), Vector2( -8, -200 ) ]
 }
 
-[sub_resource type="Animation" id=13]
+[sub_resource type="Animation" id=15]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -1098,6 +1196,7 @@ text = "2"
 [node name="cursor" type="Node2D" parent="GUI"]
 
 [node name="decor" type="Sprite" parent="GUI/cursor"]
+visible = false
 
 [node name="position" parent="GUI" instance=ExtResource( 10 )]
 margin_top = 736.0
@@ -1402,17 +1501,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="slider" type="TextureButton" parent="GUI/Edit_Tiles/Panel"]
-margin_left = -32.0
-margin_top = 136.0
-margin_bottom = 264.0
-toggle_mode = true
-texture_normal = ExtResource( 16 )
-texture_pressed = ExtResource( 15 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="back" type="Panel" parent="GUI/Edit_Tiles/Panel"]
 margin_left = 40.0
 margin_top = 104.0
@@ -1480,96 +1568,116 @@ __meta__ = {
 anims/Focus = SubResource( 6 )
 anims/Unfocus = SubResource( 7 )
 
-[node name="Edit_Decor" type="Control" parent="GUI"]
+[node name="Edit_Items" type="Control" parent="GUI"]
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
+script = SubResource( 16 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Panel" type="Panel" parent="GUI/Edit_Decor"]
-margin_left = -296.0
+[node name="Panel" type="Panel" parent="GUI/Edit_Items"]
 margin_top = -200.0
-margin_right = 8.0
-margin_bottom = 72.0
+margin_right = 304.0
+margin_bottom = 136.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="text" parent="GUI/Edit_Decor/Panel" instance=ExtResource( 10 )]
+[node name="decor" type="Control" parent="GUI/Edit_Items/Panel"]
+margin_right = 304.0
+margin_bottom = 336.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Text" parent="GUI/Edit_Items/Panel/decor" instance=ExtResource( 10 )]
 margin_left = 16.0
-margin_top = 16.0
+margin_top = 264.0
+margin_right = 256.0
+margin_bottom = 56.0
+text = "Flip h:
+Flip v:"
+
+[node name="flip_h" type="CheckBox" parent="GUI/Edit_Items/Panel/decor"]
+margin_left = 152.0
+margin_top = 256.0
+margin_right = 200.0
+margin_bottom = 304.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="flip_v" type="CheckBox" parent="GUI/Edit_Items/Panel/decor"]
+margin_left = 152.0
+margin_top = 288.0
+margin_right = 200.0
+margin_bottom = 336.0
+
+[node name="text" parent="GUI/Edit_Items/Panel" instance=ExtResource( 10 )]
+margin_left = 16.0
+margin_top = 72.0
 margin_right = 240.0
-margin_bottom = 192.0
+margin_bottom = 248.0
 text = "Scale x:
 Scale y:
 Rotation: 
-Flip h:
-Flip v:
 Z Index:
 Color:"
 
-[node name="scale_x" type="SpinBox" parent="GUI/Edit_Decor/Panel"]
+[node name="scale_x" type="SpinBox" parent="GUI/Edit_Items/Panel"]
 margin_left = 160.0
-margin_top = 16.0
+margin_top = 72.0
 margin_right = 288.0
-margin_bottom = 50.0
+margin_bottom = 106.0
 step = 0.05
 value = 1.0
 
-[node name="scale_y" type="SpinBox" parent="GUI/Edit_Decor/Panel"]
+[node name="scale_y" type="SpinBox" parent="GUI/Edit_Items/Panel"]
 margin_left = 160.0
-margin_top = 48.0
+margin_top = 104.0
 margin_right = 288.0
-margin_bottom = 82.0
+margin_bottom = 138.0
 step = 0.05
 value = 1.0
 
-[node name="rotation" type="SpinBox" parent="GUI/Edit_Decor/Panel"]
+[node name="rotation" type="SpinBox" parent="GUI/Edit_Items/Panel"]
 margin_left = 160.0
-margin_top = 80.0
+margin_top = 136.0
 margin_right = 288.0
-margin_bottom = 114.0
+margin_bottom = 170.0
 min_value = -360.0
 max_value = 360.0
-step = 1.0
 
-[node name="flip_h" type="CheckBox" parent="GUI/Edit_Decor/Panel"]
-margin_left = 152.0
-margin_top = 104.0
-margin_right = 200.0
-margin_bottom = 152.0
-
-[node name="flip_v" type="CheckBox" parent="GUI/Edit_Decor/Panel"]
-margin_left = 152.0
-margin_top = 136.0
-margin_right = 200.0
-margin_bottom = 184.0
-
-[node name="z_index" type="SpinBox" parent="GUI/Edit_Decor/Panel"]
+[node name="z_index" type="SpinBox" parent="GUI/Edit_Items/Panel"]
 margin_left = 160.0
-margin_top = 176.0
+margin_top = 168.0
 margin_right = 288.0
-margin_bottom = 210.0
+margin_bottom = 202.0
 min_value = -20.0
 max_value = 20.0
-step = 1.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="color" type="ColorPickerButton" parent="GUI/Edit_Decor/Panel"]
+[node name="color" type="ColorPickerButton" parent="GUI/Edit_Items/Panel"]
 margin_left = 160.0
-margin_top = 208.0
+margin_top = 200.0
 margin_right = 192.0
-margin_bottom = 242.0
+margin_bottom = 234.0
 color = Color( 1, 1, 1, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="Animation" type="AnimationPlayer" parent="GUI/Edit_Decor"]
-anims/Focus = SubResource( 14 )
-anims/Unfocus = SubResource( 15 )
+[node name="item" type="Sprite" parent="GUI/Edit_Items/Panel"]
+position = Vector2( 152, 40 )
+
+[node name="Animation" type="AnimationPlayer" parent="GUI/Edit_Items"]
+anims/Focus = SubResource( 8 )
+anims/Unfocus = SubResource( 9 )
 
 [node name="Edit" type="Control" parent="GUI"]
 anchor_left = 1.0
@@ -1586,7 +1694,7 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-script = SubResource( 8 )
+script = SubResource( 10 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -1679,13 +1787,13 @@ __meta__ = {
 }
 
 [node name="Animation" type="AnimationPlayer" parent="GUI/Items"]
-anims/Focus = SubResource( 9 )
-anims/Unfocus = SubResource( 10 )
+anims/Focus = SubResource( 11 )
+anims/Unfocus = SubResource( 12 )
 
 [node name="File" type="Control" parent="GUI"]
 anchor_top = 0.5
 anchor_bottom = 0.5
-script = SubResource( 11 )
+script = SubResource( 13 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -1882,23 +1990,23 @@ __meta__ = {
 }
 
 [node name="Animation" type="AnimationPlayer" parent="GUI/File"]
-anims/Focus = SubResource( 12 )
-anims/Unfocus = SubResource( 13 )
+anims/Focus = SubResource( 14 )
+anims/Unfocus = SubResource( 15 )
 [connection signal="toggled" from="GUI/Level" to="." method="level_recieved_input"]
 [connection signal="toggled" from="GUI/Place/Panel/slider" to="GUI/Place" method="_on_slider_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_2" to="." method="layer_changed" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="pressed" from="GUI/Place/Panel/tab_left" to="." method="place_tab_move" binds= [ -1 ]]
 [connection signal="pressed" from="GUI/Place/Panel/tab_right" to="." method="place_tab_move" binds= [ 1 ]]
-[connection signal="toggled" from="GUI/Edit_Tiles/Panel/slider" to="GUI/Edit_Tiles" method="_on_slider_toggled"]
 [connection signal="toggled" from="GUI/Edit_Tiles/Panel/sublayer_0" to="." method="sublayer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Edit_Tiles/Panel/sublayer_1" to="." method="sublayer_changed" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Edit_Tiles/Panel/sublayer_2" to="." method="sublayer_changed" binds= [ 2 ]]
