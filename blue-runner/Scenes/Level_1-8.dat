@@ -1,1 +1,1 @@
-{"creator":"Tabin","dependencies":[""],"level_name":"Recycler","official":true,"level_icon":"8"}
+{"creator":"Tabin","dependencies":[],"level_base":["waterway","res:/"],"level_icon":["8.png","res:/"],"level_name":"Recycler","official":true}

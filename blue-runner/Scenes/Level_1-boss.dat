@@ -1,1 +1,1 @@
-{"creator":"Tabin","dependencies":[""],"level_name":"Run Run, S1!","official":true,"level_icon":"boss"}
+{"creator":"Tabin","dependencies":[],"level_base":["waterway","res:/"],"level_icon":["boss.png","res:/"],"level_name":"Run Run, S1!","official":true}

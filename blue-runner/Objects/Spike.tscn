@@ -1,8 +1,7 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Scripts/Spike.gd" type="Script" id=1]
 [ext_resource path="res://Visual/saw_1.png" type="Texture" id=2]
-[ext_resource path="res://Visual/saw_3.png" type="Texture" id=3]
 [ext_resource path="res://Visual/saw_2.png" type="Texture" id=4]
 
 [sub_resource type="Animation" id=1]
@@ -52,10 +51,6 @@ texture = ExtResource( 2 )
 [node name="saw_2" type="Sprite" parent="."]
 scale = Vector2( 0.25, 0.25 )
 texture = ExtResource( 4 )
-
-[node name="saw_3" type="Sprite" parent="."]
-scale = Vector2( 0.25, 0.25 )
-texture = ExtResource( 3 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 2 )

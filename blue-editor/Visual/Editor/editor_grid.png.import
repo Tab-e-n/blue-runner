@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/saw_2.png-2c82573474e0cc2cb208662561e328e3.stex"
+path="res://.import/editor_grid.png-00e10c0e5dc4e1e10842696549f48bd1.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Visual/saw_2.png"
-dest_files=[ "res://.import/saw_2.png-2c82573474e0cc2cb208662561e328e3.stex" ]
+source_file="res://Visual/Editor/editor_grid.png"
+dest_files=[ "res://.import/editor_grid.png-00e10c0e5dc4e1e10842696549f48bd1.stex" ]
 
 [params]
 
@@ -28,7 +28,6 @@ process/fix_alpha_border=true
 process/premult_alpha=false
 process/HDR_as_SRGB=false
 process/invert_color=false
-process/normal_map_invert_y=false
 stream=false
 size_limit=0
 detect_3d=true

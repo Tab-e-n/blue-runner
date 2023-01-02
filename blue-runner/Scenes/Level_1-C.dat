@@ -1,1 +1,1 @@
-{"creator":"Tabin","dependencies":[""],"level_name":"The original!","official":true,"level_icon":"C"}
+{"creator":"Tabin","dependencies":[],"level_base":["waterway","res:/"],"level_icon":["C.png","res:/"],"level_name":"It's the original!","official":true}
