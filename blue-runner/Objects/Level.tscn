@@ -66,11 +66,20 @@ texture = ExtResource( 1 )
 texture = ExtResource( 2 )
 
 [node name="boltcollect" type="Sprite" parent="."]
-visible = false
 modulate = Color( 0, 0.596078, 0.572549, 1 )
-position = Vector2( 64, -24 )
+position = Vector2( 56, -15 )
 scale = Vector2( 1.3, 1.3 )
 texture = ExtResource( 7 )
 
 [node name="Anim" type="AnimationPlayer" parent="boltcollect"]
 anims/Idle = SubResource( 2 )
+
+[node name="boltcollect2" type="Sprite" parent="boltcollect"]
+visible = false
+position = Vector2( -12.3077, -12.3077 )
+texture = ExtResource( 7 )
+
+[node name="boltcollect3" type="Sprite" parent="boltcollect"]
+visible = false
+position = Vector2( 12.3077, 12.3077 )
+texture = ExtResource( 7 )

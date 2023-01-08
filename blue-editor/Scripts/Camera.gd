@@ -1,6 +1,22 @@
 extends Node2D
 
-var editor_properties : Dictionary
+var editor_properties : Dictionary = {
+	"object_path" : "res://Objects/Camera.tscn",
+	"object_type" : "camera",
+	"layer" : "camera",
+	"rect" : Vector2(128, 64),
+	"editable_properties" : {
+		"limit_x" : [TYPE_VECTOR2, 0, 0, 1, 0],
+		"limit_y" : [TYPE_VECTOR2, 0, 0, 1, 0],
+		"zoom" : [TYPE_VECTOR2, 1, 10, 1, 2],
+	},
+	"unchangeable_properties" : {
+		"scale" : true,
+		"rotation" : true,
+		"z_index" : true,
+		"color" : true,
+	},
+}
 
 export var limit_x : Vector2 = Vector2(0,0)
 export var limit_y : Vector2 = Vector2(0,0)

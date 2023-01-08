@@ -27,7 +27,7 @@
 zoom = Vector2( 3, 3 )
 
 [node name="BG" parent="." instance=ExtResource( 4 )]
-bg_color = Vector3( 0.606, 0.416, 0.793 )
+bg_color = Color( 0.61, 0.42, 0.79, 1 )
 hill_offset = Vector2( 512, -256 )
 sun_position = Vector2( 0, -640 )
 

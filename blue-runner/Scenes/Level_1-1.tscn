@@ -23,7 +23,7 @@
 limit_y = Vector2( -768, 0 )
 
 [node name="BG" parent="." instance=ExtResource( 3 )]
-bg_color = Vector3( 0.402, 0.513, 0.886 )
+bg_color = Color( 0.4, 0.501961, 0.901961, 1 )
 hill_offset = Vector2( 640, 448 )
 sun_position = Vector2( 0, -118 )
 

@@ -1,11 +1,10 @@
 extends Area2D
 
-export var world : int = 1
-export var level : int = 0
+export(int, 1, 3) var id : int = 1
 
 
 func _ready():
-	if $"/root/Global".level_completion.has(String((world - 1) * 20 + level)):
+	if $"/root/Global".level_completion["*collectibles"].has($"/root/Global".current_level + "*" + String(id)):
 		queue_free()
 		pass
 	$Anim.play("Idle")
@@ -15,7 +14,7 @@ func _process(_delta):
 
 func _on_area_entered(area):
 	if area.name == "Player":
-		area.collectible = (world - 1) * 20 + level
+		area.collectible = $"/root/Global".current_level + "*" + String(id)
 		set_deferred("monitoring", false)
 		set_deferred("monitorable", false)
 		$Anim.play("Collect")
