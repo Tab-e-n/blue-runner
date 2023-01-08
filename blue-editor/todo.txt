@@ -2,8 +2,11 @@ FILE
 .dat level properties editable
 creating new level
 saving level
-
 loading level
+
+saving level UI
+loading level UI
+
 PLACE
 Switching modes
 Switching tabs
@@ -11,29 +14,42 @@ Items
 Recent system
 Favorite system
 movin around tghe level
+that empty space? LAYERS go there
 placin tiles
 removin tiles
 "editing tiles"
-
+picking tiles
 placin decor
-Object representations
+removin decor
+editing decor
+picking decor
 placin objects
-that empty space? LAYERS go there
+removin objects
+picking objects
+editing objects
+
+Object representations
 
 ITEMS
 selectin directory
 selectin items
 practically done
 
-Edit
+EDIT
 untouche
+Editin proprerties of decor and variations of tiles
+Editin proprerties of objects
+bg editor
 
-Editin proprerties of objects and decor and variations of tiles
+layer editor
 
 EDITOR OTHER
 untouche
 
-shortcuts and the focus thingies
+grid snap
+game camera snap
+other shortcuts and the focus thingies
+hints
 menu for other editors
 mod loader
 level groups - make in sonic runner and specil editor for them

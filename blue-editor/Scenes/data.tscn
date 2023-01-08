@@ -59,6 +59,22 @@ var mod_data : Dictionary = {
 	\"active\" : true,
 }
 
+var editor_properties : Dictionary = {
+	\"object_path\" : \"\",
+	\"object_type\" : \"normal\", # some object types have a limited amount of the times they can appear
+	\"layer\" : \"selected\", # selected or special
+	\"rect\" : Vector2(0, 0),
+	\"editable_properties\" : {
+		#\"name\" : [TYPE, min, max, step, start],
+	},
+	\"unchangeable_properties\" : {
+		\"scale\" : false,
+		\"rotation\" : false,
+		\"z_index\" : false,
+		\"color\" : false,
+	},
+}
+
 func _ready():
 	print(\"data ready\")
 	OS.min_window_size = Vector2(640, 480)
@@ -122,10 +138,6 @@ func load_transfer(section : Dictionary, section_name : String, temp : Dictionar
 	return temp[section_name].duplicate()
 
 func load_editor_vanilla():
-	var directory : Directory = Directory.new()
-	var current_file : String
-	var directories_to_visit : Array
-	
 	print(\"scanning vanilla characters\")
 	load_dat_file(\"res:/\", \"/Objects/Player/\", characters, \"characters\")
 	
@@ -154,7 +166,6 @@ func load_editor_vanilla():
 func load_editor_mods():
 	var directory : Directory = Directory.new()
 	var current_file : String
-	var directories_to_visit : Array
 	
 	print(\"scanning mods\")
 	var check_exist = directory.open(\"Mods\")

@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=16 format=2]
+[gd_resource type="Theme" load_steps=18 format=2]
 
 [ext_resource path="res://Control/style_hover.tres" type="StyleBox" id=1]
 [ext_resource path="res://Visual/Menu/menu_check_box_3.png" type="Texture" id=2]
@@ -15,16 +15,18 @@
 [ext_resource path="res://Control/style_separator.tres" type="StyleBox" id=13]
 [ext_resource path="res://Control/style_scroll_vertical.tres" type="StyleBox" id=14]
 [ext_resource path="res://Control/style_focused_filled.tres" type="StyleBox" id=15]
+[ext_resource path="res://Control/style_disabled.tres" type="StyleBox" id=16]
+[ext_resource path="res://Visual/Editor/editor_point_dark.png" type="Texture" id=17]
 
 [resource]
 default_font = ExtResource( 3 )
 Button/colors/font_color = Color( 0.917647, 0.933333, 0.952941, 1 )
-Button/colors/font_color_disabled = Color( 0.917647, 0.933333, 0.952941, 0.2 )
+Button/colors/font_color_disabled = Color( 0.454902, 0.54902, 0.662745, 1 )
 Button/colors/font_color_hover = Color( 0.917647, 0.933333, 0.952941, 1 )
 Button/colors/font_color_pressed = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 Button/constants/hseparation = 2
 Button/fonts/font = null
-Button/styles/disabled = null
+Button/styles/disabled = ExtResource( 16 )
 Button/styles/focus = ExtResource( 5 )
 Button/styles/hover = ExtResource( 1 )
 Button/styles/normal = ExtResource( 6 )
@@ -47,6 +49,29 @@ CheckBox/styles/hover = ExtResource( 7 )
 CheckBox/styles/hover_pressed = ExtResource( 7 )
 CheckBox/styles/normal = ExtResource( 7 )
 CheckBox/styles/pressed = ExtResource( 7 )
+ColorPicker/constants/h_width = 30
+ColorPicker/constants/label_width = 10
+ColorPicker/constants/margin = 4
+ColorPicker/constants/sv_height = 256
+ColorPicker/constants/sv_width = 256
+ColorPicker/icons/add_preset = null
+ColorPicker/icons/color_hue = null
+ColorPicker/icons/color_sample = null
+ColorPicker/icons/overbright_indicator = null
+ColorPicker/icons/preset_bg = null
+ColorPicker/icons/screen_picker = null
+ColorPickerButton/colors/font_color = Color( 1, 1, 1, 1 )
+ColorPickerButton/colors/font_color_disabled = Color( 0.9, 0.9, 0.9, 0.3 )
+ColorPickerButton/colors/font_color_hover = Color( 1, 1, 1, 1 )
+ColorPickerButton/colors/font_color_pressed = Color( 0.8, 0.8, 0.8, 1 )
+ColorPickerButton/constants/hseparation = 0
+ColorPickerButton/fonts/font = null
+ColorPickerButton/icons/bg = null
+ColorPickerButton/styles/disabled = ExtResource( 16 )
+ColorPickerButton/styles/focus = ExtResource( 5 )
+ColorPickerButton/styles/hover = ExtResource( 1 )
+ColorPickerButton/styles/normal = ExtResource( 6 )
+ColorPickerButton/styles/pressed = ExtResource( 9 )
 ItemList/colors/font_color = Color( 0.917647, 0.933333, 0.952941, 1 )
 ItemList/colors/font_color_selected = Color( 0.917647, 0.933333, 0.952941, 1 )
 ItemList/colors/guide_color = Color( 0, 0, 0, 0.101961 )
@@ -73,7 +98,7 @@ LineEdit/fonts/font = null
 LineEdit/icons/clear = null
 LineEdit/styles/focus = ExtResource( 5 )
 LineEdit/styles/normal = ExtResource( 6 )
-LineEdit/styles/read_only = null
+LineEdit/styles/read_only = ExtResource( 16 )
 OptionButton/colors/font_color = Color( 0.917647, 0.933333, 0.952941, 1 )
 OptionButton/colors/font_color_disabled = Color( 0.917647, 0.933333, 0.952941, 0.2 )
 OptionButton/colors/font_color_hover = Color( 0.917647, 0.933333, 0.952941, 1 )
@@ -88,6 +113,7 @@ OptionButton/styles/hover = null
 OptionButton/styles/normal = null
 OptionButton/styles/pressed = null
 Panel/styles/panel = ExtResource( 8 )
+PanelContainer/styles/panel = ExtResource( 8 )
 PopupMenu/colors/font_color = Color( 0.917647, 0.933333, 0.952941, 1 )
 PopupMenu/colors/font_color_accel = Color( 0.454902, 0.54902, 0.662745, 1 )
 PopupMenu/colors/font_color_disabled = Color( 0.454902, 0.54902, 0.662745, 1 )
@@ -95,17 +121,37 @@ PopupMenu/colors/font_color_hover = Color( 0.917647, 0.933333, 0.952941, 1 )
 PopupMenu/constants/hseparation = 4
 PopupMenu/constants/vseparation = 4
 PopupMenu/fonts/font = null
-PopupMenu/icons/checked = null
-PopupMenu/icons/radio_checked = ExtResource( 10 )
+PopupMenu/icons/checked = ExtResource( 17 )
+PopupMenu/icons/radio_checked = ExtResource( 11 )
 PopupMenu/icons/radio_unchecked = ExtResource( 11 )
 PopupMenu/icons/submenu = null
-PopupMenu/icons/unchecked = null
+PopupMenu/icons/unchecked = ExtResource( 10 )
 PopupMenu/styles/hover = ExtResource( 5 )
 PopupMenu/styles/labeled_separator_left = ExtResource( 13 )
 PopupMenu/styles/labeled_separator_right = ExtResource( 13 )
 PopupMenu/styles/panel = ExtResource( 8 )
 PopupMenu/styles/panel_disabled = null
 PopupMenu/styles/separator = ExtResource( 13 )
+PopupPanel/styles/panel = ExtResource( 8 )
+TabContainer/colors/font_color_bg = Color( 0.917647, 0.933333, 0.952941, 1 )
+TabContainer/colors/font_color_disabled = Color( 0.454902, 0.54902, 0.662745, 1 )
+TabContainer/colors/font_color_fg = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+TabContainer/constants/hseparation = 4
+TabContainer/constants/label_valign_bg = 2
+TabContainer/constants/label_valign_fg = 0
+TabContainer/constants/side_margin = 8
+TabContainer/constants/top_margin = 24
+TabContainer/fonts/font = null
+TabContainer/icons/decrement = null
+TabContainer/icons/decrement_highlight = null
+TabContainer/icons/increment = null
+TabContainer/icons/increment_highlight = null
+TabContainer/icons/menu = null
+TabContainer/icons/menu_highlight = null
+TabContainer/styles/panel = ExtResource( 8 )
+TabContainer/styles/tab_bg = ExtResource( 6 )
+TabContainer/styles/tab_disabled = ExtResource( 16 )
+TabContainer/styles/tab_fg = ExtResource( 9 )
 VScrollBar/icons/decrement = null
 VScrollBar/icons/decrement_highlight = null
 VScrollBar/icons/increment = null

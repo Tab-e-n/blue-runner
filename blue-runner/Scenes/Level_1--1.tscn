@@ -22,7 +22,7 @@
 limit_x = Vector2( 0, 3200 )
 
 [node name="BG" parent="." instance=ExtResource( 4 )]
-bg_color = Vector3( 0, 0, 0 )
+bg_color = Color( 0, 0, 0, 1 )
 hill_offset = Vector2( 512, 0 )
 
 [node name="DECOR_BACKGROUND_1" type="Node2D" parent="."]

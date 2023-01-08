@@ -17,7 +17,7 @@ var dead : bool = false
 var death_wait : int = 0
 
 var timer : float = 0
-var collectible : int = 0
+var collectible : String = ""
 export var ghost : bool = false
 
 var replay : bool = false

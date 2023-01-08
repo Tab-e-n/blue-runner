@@ -33,7 +33,7 @@ func _process(_delta):
 		if get_parent().get_node("Player").position.x < position.x:
 			scale.x = -1
 
-func teleport(timer : float, collectible : int):
+func teleport(timer : float, collectible : String):
 	# warning-ignore:return_value_discarded
 	if unlock != "": $"/root/Global".unlocked[unlock] = true
 	

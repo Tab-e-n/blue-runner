@@ -27,7 +27,7 @@
 limit_y = Vector2( -512, 0 )
 
 [node name="BG" parent="." instance=ExtResource( 6 )]
-bg_color = Vector3( 0.5, 0.412, 0.82 )
+bg_color = Color( 0.5, 0.41, 0.82, 1 )
 hill_offset = Vector2( 768, 256 )
 sun_position = Vector2( 0, -68 )
 
@@ -380,7 +380,6 @@ par = 5.2
 
 [node name="Collectible" parent="." instance=ExtResource( 8 )]
 position = Vector2( 192, -768 )
-level = 6
 
 [node name="DECOR_GROUND" type="Node2D" parent="."]
 

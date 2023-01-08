@@ -61,9 +61,16 @@ func reload():
 		time = global.level_completion[level_name][0]
 		par = global.level_completion[level_name][1]
 		
+		var collectible_amount = 0
+		for i in range(3):
+			if global.level_completion["*collectibles"].has(level_name + "*" + String(i)):
+				collectible_amount += 1
+		
 		$boltcollect/Anim.stop()
-		if global.level_completion.has(String((world - 1) * 20 + level)):
+		if collectible_amount > 0: 
 			$boltcollect.visible = true
+			$boltcollect/boltcollect2.visible = collectible_amount > 1
+			$boltcollect/boltcollect3.visible = collectible_amount > 2
 			$boltcollect/Anim.play("Idle")
 		
 		if time < par or par == 0:

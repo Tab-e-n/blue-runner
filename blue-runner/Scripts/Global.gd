@@ -19,6 +19,7 @@ export var set_data = {
 #game Stuff
 var user_directory : String = "user://sonicRunner"
 var level_completion = {
+	"*collectibles" : [],
 }
 var unlocked = {
 	"*char_select_active" : false,
@@ -279,7 +280,7 @@ func unlock_check():
 				test+=1
 		if test>=15: unlocked["Level_1--1"] = true
 
-func save_game(timer : float = 0, par : float = 0, collectible : int = 0, level = null, recording : Dictionary = {}):
+func save_game(timer : float = 0, par : float = 0, collectible : String = "", level = null, recording : Dictionary = {}):
 	
 	var savefile = File.new()
 	var temp = {}
@@ -296,8 +297,9 @@ func save_game(timer : float = 0, par : float = 0, collectible : int = 0, level 
 	elif level != null:
 		temp[level] = [timer, par, 0]
 	
-	if collectible != 0:
-		temp[String(collectible)] = 0
+	if !temp.has("*collectibles"): temp["*collectibles"] = []
+	if collectible != "" and !temp["*collectibles"].has(collectible):
+		temp["*collectibles"].append(collectible)
 	
 	var temp_full = {
 		"level_completion" : {},
@@ -371,6 +373,7 @@ func update_old_save(save : Dictionary):
 	if !save["options"].has("*reset"): save["options"]["*reset"] = null
 	if !save["options"].has("*return"): save["options"]["*return"] = null
 	if !save["options"].has("*first_time_load"): save["options"]["*first_time_load"] = false
+	if !save["level_completion"].has("*collectibles"):  save["level_completion"]["*collectibles"] = []
 	return save
 
 func condicional_save_replay(replay_name, recording : Dictionary):

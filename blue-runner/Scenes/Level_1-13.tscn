@@ -25,7 +25,7 @@
 zoom = Vector2( 3, 3 )
 
 [node name="BG" parent="." instance=ExtResource( 7 )]
-bg_color = Vector3( 0.5, 0.5, 0.5 )
+bg_color = Color( 0.5, 0.5, 0.5, 1 )
 sun_position = Vector2( 0, 384 )
 
 [node name="DECOR_BACKGROUND_1" type="Node2D" parent="."]
@@ -395,7 +395,6 @@ par = 8.0
 
 [node name="Collectible" parent="." instance=ExtResource( 8 )]
 position = Vector2( 256, 0 )
-level = 13
 
 [node name="DECOR_GROUND" type="Node2D" parent="."]
 

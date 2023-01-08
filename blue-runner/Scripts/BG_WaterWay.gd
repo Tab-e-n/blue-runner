@@ -1,7 +1,7 @@
 extends Node2D
 
-export var bg_color : Vector3 = Vector3(1, 1, 1)
-export var hill_offset : Vector2 = Vector2(512, 576)
+export var bg_color : Color = Color(1, 1, 1, 1)
+export var hill_offset : Vector2 = Vector2(512, 512)
 export var sun_position : Vector2 = Vector2(0, 0)
 
 onready var camera : Camera2D
@@ -15,10 +15,10 @@ func _ready():
 		
 		scale = camera.zoom / 2
 	
-	$back.color = Color(bg_color.x / 2, bg_color.y / 2, bg_color.z / 2, 1)
-	$bg3.modulate = Color(bg_color.x, bg_color.y, bg_color.z, 1)
-	$bg3/bg2.modulate = Color(bg_color.x, bg_color.y, bg_color.z, 1)
-	$bg3/bg2/bg1.modulate = Color(bg_color.x, bg_color.y, bg_color.z, 1)
+	$back.color = Color(bg_color.r / 2, bg_color.g / 2, bg_color.b / 2, 1)
+	$bg3.modulate = Color(bg_color.r, bg_color.g, bg_color.b, 1)
+	$bg3/bg2.modulate = Color(bg_color.r, bg_color.g, bg_color.b, 1)
+	$bg3/bg2/bg1.modulate = Color(bg_color.r, bg_color.g, bg_color.b, 1)
 	
 	$sun.position = sun_position
 
