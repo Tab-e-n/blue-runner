@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=18 format=2]
+[gd_resource type="Theme" load_steps=19 format=2]
 
 [ext_resource path="res://Control/style_hover.tres" type="StyleBox" id=1]
 [ext_resource path="res://Visual/Menu/menu_check_box_3.png" type="Texture" id=2]
@@ -17,6 +17,7 @@
 [ext_resource path="res://Control/style_focused_filled.tres" type="StyleBox" id=15]
 [ext_resource path="res://Control/style_disabled.tres" type="StyleBox" id=16]
 [ext_resource path="res://Visual/Editor/editor_point_dark.png" type="Texture" id=17]
+[ext_resource path="res://Control/style_label.tres" type="StyleBox" id=18]
 
 [resource]
 default_font = ExtResource( 3 )
@@ -72,6 +73,16 @@ ColorPickerButton/styles/focus = ExtResource( 5 )
 ColorPickerButton/styles/hover = ExtResource( 1 )
 ColorPickerButton/styles/normal = ExtResource( 6 )
 ColorPickerButton/styles/pressed = ExtResource( 9 )
+Dialogs/constants/button_margin = 32
+Dialogs/constants/margin = 8
+FileDialog/colors/file_icon_modulate = Color( 0.917647, 0.933333, 0.952941, 1 )
+FileDialog/colors/files_disabled = Color( 0.454902, 0.54902, 0.662745, 1 )
+FileDialog/colors/folder_icon_modulate = Color( 0.917647, 0.933333, 0.952941, 1 )
+FileDialog/icons/file = null
+FileDialog/icons/folder = null
+FileDialog/icons/parent_folder = null
+FileDialog/icons/reload = null
+FileDialog/icons/toggle_hidden = null
 ItemList/colors/font_color = Color( 0.917647, 0.933333, 0.952941, 1 )
 ItemList/colors/font_color_selected = Color( 0.917647, 0.933333, 0.952941, 1 )
 ItemList/colors/guide_color = Color( 0, 0, 0, 0.101961 )
@@ -86,6 +97,15 @@ ItemList/styles/cursor = null
 ItemList/styles/cursor_unfocused = null
 ItemList/styles/selected = ExtResource( 1 )
 ItemList/styles/selected_focus = ExtResource( 5 )
+Label/colors/font_color = Color( 0.917647, 0.933333, 0.952941, 1 )
+Label/colors/font_color_shadow = Color( 0, 0, 0, 0 )
+Label/colors/font_outline_modulate = Color( 0.917647, 0.933333, 0.952941, 1 )
+Label/constants/line_spacing = 3
+Label/constants/shadow_as_outline = 0
+Label/constants/shadow_offset_x = 1
+Label/constants/shadow_offset_y = 1
+Label/fonts/font = null
+Label/styles/normal = ExtResource( 18 )
 LineEdit/colors/clear_button_color = Color( 0.917647, 0.933333, 0.952941, 1 )
 LineEdit/colors/clear_button_color_pressed = Color( 0.917647, 0.933333, 0.952941, 1 )
 LineEdit/colors/cursor_color = Color( 0.917647, 0.933333, 0.952941, 1 )
@@ -114,6 +134,7 @@ OptionButton/styles/normal = null
 OptionButton/styles/pressed = null
 Panel/styles/panel = ExtResource( 8 )
 PanelContainer/styles/panel = ExtResource( 8 )
+PopupDialog/styles/panel = ExtResource( 8 )
 PopupMenu/colors/font_color = Color( 0.917647, 0.933333, 0.952941, 1 )
 PopupMenu/colors/font_color_accel = Color( 0.454902, 0.54902, 0.662745, 1 )
 PopupMenu/colors/font_color_disabled = Color( 0.454902, 0.54902, 0.662745, 1 )
@@ -133,6 +154,23 @@ PopupMenu/styles/panel = ExtResource( 8 )
 PopupMenu/styles/panel_disabled = null
 PopupMenu/styles/separator = ExtResource( 13 )
 PopupPanel/styles/panel = ExtResource( 8 )
+RichTextLabel/colors/default_color = Color( 0.917647, 0.933333, 0.952941, 1 )
+RichTextLabel/colors/font_color_selected = Color( 0.0235294, 0.901961, 0.631373, 1 )
+RichTextLabel/colors/font_color_shadow = Color( 0, 0, 0, 0 )
+RichTextLabel/colors/selection_color = Color( 0.12549, 0.207843, 0.384314, 1 )
+RichTextLabel/constants/line_separation = 1
+RichTextLabel/constants/shadow_as_outline = 0
+RichTextLabel/constants/shadow_offset_x = 1
+RichTextLabel/constants/shadow_offset_y = 1
+RichTextLabel/constants/table_hseparation = 3
+RichTextLabel/constants/table_vseparation = 3
+RichTextLabel/fonts/bold_font = null
+RichTextLabel/fonts/bold_italics_font = null
+RichTextLabel/fonts/italics_font = null
+RichTextLabel/fonts/mono_font = null
+RichTextLabel/fonts/normal_font = null
+RichTextLabel/styles/focus = ExtResource( 5 )
+RichTextLabel/styles/normal = ExtResource( 7 )
 TabContainer/colors/font_color_bg = Color( 0.917647, 0.933333, 0.952941, 1 )
 TabContainer/colors/font_color_disabled = Color( 0.454902, 0.54902, 0.662745, 1 )
 TabContainer/colors/font_color_fg = Color( 0.0156863, 0.0235294, 0.133333, 1 )
@@ -152,6 +190,42 @@ TabContainer/styles/panel = ExtResource( 8 )
 TabContainer/styles/tab_bg = ExtResource( 6 )
 TabContainer/styles/tab_disabled = ExtResource( 16 )
 TabContainer/styles/tab_fg = ExtResource( 9 )
+Tree/colors/custom_button_font_highlight = Color( 0.917647, 0.933333, 0.952941, 1 )
+Tree/colors/drop_position_color = Color( 1, 0.301961, 0.2, 1 )
+Tree/colors/font_color = Color( 0.454902, 0.54902, 0.662745, 1 )
+Tree/colors/font_color_selected = Color( 0.917647, 0.933333, 0.952941, 1 )
+Tree/colors/guide_color = Color( 0.454902, 0.54902, 0.662745, 0 )
+Tree/colors/relationship_line_color = Color( 0.454902, 0.54902, 0.662745, 1 )
+Tree/colors/title_button_color = Color( 0.917647, 0.933333, 0.952941, 1 )
+Tree/constants/button_margin = 4
+Tree/constants/draw_guides = 1
+Tree/constants/draw_relationship_lines = 0
+Tree/constants/hseparation = 4
+Tree/constants/item_margin = 12
+Tree/constants/scroll_border = 4
+Tree/constants/scroll_speed = 12
+Tree/constants/vseparation = 4
+Tree/fonts/font = null
+Tree/fonts/title_button_font = null
+Tree/icons/arrow = null
+Tree/icons/arrow_collapsed = null
+Tree/icons/checked = ExtResource( 2 )
+Tree/icons/select_arrow = ExtResource( 12 )
+Tree/icons/unchecked = ExtResource( 4 )
+Tree/icons/updown = null
+Tree/styles/bg = ExtResource( 8 )
+Tree/styles/bg_focus = ExtResource( 8 )
+Tree/styles/button_pressed = ExtResource( 9 )
+Tree/styles/cursor = null
+Tree/styles/cursor_unfocused = null
+Tree/styles/custom_button = ExtResource( 6 )
+Tree/styles/custom_button_hover = ExtResource( 1 )
+Tree/styles/custom_button_pressed = ExtResource( 9 )
+Tree/styles/selected = ExtResource( 6 )
+Tree/styles/selected_focus = ExtResource( 15 )
+Tree/styles/title_button_hover = ExtResource( 1 )
+Tree/styles/title_button_normal = ExtResource( 6 )
+Tree/styles/title_button_pressed = ExtResource( 9 )
 VScrollBar/icons/decrement = null
 VScrollBar/icons/decrement_highlight = null
 VScrollBar/icons/increment = null
@@ -161,3 +235,12 @@ VScrollBar/styles/grabber_highlight = ExtResource( 15 )
 VScrollBar/styles/grabber_pressed = ExtResource( 9 )
 VScrollBar/styles/scroll = ExtResource( 14 )
 VScrollBar/styles/scroll_focus = null
+WindowDialog/colors/title_color = Color( 0.454902, 0.54902, 0.662745, 1 )
+WindowDialog/constants/close_h_ofs = 18
+WindowDialog/constants/close_v_ofs = 18
+WindowDialog/constants/scaleborder_size = 4
+WindowDialog/constants/title_height = 20
+WindowDialog/fonts/title_font = null
+WindowDialog/icons/close = null
+WindowDialog/icons/close_highlight = null
+WindowDialog/styles/panel = ExtResource( 8 )

@@ -28,7 +28,6 @@ data="*res://Scenes/data.tscn"
 [display]
 
 window/size/height=768
-window/size/fullscreen=true
 window/stretch/mode="2d"
 window/stretch/aspect="expand"
 
@@ -43,6 +42,104 @@ mouse_right={
 "deadzone": 0.5,
 "events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":2,"pressed":false,"doubleclick":false,"script":null)
  ]
+}
+shift={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777237,"unicode":0,"echo":false,"script":null)
+ ]
+}
+ctrl={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777238,"unicode":0,"echo":false,"script":null)
+ ]
+}
+0={
+"deadzone": 0.5,
+"events": [  ]
+}
+1={
+"deadzone": 0.5,
+"events": [  ]
+}
+2={
+"deadzone": 0.5,
+"events": [  ]
+}
+3={
+"deadzone": 0.5,
+"events": [  ]
+}
+4={
+"deadzone": 0.5,
+"events": [  ]
+}
+5={
+"deadzone": 0.5,
+"events": [  ]
+}
+6={
+"deadzone": 0.5,
+"events": [  ]
+}
+7={
+"deadzone": 0.5,
+"events": [  ]
+}
+8={
+"deadzone": 0.5,
+"events": [  ]
+}
+9={
+"deadzone": 0.5,
+"events": [  ]
+}
+10={
+"deadzone": 0.5,
+"events": [  ]
+}
+11={
+"deadzone": 0.5,
+"events": [  ]
+}
+12={
+"deadzone": 0.5,
+"events": [  ]
+}
+13={
+"deadzone": 0.5,
+"events": [  ]
+}
+14={
+"deadzone": 0.5,
+"events": [  ]
+}
+15={
+"deadzone": 0.5,
+"events": [  ]
+}
+16={
+"deadzone": 0.5,
+"events": [  ]
+}
+17={
+"deadzone": 0.5,
+"events": [  ]
+}
+18={
+"deadzone": 0.5,
+"events": [  ]
+}
+19={
+"deadzone": 0.5,
+"events": [  ]
+}
+20={
+"deadzone": 0.5,
+"events": [  ]
+}
+21={
+"deadzone": 0.5,
+"events": [  ]
 }
 
 [rendering]
