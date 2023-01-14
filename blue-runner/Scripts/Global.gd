@@ -186,7 +186,7 @@ func key_names(key : int):
 		KEY_CONTROL: return "CONTROL"
 		KEY_META: return "THIS KEY IS THE META"
 		KEY_ALT: return "ALT"
-		KEY_CAPSLOCK: return "SCREW YOUR CHATTING LOCK"
+		KEY_CAPSLOCK: return "SCREAM LOCK"
 		KEY_NUMLOCK: return "THE LOCK THATS ALWAYS ON"
 		KEY_SCROLLLOCK: return "WHO EVEN USES THIS LOCK"
 		KEY_F1: return "F1"

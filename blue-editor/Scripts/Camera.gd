@@ -15,6 +15,7 @@ var editor_properties : Dictionary = {
 		"rotation" : true,
 		"z_index" : true,
 		"color" : true,
+		"order" : true,
 	},
 }
 

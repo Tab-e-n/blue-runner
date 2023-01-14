@@ -16,9 +16,15 @@ var user_directory : String = \"user://sonicRunnerEditor\"
 var mods_installed : Array
 var mods_enabled : Dictionary
 
+const INPUT_AMOUNT : int = 21
+var last_input_events : Array = range(INPUT_AMOUNT)
+
 var settings : Dictionary = {
 	\"editor_gui_additional_info\" : false,
-	\"level_save_path\" : \"user://SRLevels/\",
+	
+	\"editor_default_grid_snap\" : false,
+	\"editor_default_tab\" : 0,
+	
 	\"editor_default_layer\" : 2,
 	\"editor_default_sublayer\" : 1,
 	\"editor_default_layer_data\" : {
@@ -26,7 +32,31 @@ var settings : Dictionary = {
 		\"back\" : [[0.6, 0.6, 0.6, 1], [1, 1]],
 		\"center\" : [[1, 1, 1, 1], [1, 1]],
 		\"front\" : [[1, 1, 1, 1], [1, 1]],
-	}
+	},
+	
+	\"editor_keys\" : [
+		KEY_H, #hide GUI toggle
+		KEY_R, #scaling/rotating mode
+		KEY_G, #grid snap toggle
+		KEY_Z, #camera mode (camera zoom, game camera snap)
+		KEY_HOME, #???
+		KEY_T, #change tab to tiles
+		KEY_D, #change tab to decor
+		KEY_O, #change tab to objects
+		KEY_M, #change mode move
+		KEY_A, #change mode paint
+		KEY_X, #change mode erasor
+		KEY_C, #change mode cog
+		KEY_S, #save level
+		KEY_L, #load level
+		KEY_N, #create new level
+		KEY_ESCAPE, #exit editor
+		KEY_F, #focus file panel
+		KEY_L, #focus layer panel
+		KEY_I, #focus items panel
+		KEY_E, #focus edit panel
+		KEY_P, #focus place panel
+	],
 }
 # Max 8 faves per category
 # Each tileset has its own 8 faves under its name
@@ -129,6 +159,20 @@ func load_game(fail = false):
 	favorite = load_transfer(favorite,\"favorite\",temp)
 	recent = load_transfer(recent,\"recent\",temp)
 	settings = load_transfer(settings,\"settings\",temp)
+	
+	# First it uses the default bindings
+	last_input_events = InputMap.get_action_list(\"default\").duplicate()
+	print(last_input_events)
+	# The every binding that has already been bound replaces the defaults
+	for i in range(INPUT_AMOUNT):
+		last_input_events.append(InputEventKey.new())
+		last_input_events[i].scancode = settings[\"editor_keys\"][i]
+		if InputMap.action_has_event(String(i), last_input_events[i]):
+			InputMap.action_erase_event(String(i), last_input_events[i])
+		InputMap.action_add_event(String(i), last_input_events[i])
+		
+		last_input_events[i] = last_input_events[i]
+		settings[\"editor_keys\"][i] = last_input_events[i].scancode
 
 func load_transfer(section : Dictionary, section_name : String, temp : Dictionary):
 	if !temp.has(section_name): temp[section_name] = section.duplicate()
@@ -333,6 +377,130 @@ func load_mods_data_files(mod_name : String):
 		
 	if !mods_enabled[mod_name][0] and !mods_enabled[mod_name][1]:
 		return 2
+
+func key_names(key : int):
+	var key_number
+	match key:
+		0: key_number = settings[\"*left\"]
+		1: key_number = settings[\"*right\"]
+		2: key_number = settings[\"*up\"]
+		3: key_number = settings[\"*down\"]
+		4: key_number = settings[\"*jump\"]
+		5: key_number = settings[\"*special\"]
+		6: key_number = settings[\"*reset\"]
+		7: key_number = settings[\"*return\"]
+	
+	if key_number >= 33 and key_number <= 255: return char(key_number)
+	else: match(key_number):
+		KEY_SPACE: return \"SPACE\"
+		KEY_ESCAPE: return \"ESCAPE\"
+		KEY_TAB: return \"TAB\"
+		KEY_BACKTAB: return \"SPICY TAB\"
+		KEY_BACKSPACE: return \"BACKSPACE\"
+		KEY_ENTER: return \"ENTER\"
+		KEY_KP_ENTER: return \"KEYPAD ENTER\"
+		KEY_INSERT: return \"INSERT\"
+		KEY_DELETE: return \"DELETE\"
+		KEY_PAUSE: return \"PAUSE\"
+		KEY_PRINT: return \"SCREENSHOT\"
+		KEY_SYSREQ: return \"SYSTEM REQUEST\"
+		KEY_CLEAR: return \"CLEAR\"
+		KEY_HOME: return \"SWEET HOME ALABAMA\"
+		KEY_END: return \"THE END\"
+		KEY_LEFT: return \"LEFT ARROW\"
+		KEY_UP: return \"UP ARROW\"
+		KEY_RIGHT: return \"RIGHT ARROW\"
+		KEY_DOWN: return \"DOWN ARROW\"
+		KEY_PAGEUP: return \"PAGE UP\"
+		KEY_PAGEDOWN: return \"PAGE DOWN\"
+		KEY_SHIFT: return \"SHIFT\"
+		KEY_CONTROL: return \"CONTROL\"
+		KEY_META: return \"THIS KEY IS THE META\"
+		KEY_ALT: return \"ALT\"
+		KEY_CAPSLOCK: return \"SCREAM LOCK\"
+		KEY_NUMLOCK: return \"THE LOCK THATS ALWAYS ON\"
+		KEY_SCROLLLOCK: return \"WHO EVEN USES THIS LOCK\"
+		KEY_F1: return \"F1\"
+		KEY_F2: return \"F2\"
+		KEY_F3: return \"F3\"
+		KEY_F4: return \"F4\"
+		KEY_F5: return \"F5\"
+		KEY_F6: return \"F6\"
+		KEY_F7: return \"F7\"
+		KEY_F8: return \"F8\"
+		KEY_F9: return \"F9\"
+		KEY_F10: return \"F10\"
+		KEY_F11: return \"F11\"
+		KEY_F12: return \"F12\"
+		KEY_F13: return \"F13\"
+		KEY_F14: return \"F14\"
+		KEY_F15: return \"F15\"
+		KEY_F16: return \"F16\"
+		KEY_KP_MULTIPLY: return \"KEYPAD *\"
+		KEY_KP_DIVIDE: return \"KEYPAD /\"
+		KEY_KP_SUBTRACT: return \"KEYPAD -\"
+		KEY_KP_PERIOD: return \"KEYPAD .\"
+		KEY_KP_ADD: return \"KEYPAD +\"
+		KEY_KP_0: return \"KEYPAD 0\"
+		KEY_KP_1: return \"KEYPAD 1\"
+		KEY_KP_2: return \"KEYPAD 2\"
+		KEY_KP_3: return \"KEYPAD 3\"
+		KEY_KP_4: return \"KEYPAD 4\"
+		KEY_KP_5: return \"KEYPAD 5\"
+		KEY_KP_6: return \"KEYPAD 6\"
+		KEY_KP_7: return \"KEYPAD 7\"
+		KEY_KP_8: return \"KEYPAD 8\"
+		KEY_KP_9: return \"KEYPAD 9\"
+		KEY_SUPER_L: return \"SUPER LEFT WING\"
+		KEY_SUPER_R: return \"SUPER RIGHT WING\"
+		KEY_MENU: return \"YOU NEED TO GIVE CONTEXT\"
+		KEY_HYPER_L: return \"HYPER LEFT WING\"
+		KEY_HYPER_R: return \"HYPER RIGHT WING\"
+		KEY_HELP: return \"HELP ME GOD\"
+		KEY_DIRECTION_L: return \"DIRECTIONAL LEFT\"
+		KEY_DIRECTION_R: return \"DIRECTIONAL RIGHT\"
+		KEY_BACK: return \"BACK TO THE MARK\"
+		KEY_FORWARD: return \"FOWARD TO THE FUTURE\"
+		KEY_STOP: return \"STOP IT\"
+		KEY_REFRESH: return \"REFRESHING\"
+		KEY_VOLUMEDOWN: return \"TURN IT DOWN\"
+		KEY_VOLUMEMUTE: return \"MUTE IT PLEASE\"
+		KEY_VOLUMEUP: return \"TURN IT UP\"
+		KEY_BASSBOOST: return \"LOUD = FUNNY\"
+		KEY_BASSUP: return \"BASS UP\"
+		KEY_BASSDOWN: return \"BASS DOWN\"
+		KEY_TREBLEUP: return \"TREBLE UP\"
+		KEY_TREBLEDOWN: return \"TREBLE DOWN\"
+		KEY_MEDIAPLAY: return \"PLAY THAT SONG AGAIN\"
+		KEY_MEDIASTOP: return \"STOP THE MUSIC\"
+		KEY_MEDIAPREVIOUS: return \"PAST ART\"
+		KEY_MEDIANEXT: return \"ART OF THE FUTURE\"
+		KEY_MEDIARECORD: return \"CAUGHT ON CAMERA\"
+		KEY_HOMEPAGE: return \"HOME WITH DR. PAGE\"
+		KEY_FAVORITES: return \"MY JAM\"
+		KEY_SEARCH: return \"FIND THEM\"
+		KEY_STANDBY: return \"HALT\"
+		KEY_OPENURL: return \"BROWSER TIME\"
+		KEY_LAUNCHMAIL: return \"MAIL TIME\"
+		KEY_LAUNCHMEDIA: return \"MEDIA TIME\"
+		KEY_LAUNCH0: return \"SHORTCUT 0\"
+		KEY_LAUNCH1: return \"SHORTCUT 1\"
+		KEY_LAUNCH2: return \"SHORTCUT 2\"
+		KEY_LAUNCH3: return \"SHORTCUT 3\"
+		KEY_LAUNCH4: return \"SHORTCUT 4\"
+		KEY_LAUNCH5: return \"SHORTCUT 5\"
+		KEY_LAUNCH6: return \"SHORTCUT 6\"
+		KEY_LAUNCH7: return \"SHORTCUT 7\"
+		KEY_LAUNCH8: return \"SHORTCUT 8\"
+		KEY_LAUNCH9: return \"SHORTCUT 9\"
+		KEY_LAUNCHA: return \"SHORTCUT A\"
+		KEY_LAUNCHB: return \"SHORTCUT B\"
+		KEY_LAUNCHC: return \"SHORTCUT C\"
+		KEY_LAUNCHD: return \"SHORTCUT D\"
+		KEY_LAUNCHE: return \"SHORTCUT E\"
+		KEY_LAUNCHF: return \"SHORTCUT F\"
+		KEY_UNKNOWN: return \"???\"
+	return \"WHAT IS THIS?\"
 "
 
 [node name="data" type="Control"]
