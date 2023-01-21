@@ -4,7 +4,7 @@ var editor_properties : Dictionary = {
 	"object_path" : "res://Objects/Camera.tscn",
 	"object_type" : "camera",
 	"layer" : "camera",
-	"rect" : Vector2(128, 64),
+	"rect" : Rect2(0, 0, 128, 64),
 	"editable_properties" : {
 		"limit_x" : [TYPE_VECTOR2, 0, 0, 1, 0],
 		"limit_y" : [TYPE_VECTOR2, 0, 0, 1, 0],
@@ -17,12 +17,15 @@ var editor_properties : Dictionary = {
 		"color" : true,
 		"order" : true,
 	},
+	"attachable" : false,
 }
 
 export var limit_x : Vector2 = Vector2(0,0)
 export var limit_y : Vector2 = Vector2(0,0)
 
 export var zoom : Vector2 = Vector2(2, 2)
+
+var zoom_hinge
 
 func _ready():
 	pass
@@ -36,3 +39,13 @@ func _process(_delta):
 	$play_area.points[2] = Vector2(limit_x.y, limit_y.y) + Vector2(512, 384) * zoom - position
 	$play_area.points[3] = Vector2(limit_x.x, limit_y.y) + Vector2(-512, 384) * zoom - position
 	$play_area.points[4] = Vector2(limit_x.x, limit_y.x) + Vector2(-512, -384) * zoom - position
+
+
+func edit_left_just_pressed(_level_mouse_position):
+	zoom_hinge = zoom
+
+func edit_left_pressed(mouse_pos, mouse_hinge):
+	zoom.y = stepify(zoom_hinge.y + (mouse_hinge.y - mouse_pos.y) / 128, 1)
+	if zoom.y < 1: zoom.y = 1
+	if zoom.y > 10: zoom.y = 10
+	zoom.x = zoom.y

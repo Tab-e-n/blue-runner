@@ -25,6 +25,28 @@ var settings : Dictionary = {
 	\"editor_default_grid_snap\" : false,
 	\"editor_default_tab\" : 0,
 	
+	\"editor_author_name\" : \"Unknown\",
+	\"editor_default_level_name\" : \"Untitled Level\",
+	\"editor_default_official\" : false,
+	\"editor_default_bg\" : [\"none\",\"\"],
+	\"editor_default_tileset\" : [\"WaterWay.tres\",\"res:/\"],
+	\"editor_default_base\" : [\"base\",\"res:/\"],
+	\"editor_default_icon\" : [\"questionmark.png\",\"res:/\"],
+	
+	\"editor_create_player\" : true,
+	\"editor_create_player_path\" : \"res://Objects/Player/Player.tscn\",
+	\"editor_create_player_position\" : [-128, 0],
+	
+	\"editor_create_ghost\" : true,
+	\"editor_create_ghost_path\" : \"res://Objects/Player/Ghost.tscn\",
+	
+	\"editor_create_finish\" : true,
+	\"editor_create_finish_path\" : \"res://Objects/Finish.tscn\",
+	\"editor_create_finish_position\" : [128, 0],
+	
+	\"editor_create_camera\" : true,
+	\"editor_create_camera_path\" : \"res://Objects/Camera.tscn\",
+	
 	\"editor_default_layer\" : 2,
 	\"editor_default_sublayer\" : 1,
 	\"editor_default_layer_data\" : {
@@ -39,7 +61,7 @@ var settings : Dictionary = {
 		KEY_R, #scaling/rotating mode
 		KEY_G, #grid snap toggle
 		KEY_Z, #camera mode (camera zoom, game camera snap)
-		KEY_HOME, #???
+		KEY_J, #attach
 		KEY_T, #change tab to tiles
 		KEY_D, #change tab to decor
 		KEY_O, #change tab to objects
@@ -50,7 +72,7 @@ var settings : Dictionary = {
 		KEY_S, #save level
 		KEY_L, #load level
 		KEY_N, #create new level
-		KEY_ESCAPE, #exit editor
+		KEY_E, #edit items
 		KEY_F, #focus file panel
 		KEY_L, #focus layer panel
 		KEY_I, #focus items panel
@@ -217,6 +239,7 @@ func load_editor_mods():
 	if check_exist == OK:
 		print(\"user has mods installed\")
 		
+		# warning-ignore:return_value_discarded
 		directory.list_dir_begin(true)
 		current_file = directory.get_next()
 		while current_file != \"\":
@@ -237,10 +260,11 @@ func load_editor_mods():
 	
 	for mod_name in mods_installed:
 		print(\"current mod: \" + mod_name)
+		# warning-ignore:return_value_discarded
 		directory.open(\"Mods/\" + mod_name)
 		
 		# Characters
-		print(\"scanning vanilla characters\")
+		print(\"scanning for characters\")
 		load_dat_file(\"Mods/\" + mod_name, \"/Objects/Player/\", characters, \"characters\")
 		
 		# Tilesets
@@ -290,6 +314,7 @@ func scan_single_directory(main_directory : String, sub_directory : String, stor
 	var current_file
 	
 	if check_exist == OK:
+		# warning-ignore:return_value_discarded
 		directory.list_dir_begin(true)
 		
 		current_file = directory.get_next()
@@ -312,7 +337,9 @@ func scan_multi_directory(main_directory : String, start_directory : String, sto
 	while directories_to_visit.size() > 0:
 		var current_directory : String = directories_to_visit[0]
 		print(\"looking through: \" + current_directory)
+		# warning-ignore:return_value_discarded
 		directory.open(current_directory)
+		# warning-ignore:return_value_discarded
 		directory.list_dir_begin(true)
 		current_file = directory.get_next()
 		while current_file != \"\":

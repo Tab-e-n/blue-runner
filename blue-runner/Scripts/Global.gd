@@ -47,6 +47,7 @@ var default_options = {
 var rand : RandomNumberGenerator = RandomNumberGenerator.new()
 
 var current_character : String = "S1"
+var current_character_location : String = "res:/"
 
 var replay : bool = false
 var current_recording = {}

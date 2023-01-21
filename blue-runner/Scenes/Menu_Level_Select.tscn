@@ -3275,7 +3275,7 @@ locked = true
 position = Vector2( 576, 608 )
 scale = Vector2( 1.2, 1.2 )
 level = 18
-level_name = "Level_Test_Mush"
+level_name = "spinner"
 level_symbol = ExtResource( 3 )
 locked = true
 

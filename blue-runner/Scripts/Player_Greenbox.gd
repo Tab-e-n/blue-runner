@@ -35,7 +35,7 @@ var ground_buffer : int = 0
 var timer : int = 0
 
 func _ready():
-	pass
+	if facing != "right" and facing != "left": facing = "right"
 	#if get_parent().name == "Main": position = $"/root/Global".tele_pos # HUB WORLD CODE
 
 func _process(_delta):

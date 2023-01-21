@@ -13,10 +13,10 @@ func _ready():
 	var current : float = 0
 	for i in range(rotations.size()):
 		if direction: rotations[i] = current
-		else: rotations[59 - i] = current
+		else: rotations[spin_time_frames - i - 1] = current
 		current += step
-		pass
 	
+	if timer >= spin_time_frames: timer = spin_time_frames - 1
 	$decor_steel_pipe.scale.y = lenght + 0.125
 
 func _physics_process(_delta):

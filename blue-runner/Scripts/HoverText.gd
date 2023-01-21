@@ -1,6 +1,5 @@
 extends Area2D
 
-
 export var text : String = "empty"
 export var offset : Vector2 = Vector2(0, 0)
 export var text_size : Vector2 = Vector2(341, 85)

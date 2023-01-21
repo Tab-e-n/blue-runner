@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Visual/stained_glass.png" type="Texture" id=1]
+[ext_resource path="res://Scripts/BreakableGlass.gd" type="Script" id=2]
+
+[node name="BreakableGlass" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="stained_glass" type="Sprite" parent="."]
+scale = Vector2( 2, 2 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 0, 0, 64, 64 )
+
+[node name="Outline" type="Line2D" parent="stained_glass"]
+scale = Vector2( 0.5, 0.5 )
+points = PoolVector2Array( 0, 0, 128, 0, 128, 128, 0, 128, 0, 0 )
+width = 4.0
+default_color = Color( 0.145098, 0.12549, 0.0588235, 1 )

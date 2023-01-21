@@ -4,7 +4,7 @@ var editor_properties : Dictionary = {
 	"object_path" : "res://Objects/Backgrounds/BG_WaterWay.tscn",
 	"object_type" : "bg", # some object types have a limited amount of the times they can appear
 	"layer" : "bg", # selected or special
-	"rect" : Vector2(2048, 1536),
+	"rect" : Rect2(0, 0, 2048, 1536),
 	"editable_properties" : {
 		"bg_color" : [TYPE_COLOR, 0, 0, 0],
 		"hill_offset" : [TYPE_VECTOR2, 0, 0, 1],
@@ -17,11 +17,15 @@ var editor_properties : Dictionary = {
 		"color" : true,
 		"order" : true,
 	},
+	"attachable" : false,
 }
 
 export var bg_color : Color = Color(1, 1, 1, 1)
 export var hill_offset : Vector2 = Vector2(512, 512)
 export var sun_position : Vector2 = Vector2(0, 0)
+
+var hills_hinge : Vector2
+var sun_hinge : Vector2
 
 var start_position : Vector2
 
@@ -53,3 +57,16 @@ func update_self(cam_target : Vector2):
 	$bg3/bg2/bg1.position.x = (start_position.x - position.x) / 16 + -384
 	$bg3/bg2/bg1.position.y = (start_position.y - position.y) / 32 + 48
 
+func edit_left_just_pressed(_level_mouse_position):
+	hills_hinge = hill_offset
+
+func edit_left_pressed(mouse_pos, mouse_hinge):
+	hill_offset.x = stepify(hills_hinge.x - (mouse_hinge.x - mouse_pos.x), 1)
+	hill_offset.y = stepify(hills_hinge.y - (mouse_hinge.y - mouse_pos.y), 1)
+
+func edit_right_just_pressed(_level_mouse_position):
+	sun_hinge = sun_position
+
+func edit_right_pressed(mouse_pos, mouse_hinge):
+	sun_position.x = stepify(sun_hinge.x - (mouse_hinge.x - mouse_pos.x), 1)
+	sun_position.y = stepify(sun_hinge.y - (mouse_hinge.y - mouse_pos.y), 1)
