@@ -41,6 +41,7 @@ func _ready():
 		
 		var shift : int = 0
 		for j in range(positions.size()-1):
+			if time_chunks[j] == 0: continue
 			var pos_fraction : Vector2 = Vector2((positions[j].x - positions[j+1].x) / time_chunks[j], (positions[j].y - positions[j+1].y) / time_chunks[j])
 			for i in range(time_chunks[j]):
 				pos[i+shift] = Vector2(positions[j].x - pos_fraction.x*i, positions[j].y - pos_fraction.y*i)
@@ -48,7 +49,7 @@ func _ready():
 			pos[shift] = positions[j+1]
 			
 	else:
-		# IMPORTANT! DON'T REMOVE BECAUSE IT'S "INEFFICIENT", IT'S A WORKAROUND BECAUSE IM DUMB PROBABLY OR SOMETHING
+		# IMPORTANT! DON'T REMOVE BECAUSE IT'S "WEIRD", IT'S BECAUSE IM DUMB BITCH
 		pos = pre_pos.duplicate()
 
 func _physics_process(_delta):

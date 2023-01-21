@@ -39,8 +39,12 @@ func _physics_process(_delta):
 		$glass/stained_glass.position += shift
 		$glass/blight.position += shift
 		$line1.rotation_degrees = rand.randi_range(0, 360)
+		$line1.visible = true
 		$line2.rotation_degrees = rand.randi_range(0, 360)
+		$line2.visible = true
 		$line3.rotation_degrees = rand.randi_range(0, 360)
+		$line3.visible = true
+		$particle_circle.visible = true
 		$anim.play("Break")
 		
 		

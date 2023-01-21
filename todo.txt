@@ -28,7 +28,8 @@ placin objects
 removin objects
 picking objects
 editing objects
-
+attaching objects to other objects (spinning arms)
+attaching objects to other objects (tracks)
 Object representations
 
 ITEMS
@@ -37,7 +38,6 @@ selectin items
 practically done
 
 EDIT
-untouche
 Editin proprerties of decor and variations of tiles
 Editin proprerties of objects
 bg editor
@@ -66,23 +66,26 @@ focus place panel
 scaling items
 rotating items
 grid snap
+attaching objects to tracks and spinning arms
 
 exit editor
 
 EDITOR OTHER
 base.dat editor
 focus place
-
 focus file
+focus edit layers
 focus edit items
 focus edit tiles
-focus edit layers
 focus items
-undo system (optional)
+
+options menu
+mod loader
+mod.dat editor
+dependecies save
 menu for other editors
 characters.dat editor
-mod.dat editor
-mod loader
 level groups - make in sonic runner and specil editor for them
 level group editor
-after all that you done with level editor and can continou makon levels for SR
+after all that you done with level editor and can continou by takin break
+undo system (optional)

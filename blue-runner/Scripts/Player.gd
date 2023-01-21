@@ -4,6 +4,7 @@ onready var global : Control = $"/root/Global"
 onready var character : Node2D
 
 export var character_name : String = ""
+export var character_location : String = "res:/"
 
 var state : String = "air"
 
@@ -37,6 +38,9 @@ func _ready():
 	recording.clear()
 	
 	replay = global.replay
+	
+	if facing != "right" and facing != "left": facing = "right"
+	
 	if ghost:
 		if !global.race_mode:
 			if !global.load_replay(global.current_level + "_Best", true) or !global.options["*ghosts_on"]:
@@ -53,6 +57,7 @@ func _ready():
 		else: recording = global.load_replay(global.current_level + "_Best")
 		replay_timer = recording["timer"]
 		character_name = recording["character"]
+		if recording.has("character_location"): character_location = recording["character_location"]
 		
 		collision_layer = 0
 		collision_mask = 0
@@ -61,11 +66,15 @@ func _ready():
 		recording = global.current_recording.duplicate()
 		replay_timer = recording["timer"]
 		character_name = recording["character"]
+		if recording.has("character_location"): character_location = recording["character_location"]
 	else:
 		if character_name == "":
 			character_name = global.current_character
+			character_location = global.current_character_location
 	
-	var char_node = load("res://Objects/Player/" + character_name + "_Character.tscn").instance()
+	var char_load : PackedScene = load(character_location + "/Objects/Player/" + character_name + "_Character.tscn")
+	if char_load == null: char_load = load("res://Objects/Player/missing_Character.tscn")
+	var char_node = char_load.instance()
 	add_child(char_node)
 	character = char_node
 	character.get_node("Anim").current_animation = "Enter"
@@ -196,6 +205,7 @@ func record():
 func finish(collision):
 	recording["timer"] = timer
 	recording["character"] = character_name
+	recording["character_location"] = character_location
 	recording["level"] = get_parent().name
 	#global.current_recording = recording.duplicate()
 	deny_input = true
