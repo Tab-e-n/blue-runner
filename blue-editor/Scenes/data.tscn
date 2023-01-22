@@ -405,18 +405,7 @@ func load_mods_data_files(mod_name : String):
 	if !mods_enabled[mod_name][0] and !mods_enabled[mod_name][1]:
 		return 2
 
-func key_names(key : int):
-	var key_number
-	match key:
-		0: key_number = settings[\"*left\"]
-		1: key_number = settings[\"*right\"]
-		2: key_number = settings[\"*up\"]
-		3: key_number = settings[\"*down\"]
-		4: key_number = settings[\"*jump\"]
-		5: key_number = settings[\"*special\"]
-		6: key_number = settings[\"*reset\"]
-		7: key_number = settings[\"*return\"]
-	
+func key_names(key_number : int):
 	if key_number >= 33 and key_number <= 255: return char(key_number)
 	else: match(key_number):
 		KEY_SPACE: return \"SPACE\"

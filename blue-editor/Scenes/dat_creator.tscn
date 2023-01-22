@@ -1,20 +1,28 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Text/Text_Editor.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=2]
-[ext_resource path="res://Visual/Editor/editor_save_enabled.png" type="Texture" id=3]
+[ext_resource path="res://Visual/Editor/editor_new_enabled.png" type="Texture" id=3]
 [ext_resource path="res://Visual/Editor/editor_save.png" type="Texture" id=4]
 [ext_resource path="res://Visual/Editor/editor_eraser_enabled.png" type="Texture" id=5]
 [ext_resource path="res://Visual/Editor/editor_eraser.png" type="Texture" id=6]
+[ext_resource path="res://Visual/Editor/editor_new.png" type="Texture" id=7]
+[ext_resource path="res://Visual/Editor/editor_save_enabled.png" type="Texture" id=8]
+[ext_resource path="res://Visual/Editor/editor_exit_enabled.png" type="Texture" id=9]
+[ext_resource path="res://Visual/Editor/editor_exit.png" type="Texture" id=10]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
+const options_span : int = 1344
+
 func _ready():
-	ready_optionbutton_setup($base/base_normal, data.level_icon)
-	ready_optionbutton_setup($base/base_locked, data.level_icon)
-	ready_optionbutton_setup($base/base_done, data.level_icon)
-	ready_optionbutton_setup($base/base_perfect, data.level_icon)
+	ready_optionbutton_setup($GUI/base/base_normal, data.level_icon)
+	ready_optionbutton_setup($GUI/base/base_locked, data.level_icon)
+	ready_optionbutton_setup($GUI/base/base_done, data.level_icon)
+	ready_optionbutton_setup($GUI/base/base_perfect, data.level_icon)
+	
+	$VScrollBar.max_value = options_span / 64
 
 func ready_optionbutton_setup(option_button : OptionButton, data_array : Array):
 	var last_directory : String = \"res:/\"
@@ -25,6 +33,15 @@ func ready_optionbutton_setup(option_button : OptionButton, data_array : Array):
 			last_directory = i[1]
 		option_button.add_item(i[0])
 		option_button.set_item_metadata(option_button.get_item_count() - 1, i[1])
+
+func _process(_delta):
+	var window = get_viewport().get_visible_rect().end
+	rect_size = window
+	$VScrollBar.rect_size.y = window.y
+	$VScrollBar.page = window.y / 64
+
+func _on_VScrollBar_scrolling():
+	$GUI.rect_position.y = -$VScrollBar.value * 64
 
 func base_save():
 	var loadfile = File.new()
@@ -41,14 +58,14 @@ func base_save():
 	
 	var savefile = File.new()
 	
-	temp[$base/base_name.text] = [
-		$base/base_normal.get_item_text($base/base_normal.selected),
-		$base/base_locked.get_item_text($base/base_locked.selected),
-		$base/base_done.get_item_text($base/base_done.selected),
-		$base/base_perfect.get_item_text($base/base_perfect.selected)
+	temp[$GUI/base/base_name.text] = [
+		$GUI/base/base_normal.get_item_text($GUI/base/base_normal.selected),
+		$GUI/base/base_locked.get_item_text($GUI/base/base_locked.selected),
+		$GUI/base/base_done.get_item_text($GUI/base/base_done.selected),
+		$GUI/base/base_perfect.get_item_text($GUI/base/base_perfect.selected)
 	]
 	if !temp.has(\"*base\"): temp[\"*base\"] = []
-	temp[\"*base\"].append($base/base_name.text)
+	temp[\"*base\"].append($GUI/base/base_name.text)
 	
 	savefile.open(\"base.dat\", File.WRITE)
 	savefile.store_line(to_json(temp))
@@ -69,11 +86,115 @@ func base_remove():
 		
 		var savefile = File.new()
 		
-		temp.erase($base/base_name.text)
+		temp.erase($GUI/base/base_name.text)
+		temp[\"*base\"].erase($GUI/base/base_name.text)
 		
 		savefile.open(\"base.dat\", File.WRITE)
 		savefile.store_line(to_json(temp))
 		savefile.close()
+
+func character_save():
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(\"characters.dat\"): # does file exist
+		loadfile.open(\"characters.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		loadfile.close()
+	
+	var savefile = File.new()
+	
+	if !temp.has(\"*characters\"): temp[\"*characters\"] = []
+	temp[\"*characters\"].append($GUI/character/name.text)
+	
+	savefile.open(\"characters.dat\", File.WRITE)
+	savefile.store_line(to_json(temp))
+	savefile.close()
+
+func character_remove():
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(\"characters.dat\"): # does file exist
+		loadfile.open(\"characters.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		loadfile.close()
+		
+		var savefile = File.new()
+		
+		temp[\"*characters\"].erase($GUI/character/name.text)
+		
+		savefile.open(\"characters.dat\", File.WRITE)
+		savefile.store_line(to_json(temp))
+		savefile.close()
+
+func mod_modify():
+	var savefile = File.new()
+	var temp = {}
+	
+	temp[\"mod_name\"] = $GUI/mod/name.text
+	temp[\"creator\"] = $GUI/mod/author.text
+	temp[\"description\"] = $GUI/mod/description.text
+	#temp[\"dependencies\"]
+	
+	savefile.open(\"mod.dat\", File.WRITE)
+	savefile.store_line(to_json(temp))
+	savefile.close()
+
+func dependecies_save():
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(\"mod.dat\"): # does file exist
+		loadfile.open(\"mod.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		loadfile.close()
+	
+	var savefile = File.new()
+	
+	if !temp.has(\"dependencies\"): temp[\"dependencies\"] = []
+	temp[\"dependencies\"].append($GUI/mod/dependecies.text)
+	
+	savefile.open(\"mod.dat\", File.WRITE)
+	savefile.store_line(to_json(temp))
+	savefile.close()
+
+func dependecies_remove():
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(\"mod.dat\"): # does file exist
+		loadfile.open(\"mod.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		loadfile.close()
+		
+		var savefile = File.new()
+		
+		temp[\"dependencies\"].erase($GUI/mod/dependecies.text)
+		
+		savefile.open(\"mod.dat\", File.WRITE)
+		savefile.store_line(to_json(temp))
+		savefile.close()
+
+func _on_exit_pressed():
+	# warning-ignore:return_value_discarded
+	get_tree().change_scene(\"res://Scenes/menu.tscn\")
 "
 
 [node name="dat_creator" type="Control"]
@@ -85,115 +206,340 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="base" type="Control" parent="."]
-margin_left = 128.0
-margin_right = 896.0
-margin_bottom = 384.0
-
-[node name="Panel" type="Panel" parent="base"]
-margin_left = 64.0
-margin_top = 64.0
-margin_right = 704.0
-margin_bottom = 384.0
+[node name="GUI" type="Control" parent="."]
+margin_right = 1024.0
+margin_bottom = 768.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="base_save" type="TextureButton" parent="base"]
-margin_left = 96.0
-margin_top = 96.0
-margin_right = 160.0
-margin_bottom = 160.0
-texture_normal = ExtResource( 4 )
+[node name="instructions" type="Panel" parent="GUI"]
+margin_left = 152.0
+margin_top = 8.0
+margin_right = 944.0
+margin_bottom = 296.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="title2" parent="GUI/instructions" instance=ExtResource( 1 )]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = -296.0
+margin_bottom = -152.0
+rect_scale = Vector2( 0.75, 0.75 )
+text = "INSTRUCTIONS"
+
+[node name="Text" parent="GUI/instructions" instance=ExtResource( 1 )]
+margin_left = 16.0
+margin_top = 72.0
+margin_right = 744.0
+margin_bottom = 104.0
+text = "To edit a dat file, place it next to the SR Editor executable. Then you'll be able to edit it using these tools, without making syntax mistakes. If there aren't any files to edit, the SR Editor will make new ones.
+For further instruction look at the SR manual."
+
+[node name="base" type="Panel" parent="GUI"]
+margin_left = 152.0
+margin_top = 312.0
+margin_right = 944.0
+margin_bottom = 648.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="title" parent="GUI/base" instance=ExtResource( 1 )]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = -309.0
+margin_bottom = -256.0
+rect_scale = Vector2( 0.75, 0.75 )
+text = "BASE.DAT"
+
+[node name="base_save" type="TextureButton" parent="GUI/base"]
+margin_left = 616.0
+margin_top = 8.0
+margin_right = 680.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 7 )
 texture_pressed = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="base_remove" type="TextureButton" parent="base"]
-margin_left = 608.0
-margin_top = 96.0
-margin_right = 672.0
-margin_bottom = 160.0
+[node name="base_remove" type="TextureButton" parent="GUI/base"]
+margin_left = 712.0
+margin_top = 8.0
+margin_right = 776.0
+margin_bottom = 72.0
 texture_normal = ExtResource( 6 )
 texture_pressed = ExtResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="base_text" parent="base" instance=ExtResource( 1 )]
-margin_left = 312.0
-margin_top = 96.0
-margin_right = -168.0
-margin_bottom = -224.0
+[node name="base_text" parent="GUI/base" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 88.0
+margin_right = -224.0
+margin_bottom = -184.0
 text = "Base name"
 
-[node name="base_text_normal" parent="base" instance=ExtResource( 1 )]
-margin_left = 168.0
-margin_top = 192.0
-margin_right = -392.0
-margin_bottom = -128.0
+[node name="base_text_normal" parent="GUI/base" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 136.0
+margin_right = -224.0
+margin_bottom = -136.0
 text = "Normal"
 
-[node name="base_text_locked" parent="base" instance=ExtResource( 1 )]
-margin_left = 488.0
-margin_top = 192.0
-margin_right = -88.0
-margin_bottom = -128.0
+[node name="base_text_locked" parent="GUI/base" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 232.0
+margin_right = -224.0
+margin_bottom = -40.0
 text = "Locked"
 
-[node name="base_text_done" parent="base" instance=ExtResource( 1 )]
-margin_left = 184.0
-margin_top = 288.0
-margin_right = -440.0
-margin_bottom = -32.0
+[node name="base_text_done" parent="GUI/base" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 184.0
+margin_right = -224.0
+margin_bottom = -88.0
 text = "Done"
 
-[node name="base_text_perfect" parent="base" instance=ExtResource( 1 )]
-margin_left = 480.0
-margin_top = 288.0
-margin_right = -48.0
-margin_bottom = -32.0
+[node name="base_text_perfect" parent="GUI/base" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 280.0
+margin_right = -216.0
+margin_bottom = 8.0
 text = "Perfect"
 
-[node name="base_name" type="LineEdit" parent="base"]
-margin_left = 192.0
-margin_top = 128.0
-margin_right = 576.0
-margin_bottom = 162.0
+[node name="base_name" type="LineEdit" parent="GUI/base"]
+margin_left = 320.0
+margin_top = 88.0
+margin_right = 704.0
+margin_bottom = 120.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="base_normal" type="OptionButton" parent="base"]
-margin_left = 96.0
-margin_top = 224.0
-margin_right = 352.0
-margin_bottom = 258.0
+[node name="base_normal" type="OptionButton" parent="GUI/base"]
+margin_left = 320.0
+margin_top = 136.0
+margin_right = 704.0
+margin_bottom = 168.0
 clip_text = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="base_locked" type="OptionButton" parent="base"]
-margin_left = 416.0
-margin_top = 224.0
-margin_right = 672.0
-margin_bottom = 258.0
+[node name="base_locked" type="OptionButton" parent="GUI/base"]
+margin_left = 320.0
+margin_top = 232.0
+margin_right = 704.0
+margin_bottom = 264.0
 clip_text = true
 
-[node name="base_done" type="OptionButton" parent="base"]
-margin_left = 96.0
-margin_top = 320.0
-margin_right = 352.0
-margin_bottom = 354.0
+[node name="base_done" type="OptionButton" parent="GUI/base"]
+margin_left = 320.0
+margin_top = 184.0
+margin_right = 704.0
+margin_bottom = 216.0
 clip_text = true
 
-[node name="base_perfect" type="OptionButton" parent="base"]
-margin_left = 416.0
-margin_top = 320.0
-margin_right = 672.0
-margin_bottom = 354.0
+[node name="base_perfect" type="OptionButton" parent="GUI/base"]
+margin_left = 320.0
+margin_top = 280.0
+margin_right = 704.0
+margin_bottom = 312.0
 clip_text = true
-[connection signal="pressed" from="base/base_save" to="." method="base_save"]
-[connection signal="pressed" from="base/base_remove" to="." method="base_remove"]
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="character" type="Panel" parent="GUI"]
+margin_left = 152.0
+margin_top = 664.0
+margin_right = 944.0
+margin_bottom = 808.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="title2" parent="GUI/character" instance=ExtResource( 1 )]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 149.0
+margin_bottom = -53.0
+rect_scale = Vector2( 0.75, 0.75 )
+text = "CHARACTERS.DAT"
+
+[node name="save" type="TextureButton" parent="GUI/character"]
+margin_left = 616.0
+margin_top = 8.0
+margin_right = 680.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 7 )
+texture_pressed = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="remove" type="TextureButton" parent="GUI/character"]
+margin_left = 712.0
+margin_top = 8.0
+margin_right = 776.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 6 )
+texture_pressed = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="GUI/character" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 88.0
+margin_right = -208.0
+margin_bottom = 8.0
+text = "Character"
+
+[node name="name" type="LineEdit" parent="GUI/character"]
+margin_left = 328.0
+margin_top = 88.0
+margin_right = 712.0
+margin_bottom = 120.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="mod" type="Panel" parent="GUI"]
+margin_left = 152.0
+margin_top = 824.0
+margin_right = 944.0
+margin_bottom = 1288.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="title3" parent="GUI/mod" instance=ExtResource( 1 )]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 149.0
+margin_bottom = -304.0
+rect_scale = Vector2( 0.75, 0.75 )
+text = "MOD.DAT"
+
+[node name="modify" type="TextureButton" parent="GUI/mod"]
+margin_left = 712.0
+margin_top = 8.0
+margin_right = 776.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 4 )
+texture_pressed = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="GUI/mod" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 88.0
+margin_right = -208.0
+margin_bottom = -232.0
+text = "Mod name"
+
+[node name="name" type="LineEdit" parent="GUI/mod"]
+margin_left = 328.0
+margin_top = 88.0
+margin_right = 712.0
+margin_bottom = 120.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text2" parent="GUI/mod" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 136.0
+margin_right = -208.0
+margin_bottom = -184.0
+text = "Creator"
+
+[node name="author" type="LineEdit" parent="GUI/mod"]
+margin_left = 328.0
+margin_top = 136.0
+margin_right = 712.0
+margin_bottom = 168.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text3" parent="GUI/mod" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 184.0
+margin_right = -208.0
+margin_bottom = -136.0
+text = "Description"
+
+[node name="description" type="TextEdit" parent="GUI/mod"]
+margin_left = 328.0
+margin_top = 184.0
+margin_right = 712.0
+margin_bottom = 312.0
+
+[node name="save" type="TextureButton" parent="GUI/mod"]
+margin_left = 616.0
+margin_top = 328.0
+margin_right = 680.0
+margin_bottom = 392.0
+texture_normal = ExtResource( 7 )
+texture_pressed = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="remove" type="TextureButton" parent="GUI/mod"]
+margin_left = 712.0
+margin_top = 328.0
+margin_right = 776.0
+margin_bottom = 392.0
+texture_normal = ExtResource( 6 )
+texture_pressed = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text4" parent="GUI/mod" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 408.0
+margin_right = -208.0
+margin_bottom = 88.0
+text = "Dependecies"
+
+[node name="dependecies" type="LineEdit" parent="GUI/mod"]
+margin_left = 328.0
+margin_top = 408.0
+margin_right = 712.0
+margin_bottom = 440.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VScrollBar" type="VScrollBar" parent="."]
+margin_left = 64.0
+margin_right = 80.0
+margin_bottom = 768.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="exit" type="TextureButton" parent="."]
+margin_right = 64.0
+margin_bottom = 64.0
+texture_normal = ExtResource( 10 )
+texture_pressed = ExtResource( 9 )
+[connection signal="pressed" from="GUI/base/base_save" to="." method="base_save"]
+[connection signal="pressed" from="GUI/base/base_remove" to="." method="base_remove"]
+[connection signal="pressed" from="GUI/character/save" to="." method="character_save"]
+[connection signal="pressed" from="GUI/character/remove" to="." method="character_remove"]
+[connection signal="pressed" from="GUI/mod/modify" to="." method="mod_modify"]
+[connection signal="pressed" from="GUI/mod/save" to="." method="dependecies_save"]
+[connection signal="pressed" from="GUI/mod/remove" to="." method="dependecies_remove"]
+[connection signal="scrolling" from="VScrollBar" to="." method="_on_VScrollBar_scrolling"]
+[connection signal="pressed" from="exit" to="." method="_on_exit_pressed"]

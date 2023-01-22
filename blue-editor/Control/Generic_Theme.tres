@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=19 format=2]
+[gd_resource type="Theme" load_steps=20 format=2]
 
 [ext_resource path="res://Control/style_hover.tres" type="StyleBox" id=1]
 [ext_resource path="res://Visual/Menu/menu_check_box_3.png" type="Texture" id=2]
@@ -18,6 +18,7 @@
 [ext_resource path="res://Control/style_disabled.tres" type="StyleBox" id=16]
 [ext_resource path="res://Visual/Editor/editor_point_dark.png" type="Texture" id=17]
 [ext_resource path="res://Control/style_label.tres" type="StyleBox" id=18]
+[ext_resource path="res://Control/style_scroll_horizontal.tres" type="StyleBox" id=19]
 
 [resource]
 default_font = ExtResource( 3 )
@@ -25,7 +26,7 @@ Button/colors/font_color = Color( 0.917647, 0.933333, 0.952941, 1 )
 Button/colors/font_color_disabled = Color( 0.454902, 0.54902, 0.662745, 1 )
 Button/colors/font_color_hover = Color( 0.917647, 0.933333, 0.952941, 1 )
 Button/colors/font_color_pressed = Color( 0.0156863, 0.0235294, 0.133333, 1 )
-Button/constants/hseparation = 2
+Button/constants/hseparation = 0
 Button/fonts/font = null
 Button/styles/disabled = ExtResource( 16 )
 Button/styles/focus = ExtResource( 5 )
@@ -83,6 +84,15 @@ FileDialog/icons/folder = null
 FileDialog/icons/parent_folder = null
 FileDialog/icons/reload = null
 FileDialog/icons/toggle_hidden = null
+HScrollBar/icons/decrement = null
+HScrollBar/icons/decrement_highlight = null
+HScrollBar/icons/increment = null
+HScrollBar/icons/increment_highlight = null
+HScrollBar/styles/grabber = ExtResource( 6 )
+HScrollBar/styles/grabber_highlight = ExtResource( 15 )
+HScrollBar/styles/grabber_pressed = ExtResource( 9 )
+HScrollBar/styles/scroll = ExtResource( 19 )
+HScrollBar/styles/scroll_focus = null
 ItemList/colors/font_color = Color( 0.917647, 0.933333, 0.952941, 1 )
 ItemList/colors/font_color_selected = Color( 0.917647, 0.933333, 0.952941, 1 )
 ItemList/colors/guide_color = Color( 0, 0, 0, 0.101961 )
@@ -190,6 +200,45 @@ TabContainer/styles/panel = ExtResource( 8 )
 TabContainer/styles/tab_bg = ExtResource( 6 )
 TabContainer/styles/tab_disabled = ExtResource( 16 )
 TabContainer/styles/tab_fg = ExtResource( 9 )
+TextEdit/colors/background_color = Color( 0, 0, 0, 0 )
+TextEdit/colors/bookmark_color = Color( 0.08, 0.49, 0.98, 1 )
+TextEdit/colors/brace_mismatch_color = Color( 1, 0.2, 0.2, 1 )
+TextEdit/colors/breakpoint_color = Color( 0.8, 0.8, 0.4, 0.2 )
+TextEdit/colors/caret_background_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/caret_color = Color( 0.88, 0.88, 0.88, 1 )
+TextEdit/colors/code_folding_color = Color( 0.8, 0.8, 0.8, 0.8 )
+TextEdit/colors/completion_background_color = Color( 0.17, 0.16, 0.2, 1 )
+TextEdit/colors/completion_existing_color = Color( 0.87, 0.87, 0.87, 0.13 )
+TextEdit/colors/completion_font_color = Color( 0.67, 0.67, 0.67, 1 )
+TextEdit/colors/completion_scroll_color = Color( 1, 1, 1, 1 )
+TextEdit/colors/completion_selected_color = Color( 0.26, 0.26, 0.27, 1 )
+TextEdit/colors/current_line_color = Color( 0.25, 0.25, 0.26, 0.8 )
+TextEdit/colors/executing_line_color = Color( 0.2, 0.8, 0.2, 0.4 )
+TextEdit/colors/font_color = Color( 0.88, 0.88, 0.88, 1 )
+TextEdit/colors/font_color_readonly = Color( 0.88, 0.88, 0.88, 0.5 )
+TextEdit/colors/font_color_selected = Color( 0, 0, 0, 1 )
+TextEdit/colors/function_color = Color( 0.4, 0.64, 0.81, 1 )
+TextEdit/colors/line_number_color = Color( 0.67, 0.67, 0.67, 0.4 )
+TextEdit/colors/mark_color = Color( 1, 0.4, 0.4, 0.4 )
+TextEdit/colors/member_variable_color = Color( 0.9, 0.31, 0.35, 1 )
+TextEdit/colors/number_color = Color( 0.92, 0.58, 0.2, 1 )
+TextEdit/colors/safe_line_number_color = Color( 0.67, 0.78, 0.67, 0.6 )
+TextEdit/colors/selection_color = Color( 0.49, 0.49, 0.49, 1 )
+TextEdit/colors/symbol_color = Color( 0.94, 0.94, 0.94, 1 )
+TextEdit/colors/word_highlighted_color = Color( 0.8, 0.9, 0.9, 0.15 )
+TextEdit/constants/completion_lines = 7
+TextEdit/constants/completion_max_width = 50
+TextEdit/constants/completion_scroll_width = 3
+TextEdit/constants/line_spacing = 4
+TextEdit/fonts/font = null
+TextEdit/icons/fold = null
+TextEdit/icons/folded = null
+TextEdit/icons/space = null
+TextEdit/icons/tab = null
+TextEdit/styles/completion = ExtResource( 6 )
+TextEdit/styles/focus = ExtResource( 6 )
+TextEdit/styles/normal = ExtResource( 6 )
+TextEdit/styles/read_only = ExtResource( 16 )
 Tree/colors/custom_button_font_highlight = Color( 0.917647, 0.933333, 0.952941, 1 )
 Tree/colors/drop_position_color = Color( 1, 0.301961, 0.2, 1 )
 Tree/colors/font_color = Color( 0.454902, 0.54902, 0.662745, 1 )

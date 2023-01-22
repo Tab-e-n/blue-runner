@@ -166,10 +166,6 @@ alt={
 "deadzone": 0.5,
 "events": [  ]
 }
-21={
-"deadzone": 0.5,
-"events": [  ]
-}
 
 [rendering]
 
