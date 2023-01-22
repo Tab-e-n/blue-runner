@@ -1860,7 +1860,7 @@ func file_exit_pressed():
 
 func file_exit_confirmed():
 	# warning-ignore:return_value_discarded
-	get_tree().change_scene(\"res://Scenes/dat_creator.tscn\")
+	get_tree().change_scene(\"res://Scenes/menu.tscn\")
 "
 
 [sub_resource type="GDScript" id=2]
@@ -2024,13 +2024,13 @@ func focus_toggle(toggle):
 		focused = false
 "
 
-[sub_resource type="GDScript" id=21]
+[sub_resource type="GDScript" id=10]
 script/source = "extends Control
 
 var storage = null
 "
 
-[sub_resource type="Animation" id=10]
+[sub_resource type="Animation" id=11]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2057,7 +2057,7 @@ tracks/1/keys = {
 "values": [ true, true ]
 }
 
-[sub_resource type="Animation" id=11]
+[sub_resource type="Animation" id=12]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2084,7 +2084,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[sub_resource type="GDScript" id=12]
+[sub_resource type="GDScript" id=13]
 script/source = "extends Control
 
 var focused : bool = false
@@ -2105,7 +2105,7 @@ func focus_toggle(toggle):
 		focused = false
 "
 
-[sub_resource type="Animation" id=13]
+[sub_resource type="Animation" id=14]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2132,7 +2132,7 @@ tracks/1/keys = {
 "values": [ true, true ]
 }
 
-[sub_resource type="Animation" id=14]
+[sub_resource type="Animation" id=15]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2159,7 +2159,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[sub_resource type="GDScript" id=15]
+[sub_resource type="GDScript" id=16]
 script/source = "extends Control
 
 onready var more : TextureButton = get_parent().get_node(\"Place/Panel/more\")
@@ -2175,7 +2175,7 @@ func _on_more_toggled(button_pressed):
 		$Animation.play(\"Unfocus\")
 "
 
-[sub_resource type="Animation" id=16]
+[sub_resource type="Animation" id=17]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2202,7 +2202,7 @@ tracks/1/keys = {
 "values": [ true, true ]
 }
 
-[sub_resource type="Animation" id=17]
+[sub_resource type="Animation" id=18]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2229,7 +2229,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[sub_resource type="GDScript" id=18]
+[sub_resource type="GDScript" id=19]
 script/source = "extends Control
 
 func _on_slider_toggled(button_pressed):
@@ -2239,7 +2239,7 @@ func _on_slider_toggled(button_pressed):
 		$Animation.play(\"Unfocus\")
 "
 
-[sub_resource type="Animation" id=19]
+[sub_resource type="Animation" id=20]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2254,7 +2254,7 @@ tracks/0/keys = {
 "values": [ Vector2( -528, -200 ), Vector2( -8, -200 ) ]
 }
 
-[sub_resource type="Animation" id=20]
+[sub_resource type="Animation" id=21]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2303,6 +2303,7 @@ __meta__ = {
 }
 
 [node name="border" type="Line2D" parent="GUI"]
+visible = false
 points = PoolVector2Array( 0, 0, 1024, 0, 1024, 768, 0, 768, 0, 0 )
 width = 8.0
 default_color = Color( 0.784314, 0.215686, 0.686275, 1 )
@@ -2573,7 +2574,7 @@ __meta__ = {
 margin_left = 200.0
 margin_top = 8.0
 margin_right = 328.0
-margin_bottom = 42.0
+margin_bottom = 40.0
 focus_neighbour_left = NodePath("../tab_right")
 focus_neighbour_top = NodePath(".")
 focus_neighbour_bottom = NodePath("../layer_3")
@@ -2589,7 +2590,7 @@ __meta__ = {
 margin_left = 200.0
 margin_top = 40.0
 margin_right = 328.0
-margin_bottom = 74.0
+margin_bottom = 72.0
 focus_neighbour_left = NodePath("../tab_right")
 focus_neighbour_top = NodePath("../layer_0")
 focus_neighbour_bottom = NodePath("../layer_1")
@@ -2605,7 +2606,7 @@ __meta__ = {
 margin_left = 200.0
 margin_top = 72.0
 margin_right = 328.0
-margin_bottom = 106.0
+margin_bottom = 104.0
 focus_neighbour_left = NodePath("../tab_right")
 focus_neighbour_top = NodePath("../layer_3")
 focus_neighbour_bottom = NodePath("../layer_2")
@@ -2621,7 +2622,7 @@ __meta__ = {
 margin_left = 200.0
 margin_top = 104.0
 margin_right = 328.0
-margin_bottom = 138.0
+margin_bottom = 136.0
 focus_neighbour_left = NodePath("../tab_right")
 focus_neighbour_top = NodePath("../layer_1")
 focus_neighbour_bottom = NodePath(".")
@@ -2846,6 +2847,7 @@ anims/Focus = SubResource( 7 )
 anims/Unfocus = SubResource( 8 )
 
 [node name="Edit_Items" type="Control" parent="GUI"]
+visible = false
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
@@ -2936,7 +2938,7 @@ __meta__ = {
 [node name="var_storage" type="Control" parent="GUI/Edit_Items/Panel/objects/buttons"]
 margin_right = 40.0
 margin_bottom = 40.0
-script = SubResource( 21 )
+script = SubResource( 10 )
 
 [node name="scroll" type="VScrollBar" parent="GUI/Edit_Items/Panel/objects"]
 margin_right = 16.0
@@ -2972,7 +2974,7 @@ Order:"
 margin_left = 160.0
 margin_top = 136.0
 margin_right = 288.0
-margin_bottom = 170.0
+margin_bottom = 168.0
 step = 0.05
 value = 1.0
 __meta__ = {
@@ -2983,7 +2985,7 @@ __meta__ = {
 margin_left = 160.0
 margin_top = 168.0
 margin_right = 288.0
-margin_bottom = 202.0
+margin_bottom = 200.0
 step = 0.05
 value = 1.0
 
@@ -2991,7 +2993,7 @@ value = 1.0
 margin_left = 160.0
 margin_top = 200.0
 margin_right = 288.0
-margin_bottom = 234.0
+margin_bottom = 232.0
 min_value = -360.0
 max_value = 360.0
 
@@ -2999,7 +3001,7 @@ max_value = 360.0
 margin_left = 160.0
 margin_top = 232.0
 margin_right = 288.0
-margin_bottom = 266.0
+margin_bottom = 264.0
 min_value = -20.0
 max_value = 20.0
 __meta__ = {
@@ -3010,7 +3012,7 @@ __meta__ = {
 margin_left = 160.0
 margin_top = 264.0
 margin_right = 192.0
-margin_bottom = 298.0
+margin_bottom = 296.0
 focus_neighbour_left = NodePath(".")
 focus_neighbour_top = NodePath("../../properties")
 focus_neighbour_right = NodePath(".")
@@ -3024,7 +3026,7 @@ __meta__ = {
 margin_left = 160.0
 margin_top = 296.0
 margin_right = 288.0
-margin_bottom = 330.0
+margin_bottom = 328.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3054,8 +3056,8 @@ scale = Vector2( 2, 2 )
 texture = ExtResource( 33 )
 
 [node name="Animation" type="AnimationPlayer" parent="GUI/Edit_Items"]
-anims/Focus = SubResource( 10 )
-anims/Unfocus = SubResource( 11 )
+anims/Focus = SubResource( 11 )
+anims/Unfocus = SubResource( 12 )
 
 [node name="Edit_Layers" type="Control" parent="GUI"]
 visible = false
@@ -3063,7 +3065,7 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-script = SubResource( 12 )
+script = SubResource( 13 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3225,8 +3227,8 @@ __meta__ = {
 }
 
 [node name="Animation" type="AnimationPlayer" parent="GUI/Edit_Layers"]
-anims/Focus = SubResource( 13 )
-anims/Unfocus = SubResource( 14 )
+anims/Focus = SubResource( 14 )
+anims/Unfocus = SubResource( 15 )
 
 [node name="Items" type="Control" parent="GUI"]
 visible = false
@@ -3234,7 +3236,7 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-script = SubResource( 15 )
+script = SubResource( 16 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3339,13 +3341,13 @@ __meta__ = {
 }
 
 [node name="Animation" type="AnimationPlayer" parent="GUI/Items"]
-anims/Focus = SubResource( 16 )
-anims/Unfocus = SubResource( 17 )
+anims/Focus = SubResource( 17 )
+anims/Unfocus = SubResource( 18 )
 
 [node name="File" type="Control" parent="GUI"]
 anchor_top = 0.5
 anchor_bottom = 0.5
-script = SubResource( 18 )
+script = SubResource( 19 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3456,7 +3458,7 @@ text = "Name"
 margin_left = 136.0
 margin_top = 88.0
 margin_right = 504.0
-margin_bottom = 122.0
+margin_bottom = 120.0
 focus_neighbour_left = NodePath(".")
 focus_neighbour_top = NodePath("../new")
 focus_neighbour_right = NodePath(".")
@@ -3471,9 +3473,9 @@ __meta__ = {
 }
 
 [node name="creator" parent="GUI/File/Panel" instance=ExtResource( 10 )]
-margin_left = 16.0
+margin_left = 8.0
 margin_top = 136.0
-margin_right = -272.0
+margin_right = -264.0
 margin_bottom = -136.0
 mouse_filter = 0
 text = "Creator"
@@ -3482,7 +3484,7 @@ text = "Creator"
 margin_left = 136.0
 margin_top = 136.0
 margin_right = 504.0
-margin_bottom = 170.0
+margin_bottom = 168.0
 focus_neighbour_left = NodePath(".")
 focus_neighbour_top = NodePath("../name_edit")
 focus_neighbour_right = NodePath(".")
@@ -3497,9 +3499,9 @@ __meta__ = {
 }
 
 [node name="official" parent="GUI/File/Panel" instance=ExtResource( 10 )]
-margin_left = 24.0
+margin_left = 16.0
 margin_top = 184.0
-margin_right = -280.0
+margin_right = -272.0
 margin_bottom = -88.0
 mouse_filter = 0
 text = "Official"
@@ -3532,7 +3534,7 @@ text = "Icon"
 margin_left = 136.0
 margin_top = 232.0
 margin_right = 504.0
-margin_bottom = 266.0
+margin_bottom = 264.0
 focus_neighbour_left = NodePath(".")
 focus_neighbour_top = NodePath("../official_edit")
 focus_neighbour_right = NodePath(".")
@@ -3556,7 +3558,7 @@ text = "Base"
 margin_left = 136.0
 margin_top = 280.0
 margin_right = 504.0
-margin_bottom = 314.0
+margin_bottom = 312.0
 focus_neighbour_left = NodePath(".")
 focus_neighbour_top = NodePath("../icon_edit")
 focus_neighbour_right = NodePath(".")
@@ -3580,7 +3582,7 @@ text = "Tileset"
 margin_left = 136.0
 margin_top = 328.0
 margin_right = 504.0
-margin_bottom = 362.0
+margin_bottom = 360.0
 focus_neighbour_left = NodePath(".")
 focus_neighbour_top = NodePath("../base_edit")
 focus_neighbour_right = NodePath(".")
@@ -3604,7 +3606,7 @@ text = "BG"
 margin_left = 136.0
 margin_top = 376.0
 margin_right = 504.0
-margin_bottom = 410.0
+margin_bottom = 408.0
 focus_neighbour_left = NodePath(".")
 focus_neighbour_top = NodePath("../tileset_edit")
 focus_neighbour_right = NodePath(".")
@@ -3662,18 +3664,18 @@ dialog_text = "You are exiting the level editor.
 All unsaved progress will be lost. "
 
 [node name="Animation" type="AnimationPlayer" parent="GUI/File"]
-anims/Focus = SubResource( 19 )
-anims/Unfocus = SubResource( 20 )
+anims/Focus = SubResource( 20 )
+anims/Unfocus = SubResource( 21 )
 [connection signal="toggled" from="GUI/Level" to="." method="level_recieved_input"]
 [connection signal="toggled" from="GUI/Place/Panel/slider" to="GUI/Place" method="_on_slider_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]

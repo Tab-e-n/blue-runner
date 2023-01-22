@@ -3,7 +3,6 @@
 [ext_resource path="res://Text/Lacrimae.ttf" type="DynamicFontData" id=1]
 
 [resource]
-size = 64
+size = 68
 use_mipmaps = true
-extra_spacing_top = 4
 font_data = ExtResource( 1 )

@@ -3045,6 +3045,7 @@ tracks/16/keys = {
 script = ExtResource( 22 )
 
 [node name="dim" type="Polygon2D" parent="."]
+visible = false
 z_index = 1
 color = Color( 0.0156863, 0.0235294, 0.133333, 0 )
 polygon = PoolVector2Array( -1024, 768, 1024, 768, 1024, -768, -1024, -768 )
@@ -3071,6 +3072,7 @@ limit_x = Vector2( -2048, 0 )
 limit_y = Vector2( 0, 2048 )
 
 [node name="SELECT" type="Node2D" parent="."]
+visible = false
 script = ExtResource( 25 )
 
 [node name="BG_0" parent="SELECT" instance=ExtResource( 2 )]
@@ -3526,13 +3528,14 @@ texture = ExtResource( 42 )
 flip_v = true
 
 [node name="menu_help_moving" type="Sprite" parent="HELP"]
+visible = false
 scale = Vector2( 2, 2 )
 texture = ExtResource( 44 )
 
 [node name="title" parent="HELP/menu_help_moving" instance=ExtResource( 38 )]
-margin_left = -164.0
+margin_left = -176.0
 margin_top = -244.0
-margin_right = -457.0
+margin_right = -456.0
 margin_bottom = -688.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_colors/default_color = Color( 0.12549, 0.0823529, 0.2, 1 )
@@ -3571,7 +3574,7 @@ scale = Vector2( 2, 2 )
 texture = ExtResource( 45 )
 
 [node name="title" parent="HELP/menu_help_danger" instance=ExtResource( 38 )]
-margin_left = -160.0
+margin_left = -168.0
 margin_top = -244.0
 margin_right = -453.0
 margin_bottom = -688.0
@@ -3594,7 +3597,7 @@ scale = Vector2( 2, 2 )
 texture = ExtResource( 46 )
 
 [node name="title" parent="HELP/menu_help_goal" instance=ExtResource( 38 )]
-margin_left = -108.0
+margin_left = -116.0
 margin_top = -244.0
 margin_right = -473.0
 margin_bottom = -688.0
@@ -3617,9 +3620,9 @@ scale = Vector2( 2, 2 )
 texture = ExtResource( 51 )
 
 [node name="title" parent="HELP/menu_help_bonus" instance=ExtResource( 38 )]
-margin_left = -136.0
+margin_left = -140.0
 margin_top = -244.0
-margin_right = -466.0
+margin_right = -465.0
 margin_bottom = -688.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_colors/default_color = Color( 0.12549, 0.0823529, 0.2, 1 )
@@ -3636,7 +3639,7 @@ text = "It's bonus"
 [node name="help1" parent="HELP/menu_help_bonus" instance=ExtResource( 38 )]
 margin_left = -180.0
 margin_top = 100.0
-margin_right = -396.0
+margin_right = -388.0
 margin_bottom = -220.0
 rect_scale = Vector2( 0.5, 0.5 )
 text = "Grab it and finish the level"
@@ -3655,9 +3658,9 @@ scale = Vector2( 2, 2 )
 texture = ExtResource( 47 )
 
 [node name="title" parent="HELP/menu_help_s1_special" instance=ExtResource( 38 )]
-margin_left = -184.0
+margin_left = -192.0
 margin_top = -244.0
-margin_right = -451.0
+margin_right = -445.0
 margin_bottom = -688.0
 rect_scale = Vector2( 1.5, 1.5 )
 custom_colors/default_color = Color( 0.12549, 0.0823529, 0.2, 1 )
@@ -3704,9 +3707,9 @@ scale = Vector2( 2, 2 )
 texture = ExtResource( 48 )
 
 [node name="title" parent="HELP/menu_help_s1_dropslide" instance=ExtResource( 38 )]
-margin_left = -196.0
+margin_left = -212.0
 margin_top = -240.0
-margin_right = -377.0
+margin_right = -385.0
 margin_bottom = -684.0
 rect_scale = Vector2( 1.25, 1.25 )
 custom_colors/default_color = Color( 0.12549, 0.0823529, 0.2, 1 )
@@ -3723,7 +3726,7 @@ text = "S1"
 [node name="fast" parent="HELP/menu_help_s1_dropslide" instance=ExtResource( 38 )]
 margin_left = -156.0
 margin_top = 108.0
-margin_right = -388.0
+margin_right = -372.0
 margin_bottom = -268.0
 rect_scale = Vector2( 0.5, 0.5 )
 custom_colors/default_color = Color( 0.12549, 0.0823529, 0.2, 1 )

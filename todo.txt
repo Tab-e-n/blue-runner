@@ -71,7 +71,11 @@ attaching objects to tracks and spinning arms
 exit editor
 
 EDITOR OTHER
+menu for other editors
+options menu
 base.dat editor
+mod.dat editor
+characters.dat editor
 focus place
 focus file
 focus edit layers
@@ -79,12 +83,8 @@ focus edit items
 focus edit tiles
 focus items
 
-options menu
 mod loader
-mod.dat editor
 dependecies save
-menu for other editors
-characters.dat editor
 level groups - make in sonic runner and specil editor for them
 level group editor
 after all that you done with level editor and can continou by takin break
