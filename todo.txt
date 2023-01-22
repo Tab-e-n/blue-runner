@@ -87,5 +87,7 @@ mod loader
 dependecies save
 level groups - make in sonic runner and specil editor for them
 level group editor
+character select
+version system (might not be necessary)
 after all that you done with level editor and can continou by takin break
 undo system (optional)

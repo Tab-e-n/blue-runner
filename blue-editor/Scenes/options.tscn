@@ -101,6 +101,8 @@ func _ready():
 		children[i].text = data.key_names(data.settings[\"editor_keys\"][i])
 	$GUI/keysbinds/buttons/reset_transform.text = data.key_names(data.settings[\"editor_keys\"][1])
 	$GUI/keysbinds/buttons/game_camera.text = data.key_names(data.settings[\"editor_keys\"][3])
+	
+	$GUI/editor_defaults/sonic_runner.text = data.settings[\"sonic_runner_folder\"]
 
 func ready_optionbutton_setup(option_button : OptionButton, data_array : Array):
 	var last_directory : String = \"res:/\"
@@ -178,6 +180,15 @@ func start_keybind_check(button_pressed, keybind):
 func _on_exit_pressed():
 	# warning-ignore:return_value_discarded
 	get_tree().change_scene(\"res://Scenes/menu.tscn\")
+
+func sonic_runner_popup():
+	$sonic_runner_file.current_path = data.settings[\"sonic_runner_folder\"]
+	$sonic_runner_file.current_dir = data.settings[\"sonic_runner_folder\"]
+	$sonic_runner_file.popup()
+
+func sonic_runner_folder_selected(path):
+	data.settings[\"sonic_runner_folder\"] = path
+	$GUI/editor_defaults/sonic_runner.text = path
 "
 
 [node name="options" type="Control"]
@@ -221,7 +232,9 @@ margin_left = 40.0
 margin_top = 80.0
 margin_right = -40.0
 margin_bottom = 576.0
-text = "Additional info
+text = "Sonic Runner
+
+Additional info
 Grid snap
 Default tab
 Default layer
@@ -250,26 +263,36 @@ Default tileset
 Default BG
 "
 
+[node name="sonic_runner" type="Button" parent="GUI/editor_defaults"]
+margin_left = 296.0
+margin_top = 80.0
+margin_right = 552.0
+margin_bottom = 112.0
+clip_text = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="addition_info" type="CheckBox" parent="GUI/editor_defaults"]
 margin_left = 288.0
-margin_top = 72.0
+margin_top = 136.0
 margin_right = 336.0
-margin_bottom = 120.0
+margin_bottom = 184.0
 
 [node name="grid_snap" type="CheckBox" parent="GUI/editor_defaults"]
 margin_left = 288.0
-margin_top = 104.0
+margin_top = 168.0
 margin_right = 336.0
-margin_bottom = 152.0
+margin_bottom = 216.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="default_tab" type="OptionButton" parent="GUI/editor_defaults"]
 margin_left = 296.0
-margin_top = 144.0
+margin_top = 208.0
 margin_right = 552.0
-margin_bottom = 176.0
+margin_bottom = 240.0
 text = "Tiles"
 items = [ "Tiles", null, false, 0, null, "Objects", null, false, 1, null, "Decor", null, false, 2, null ]
 selected = 0
@@ -279,9 +302,9 @@ __meta__ = {
 
 [node name="default_layer" type="OptionButton" parent="GUI/editor_defaults"]
 margin_left = 296.0
-margin_top = 176.0
+margin_top = 240.0
 margin_right = 552.0
-margin_bottom = 208.0
+margin_bottom = 272.0
 text = "Background"
 items = [ "Background", null, false, 0, null, "Back", null, false, 1, null, "Center", null, false, 2, null, "Front", null, false, 3, null ]
 selected = 0
@@ -291,9 +314,9 @@ __meta__ = {
 
 [node name="default_sublayer" type="OptionButton" parent="GUI/editor_defaults"]
 margin_left = 296.0
-margin_top = 208.0
+margin_top = 272.0
 margin_right = 552.0
-margin_bottom = 240.0
+margin_bottom = 304.0
 text = "0"
 items = [ "0", null, false, 0, null, "1", null, false, 1, null, "2", null, false, 2, null ]
 selected = 0
@@ -303,37 +326,29 @@ __meta__ = {
 
 [node name="bg_color" type="ColorPickerButton" parent="GUI/editor_defaults"]
 margin_left = 296.0
-margin_top = 272.0
-margin_right = 328.0
-margin_bottom = 304.0
-
-[node name="back_color" type="ColorPickerButton" parent="GUI/editor_defaults"]
-margin_left = 296.0
 margin_top = 336.0
 margin_right = 328.0
 margin_bottom = 368.0
 
-[node name="center_color" type="ColorPickerButton" parent="GUI/editor_defaults"]
+[node name="back_color" type="ColorPickerButton" parent="GUI/editor_defaults"]
 margin_left = 296.0
 margin_top = 400.0
 margin_right = 328.0
 margin_bottom = 432.0
 
-[node name="front_color" type="ColorPickerButton" parent="GUI/editor_defaults"]
+[node name="center_color" type="ColorPickerButton" parent="GUI/editor_defaults"]
 margin_left = 296.0
 margin_top = 464.0
 margin_right = 328.0
 margin_bottom = 496.0
 
-[node name="bg_scale" type="SpinBox" parent="GUI/editor_defaults"]
+[node name="front_color" type="ColorPickerButton" parent="GUI/editor_defaults"]
 margin_left = 296.0
-margin_top = 304.0
-margin_right = 424.0
-margin_bottom = 336.0
-step = 0.05
-value = 1.0
+margin_top = 528.0
+margin_right = 328.0
+margin_bottom = 560.0
 
-[node name="back_scale" type="SpinBox" parent="GUI/editor_defaults"]
+[node name="bg_scale" type="SpinBox" parent="GUI/editor_defaults"]
 margin_left = 296.0
 margin_top = 368.0
 margin_right = 424.0
@@ -341,7 +356,7 @@ margin_bottom = 400.0
 step = 0.05
 value = 1.0
 
-[node name="center_scale" type="SpinBox" parent="GUI/editor_defaults"]
+[node name="back_scale" type="SpinBox" parent="GUI/editor_defaults"]
 margin_left = 296.0
 margin_top = 432.0
 margin_right = 424.0
@@ -349,11 +364,19 @@ margin_bottom = 464.0
 step = 0.05
 value = 1.0
 
-[node name="front_scale" type="SpinBox" parent="GUI/editor_defaults"]
+[node name="center_scale" type="SpinBox" parent="GUI/editor_defaults"]
 margin_left = 296.0
 margin_top = 496.0
 margin_right = 424.0
 margin_bottom = 528.0
+step = 0.05
+value = 1.0
+
+[node name="front_scale" type="SpinBox" parent="GUI/editor_defaults"]
+margin_left = 296.0
+margin_top = 560.0
+margin_right = 424.0
+margin_bottom = 592.0
 step = 0.05
 value = 1.0
 
@@ -956,6 +979,18 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="sonic_runner_file" type="FileDialog" parent="."]
+anchor_left = 0.498
+anchor_right = 0.498
+margin_left = -381.952
+margin_right = 386.048
+margin_bottom = 768.0
+window_title = "Sonic Runner Folder"
+mode = 2
+access = 2
+current_dir = "/Project/Godot 3.2/sonic_runner_git/blue-editor"
+current_path = "/Project/Godot 3.2/sonic_runner_git/blue-editor/"
+
 [node name="HScrollBar" type="HScrollBar" parent="."]
 margin_top = 688.0
 margin_right = 1024.0
@@ -976,6 +1011,7 @@ texture_focused = ExtResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+[connection signal="pressed" from="GUI/editor_defaults/sonic_runner" to="." method="sonic_runner_popup"]
 [connection signal="toggled" from="GUI/editor_defaults/addition_info" to="." method="settings_change" binds= [ "editor_gui_additional_info", "default" ]]
 [connection signal="toggled" from="GUI/editor_defaults/grid_snap" to="." method="settings_change" binds= [ "editor_default_grid_snap", "default" ]]
 [connection signal="item_selected" from="GUI/editor_defaults/default_tab" to="." method="settings_change" binds= [ "editor_default_tab", "default" ]]
@@ -1031,5 +1067,6 @@ __meta__ = {
 [connection signal="toggled" from="GUI/keysbinds/buttons/focus_place" to="." method="start_keybind_check" binds= [ 20 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/reset_transform" to="." method="start_keybind_check" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/game_camera" to="." method="start_keybind_check" binds= [ 3 ]]
+[connection signal="dir_selected" from="sonic_runner_file" to="." method="sonic_runner_folder_selected"]
 [connection signal="scrolling" from="HScrollBar" to="." method="_on_HScrollBar_scrolling"]
 [connection signal="pressed" from="exit" to="." method="_on_exit_pressed"]

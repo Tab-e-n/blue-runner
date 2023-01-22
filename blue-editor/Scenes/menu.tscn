@@ -108,7 +108,7 @@ __meta__ = {
 }
 [connection signal="pressed" from="level_editor" to="." method="change_scene_to" binds= [ "res://Scenes/main.tscn" ]]
 [connection signal="pressed" from="level_group_editors" to="." method="change_scene_to" binds= [ "" ]]
-[connection signal="pressed" from="mod_loader" to="." method="change_scene_to" binds= [ "" ]]
+[connection signal="pressed" from="mod_loader" to="." method="change_scene_to" binds= [ "res://Scenes/mod_loader.tscn" ]]
 [connection signal="pressed" from="dat_editor" to="." method="change_scene_to" binds= [ "res://Scenes/dat_creator.tscn" ]]
 [connection signal="pressed" from="options" to="." method="change_scene_to" binds= [ "res://Scenes/options.tscn" ]]
 [connection signal="pressed" from="exit" to="." method="_on_exit_pressed"]
