@@ -140,10 +140,20 @@ func mod_modify():
 	var savefile = File.new()
 	var temp = {}
 	
+	if savefile.file_exists(\"mod.dat\"): # does file exist
+		savefile.open(\"mod.dat\", File.READ)
+		
+		while savefile.get_position() < savefile.get_len():
+			var parsedData = parse_json(savefile.get_line())
+			
+			temp = parsedData
+		savefile.close()
+	
 	temp[\"mod_name\"] = $GUI/mod/name.text
 	temp[\"creator\"] = $GUI/mod/author.text
 	temp[\"description\"] = $GUI/mod/description.text
-	#temp[\"dependencies\"]
+	temp[\"active\"] = false
+	if !temp.has(\"dependencies\"): temp[\"dependencies\"] = []
 	
 	savefile.open(\"mod.dat\", File.WRITE)
 	savefile.store_line(to_json(temp))
@@ -205,6 +215,9 @@ script = SubResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 512, 384 )
 
 [node name="GUI" type="Control" parent="."]
 margin_right = 1024.0

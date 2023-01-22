@@ -16,7 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Sonic Runner Editor"
-run/main_scene="res://Scenes/main.tscn"
+run/main_scene="res://Scenes/menu.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="HowDoesOneName"
 config/icon="res://icon.png"
