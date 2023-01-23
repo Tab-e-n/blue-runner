@@ -5,7 +5,6 @@ saving level
 loading level
 saving level UI
 loading level UI
-
 exiting editor UI
 
 PLACE
@@ -82,12 +81,13 @@ focus edit layers
 focus edit items
 focus edit tiles
 focus items
-
 mod loader
 dependecies save
-level groups - make in sonic runner and specil editor for them
-level group editor
+
+level groups in sonic runner
 character select
-version system (might not be necessary)
+dependency stripper
 after all that you done with level editor and can continou by takin break
+default-mod
+version system (might not be necessary)
 undo system (optional)
