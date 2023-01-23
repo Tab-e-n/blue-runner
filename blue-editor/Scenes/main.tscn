@@ -785,7 +785,7 @@ func save_level(level_filename : String = \"Level\"):
 	temp[\"official\"] = official.pressed
 	temp[\"level_icon\"] = [level_icon.get_item_text(level_icon.selected),level_icon.get_selected_metadata()]
 	temp[\"level_base\"] = [level_base.get_item_text(level_base.selected),level_base.get_selected_metadata()]
-	temp[\"dependencies\"] = []
+	temp[\"dependencies\"] = data.mods_installed.duplicate()
 	
 	var dat_filename : String = level_filename.left(level_filename.find_last(\".\")) + \".dat\"
 	
@@ -800,19 +800,62 @@ func load_popup():
 
 func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
 	var file = File.new()
+	var temp = {}
 	
-	if file.file_exists(level_filename):
+	if file.file_exists(level_filename) and file.file_exists(level_filename.substr(0, level_filename.find_last(\".\")) + \".dat\"): # does file exist
+		file.open(level_filename.substr(0, level_filename.find_last(\".\")) + \".dat\", File.READ)
+		
+		while file.get_position() < file.get_len():
+			var parsedData = parse_json(file.get_line())
+			
+			temp = parsedData
+			
+		file.close()
+		
+		# CHECKS
+		for i in temp[\"dependencies\"]:
+			if !data.mods_installed.has(i):
+				done_action(\"failed to load level (dependencies)\", \"#5d1f31\")
+				print(level_filename + String(temp[\"dependencies\"]))
+				return
+		
 		var packed_scene = load(level_filename)
+		if packed_scene == null:
+			done_action(\"failed to load level (corrupted)\", \"#5d1f31\")
+			print(level_filename)
+			return
+		
+		# CHECKS PASSED
+		level_name.text = temp[\"level_name\"]
+		creator.text = temp[\"creator\"]
+		official.pressed = temp[\"official\"]
+		
+		var load_tileset : TileSet = get_node(\"Game/Level/tiles_back_0\").tile_set
+		
+		for i in range(tilesets.get_item_count()):
+			if tilesets.get_item_metadata(i) + \"/Objects/Tilesets/\" + tilesets.get_item_text(i) == load_tileset.resource_path:
+				tilesets.select(i)
+		bg.select(0)
+		if level_objects[\"bg\"] != null:for i in range(bg.get_item_count() - 1):
+			if bg.get_item_metadata(i + 1) + \"/Objects/Backgrounds/\" + bg.get_item_text(i + 1) == level_objects[\"bg\"].editor_properties[\"object_path\"]:
+				bg.select(i + 1)
+		for i in range(level_icon.get_item_count()):
+			if level_icon.get_item_text(i) == temp[\"level_icon\"][0] and level_icon.get_item_metadata(i) == temp[\"level_icon\"][1]:
+				level_icon.select(i)
+		for i in range(level_base.get_item_count()):
+			if level_base.get_item_text(i) == temp[\"level_base\"][0] and level_base.get_item_metadata(i) == temp[\"level_base\"][1]:
+				level_base.select(i)
+		
 		level.free()
 		level = packed_scene.instance()
 		$Game.add_child(level)
 		level.scale = Vector2(0.5, 0.5)
 		level.name = \"Level\"
-		level_objects[\"camera\"] = get_node(\"Game/Level/Camera\")
-		level_objects[\"bg\"] = get_node(\"Game/Level/BG\")
-		level_objects[\"player\"] = get_node(\"Game/Level/Player\")
-		level_objects[\"ghost\"] = get_node(\"Game/Level/Ghost\")
-		level_objects[\"finish\"] = get_node(\"Game/Level/Finish\")
+		if has_node(\"Game/Level/Camera\"): level_objects[\"camera\"] = get_node(\"Game/Level/Camera\")
+		if has_node(\"Game/Level/BG\"): level_objects[\"bg\"] = get_node(\"Game/Level/BG\")
+		if has_node(\"Game/Level/Player\"): level_objects[\"player\"] = get_node(\"Game/Level/Player\")
+		if has_node(\"Game/Level/Ghost\"): level_objects[\"ghost\"] = get_node(\"Game/Level/Ghost\")
+		if has_node(\"Game/Level/Finish\"): level_objects[\"finish\"] = get_node(\"Game/Level/Finish\")
 		change_tilemap()
 		if level_objects[\"bg\"] != null: level_objects[\"bg\"].ready_up(level_objects[\"camera\"])
 		
@@ -822,43 +865,9 @@ func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
 			get_node(\"GUI/Edit_Layers/Panel/color_\" + level_layers[i]).color = get_node(\"Game/Level/decor_\" + level_layers[i]).modulate
 			get_node(\"GUI/Edit_Layers/Panel/scale_\" + level_layers[i]).value = get_node(\"Game/Level/decor_\" + level_layers[i]).scale.x
 		
-		var loadfile = File.new()
-		var temp = {}
-		
-		if loadfile.file_exists(level_filename.rstrip(\".tscn\") + \".dat\"): # does file exist
-			loadfile.open(level_filename.rstrip(\".tscn\") + \".dat\", File.READ)
-			
-			while loadfile.get_position() < loadfile.get_len():
-				var parsedData = parse_json(loadfile.get_line())
-				
-				temp = parsedData
-				
-			loadfile.close()
-			
-			#temp[\"dependencies\"]
-			level_name.text = temp[\"level_name\"]
-			creator.text = temp[\"creator\"]
-			official.pressed = temp[\"official\"]
-			
-			var load_tileset : TileSet = get_node(\"Game/Level/tiles_back_0\").tile_set
-			
-			for i in range(tilesets.get_item_count()):
-				if tilesets.get_item_metadata(i) + \"/Objects/Tilesets/\" + tilesets.get_item_text(i) == load_tileset.resource_path:
-					tilesets.select(i)
-			bg.select(0)
-			if level_objects[\"bg\"] != null:for i in range(bg.get_item_count() - 1):
-				if bg.get_item_metadata(i + 1) + \"/Objects/Backgrounds/\" + bg.get_item_text(i + 1) == level_objects[\"bg\"].editor_properties[\"object_path\"]:
-					bg.select(i + 1)
-			for i in range(level_icon.get_item_count()):
-				if level_icon.get_item_text(i) == temp[\"level_icon\"][0] and level_icon.get_item_metadata(i) == temp[\"level_icon\"][1]:
-					level_icon.select(i)
-			for i in range(level_base.get_item_count()):
-				if level_base.get_item_text(i) == temp[\"level_base\"][0] and level_base.get_item_metadata(i) == temp[\"level_base\"][1]:
-					level_base.select(i)
-		
 		done_action(\"load level\", \"#0ce6f2\")
 	else:
-		done_action(\"failed to load level\", \"#5d1f31\")
+		done_action(\"failed to load level (other)\", \"#5d1f31\")
 		print(level_filename)
 
 func tileset_changed(index):
@@ -3671,10 +3680,10 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
@@ -3695,8 +3704,8 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_back" to="." method="layer_color_changed" binds= [ 1 ]]
 [connection signal="value_changed" from="GUI/Edit_Layers/Panel/scale_background" to="." method="layer_scale_changed" binds= [ 0 ]]
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_background" to="." method="layer_color_changed" binds= [ 0 ]]
-[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
 [connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
+[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
 [connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
 [connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="items_scroll_scrolling"]
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]

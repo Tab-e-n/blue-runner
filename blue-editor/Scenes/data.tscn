@@ -161,6 +161,14 @@ func save_game():
 	savefile.open(user_directory, File.WRITE)
 	savefile.store_line(to_json(temp))
 	savefile.close()
+	
+	temp = {}
+	
+	temp[\"*mods\"] = mods_installed.duplicate()
+	
+	savefile.open(\"user://sonicRunnerMods\", File.WRITE)
+	savefile.store_line(to_json(temp))
+	savefile.close()
 
 func load_game(fail = false):
 	print(\"loading game\")
@@ -235,32 +243,8 @@ func load_editor_vanilla():
 
 func load_editor_mods():
 	var directory : Directory = Directory.new()
-	var current_file : String
 	
-	print(\"scanning mods\")
-	var check_exist = directory.open(\"Mods\")
-	
-	if check_exist == OK:
-		print(\"user has mods installed\")
-		
-		# warning-ignore:return_value_discarded
-		directory.list_dir_begin(true)
-		current_file = directory.get_next()
-		while current_file != \"\":
-			mods_installed.append(current_file)
-			current_file = directory.get_next()
-	else:
-		print(\"no mods found, or an error occured\")
-	
-	for mod_name in mods_installed.duplicate():
-		mods_enabled[mod_name] = [true, false, \"not checked\"]
-	for mod_name in mods_installed.duplicate():
-		var enabled = load_mods_data_files(mod_name)
-		if typeof(enabled) == TYPE_INT: enabled = false
-		mods_enabled[mod_name][0] = enabled
-	for mod_name in mods_installed.duplicate():
-		if !mods_enabled[mod_name][0]:
-			mods_installed.erase(mod_name)
+	check_mods()
 	
 	for mod_name in mods_installed:
 		print(\"current mod: \" + mod_name)
@@ -357,12 +341,42 @@ func scan_multi_directory(main_directory : String, start_directory : String, sto
 			current_file = directory.get_next()
 		directories_to_visit.pop_front()
 
+func check_mods():
+	var directory : Directory = Directory.new()
+	var current_file : String
+	print(\"scanning mods\")
+	var check_exist = directory.open(\"res://Mods\")
+	
+	if check_exist == OK:
+		print(\"user has mods installed\")
+		
+		# warning-ignore:return_value_discarded
+		directory.list_dir_begin(true)
+		current_file = directory.get_next()
+		while current_file != \"\":
+			mods_installed.append(current_file)
+			current_file = directory.get_next()
+	else:
+		print(\"no mods found, or an error occured\")
+	
+	for mod_name in mods_installed.duplicate():
+		mods_enabled[mod_name] = [true, settings[\"sonic_runner_folder\"] == \"\", \"sonic runner not found\"]
+	for mod_name in mods_installed.duplicate():
+		var enabled = load_mods_data_files(mod_name)
+		if typeof(enabled) == TYPE_INT: enabled = false
+		mods_enabled[mod_name][0] = enabled
+	for mod_name in mods_installed.duplicate():
+		if !mods_enabled[mod_name][0]:
+			mods_installed.erase(mod_name)
+
 func load_mods_data_files(mod_name : String):
 	if mods_enabled[mod_name][0] and mods_enabled[mod_name][1]:
 		return true
 	if !mods_enabled[mod_name][0] and mods_enabled[mod_name][1]:
 		return false
 	if mods_enabled[mod_name][0] and !mods_enabled[mod_name][1]:
+		mods_enabled[mod_name][1] = true
+		
 		var loadfile = File.new()
 		var temp = {}
 		if loadfile.file_exists(\"Mods/\" + mod_name + \"/mod.dat\"): # does file exist
@@ -378,12 +392,10 @@ func load_mods_data_files(mod_name : String):
 			loadfile.close()
 		else:
 			print(mod_name + \" has no data file\")
-			mods_enabled[mod_name][1] = true
 			mods_enabled[mod_name][2] = \"no data file\"
 			return false
 		if !temp[\"active\"]:
 			print(mod_name + \" is disabled\")
-			mods_enabled[mod_name][1] = true
 			mods_enabled[mod_name][2] = \"disabled\"
 			return false
 		
@@ -391,24 +403,32 @@ func load_mods_data_files(mod_name : String):
 		for i in temp[\"dependencies\"]:
 			if !mods_installed.has(i):
 				print(mod_name + \" is dependent on a mod that isn't installed\")
-				mods_enabled[mod_name][1] = true
 				mods_enabled[mod_name][2] = \"dependencies not installed\"
 				return false
 			else:
 				var check = load_mods_data_files(i)
 				if typeof(check) == TYPE_INT:
 					print(mod_name + \" was in a cyclical dependancy\")
-					mods_enabled[mod_name][1] = true
 					mods_enabled[mod_name][2] = \"cyclical dependancy\"
 					return 2
 				if check == false:
 					print(mod_name + \" is dependent on a mod that isn't enabled\")
-					mods_enabled[mod_name][1] = true
 					mods_enabled[mod_name][2] = \"dependencies not active\"
 					return false
 		
+		var directory = Directory.new()
+		
+		if !directory.dir_exists(settings[\"sonic_runner_folder\"]):
+			print(mod_name + \" is disabled, because there is no sonic runner\")
+			mods_enabled[mod_name][2] = \"sonic runner not found\"
+			return false
+		
+		if !directory.dir_exists(settings[\"sonic_runner_folder\"] + \"/Mods/\" + mod_name):
+			print(mod_name + \" isn't imported in sonic runner\")
+			mods_enabled[mod_name][2] = \"not imported in sonic runner\"
+			return false
+		
 		print(mod_name + \" is enabled\")
-		mods_enabled[mod_name][1] = true
 		mods_enabled[mod_name][2] = \"active\"
 		return true
 		

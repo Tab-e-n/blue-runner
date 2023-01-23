@@ -37,6 +37,7 @@ func edit_left_just_pressed(_level_mouse_position):
 	frame_hinge = frame
 
 func edit_left_pressed(mouse_pos, mouse_hinge):
+	# warning-ignore:narrowing_conversion
 	frame = stepify(frame_hinge - (mouse_hinge.y - mouse_pos.y) / 16, 1)
 	if frame < 0: frame = 0
 	if frame > 11: frame = 11

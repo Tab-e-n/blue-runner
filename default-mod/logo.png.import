@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/logo.png-95762cd77ce9d3a9c8fdf9ac9dd2a209.stex"
+path="res://.import/logo.png-448dfe2f59546aea30ada798658dec9c.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Mods/DefaultMod/logo.png"
-dest_files=[ "res://.import/logo.png-95762cd77ce9d3a9c8fdf9ac9dd2a209.stex" ]
+source_file="res://Mods/default-mod/logo.png"
+dest_files=[ "res://.import/logo.png-448dfe2f59546aea30ada798658dec9c.stex" ]
 
 [params]
 
