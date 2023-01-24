@@ -7,6 +7,7 @@ var tilesets : Array
 var bg : Array
 var level_icon :  Array
 var level_base :  Array
+var base_data : Dictionary
 var place_decor : Dictionary
 var place_objects : Dictionary
 var characters : Array
@@ -237,6 +238,8 @@ func load_editor_vanilla():
 	print(\"scanning vanilla level base\")
 	load_dat_file(\"res:/\", \"/Visual/Level/\", level_base, \"base\")
 	
+	load_base(\"res:/\")
+	
 	# Decor
 	print(\"scanning vanilla decor\")
 	scan_multi_directory(\"res:/\", \"/Visual/\", place_decor, \".png\")
@@ -273,6 +276,8 @@ func load_editor_mods():
 		
 		print(\"scanning for level base\")
 		load_dat_file(\"Mods/\" + mod_name, \"/Visual/Level/\", level_base, \"base\")
+		
+		load_base(\"res:/\")
 		
 		# Visuals
 		print(\"scanning for decor\")
@@ -340,6 +345,21 @@ func scan_multi_directory(main_directory : String, start_directory : String, sto
 				storage[current_directory].append(current_directory + current_file)
 			current_file = directory.get_next()
 		directories_to_visit.pop_front()
+
+func load_base(main_directory : String):
+	var file : File = File.new()
+	var temp = {}
+	file.open(main_directory + \"/Visual/Level/base.dat\", File.READ)
+	
+	while file.get_position() < file.get_len():
+		var parsedData = parse_json(file.get_line())
+		
+		temp = parsedData
+	
+	file.close()
+	base_data[main_directory] = {}
+	for base in level_base:
+		base_data[main_directory][base[0]] = temp[base[0]]
 
 func check_mods():
 	var directory : Directory = Directory.new()
