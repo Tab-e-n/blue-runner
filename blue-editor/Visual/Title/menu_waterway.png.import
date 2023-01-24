@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/menu_waterway.png-2c9f8a1817a9b60e57483e63343fa5f7.stex"
+path="res://.import/menu_waterway.png-279234b4e4f1cb32e481dc7a99387aa3.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Visual/Menu/menu_waterway.png"
-dest_files=[ "res://.import/menu_waterway.png-2c9f8a1817a9b60e57483e63343fa5f7.stex" ]
+source_file="res://Visual/Title/menu_waterway.png"
+dest_files=[ "res://.import/menu_waterway.png-279234b4e4f1cb32e481dc7a99387aa3.stex" ]
 
 [params]
 

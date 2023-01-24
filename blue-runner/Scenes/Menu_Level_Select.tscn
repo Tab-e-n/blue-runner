@@ -50,7 +50,7 @@
 [ext_resource path="res://Visual/Menu/menu_help_s1_dropslide.png" type="Texture" id=48]
 [ext_resource path="res://Scripts/REPLAY.gd" type="Script" id=50]
 [ext_resource path="res://Visual/Menu/menu_help_bonus.png" type="Texture" id=51]
-[ext_resource path="res://Visual/Menu/menu_waterway.png" type="Texture" id=52]
+[ext_resource path="res://Visual/Title/menu_waterway.png" type="Texture" id=52]
 [ext_resource path="res://Visual/Menu/completion_filling.png" type="Texture" id=53]
 [ext_resource path="res://Visual/Menu/completion_outline.png" type="Texture" id=54]
 [ext_resource path="res://Scripts/CHARACTER.gd" type="Script" id=55]
@@ -3072,7 +3072,6 @@ limit_x = Vector2( -2048, 0 )
 limit_y = Vector2( 0, 2048 )
 
 [node name="SELECT" type="Node2D" parent="."]
-visible = false
 script = ExtResource( 25 )
 
 [node name="BG_0" parent="SELECT" instance=ExtResource( 2 )]
@@ -3155,112 +3154,96 @@ level_name = "Level_1-0"
 [node name="Level_1" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 64, 32 )
 scale = Vector2( 1.2, 1.2 )
-level = 1
 level_name = "Level_1-1"
 level_symbol = ExtResource( 8 )
 
 [node name="Level_2" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 320, 32 )
 scale = Vector2( 1.2, 1.2 )
-level = 2
 level_name = "Level_1-2"
 level_symbol = ExtResource( 15 )
 
 [node name="Level_3" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 576, 32 )
 scale = Vector2( 1.2, 1.2 )
-level = 3
 level_name = "Level_1-3"
 level_symbol = ExtResource( 10 )
 
 [node name="Level_4" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 832, 32 )
 scale = Vector2( 1.2, 1.2 )
-level = 4
 level_name = "Level_1-4"
 level_symbol = ExtResource( 7 )
 
 [node name="Level_5" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( -192, 224 )
 scale = Vector2( 1.2, 1.2 )
-level = 5
 level_name = "Level_1-5"
 level_symbol = ExtResource( 16 )
 
 [node name="Level_6" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 64, 224 )
 scale = Vector2( 1.2, 1.2 )
-level = 6
 level_name = "Level_1-6"
 level_symbol = ExtResource( 9 )
 
 [node name="Level_7" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 320, 224 )
 scale = Vector2( 1.2, 1.2 )
-level = 7
 level_name = "Level_1-7"
 level_symbol = ExtResource( 11 )
 
 [node name="Level_8" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 576, 224 )
 scale = Vector2( 1.2, 1.2 )
-level = 8
 level_name = "Level_1-8"
 level_symbol = ExtResource( 18 )
 
 [node name="Level_9" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 832, 224 )
 scale = Vector2( 1.2, 1.2 )
-level = 9
 level_name = "Level_1-9"
 level_symbol = ExtResource( 17 )
 
 [node name="Level_10" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( -192, 416 )
 scale = Vector2( 1.2, 1.2 )
-level = 10
 level_name = "Level_1-10"
 level_symbol = ExtResource( 19 )
 
 [node name="Level_11" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 64, 416 )
 scale = Vector2( 1.2, 1.2 )
-level = 11
 level_name = "Level_1-11"
 level_symbol = ExtResource( 13 )
 
 [node name="Level_12" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 320, 416 )
 scale = Vector2( 1.2, 1.2 )
-level = 12
 level_name = "Level_1-12"
 level_symbol = ExtResource( 14 )
 
 [node name="Level_13" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 576, 416 )
 scale = Vector2( 1.2, 1.2 )
-level = 13
 level_name = "Level_1-13"
 level_symbol = ExtResource( 20 )
 
 [node name="Level_14" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 832, 416 )
 scale = Vector2( 1.2, 1.2 )
-level = 14
 level_name = "Level_1-14"
 level_symbol = ExtResource( 21 )
 
 [node name="Level_15" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( -192, 608 )
 scale = Vector2( 1.2, 1.2 )
-level = 15
 level_name = "Level_1-A"
 level_symbol = ExtResource( 4 )
 
 [node name="Level_16" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 64, 608 )
 scale = Vector2( 1.2, 1.2 )
-level = 16
 level_name = "Level_1-B"
 level_symbol = ExtResource( 12 )
 locked = true
@@ -3268,7 +3251,6 @@ locked = true
 [node name="Level_17" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 320, 608 )
 scale = Vector2( 1.2, 1.2 )
-level = 17
 level_name = "Level_1-boss"
 level_symbol = ExtResource( 5 )
 locked = true
@@ -3276,7 +3258,6 @@ locked = true
 [node name="Level_18" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 576, 608 )
 scale = Vector2( 1.2, 1.2 )
-level = 18
 level_name = "spinner"
 level_symbol = ExtResource( 3 )
 locked = true
@@ -3284,12 +3265,11 @@ locked = true
 [node name="Level_19" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 832, 608 )
 scale = Vector2( 1.2, 1.2 )
-level = 19
 level_name = "Level_1--1"
 level_symbol = ExtResource( 24 )
 
 [node name="title_waterway" type="Sprite" parent="SELECT"]
-position = Vector2( 0, -424 )
+position = Vector2( 0, -448 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 52 )
 
@@ -3897,6 +3877,7 @@ scale = Vector2( 3, 3 )
 texture = ExtResource( 28 )
 
 [node name="MAIN" type="Node2D" parent="."]
+visible = false
 rotation = 0.523599
 script = ExtResource( 26 )
 

@@ -1,7 +1,5 @@
 extends Node2D
 
-export var world : int = 1
-export var level : int = 0
 export var level_name : String
 export var level_symbol : Texture
 export var locked : bool = false
@@ -56,7 +54,7 @@ func reload():
 	
 	$boltcollect.visible = false
 	if locked:
-		$icon.texture = load(level_dat["level_icon"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][1])
+		$icon.texture = load(level_dat["level_base"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][1])
 	elif global.level_completion.has(level_name): if global.level_completion[level_name][0] != null:
 		time = global.level_completion[level_name][0]
 		par = global.level_completion[level_name][1]
@@ -74,8 +72,8 @@ func reload():
 			$boltcollect/Anim.play("Idle")
 		
 		if time < par or par == 0:
-			$icon.texture = load(level_dat["level_icon"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][3])
+			$icon.texture = load(level_dat["level_base"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][3])
 		else:
-			$icon.texture = load(level_dat["level_icon"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][2])
+			$icon.texture = load(level_dat["level_base"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][2])
 	else:
-		$icon.texture = load(level_dat["level_icon"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][0])
+		$icon.texture = load(level_dat["level_base"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][0])
