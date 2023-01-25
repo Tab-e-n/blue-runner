@@ -3,6 +3,8 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
+var version_internal = 1
+
 var tilesets : Array
 var bg : Array
 var level_icon :  Array
@@ -11,6 +13,7 @@ var base_data : Dictionary
 var place_decor : Dictionary
 var place_objects : Dictionary
 var characters : Array
+var titles : Array
 
 var user_directory : String = \"user://sonicRunnerEditor\"
 
@@ -21,6 +24,7 @@ const INPUT_AMOUNT : int = 21
 var last_input_events : Array = range(INPUT_AMOUNT)
 
 var settings : Dictionary = {
+	\"*version\" : 1,
 	\"sonic_runner_folder\" : \"\",
 	
 	\"editor_gui_additional_info\" : false,
@@ -171,29 +175,30 @@ func save_game():
 	savefile.store_line(to_json(temp))
 	savefile.close()
 
-func load_game(fail = false):
+func load_game(fail = true):
 	print(\"loading game\")
 	var loadfile = File.new()
 	var temp = {}
 	
 	if not loadfile.file_exists(user_directory) or fail: # does file exist
 		save_game()
-		return
-	
-	loadfile.open(user_directory, File.READ)
-	
-	while loadfile.get_position() < loadfile.get_len():
-		var parsedData = parse_json(loadfile.get_line())
+	else:
+		loadfile.open(user_directory, File.READ)
 		
-		temp = parsedData
-	
-	loadfile.close()
-	
-	#print(\"load: \", temp)
-	
-	favorite = load_transfer(favorite,\"favorite\",temp)
-	recent = load_transfer(recent,\"recent\",temp)
-	settings = load_transfer(settings,\"settings\",temp)
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		
+		loadfile.close()
+		
+		#print(\"load: \", temp)
+		update_old_version(temp[\"settings\"][\"*version\"],temp)
+		
+		favorite = load_transfer(favorite,\"favorite\",temp)
+		recent = load_transfer(recent,\"recent\",temp)
+		settings = load_transfer(settings,\"settings\",temp)
+		
 	
 	# First it uses the default bindings
 	last_input_events = InputMap.get_action_list(\"default\").duplicate()
@@ -206,8 +211,11 @@ func load_game(fail = false):
 			InputMap.action_erase_event(String(i), last_input_events[i])
 		InputMap.action_add_event(String(i), last_input_events[i])
 		
-		last_input_events[i] = last_input_events[i]
-		settings[\"editor_keys\"][i] = last_input_events[i].scancode
+		#last_input_events[i] = last_input_events[i]
+		#settings[\"editor_keys\"][i] = last_input_events[i].scancode
+
+func update_old_version(version, temp):
+	pass
 
 func load_transfer(section : Dictionary, section_name : String, temp : Dictionary):
 	if !temp.has(section_name): temp[section_name] = section.duplicate()
@@ -239,6 +247,10 @@ func load_editor_vanilla():
 	load_dat_file(\"res:/\", \"/Visual/Level/\", level_base, \"base\")
 	
 	load_base(\"res:/\")
+	
+	# Titles
+	print(\"scanning vanilla titles\")
+	scan_single_directory(\"res:/\", \"/Visual/Title/\", titles, \".png\", \"title\")
 	
 	# Decor
 	print(\"scanning vanilla decor\")
@@ -278,6 +290,10 @@ func load_editor_mods():
 		load_dat_file(\"Mods/\" + mod_name, \"/Visual/Level/\", level_base, \"base\")
 		
 		load_base(\"res:/\")
+		
+		# Titles
+		print(\"scanning for titles\")
+		scan_single_directory(\"Mods/\" + mod_name, \"/Visual/Title/\", titles, \".png\", \"title\")
 		
 		# Visuals
 		print(\"scanning for decor\")

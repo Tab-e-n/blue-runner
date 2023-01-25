@@ -136,9 +136,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -504.0
+margin_left = -528.0
 margin_top = -448.0
-margin_right = 504.0
+margin_right = 528.0
 margin_bottom = -384.0
 size_flags_horizontal = 2
 visible_characters = 0
@@ -165,7 +165,7 @@ scroll_active = true
 
 [node name="keys2" parent="t" instance=ExtResource( 2 )]
 margin_top = -320.0
-margin_right = 512.0
+margin_right = 1024.0
 margin_bottom = 256.0
 visible_characters = 0
 percent_visible = 0.0
@@ -185,7 +185,7 @@ scroll_active = true
 [node name="end2" parent="t" instance=ExtResource( 2 )]
 margin_left = -96.0
 margin_top = 512.0
-margin_right = 672.0
+margin_right = 744.0
 margin_bottom = 576.0
 visible_characters = 0
 percent_visible = 0.0

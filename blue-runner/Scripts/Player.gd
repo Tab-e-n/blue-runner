@@ -43,7 +43,7 @@ func _ready():
 	
 	if ghost:
 		if !global.race_mode:
-			if !global.load_replay(global.current_level + "_Best", true) or !global.options["*ghosts_on"]:
+			if !global.load_replay(global.current_level_location + global.current_level + "_Best", true) or !global.options["*ghosts_on"]:
 				queue_free()
 				return
 		replay = true
@@ -54,7 +54,7 @@ func _ready():
 		position = get_parent().get_node("Player").position
 		
 		if global.replay_menu: recording = global.current_recording.duplicate()
-		else: recording = global.load_replay(global.current_level + "_Best")
+		else: recording = global.load_replay(global.current_level_location + global.current_level + "_Best")
 		replay_timer = recording["timer"]
 		character_name = recording["character"]
 		if recording.has("character_location"): character_location = recording["character_location"]
@@ -108,7 +108,7 @@ func _physics_process(delta):
 			# warning-ignore:return_value_discarded
 			#get_tree().change_scene("res://Scenes/" + get_tree().current_scene.name + ".tscn")
 			get_tree().change_scene(get_tree().current_scene.filename)
-			var _name : String = get_parent().name
+			var _name : String = global.current_level_location + get_parent().name
 			if global.level_completion.has(_name):
 				if global.level_completion[_name].size() > 2:
 					global.level_completion[_name][2] += 1
@@ -206,7 +206,7 @@ func finish(collision):
 	recording["timer"] = timer
 	recording["character"] = character_name
 	recording["character_location"] = character_location
-	recording["level"] = get_parent().name
+	recording["level"] = global.current_level_location + get_parent().name
 	#global.current_recording = recording.duplicate()
 	deny_input = true
 	end = true

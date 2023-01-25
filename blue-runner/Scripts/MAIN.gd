@@ -31,7 +31,6 @@ func menu_update():
 		if Input.is_action_just_pressed("up"): exit_confirmation = false
 		if Input.is_action_just_pressed("down"): exit_confirmation = false
 		if Input.is_action_just_pressed("jump") or Input.is_action_just_pressed("return"):
-			global.save_game()
 			get_tree().quit()
 	if !exit_confirmation:
 		if Input.is_action_just_pressed("return") and parent.get_node("AnimationPlayer").current_animation == "":

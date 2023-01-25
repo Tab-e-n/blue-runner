@@ -37,6 +37,9 @@ func _ready():
 			$AnimationPlayer.play("ENTERING")
 	if !start:
 		$menu_circle_2.scale = Vector2(0, 0)
+	if Global.new_version_alert:
+		$NewVersionPopup.popup()
+		Global.new_version_alert = false
 
 func _process(_delta):
 	# MENU SWITCHING

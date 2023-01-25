@@ -1,6 +1,7 @@
 extends Node2D
 
 export var level_name : String
+export var level_location : String
 export var level_symbol : Texture
 export var locked : bool = false
 
@@ -20,12 +21,9 @@ func _process(_delta):
 	pass
 
 func load_base():
-	level_dat = global.load_level_dat_file(level_name, true)
-	if typeof(level_dat) == TYPE_NIL:
-		level_dat = {
-			"level_base" : ["base","res:/"],
-			"level_icon" : ["questionmark","res:/"],
-		}
+	level_dat = global.load_level_dat_file(level_location + level_name, true)
+	if !level_dat.has("level_base"): level_dat["level_base"] = ["base","res:/"] #typeof(level_dat) == TYPE_NIL:
+	if !level_dat.has("level_icon"): level_dat["level_icon"] = ["questionmark.png","res:/"]
 	if level_dat.has("level_base"): if level_base[1]+level_base[0] != level_dat["level_base"][1]+level_dat["level_base"][0]:
 		var loadfile = File.new()
 		
@@ -55,13 +53,13 @@ func reload():
 	$boltcollect.visible = false
 	if locked:
 		$icon.texture = load(level_dat["level_base"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][1])
-	elif global.level_completion.has(level_name): if global.level_completion[level_name][0] != null:
-		time = global.level_completion[level_name][0]
-		par = global.level_completion[level_name][1]
+	elif global.level_completion.has(level_location + level_name): if global.level_completion[level_location + level_name][0] != null:
+		time = global.level_completion[level_location + level_name][0]
+		par = global.level_completion[level_location + level_name][1]
 		
 		var collectible_amount = 0
 		for i in range(3):
-			if global.level_completion["*collectibles"].has(level_name + "*" + String(i)):
+			if global.level_completion["*collectibles"].has(level_location + level_name + "*" + String(i)):
 				collectible_amount += 1
 		
 		$boltcollect/Anim.stop()

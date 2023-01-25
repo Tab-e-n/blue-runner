@@ -3072,6 +3072,7 @@ limit_x = Vector2( -2048, 0 )
 limit_y = Vector2( 0, 2048 )
 
 [node name="SELECT" type="Node2D" parent="."]
+visible = false
 script = ExtResource( 25 )
 
 [node name="BG_0" parent="SELECT" instance=ExtResource( 2 )]
@@ -3240,6 +3241,7 @@ position = Vector2( -192, 608 )
 scale = Vector2( 1.2, 1.2 )
 level_name = "Level_1-A"
 level_symbol = ExtResource( 4 )
+locked = true
 
 [node name="Level_16" parent="SELECT/L" instance=ExtResource( 23 )]
 position = Vector2( 64, 608 )
@@ -3267,6 +3269,7 @@ position = Vector2( 832, 608 )
 scale = Vector2( 1.2, 1.2 )
 level_name = "Level_1--1"
 level_symbol = ExtResource( 24 )
+locked = true
 
 [node name="title_waterway" type="Sprite" parent="SELECT"]
 position = Vector2( 0, -448 )
@@ -3281,7 +3284,6 @@ margin_bottom = -656.0
 text = "ESC - GO BACK"
 
 [node name="completion_filling" type="Sprite" parent="SELECT"]
-visible = false
 self_modulate = Color( 0.87451, 0.901961, 0.937255, 1 )
 position = Vector2( 320, -80 )
 texture = ExtResource( 53 )
@@ -3877,7 +3879,6 @@ scale = Vector2( 3, 3 )
 texture = ExtResource( 28 )
 
 [node name="MAIN" type="Node2D" parent="."]
-visible = false
 rotation = 0.523599
 script = ExtResource( 26 )
 
@@ -3960,72 +3961,14 @@ anims/Down = SubResource( 27 )
 anims/StandBy = SubResource( 28 )
 anims/Up = SubResource( 29 )
 
-[node name="controls2" type="RichTextLabel" parent="."]
-visible = false
-margin_left = -116.02
-margin_top = -376.0
-margin_right = 171.98
-margin_bottom = -280.004
-rect_scale = Vector2( 4, 4 )
-custom_colors/default_color = Color( 1, 1, 1, 1 )
-text = "ARROW KEYS - MOVING
-SPACE - JUMP / ACCEPT
-CTRL / SHIFT - SPECIAL
-ENTER - RESET
-BACKSPACE / ESCAPE - RETURN TO MENU
-"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="play" type="RichTextLabel" parent="."]
-visible = false
-margin_left = -504.0
-margin_top = -600.0
-margin_right = -376.0
-margin_bottom = -584.0
-rect_scale = Vector2( 4, 4 )
-custom_colors/default_color = Color( 1, 1, 1, 1 )
-text = "PLAY"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="controls" type="RichTextLabel" parent="."]
-visible = false
-margin_left = -536.0
-margin_top = -544.58
-margin_right = -408.0
-margin_bottom = -528.58
-rect_scale = Vector2( 4, 4 )
-custom_colors/default_color = Color( 1, 1, 1, 1 )
-text = "CONTROLS"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="replays" type="RichTextLabel" parent="."]
-visible = false
-margin_left = -568.0
-margin_top = -489.15
-margin_right = -440.0
-margin_bottom = -473.15
-rect_scale = Vector2( 4, 4 )
-custom_colors/default_color = Color( 1, 1, 1, 1 )
-text = "REPLAYS"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="exit" type="RichTextLabel" parent="."]
-visible = false
-margin_left = -1048.0
-margin_top = 342.232
-margin_right = -920.0
-margin_bottom = 358.232
-rect_scale = Vector2( 4, 4 )
-custom_colors/default_color = Color( 1, 1, 1, 1 )
-text = "EXIT"
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="NewVersionPopup" type="AcceptDialog" parent="."]
+margin_left = -488.0
+margin_top = -192.0
+margin_bottom = 1.0
+rect_scale = Vector2( 2, 2 )
+theme = ExtResource( 56 )
+window_title = "Version Alert"
+dialog_text = "You have some files from an
+older version of SR. They might
+not open correctly, if they
+open at all."

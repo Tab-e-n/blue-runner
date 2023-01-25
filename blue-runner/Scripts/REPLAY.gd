@@ -30,15 +30,17 @@ func menu_update():
 			if replay_menu_mode == 0 or replay_menu_mode == 1:
 				var selected_list_replay = $replay_list.get_selected_items()[0]
 				
-				global.current_recording = global.load_replay($replay_list.get_item_text(selected_list_replay), false)
 				
-				if replay_menu_mode == 1: global.race_mode = true
-				else: global.replay = true
+				global.current_recording = global.load_replay($replay_list.get_item_metadata(selected_list_replay) + "/" + $replay_list.get_item_text(selected_list_replay), false, false)
 				
-				global.replay_menu = true
-				
-				# warning-ignore:return_value_discarded
-				get_tree().change_scene("res://Scenes/" + global.current_recording["level"] + ".tscn")
+				if global.current_recording.has("level"): 
+					if replay_menu_mode == 1: global.race_mode = true
+					else: global.replay = true
+					
+					global.replay_menu = true
+					
+					# warning-ignore:return_value_discarded
+					get_tree().change_scene(global.current_recording["level"] + ".tscn")
 			if replay_menu_mode == 2:
 				if delete_confirmation:
 					var selected_list_replay = $replay_list.get_selected_items()[0]
@@ -79,17 +81,24 @@ func reset_replays():
 	
 	#dir shenanigans
 	var dir = Directory.new()
-	dir.open("user://SRReplays")
 	
-	dir.list_dir_begin(true, false)
-	var last_replay : String = "*"
-	
-	last_replay = dir.get_next()
-	while last_replay != "":
-		$replay_list.add_item(last_replay)
+	var directories_to_visit = ["user://SRReplays/"]
+	while directories_to_visit.size() > 0:
+		dir.open(directories_to_visit[0])
+		
+		dir.list_dir_begin(true, false)
+		var last_replay : String = "*"
+		
 		last_replay = dir.get_next()
-	
-	dir.list_dir_end()
+		while last_replay != "":
+			if dir.current_is_dir():
+				directories_to_visit.append(directories_to_visit[0] + "/" + last_replay)
+			else:
+				$replay_list.add_item(last_replay)
+				$replay_list.set_item_metadata($replay_list.get_item_count() - 1, directories_to_visit[0].trim_prefix("user://SRReplays/"))
+			last_replay = dir.get_next()
+		
+		directories_to_visit.pop_front()
 	
 	$replay_list.select(selected_replay)
 	$replay_list.visible = true
