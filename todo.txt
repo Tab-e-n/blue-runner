@@ -1,3 +1,19 @@
+LEVEL GROUPS
+level groups in editor
+saving replays
+check unlocks
+redo level transitions
+collectable
+portal
+finish
+camera
+replay menu
+
+completion percentage
+switching groups
+replay menu mod and user save and stuff
+level groups in sonic runner
+
 FILE
 .dat level properties editable
 creating new level
@@ -83,11 +99,11 @@ focus edit tiles
 focus items
 mod loader
 dependecies save
+version system
 
-level groups in sonic runner
-character select
-dependency stripper
 after all that you done with level editor and can continou by takin break
+character select
+character unlocks in characters.dat
+dependency stripper
 default-mod
-version system (might not be necessary)
 undo system (optional)

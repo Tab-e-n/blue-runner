@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Visual/Level/base_neutral.png" type="Texture" id=1]
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=2]
@@ -12,8 +12,6 @@
 [ext_resource path="res://Visual/Editor/editor_exit.png" type="Texture" id=11]
 [ext_resource path="res://Visual/Editor/editor_new_enabled.png" type="Texture" id=12]
 [ext_resource path="res://Visual/Editor/editor_new.png" type="Texture" id=13]
-[ext_resource path="res://Visual/Editor/editor_cog_enabled.png" type="Texture" id=14]
-[ext_resource path="res://Visual/Editor/editor_cog.png" type="Texture" id=15]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
@@ -29,10 +27,11 @@ var level_group_dat : Dictionary = {
 }
 
 func _ready():
-	for i in range(20): level_group_dat[\"levels\"][i] = [\"*Level_Missing\", true]
+	for i in range(20): level_group_dat[\"levels\"][i] = [\"*Level_Missing\", true, 0]
 	
 	ready_optionbutton_setup($Edits/level_icon, data.level_icon)
 	ready_optionbutton_setup($Edits/level_base, data.level_base)
+	ready_optionbutton_setup($Edits/picture, data.titles)
 	
 	var packed_level = PackedScene.new()
 	$\"levels/0/base\".set_owner($\"levels/0\")
@@ -90,6 +89,11 @@ func change_level_texture(change_to : String, type : String, level : int):
 	var current_level_visual = get_node(\"levels/\" + String(level) + \"/\" + type)
 	current_level_visual.texture = load(change_to)
 
+func picture_changed(index):
+	var text_path = $Edits/picture.get_item_metadata(index) + \"/Visual/Level/\" + $Edits/picture.get_item_text(index)
+	level_group_dat[\"picture\"] = text_path
+	$title/menu_waterway.texture = load(text_path)
+
 func _exit_tree():
 	save_level_dat()
 	save_current_group(current_group_path)
@@ -109,32 +113,12 @@ func save_current_group(dir, defaults : bool = false):
 	var temp = {}
 	
 	if defaults:
-		temp = {
-			\"picture\" : \"\",
-			\"levels\" : [
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true],
-				[\"*Level_Missing\", true]
-			],
-			\"dependencies\" : data.mods_installed.duplicate(),
-		}
+		temp = {}
+		temp[\"picture\"] = \"\"
+		temp[\"levels\"] = []
+		for _i in range(20):
+			temp[\"levels\"].append([\"*Level_Missing\", true, 0])
+		temp[\"dependencies\"] = data.mods_installed.duplicate()
 	else:
 		level_group_dat[\"dependencies\"] = data.mods_installed.duplicate()
 		temp = level_group_dat.duplicate()
@@ -171,7 +155,7 @@ func load_group(dir):
 		
 		if !temp.has(\"levels\"):
 			temp[\"levels\"] = []
-			for _i in range(20): temp[\"levels\"].append([\"*Level_Missing\", true])
+			for _i in range(20): temp[\"levels\"].append([\"*Level_Missing\", true, 0])
 		if !temp.has(\"picture\"): temp[\"picture\"] = \"\"
 		if !temp.has(\"dependencies\"): temp[\"dependencies\"] = []
 		for i in temp[\"dependencies\"]:
@@ -184,6 +168,7 @@ func load_group(dir):
 		if current_group_path == \"\":
 			$Edits/filename.disabled = false
 			$Edits/locked.disabled = false
+			$Edits/completion.editable = true
 			$Edits/picture.disabled = false
 			$Edits/import.disabled = false
 		
@@ -368,6 +353,9 @@ func filename_selected(index):
 func locked_toggled(button_pressed):
 	level_group_dat[\"levels\"][current_level][1] = button_pressed
 	change_level_visual($Edits/level_base.selected, \"base\")
+
+func completion_changed(value):
+	level_group_dat[\"levels\"][current_level][2] = value
 "
 
 [sub_resource type="GDScript" id=2]
@@ -496,6 +484,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="completion" type="SpinBox" parent="Edits"]
+margin_left = 696.0
+margin_top = 416.0
+margin_right = 920.0
+margin_bottom = 448.0
+editable = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="level_name" type="LineEdit" parent="Edits"]
 margin_left = 656.0
 margin_top = 480.0
@@ -558,15 +556,17 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="picture" type="TextureButton" parent="Edits"]
-margin_left = 832.0
-margin_top = 128.0
-margin_right = 896.0
-margin_bottom = 192.0
+[node name="picture" type="OptionButton" parent="Edits"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 128.0
+margin_top = -96.0
+margin_right = 384.0
+margin_bottom = -64.0
 disabled = true
-texture_normal = ExtResource( 15 )
-texture_pressed = ExtResource( 14 )
-texture_disabled = ExtResource( 7 )
+clip_text = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -694,9 +694,11 @@ __meta__ = {
 [connection signal="toggled" from="levels/0" to="." method="level_toggled" binds= [ 0 ]]
 [connection signal="item_selected" from="Edits/filename" to="." method="filename_selected"]
 [connection signal="toggled" from="Edits/locked" to="." method="locked_toggled"]
+[connection signal="value_changed" from="Edits/completion" to="." method="completion_changed"]
 [connection signal="item_selected" from="Edits/level_icon" to="." method="change_level_visual" binds= [ "icon" ]]
 [connection signal="item_selected" from="Edits/level_base" to="." method="change_level_visual" binds= [ "base" ]]
 [connection signal="pressed" from="Edits/import" to="." method="import_popup"]
+[connection signal="item_selected" from="Edits/picture" to="." method="picture_changed"]
 [connection signal="pressed" from="Edits/exit" to="." method="on_exit"]
 [connection signal="pressed" from="Edits/new" to="." method="new_group_popup"]
 [connection signal="pressed" from="Edits/load" to="." method="load_group_popup"]

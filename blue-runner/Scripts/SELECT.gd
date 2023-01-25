@@ -12,6 +12,7 @@ var cursor_positions = [	Vector2(-192,0), Vector2(64,0), Vector2(320,0), Vector2
 							Vector2(-192,576), Vector2(64,576), Vector2(320,576), Vector2(576,576), Vector2(832,576),]
 var selected : bool = false
 var selected_level_name : String
+var selected_level_location : String
 
 func _ready():
 	camera.bg = $BG_0
@@ -29,8 +30,8 @@ func menu_update():
 			$Cursor/AnimationPlayer.play("Refuse")
 	
 	if Input.is_action_just_pressed("special"):
-		if global.load_replay(selected_level_name + "_Best", true):
-			global.current_recording = global.load_replay(selected_level_name + "_Best")
+		if global.load_replay(selected_level_location + selected_level_name + "_Best", true):
+			global.current_recording = global.load_replay(selected_level_location + selected_level_name + "_Best")
 			global.replay = true
 			selected = true
 			$Cursor/AnimationPlayer.play("Go_In")
@@ -60,9 +61,10 @@ func menu_update():
 		$Cursor/AnimationPlayer.play("Spin")
 	
 	selected_level_name = get_node("L/Level_" + String(selected_level)).level_name
+	selected_level_location = get_node("L/Level_" + String(selected_level)).level_location
 	
 	if parent.move:
-		var level_dat = global.load_level_dat_file(selected_level_name)
+		var level_dat = global.load_level_dat_file(selected_level_location + selected_level_name)
 		$Level_Descriptor/level_name.text = selected_level_name
 		$Level_Descriptor/creator.text = ""
 		if get_node("L/Level_" + String(selected_level)).locked == true:
@@ -80,9 +82,9 @@ func menu_update():
 		$Level_Descriptor/deaths.text = ""
 		$Level_Descriptor/replay.text = ""
 		
-		if global.level_completion.has(selected_level_name):
-			if global.level_completion[selected_level_name][0] != null:
-				var timer : float = global.level_completion[selected_level_name][0]
+		if global.level_completion.has(selected_level_location + selected_level_name):
+			if global.level_completion[selected_level_location + selected_level_name][0] != null:
+				var timer : float = global.level_completion[selected_level_location + selected_level_name][0]
 				var minutes : int = int(floor(timer) / 60)
 				var seconds : int = int(floor(timer)) - minutes * 60
 				var decimal : int = int(floor(timer * 100 + 0.1)) % 100
@@ -91,7 +93,7 @@ func menu_update():
 				# warning-ignore:integer_division
 				$Level_Descriptor/best_time.text = "Best time: " + String(minutes)+":"+String(seconds/10)+String(seconds%10)+"."+String(decimal/10)+String(decimal%10)
 				
-				timer = global.level_completion[selected_level_name][1]
+				timer = global.level_completion[selected_level_location + selected_level_name][1]
 				if timer != 0:
 					minutes = int(floor(timer) / 60)
 					seconds = int(floor(timer)) - minutes * 60
@@ -101,42 +103,66 @@ func menu_update():
 					# warning-ignore:integer_division
 					$Level_Descriptor/par.text = "Par: " + String(minutes)+":"+String(seconds/10)+String(seconds%10)+"."+String(decimal/10)+String(decimal%10)
 			
-			if global.level_completion[selected_level_name].size() > 2: 
-				$Level_Descriptor/deaths.text = "Deaths: " + String(global.level_completion[selected_level_name][2])
-		if global.load_replay(selected_level_name + "_Best", true, false):
+			if global.level_completion[selected_level_location + selected_level_name].size() > 2: 
+				$Level_Descriptor/deaths.text = "Deaths: " + String(global.level_completion[selected_level_location + selected_level_name][2])
+		if global.load_replay(selected_level_location + selected_level_name + "_Best", true):
 			$Level_Descriptor/replay.text = global.key_names(5) + " - Best Replay"
 	
 	$Cursor.position = cursor_positions[selected_level]
 	$back.text = global.key_names(7) + " - Go Back"
 
 func reload_all_levels():
-	global.unlock_check()
-	$L/Level_15.locked = !global.unlocked["Level_1-A"]
-	$L/Level_16.locked = !global.unlocked["Level_1-B"]
-	$L/Level_18.locked = !global.unlocked["Level_1-C"]
-	$L/Level_19.locked = !global.unlocked["Level_1--1"]
-	for i in range(20): get_node("L/Level_" + String(i)).reload()
+	if !global.load_level_group():
+		return
+	if !global.unlocked.has(global.current_level_location):
+		global.unlocked[global.current_level_location] = {}
+		for i in range(20):
+			if (global.level_group["levels"][i][1] or global.level_group["levels"][i][2] != 0) and !global.level_group["levels"][i][0] == "*Level_Missing":
+				global.unlocked[global.current_level_location][global.level_group["levels"][i][0]] = false
+	#global.unlock_check()
+	var comp_list : Array = []
+	for i in range(20):
+		var level = get_node("L/Level_" + String(i))
+		level.level_name = global.level_group["levels"][i][0]
+		if level.level_name != "*Level_Missing":
+			level.level_location = Global.current_level_location
+			if global.level_group["levels"][i][2] != 0:
+				comp_list.append(i)
+			elif global.unlocked[global.current_level_location].has(level.level_name):
+				level.locked = !global.unlocked[global.current_level_location][level.level_name]
+		else:
+			level.level_location = "res://Scenes/"
+			level.level_name = "Level_Missing"
+			level.locked = true
+		level.reload()
+	var comp_number : float = completion_percentage()
+	for i in comp_list:
+		get_node("L/Level_" + String(i)).locked = !comp_number > global.level_group["levels"][i][2]
 	
-	var comp_number : int = completion_percentage()
-	$completion_filling/text.text = String(comp_number * 2) + "%"
-	$completion_filling/bar.scale.x = float(comp_number) / 50
+	$completion_filling/text.text = String(stepify(comp_number, 1)) + "%"
+	$completion_filling/bar.scale.x = comp_number / 100
 
 func character_select():
+	global.current_level = selected_level_name
+	global.current_level_location = selected_level_location
 	if global.unlocked["*char_select_active"]:
 		parent.get_node("AnimationPlayer").play("SELECT-CHARACTER")
 		parent.menu = "CHARACTER"
 		$Cursor/AnimationPlayer.play("Reset")
 		selected = false
-		parent.get_node("CHARACTER").selected_level = selected_level_name
+		#parent.get_node("CHARACTER").selected_level = selected_level_name
+		#parent.get_node("CHARACTER").selected_location = selected_level_location
 	else:
-		global.current_level = selected_level_name
 		# warning-ignore:return_value_discarded
-		get_tree().change_scene("res://Scenes/" + selected_level_name + ".tscn")
+		get_tree().change_scene(selected_level_location + selected_level_name + ".tscn")
 
 func completion_percentage():
-	var completion : int = 0
+	var full : float = 0
+	var completion : float = 0
 	for i in range(20):
-		var level_string : String = get_node("L/Level_" + String(i)).level_name
+		if get_node("L/Level_" + String(i)).level_name == "Level_Missing" and get_node("L/Level_" + String(i)).level_location == "res://Scenes/": continue
+		full += 2
+		var level_string : String = global.current_level_location + get_node("L/Level_" + String(i)).level_name
 		if global.level_completion.has(level_string): if global.level_completion[level_string][0] != null:
 			completion += 1
 			#print("beat " + String(i))
@@ -144,11 +170,15 @@ func completion_percentage():
 				if global.level_completion[level_string][0] < global.level_completion[level_string][1] and global.level_completion[level_string][1] != 0:
 					completion += 1
 					#print("par " + String(i))
-		if global.unlocked.has(level_string):
-			if global.unlocked[level_string]:
+			else:
+				completion += 1
+		if global.unlocked[global.current_level_location].has(level_string):
+			full += 1
+			if global.unlocked[global.current_level_location][level_string]:
 				completion += 1
 				#print("unlocked " + String(i))
-		if global.level_completion.has(String((current_world-1)*20 + i)):
-			completion += 1
+		#if global.level_completion.has(String((current_world-1)*20 + i)):
+			#completion += 1
 			#print("bonus " + String(i))
-	return completion
+	print(String(completion) + " / " + String(full))
+	return (completion / full) * 100
