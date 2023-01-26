@@ -1,4 +1,4 @@
-[gd_scene load_steps=85 format=2]
+[gd_scene load_steps=86 format=2]
 
 [ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Objects/Backgrounds/BG_WaterWay.tscn" type="PackedScene" id=2]
@@ -48,6 +48,7 @@
 [ext_resource path="res://Visual/Menu/menu_help_goal.png" type="Texture" id=46]
 [ext_resource path="res://Visual/Menu/menu_help_s1_special.png" type="Texture" id=47]
 [ext_resource path="res://Visual/Menu/menu_help_s1_dropslide.png" type="Texture" id=48]
+[ext_resource path="res://Text/Text_Editor.tscn" type="PackedScene" id=49]
 [ext_resource path="res://Scripts/REPLAY.gd" type="Script" id=50]
 [ext_resource path="res://Visual/Menu/menu_help_bonus.png" type="Texture" id=51]
 [ext_resource path="res://Visual/Title/menu_waterway.png" type="Texture" id=52]
@@ -3271,7 +3272,7 @@ level_name = "Level_1--1"
 level_symbol = ExtResource( 24 )
 locked = true
 
-[node name="title_waterway" type="Sprite" parent="SELECT"]
+[node name="title" type="Sprite" parent="SELECT"]
 position = Vector2( 0, -448 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 52 )
@@ -3280,8 +3281,10 @@ texture = ExtResource( 52 )
 margin_left = -984.0
 margin_top = -728.0
 margin_right = 1024.0
-margin_bottom = -656.0
-text = "ESC - GO BACK"
+margin_bottom = -600.0
+rect_scale = Vector2( 0.5, 0.5 )
+text = "EXIT - GO BACK
+RETURN - CHANGE ZONE"
 
 [node name="completion_filling" type="Sprite" parent="SELECT"]
 self_modulate = Color( 0.87451, 0.901961, 0.937255, 1 )
@@ -3303,6 +3306,30 @@ margin_top = -28.0
 margin_right = 72.0
 margin_bottom = 28.0
 text = "100%"
+
+[node name="group_select" type="Panel" parent="SELECT"]
+visible = false
+margin_left = -1000.0
+margin_top = -744.0
+margin_right = 1000.0
+margin_bottom = -504.0
+theme = ExtResource( 56 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="cursor" type="Polygon2D" parent="SELECT/group_select"]
+position = Vector2( 72, 192 )
+color = Color( 0, 0.596078, 0.858824, 1 )
+polygon = PoolVector2Array( 0, -48, -24, 0, 24, 0 )
+
+[node name="name" parent="SELECT/group_select" instance=ExtResource( 49 )]
+margin_left = 8.0
+margin_top = 200.0
+margin_right = 1976.0
+margin_bottom = 24.0
+bbcode_enabled = true
+text = ""
 
 [node name="BG_MENU" type="Polygon2D" parent="SELECT"]
 visible = false

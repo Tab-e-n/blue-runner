@@ -1,0 +1,306 @@
+[gd_scene load_steps=22 format=2]
+
+[ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scripts/Portal.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/Waterfall.gd" type="Script" id=3]
+[ext_resource path="res://Scripts/Mushroom.gd" type="Script" id=4]
+[ext_resource path="res://Scripts/Player.gd" type="Script" id=5]
+[ext_resource path="res://Scripts/Spike.gd" type="Script" id=6]
+[ext_resource path="res://Scripts/Camera.gd" type="Script" id=7]
+[ext_resource path="res://Objects/Tilesets/WaterWay.tres" type="TileSet" id=8]
+[ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Objects/Player/Ghost.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Objects/Finish.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Visual/decor_crystal_3.png" type="Texture" id=12]
+[ext_resource path="res://Visual/decor_crystal_2.png" type="Texture" id=13]
+[ext_resource path="res://Visual/decor_crystal_1.png" type="Texture" id=14]
+[ext_resource path="res://Visual/decor_waterfall.png" type="Texture" id=15]
+[ext_resource path="res://Objects/Spike.tscn" type="PackedScene" id=16]
+[ext_resource path="res://Objects/Mushroom.tscn" type="PackedScene" id=17]
+[ext_resource path="res://Objects/Decor/Waterfall.tscn" type="PackedScene" id=18]
+[ext_resource path="res://Visual/particle_circle.png" type="Texture" id=19]
+[ext_resource path="res://Visual/saw_3.png" type="Texture" id=20]
+[ext_resource path="res://Visual/decor_tree_2.png" type="Texture" id=21]
+
+[node name="nightmare" type="Node2D"]
+
+[node name="Camera" type="Node2D" parent="." instance=ExtResource( 1 )]
+position = Vector2( -2416, -208 )
+z_index = 100
+script = ExtResource( 7 )
+limit_x = Vector2( 0, 0 )
+limit_y = Vector2( 0, 0 )
+zoom = Vector2( 2, 2 )
+
+[node name="Ghost" type="Node2D" parent="." instance=ExtResource( 10 )]
+use_parent_material = true
+position = Vector2( -416, -256 )
+z_index = 20
+script = ExtResource( 5 )
+editor_properties = {
+"attachable": false,
+"editable_properties": {
+
+},
+"layer": "special",
+"object_path": "res://Objects/Player/Ghost.tscn",
+"object_type": "ghost",
+"rect": Rect2( 0, -32, 64, 64 ),
+"unchangeable_properties": {
+"color": false,
+"order": true,
+"rotation": true,
+"scale": true,
+"z_index": false
+}
+}
+character_name = ""
+character_location = "res:/"
+facing = "right"
+deny_input = true
+ghost = true
+
+[node name="Finish" type="Node2D" parent="." instance=ExtResource( 11 )]
+use_parent_material = true
+position = Vector2( 192, 192 )
+z_index = 20
+script = ExtResource( 2 )
+editor_properties = {
+"attachable": false,
+"editable_properties": {
+"par": [ 3, 0, 0, 0 ],
+"tele_destination": [ 4, 0, 0, 0 ],
+"type": [ 2, 0, 1, 1 ],
+"unlock": [ 4, 0, 0, 0 ]
+},
+"layer": "special",
+"object_path": "res://Objects/Finish.tscn",
+"object_type": "finish",
+"rect": Rect2( 0, -32, 64, 64 ),
+"unchangeable_properties": {
+"color": false,
+"order": true,
+"rotation": false,
+"scale": false,
+"z_index": false
+}
+}
+tele_destination = "res://Scenes/Menu_Level_Select.tscn"
+par = 0.0
+type = 0.0
+unlock = ""
+
+[node name="Player" type="Node2D" parent="." instance=ExtResource( 9 )]
+use_parent_material = true
+position = Vector2( -416, -256 )
+z_index = 20
+script = ExtResource( 5 )
+editor_properties = {
+"attachable": false,
+"editable_properties": {
+"character_location": [ 4, 0, 0, 0 ],
+"character_name": [ 4, 0, 0, 0 ],
+"facing": [ 4, 0, 0, 0 ]
+},
+"layer": "special",
+"object_path": "res://Objects/Player/Player.tscn",
+"object_type": "player",
+"rect": Rect2( 0, -32, 64, 64 ),
+"unchangeable_properties": {
+"color": false,
+"order": true,
+"rotation": true,
+"scale": true,
+"z_index": false
+}
+}
+character_name = ""
+character_location = "res:/"
+facing = "right"
+deny_input = true
+ghost = false
+
+[node name="objects_background" type="Node2D" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+z_index = -40
+
+[node name="decor_background" type="Node2D" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+z_index = -40
+
+[node name="tiles_background_0" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+scale = Vector2( 0.75, 0.75 )
+z_index = -30
+tile_set = ExtResource( 8 )
+format = 1
+
+[node name="tiles_background_1" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+scale = Vector2( 0.75, 0.75 )
+z_index = -30
+tile_set = ExtResource( 8 )
+format = 1
+
+[node name="tiles_background_2" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+scale = Vector2( 0.75, 0.75 )
+z_index = -30
+tile_set = ExtResource( 8 )
+format = 1
+
+[node name="objects_back" type="Node2D" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+z_index = -20
+
+[node name="decor_back" type="Node2D" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+z_index = -20
+
+[node name="tiles_back_0" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+z_index = -10
+tile_set = ExtResource( 8 )
+format = 1
+
+[node name="tiles_back_1" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+z_index = -10
+tile_set = ExtResource( 8 )
+format = 1
+
+[node name="tiles_back_2" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+z_index = -10
+tile_set = ExtResource( 8 )
+format = 1
+
+[node name="objects_center" type="Node2D" parent="."]
+
+[node name="Spike" type="Node2D" parent="objects_center" instance=ExtResource( 16 )]
+use_parent_material = true
+position = Vector2( 528, 0 )
+scale = Vector2( 2, 2 )
+script = ExtResource( 6 )
+
+[node name="@Spike@329" type="Node2D" parent="objects_center" instance=ExtResource( 16 )]
+use_parent_material = true
+position = Vector2( -144, 0 )
+scale = Vector2( 2, 2 )
+script = ExtResource( 6 )
+
+[node name="Mushroom" type="Node2D" parent="objects_center" instance=ExtResource( 17 )]
+use_parent_material = true
+position = Vector2( 48, 208 )
+rotation = -3.14159
+scale = Vector2( 1.5, 1.5 )
+script = ExtResource( 4 )
+boost_strenght = 0
+overwrite_momentum = false
+
+[node name="Waterfall" type="Sprite" parent="objects_center" instance=ExtResource( 18 )]
+use_parent_material = true
+position = Vector2( 144, 416 )
+rotation = -3.14159
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 15 )
+hframes = 12
+script = ExtResource( 3 )
+
+[node name="decor_center" type="Node2D" parent="."]
+
+[node name="@@388" type="Sprite" parent="decor_center"]
+use_parent_material = true
+position = Vector2( -640, -96 )
+rotation = -1.5708
+scale = Vector2( 2, 2 )
+texture = ExtResource( 13 )
+
+[node name="@@393" type="Sprite" parent="decor_center"]
+use_parent_material = true
+position = Vector2( 288, -400 )
+texture = ExtResource( 21 )
+
+[node name="@@389" type="Sprite" parent="decor_center"]
+use_parent_material = true
+position = Vector2( -640, 96 )
+rotation = -1.5708
+scale = Vector2( 2, 2 )
+texture = ExtResource( 12 )
+
+[node name="@@390" type="Sprite" parent="decor_center"]
+use_parent_material = true
+position = Vector2( -640, -32 )
+rotation = -1.5708
+scale = Vector2( 2, 2 )
+texture = ExtResource( 14 )
+
+[node name="@@391" type="Sprite" parent="decor_center"]
+use_parent_material = true
+position = Vector2( -640, 32 )
+rotation = -1.5708
+scale = Vector2( 2, 2 )
+texture = ExtResource( 13 )
+
+[node name="@@392" type="Sprite" parent="decor_center"]
+use_parent_material = true
+position = Vector2( -416, -256 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 12 )
+
+[node name="tiles_center_0" type="TileMap" parent="."]
+z_index = 10
+tile_set = ExtResource( 8 )
+format = 1
+
+[node name="tiles_center_1" type="TileMap" parent="."]
+z_index = 10
+tile_set = ExtResource( 8 )
+format = 1
+tile_data = PoolIntArray( -196615, 18, 0, -262143, 18, 0, -262140, 18, 0, -131079, 18, 0, -196607, 18, 0, -196604, 18, 0, -65546, 22, 0, -65545, 22, 0, -65544, 22, 0, -65543, 18, 0, -65542, 18, 0, -131071, 18, 0, -131068, 18, 0, -10, 18, 0, -9, 18, 0, -8, 18, 0, -7, 18, 0, -6, 18, 0, -65535, 18, 0, -65532, 18, 0, 65526, 22, 0, 65527, 22, 0, 65528, 22, 0, 65529, 18, 0, 65530, 18, 0, 131062, 18, 0, 131063, 18, 0, 131064, 18, 0, 131065, 18, 0, 131066, 18, 0, 131071, 18, 0, 65542, 18, 0, 196607, 18, 0, 131078, 18, 0, 262143, 18, 0, 196608, 18, 0, 196609, 18, 0, 196610, 18, 0, 196611, 18, 0, 196612, 18, 0, 196613, 18, 0, 196614, 18, 0 )
+
+[node name="tiles_center_2" type="TileMap" parent="."]
+z_index = 10
+tile_set = ExtResource( 8 )
+format = 1
+
+[node name="objects_front" type="Node2D" parent="."]
+z_index = 40
+
+[node name="decor_front" type="Node2D" parent="."]
+z_index = 40
+
+[node name="@@394" type="Sprite" parent="decor_front"]
+use_parent_material = true
+position = Vector2( 96, -128 )
+texture = ExtResource( 19 )
+
+[node name="@@395" type="Sprite" parent="decor_front"]
+use_parent_material = true
+position = Vector2( 288, -128 )
+texture = ExtResource( 19 )
+
+[node name="@@396" type="Sprite" parent="decor_front"]
+use_parent_material = true
+position = Vector2( 288, -128 )
+texture = ExtResource( 20 )
+
+[node name="@@397" type="Sprite" parent="decor_front"]
+use_parent_material = true
+position = Vector2( 96, -128 )
+texture = ExtResource( 20 )
+
+[node name="tiles_front_0" type="TileMap" parent="."]
+z_index = 50
+tile_set = ExtResource( 8 )
+format = 1
+
+[node name="tiles_front_1" type="TileMap" parent="."]
+z_index = 50
+tile_set = ExtResource( 8 )
+format = 1
+
+[node name="tiles_front_2" type="TileMap" parent="."]
+z_index = 50
+tile_set = ExtResource( 8 )
+format = 1

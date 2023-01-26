@@ -11,11 +11,37 @@ func _ready():
 	global.replay = false
 	global.race_mode = false
 	var start : bool = true
-	for i in range(20):
+	
+	var directory : Directory = Directory.new()
+	var check_exist = directory.open("user://SRLevels/")
+	var current_file
+	
+	if check_exist == OK:
+		# warning-ignore:return_value_discarded
+		directory.list_dir_begin(true)
+		
+		current_file = directory.get_next()
+		while current_file != "":
+			if current_file.ends_with(".tscn"):
+				$SELECT.user_levels.append(current_file.trim_suffix(".tscn"))
+			current_file = directory.get_next()
+	$SELECT.user_pages = $SELECT.user_levels.size() / 20
+	for i in range($SELECT.user_levels.size()):
+		if $SELECT.user_levels[i] == global.current_level:
+			$SELECT.selected_level = int(i) % 20
+			$SELECT.user_levels_page = int(i) / 20
+			$SELECT.visible = true
+			start = false
+			break
+	$SELECT.reload_all_levels()
+	if start != false: for i in range(20):
 		if get_node("SELECT/L/Level_" + String(i)).level_name == global.current_level:
 			$SELECT.selected_level = i
 			$SELECT.visible = true
 			start = false
+			break
+	
+	
 	if start or global.replay_menu:
 		$menu_circle_2.scale = Vector2(2.75, 2.75)
 		$menu_button.position = Vector2(0, -64)

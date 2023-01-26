@@ -40,7 +40,11 @@ func menu_update():
 					global.replay_menu = true
 					
 					# warning-ignore:return_value_discarded
-					get_tree().change_scene(global.current_recording["level"] + ".tscn")
+					var level_file = global.current_recording["level"]
+					if level_file.find("/") == -1:
+						level_file = "res://Scenes/waterway/" + level_file
+					
+					get_tree().change_scene(level_file + ".tscn")
 			if replay_menu_mode == 2:
 				if delete_confirmation:
 					var selected_list_replay = $replay_list.get_selected_items()[0]

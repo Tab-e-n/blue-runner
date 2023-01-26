@@ -1,109 +1,21 @@
-LEVEL GROUPS
-level groups in editor
-saving replays
-check unlocks
-redo level transitions
-collectable
-portal
-finish
-camera
-replay menu
-
-completion percentage
-switching groups
-replay menu mod and user save and stuff
-level groups in sonic runner
-
-FILE
-.dat level properties editable
-creating new level
-saving level
-loading level
-saving level UI
-loading level UI
-exiting editor UI
-
-PLACE
-Switching modes
-Switching tabs
-Items
-Recent system
-Favorite system
-movin around tghe level
-that empty space? LAYERS go there
-placin tiles
-removin tiles
-"editing tiles"
-picking tiles
-placin decor
-removin decor
-editing decor
-picking decor
-placin objects
-removin objects
-picking objects
-editing objects
-attaching objects to other objects (spinning arms)
-attaching objects to other objects (tracks)
-Object representations
-
-ITEMS
-selectin directory
-selectin items
-practically done
-
-EDIT
-Editin proprerties of decor and variations of tiles
-Editin proprerties of objects
-bg editor
-layer editor
-
-SHORTCUTS
-defaul bindings can be found in bindings.xlsx
-hide GUI
-game camera snap
-camera zoom
-change tab to tiles
-change tab to decor
-change tab to objects
-change mode move
-change mode paint
-change mode erasor
-change mode cog
-save level
-load level
-create new level
-focus file panel
-focus layer panel
-focus items panel
-focus edit panel
-focus place panel
-scaling items
-rotating items
-grid snap
-attaching objects to tracks and spinning arms
+EDITOR
 
 exit editor
-
-EDITOR OTHER
-menu for other editors
-options menu
-base.dat editor
-mod.dat editor
-characters.dat editor
-focus place
-focus file
-focus edit layers
-focus edit items
-focus edit tiles
-focus items
-mod loader
-dependecies save
-version system
-
-after all that you done with level editor and can continou by takin break
-character select
-character unlocks in characters.dat
 dependency stripper
 default-mod
+f1 for help
+rebind move to something else maybe
+random scale
 undo system (optional)
+
+RUNNER
+
+select bg change
+pixelate gray ground and bricks
+check dependencies level
+character select
+character unlocks in characters.dat
+character missing
+character greenbox
+touchup replay menu
+changing level groups

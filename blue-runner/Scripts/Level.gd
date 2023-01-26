@@ -24,6 +24,7 @@ func load_base():
 	level_dat = global.load_level_dat_file(level_location + level_name, true)
 	if !level_dat.has("level_base"): level_dat["level_base"] = ["base","res:/"] #typeof(level_dat) == TYPE_NIL:
 	if !level_dat.has("level_icon"): level_dat["level_icon"] = ["questionmark.png","res:/"]
+	
 	if level_dat.has("level_base"): if level_base[1]+level_base[0] != level_dat["level_base"][1]+level_dat["level_base"][0]:
 		var loadfile = File.new()
 		
@@ -36,6 +37,10 @@ func load_base():
 				base = parsedData
 			
 			loadfile.close()
+			
+			level_base[0] = level_dat["level_base"][0]
+			level_base[1] = level_dat["level_base"][1]
+		
 
 func reload():
 	load_base()
@@ -53,25 +58,26 @@ func reload():
 	$boltcollect.visible = false
 	if locked:
 		$icon.texture = load(level_dat["level_base"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][1])
-	elif global.level_completion.has(level_location + level_name): if global.level_completion[level_location + level_name][0] != null:
-		time = global.level_completion[level_location + level_name][0]
-		par = global.level_completion[level_location + level_name][1]
-		
-		var collectible_amount = 0
-		for i in range(3):
-			if global.level_completion["*collectibles"].has(level_location + level_name + "*" + String(i)):
-				collectible_amount += 1
-		
-		$boltcollect/Anim.stop()
-		if collectible_amount > 0: 
-			$boltcollect.visible = true
-			$boltcollect/boltcollect2.visible = collectible_amount > 1
-			$boltcollect/boltcollect3.visible = collectible_amount > 2
-			$boltcollect/Anim.play("Idle")
-		
-		if time < par or par == 0:
-			$icon.texture = load(level_dat["level_base"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][3])
-		else:
-			$icon.texture = load(level_dat["level_base"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][2])
+	elif global.level_completion.has(level_location + level_name):
+		if global.level_completion[level_location + level_name][0] != null:
+			time = global.level_completion[level_location + level_name][0]
+			par = global.level_completion[level_location + level_name][1]
+			
+			var collectible_amount = 0
+			for i in range(3):
+				if global.level_completion["*collectibles"].has(level_location + level_name + "*" + String(i)):
+					collectible_amount += 1
+			
+			$boltcollect/Anim.stop()
+			if collectible_amount > 0: 
+				$boltcollect.visible = true
+				$boltcollect/boltcollect2.visible = collectible_amount > 1
+				$boltcollect/boltcollect3.visible = collectible_amount > 2
+				$boltcollect/Anim.play("Idle")
+			
+			if time < par or par == 0:
+				$icon.texture = load(level_dat["level_base"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][3])
+			else:
+				$icon.texture = load(level_dat["level_base"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][2])
 	else:
 		$icon.texture = load(level_dat["level_base"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][0])
