@@ -13,7 +13,6 @@ var base_data : Dictionary
 var place_decor : Dictionary
 var place_objects : Dictionary
 var characters : Array
-var titles : Array
 
 var user_directory : String = \"user://sonicRunnerEditor\"
 
@@ -163,6 +162,8 @@ func save_game():
 	temp[\"recent\"] = recent.duplicate()
 	temp[\"settings\"] = settings.duplicate()
 	
+	check_mods()
+	
 	savefile.open(user_directory, File.WRITE)
 	savefile.store_line(to_json(temp))
 	savefile.close()
@@ -175,7 +176,7 @@ func save_game():
 	savefile.store_line(to_json(temp))
 	savefile.close()
 
-func load_game(fail = true):
+func load_game(fail = false):
 	print(\"loading game\")
 	var loadfile = File.new()
 	var temp = {}
@@ -248,10 +249,6 @@ func load_editor_vanilla():
 	
 	load_base(\"res:/\")
 	
-	# Titles
-	print(\"scanning vanilla titles\")
-	scan_single_directory(\"res:/\", \"/Visual/Title/\", titles, \".png\", \"title\")
-	
 	# Decor
 	print(\"scanning vanilla decor\")
 	scan_multi_directory(\"res:/\", \"/Visual/\", place_decor, \".png\")
@@ -290,10 +287,6 @@ func load_editor_mods():
 		load_dat_file(\"Mods/\" + mod_name, \"/Visual/Level/\", level_base, \"base\")
 		
 		load_base(\"res:/\")
-		
-		# Titles
-		print(\"scanning for titles\")
-		scan_single_directory(\"Mods/\" + mod_name, \"/Visual/Title/\", titles, \".png\", \"title\")
 		
 		# Visuals
 		print(\"scanning for decor\")
@@ -382,6 +375,8 @@ func check_mods():
 	var current_file : String
 	print(\"scanning mods\")
 	var check_exist = directory.open(\"res://Mods\")
+	
+	mods_installed = []
 	
 	if check_exist == OK:
 		print(\"user has mods installed\")

@@ -14,57 +14,135 @@ var selected : bool = false
 var selected_level_name : String
 var selected_level_location : String
 
+var group_shift : int = 0
+var selected_group : int = 0
+var group_select : bool = false
+
+var loaded_level_groups : Array
+
+var user_levels : Array
+var user_levels_page : int = 0
+var user_pages : int = 0
+
 func _ready():
+	loaded_level_groups = Global.loaded_level_groups.duplicate()
+	loaded_level_groups.append(["SRLevels","user://"])
 	camera.bg = $BG_0
 	$BG_0.camera = camera
-	reload_all_levels()
+	$back.text = global.key_names(7) + " - GO BACK\n"
+	$back.text += global.key_names(6) + " - CHANGE ZONE"
+	
+	for i in range(12):
+		var new_sprite : Sprite = Sprite.new()
+		$group_select.add_child(new_sprite)
+		new_sprite.texture = load("res://Visual/Editor/editor_empty.png")
+		new_sprite.scale = Vector2(2, 2)
+		new_sprite.position = Vector2((i + 1) * 160 - 40, 64 + 8)
+		new_sprite.name = String(i)
 
 func menu_update():
+	var update_level_text = false
+	var update_group_text = false
+	var user_group = loaded_level_groups[selected_group + group_shift][1] == "user://"
+	
+	if Input.is_action_just_pressed("reset"):
+		group_select = !group_select
+		$group_select.visible = group_select
+		update_group_text = true
+		group_visuals()
 	# - - - LEVEL SELECT - - -
-	if Input.is_action_just_pressed("jump"):
-		if !get_node("L/Level_" + String(selected_level)).locked:
-			selected = true
-			$Cursor/AnimationPlayer.play("Go_In")
-			get_node("L/Level_" + String(selected_level)).get_node("Anim").play("Bump")
-		else:
-			$Cursor/AnimationPlayer.play("Refuse")
-	
-	if Input.is_action_just_pressed("special"):
-		if global.load_replay(selected_level_location + selected_level_name + "_Best", true):
-			global.current_recording = global.load_replay(selected_level_location + selected_level_name + "_Best")
-			global.replay = true
-			selected = true
-			$Cursor/AnimationPlayer.play("Go_In")
-			get_node("L/Level_" + String(selected_level)).get_node("Anim").play("Bump")
-		else:
-			global.replay = false
-			selected = false
-			$Cursor/AnimationPlayer.play("Refuse")
-	
-	if selected: parent.move = false
-	
-	if Input.is_action_pressed("left") and parent.move and selected_level > 0:
-		selected_level -= 1
-		$Cursor/AnimationPlayer.stop()
-		$Cursor/AnimationPlayer.play("Spin")
-	if Input.is_action_pressed("right") and parent.move and selected_level < 19:
-		selected_level += 1
-		$Cursor/AnimationPlayer.stop()
-		$Cursor/AnimationPlayer.play("Spin")
-	if Input.is_action_pressed("up") and parent.move and selected_level - 4 > 0:
-		selected_level -= 5
-		$Cursor/AnimationPlayer.stop()
-		$Cursor/AnimationPlayer.play("Spin")
-	if Input.is_action_pressed("down") and parent.move and selected_level + 4 < 19:
-		selected_level += 5
-		$Cursor/AnimationPlayer.stop()
-		$Cursor/AnimationPlayer.play("Spin")
+	if !group_select:
+		if Input.is_action_just_pressed("jump"):
+			if !get_node("L/Level_" + String(selected_level)).locked:
+				selected = true
+				$Cursor/AnimationPlayer.play("Go_In")
+				get_node("L/Level_" + String(selected_level)).get_node("Anim").play("Bump")
+			else:
+				$Cursor/AnimationPlayer.play("Refuse")
+		
+		if Input.is_action_just_pressed("special"):
+			if global.load_replay(selected_level_location + selected_level_name + "_Best", true):
+				global.current_recording = global.load_replay(selected_level_location + selected_level_name + "_Best")
+				global.replay = true
+				selected = true
+				$Cursor/AnimationPlayer.play("Go_In")
+				get_node("L/Level_" + String(selected_level)).get_node("Anim").play("Bump")
+			else:
+				global.replay = false
+				selected = false
+				$Cursor/AnimationPlayer.play("Refuse")
+		
+		if selected: parent.move = false
+		
+		if Input.is_action_pressed("left") and parent.move and (selected_level > 0 or user_group):
+			selected_level -= 1
+			if user_group and selected_level - user_levels_page * 20 < 0:
+				user_levels_page -= 1
+				if user_levels_page == -1:
+					user_levels_page += 1
+					selected_level += 1
+				else:
+					reload_all_levels()
+			$Cursor/AnimationPlayer.stop()
+			$Cursor/AnimationPlayer.play("Spin")
+		if Input.is_action_pressed("right") and parent.move and (selected_level < 19 or user_group):
+			selected_level += 1
+			if user_group and selected_level - user_levels_page * 20 > 19:
+				user_levels_page += 1
+				if user_levels_page == user_pages:
+					user_levels_page -= 1
+					selected_level -= 1
+				else:
+					reload_all_levels()
+			$Cursor/AnimationPlayer.stop()
+			$Cursor/AnimationPlayer.play("Spin")
+		if Input.is_action_pressed("up") and parent.move and (selected_level - 4 > 0 or user_group):
+			selected_level -= 5
+			if user_group and selected_level - user_levels_page * 20 < 0:
+				user_levels_page -= 1
+				if user_levels_page == -1:
+					user_levels_page += 1
+					selected_level += 5
+				else:
+					reload_all_levels()
+			$Cursor/AnimationPlayer.stop()
+			$Cursor/AnimationPlayer.play("Spin")
+		if Input.is_action_pressed("down") and parent.move and (selected_level + 4 < 19 or user_group):
+			selected_level += 5
+			if user_group and selected_level - user_levels_page * 20 > 19:
+				user_levels_page += 1
+				if user_levels_page == user_pages:
+					user_levels_page -= 1
+					selected_level -= 5
+				else:
+					reload_all_levels()
+			$Cursor/AnimationPlayer.stop()
+			$Cursor/AnimationPlayer.play("Spin")
+	elif group_select:
+		if Input.is_action_pressed("left") and parent.move and selected_group > 0:
+			selected_group -= 1
+			if selected_group - group_shift < 0:
+				group_shift -= 1
+				group_visuals()
+		if Input.is_action_pressed("right") and parent.move and selected_group < loaded_level_groups.size() - 1:
+			selected_group += 1
+			if selected_group - group_shift > 11:
+				group_shift += 1
+				group_visuals()
+		if Input.is_action_just_pressed("jump"):
+			global.current_level_location = loaded_level_groups[selected_group][1] + loaded_level_groups[selected_group][0] + "/"
+			group_select = false
+			$group_select.visible = group_select
+			reload_all_levels()
+			update_level_text = true
 	
 	selected_level_name = get_node("L/Level_" + String(selected_level)).level_name
 	selected_level_location = get_node("L/Level_" + String(selected_level)).level_location
 	
-	if parent.move:
+	if (parent.move and !group_select) or update_level_text:
+		#print(selected_level_location + selected_level_name)
 		var level_dat = global.load_level_dat_file(selected_level_location + selected_level_name)
+		#print(level_dat)
 		$Level_Descriptor/level_name.text = selected_level_name
 		$Level_Descriptor/creator.text = ""
 		if get_node("L/Level_" + String(selected_level)).locked == true:
@@ -107,40 +185,87 @@ func menu_update():
 				$Level_Descriptor/deaths.text = "Deaths: " + String(global.level_completion[selected_level_location + selected_level_name][2])
 		if global.load_replay(selected_level_location + selected_level_name + "_Best", true):
 			$Level_Descriptor/replay.text = global.key_names(5) + " - Best Replay"
+	elif (parent.move and group_select) or update_group_text:
+		$group_select/name.bbcode_text = "[center]" + loaded_level_groups[selected_group][0] + "[/center]"
 	
-	$Cursor.position = cursor_positions[selected_level]
-	$back.text = global.key_names(7) + " - Go Back"
+	if !group_select:
+		$Cursor.position = cursor_positions[selected_level]
+	else:
+		$group_select/cursor.position = Vector2((selected_group - group_shift + 1) * 160 - 40, 192)
+
+func group_visuals():
+	var repetitions = loaded_level_groups.size()
+	if repetitions > 12:
+		repetitions = 12
+	for i in range(repetitions):
+		if loaded_level_groups[i + group_shift][1] == "user://":
+			get_node("group_select/" + String(i)).texture = load("res://Visual/Title/logo_user.png")
+			return
+		var f : File = File.new()
+		var file : String = loaded_level_groups[i + group_shift][1] + loaded_level_groups[i + group_shift][0] + "/logo.png"
+		if f.file_exists(file):
+			get_node("group_select/" + String(i)).texture = load(file)
+		else:
+			get_node("group_select/" + String(i)).texture = load("res://Visual/Title/logo_custom.png")
+	
 
 func reload_all_levels():
-	if !global.load_level_group():
+	var user_group = global.current_level_location == "user://SRLevels/"
+	
+	if !global.load_level_group() and !user_group:
 		return
-	if !global.unlocked.has(global.current_level_location):
+	if !global.unlocked.has(global.current_level_location) and !user_group:
 		global.unlocked[global.current_level_location] = {}
 		for i in range(20):
 			if (global.level_group["levels"][i][1] or global.level_group["levels"][i][2] != 0) and !global.level_group["levels"][i][0] == "*Level_Missing":
 				global.unlocked[global.current_level_location][global.level_group["levels"][i][0]] = false
-	#global.unlock_check()
+	var file : File = File.new()
+	
+	if user_group:
+		$title.texture = load("res://Visual/Title/title_user.png")
+	elif file.file_exists(global.current_level_location + "/title.png"):
+		$title.texture = load(global.current_level_location + "/title.png")
+	else:
+		$title.texture = load("res://Visual/Title/title_custom.png")
+	
 	var comp_list : Array = []
 	for i in range(20):
 		var level = get_node("L/Level_" + String(i))
-		level.level_name = global.level_group["levels"][i][0]
+		if user_group:
+			if i + user_levels_page * 20 >= user_levels.size():
+				level.level_name = "*Level_Missing"
+			else:
+				level.level_name = user_levels[i + user_levels_page * 20]
+		else:
+			level.level_name = global.level_group["levels"][i][0]
+		
 		if level.level_name != "*Level_Missing":
 			level.level_location = Global.current_level_location
-			if global.level_group["levels"][i][2] != 0:
+			if user_group:
+				level.locked = false
+			elif global.level_group["levels"][i][2] != 0:
 				comp_list.append(i)
 			elif global.unlocked[global.current_level_location].has(level.level_name):
 				level.locked = !global.unlocked[global.current_level_location][level.level_name]
+			else:
+				level.locked = false
 		else:
 			level.level_location = "res://Scenes/"
 			level.level_name = "Level_Missing"
 			level.locked = true
-		level.reload()
-	var comp_number : float = completion_percentage()
-	for i in comp_list:
-		get_node("L/Level_" + String(i)).locked = !comp_number > global.level_group["levels"][i][2]
 	
-	$completion_filling/text.text = String(stepify(comp_number, 1)) + "%"
-	$completion_filling/bar.scale.x = comp_number / 100
+	if !user_group: 
+		var comp_number : float = completion_percentage()
+		for i in comp_list:
+			get_node("L/Level_" + String(i)).locked = !comp_number > float(global.level_group["levels"][i][2])
+		$completion_filling/text.text = String(stepify(comp_number, 1)) + "%"
+		$completion_filling/bar.scale.x = comp_number / 100
+		$completion_filling.visible = true
+	else:
+		$completion_filling.visible = false
+	
+	for i in range(20):
+		get_node("L/Level_" + String(i)).reload()
 
 func character_select():
 	global.current_level = selected_level_name
@@ -153,8 +278,10 @@ func character_select():
 		#parent.get_node("CHARACTER").selected_level = selected_level_name
 		#parent.get_node("CHARACTER").selected_location = selected_level_location
 	else:
-		# warning-ignore:return_value_discarded
-		get_tree().change_scene(selected_level_location + selected_level_name + ".tscn")
+		var error = get_tree().change_scene(selected_level_location + selected_level_name + ".tscn")
+		if error != OK:
+			$Cursor/AnimationPlayer.play("Refuse")
+			selected = false
 
 func completion_percentage():
 	var full : float = 0
@@ -180,5 +307,8 @@ func completion_percentage():
 		#if global.level_completion.has(String((current_world-1)*20 + i)):
 			#completion += 1
 			#print("bonus " + String(i))
-	print(String(completion) + " / " + String(full))
-	return (completion / full) * 100
+	#print(String(completion) + " / " + String(full))
+	if full > 0:
+		return (completion / full) * 100
+	else:
+		return 0

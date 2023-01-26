@@ -30,12 +30,13 @@ func _ready():
 	if get_parent().has_node("BG"):
 		bg = get_parent().get_node("BG")
 	
-	if get_parent().find_node("Player") == null:
-		cam_target = get_parent().get_node("CamTarget")
+	cam_target = get_parent().find_node("Player")
+	if cam_target == null:
+		cam_target = get_parent().find_node("CamTarget")
 		speedometer_active = false
 		visible_timer = false
-	else:
-		cam_target = get_parent().get_node("Player")
+	if cam_target == null:
+		cam_target = self
 	
 	if speedometer_active: visible_timer = false
 	$info.visible = speedometer_active or visible_timer

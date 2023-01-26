@@ -10,10 +10,6 @@ var level_completion = {
 }
 var unlocked = {
 	"*char_select_active" : false,
-	"Level_1-A" : false,
-	"Level_1-B" : false,
-	"Level_1-C" : false,
-	"Level_1--1" : false,
 }
 var options = {
 	"*version" : 1,
@@ -60,6 +56,7 @@ var current_page : int = 0
 var current_level : String = ""
 var current_level_location : String = "res://Scenes/waterway/"
 
+var loaded_level_groups = []
 var level_group = {}
 
 var last_input_events : Array = range(8)
@@ -81,8 +78,8 @@ func _ready():
 		dir.make_dir("SRReplays")
 	if !dir.dir_exists("SRReplays/res"):
 		dir.make_dir("SRReplays/res")
-	if !dir.dir_exists("SRReplays/Mods"):
-		dir.make_dir("SRReplays/Mods")
+	if !dir.dir_exists("SRReplays/mods"):
+		dir.make_dir("SRReplays/mods")
 	if !dir.dir_exists("SRReplays/user"):
 		dir.make_dir("SRReplays/user")
 	
@@ -503,9 +500,9 @@ func delete_replay(new_name, level : bool = true):
 func replay_filename(new_name : String, create_dir : bool):
 	var replay_name
 	replay_name = new_name.substr(new_name.find_last("/") + 1, new_name.length())
-	var folder_name : String = new_name.substr(0, new_name.find_last("/"))
+	var folder_path : String = new_name.substr(0, new_name.find_last("/"))
 	
-	folder_name = folder_name.substr(folder_name.find_last("/") + 1, folder_name.length())
+	var folder_name = folder_path.substr(folder_path.find_last("/") + 1, folder_path.length())
 	
 	var directory : Directory = Directory.new()
 	match(new_name.substr(0, new_name.find("/"))):
@@ -513,6 +510,16 @@ func replay_filename(new_name : String, create_dir : bool):
 			replay_name = "res/" + folder_name + "/" + replay_name
 			# warning-ignore:return_value_discarded
 			if create_dir: directory.make_dir_recursive("user://SRReplays/res/" + folder_name)
+		"user:":
+			replay_name = "user/" + folder_name + "/" + replay_name
+			# warning-ignore:return_value_discarded
+			if create_dir: directory.make_dir_recursive("user://SRReplays/user/" + folder_name)
+		"Mods":
+			folder_path = folder_path.replace("/Scenes/", "/")
+			folder_path = folder_path.substr(folder_path.find("/") + 1, folder_path.length() - folder_path.find("/")) + "/"
+			replay_name = "mods/" + folder_path + replay_name
+			# warning-ignore:return_value_discarded
+			if create_dir: directory.make_dir_recursive("user://SRReplays/mods/" + folder_path)
 	
 	return replay_name
 
@@ -534,9 +541,9 @@ func save_level_dat_file(data : Dictionary, filename_ : String, official : bool 
 	savefile.store_line(to_json(temp))
 	savefile.close()
 
-func load_level_dat_file(filename_ : String, official : bool = true):
+func load_level_dat_file(filename_ : String, _official : bool = true):
 	#var file_prefix : String
-	#if official:
+	#if _official:
 	#	file_prefix = "Scenes/"
 	#else:
 	#	file_prefix = "Mods/Scenes/"
@@ -585,4 +592,40 @@ func load_level_group():
 func load_data():
 	# FIND EVERY LEVEL AND LEVEL GROUP
 	# CHARACTERS.DAT
+	scan_for_directories("res://Scenes/", loaded_level_groups, "group")
+	for mod_name in mods_installed:
+		scan_for_directories("Mods/" + mod_name + "/Scenes/", loaded_level_groups, "group")
+	scan_for_directories("user://SRLevels/", loaded_level_groups, "group")
 	pass
+
+func scan_single_directory(main_directory : String, sub_directory : String, storage : Array, file_type : String, _file_descriptor : String):
+	var directory : Directory = Directory.new()
+	var check_exist = directory.open(main_directory + sub_directory)
+	var current_file
+	
+	if check_exist == OK:
+		# warning-ignore:return_value_discarded
+		directory.list_dir_begin(true)
+		
+		current_file = directory.get_next()
+		while current_file != "":
+			if current_file.ends_with(file_type):
+				#print("found " + _file_descriptor + ": " + current_file)
+				storage.append([current_file, main_directory])
+			current_file = directory.get_next()
+
+func scan_for_directories(main_directory : String, storage : Array, _file_descriptor : String):
+	var directory : Directory = Directory.new()
+	var check_exist = directory.open(main_directory)# + sub_directory)
+	var current_file
+	
+	if check_exist == OK:
+		# warning-ignore:return_value_discarded
+		directory.list_dir_begin(true)
+		
+		current_file = directory.get_next()
+		while current_file != "":
+			if directory.current_is_dir():
+				#print("found " + _file_descriptor + ": " + current_file)
+				storage.append([current_file, main_directory])
+			current_file = directory.get_next()
