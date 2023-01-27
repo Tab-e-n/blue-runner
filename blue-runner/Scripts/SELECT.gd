@@ -204,11 +204,9 @@ func group_visuals():
 		if loaded_level_groups[i + group_shift][1] == "user://":
 			get_node("group_select/" + String(i)).texture = load("res://Visual/Title/logo_user.png")
 			return
-		var f : File = File.new()
 		var file : String = loaded_level_groups[i + group_shift][1] + loaded_level_groups[i + group_shift][0] + "/logo.png"
-		if f.file_exists(file):
-			get_node("group_select/" + String(i)).texture = load(file)
-		else:
+		get_node("group_select/" + String(i)).texture = load(file)
+		if get_node("group_select/" + String(i)).texture == null:
 			get_node("group_select/" + String(i)).texture = load("res://Visual/Title/logo_custom.png")
 	
 
@@ -222,14 +220,13 @@ func reload_all_levels():
 		for i in range(20):
 			if (global.level_group["levels"][i][1] or global.level_group["levels"][i][2] != 0) and !global.level_group["levels"][i][0] == "*Level_Missing":
 				global.unlocked[global.current_level_location][global.level_group["levels"][i][0]] = false
-	var file : File = File.new()
 	
 	if user_group:
 		$title.texture = load("res://Visual/Title/title_user.png")
-	elif file.file_exists(global.current_level_location + "/title.png"):
-		$title.texture = load(global.current_level_location + "/title.png")
 	else:
-		$title.texture = load("res://Visual/Title/title_custom.png")
+		$title.texture = load(global.current_level_location + "title.png")
+		if $title.texture == null:
+			$title.texture = load("res://Visual/Title/title_custom.png")
 	
 	var comp_list : Array = []
 	for i in range(20):

@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Scripts/Portal.gd" type="Script" id=1]
 [ext_resource path="res://Visual/portal.png" type="Texture" id=2]
@@ -32,9 +32,13 @@ tracks/1/keys = {
 "values": [ 0, 1, 2, 0, 1, 2 ]
 }
 
-[node name="Portal" type="Node2D"]
+[sub_resource type="CircleShape2D" id=2]
+radius = 40.0
+
+[node name="Portal" type="StaticBody2D"]
 script = ExtResource( 1 )
 editor_properties = {
+"attachable": false,
 "editable_properties": {
 "par": [ 3, 0, 0, 0 ],
 "tele_destination": [ 4, 0, 0, 0 ],
@@ -61,3 +65,8 @@ anims/Speen = SubResource( 1 )
 scale = Vector2( 3, 3 )
 texture = ExtResource( 2 )
 hframes = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource( 2 )
+disabled = true

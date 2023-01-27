@@ -1,4 +1,4 @@
-extends Node2D
+extends StaticBody2D
 
 export var editor_properties : Dictionary = {
 	"object_path" : "res://Objects/Finish.tscn",

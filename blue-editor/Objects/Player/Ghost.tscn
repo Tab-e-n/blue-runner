@@ -4,6 +4,7 @@
 [ext_resource path="res://Visual/Objects/Ghost.tscn.png" type="Texture" id=2]
 
 [node name="Ghost" instance=ExtResource( 1 )]
+z_index = -1
 editor_properties = {
 "attachable": false,
 "editable_properties": {
@@ -14,11 +15,11 @@ editor_properties = {
 "object_type": "ghost",
 "rect": Rect2( 0, -32, 64, 64 ),
 "unchangeable_properties": {
-"color": false,
+"color": true,
 "order": true,
 "rotation": true,
 "scale": true,
-"z_index": false
+"z_index": true
 }
 }
 ghost = true

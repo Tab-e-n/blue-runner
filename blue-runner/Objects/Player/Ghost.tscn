@@ -4,4 +4,5 @@
 
 [node name="Ghost" instance=ExtResource( 1 )]
 visible = false
+z_index = -1
 ghost = true

@@ -13,7 +13,7 @@ export var editor_properties : Dictionary = {
 	"unchangeable_properties" : {
 		"scale" : true,
 		"rotation" : true,
-		"z_index" : false,
+		"z_index" : true,
 		"color" : false,
 		"order" : true,
 	},

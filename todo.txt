@@ -4,20 +4,23 @@ manual
 
 EDITOR
 
-exit editor shortcut
 dependency stripper
 default-mod
 f1 for help
 random scale
+layer switching
+prevent shortcuts from working when focused on a line edit
+z_index has some buggy behavior
+exit editor shortcut
 
 rebind move to something else maybe
 undo system (i dont really wanna)
 
 RUNNER
 
-check dependencies level
+User being a big dumbass when binding keys fix
 select bg change
-pixelate gray ground and bricks
+pixelate bricks
 character select
 character unlocks in characters.dat
 character missing

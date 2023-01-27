@@ -717,10 +717,7 @@ func create_new_level(remove_old : bool = true):
 			new_tilemap.scale = level_layer_data[level_layers[layer]][1]
 			new_tilemap.z_index = current_z + 10
 			new_tilemap.tile_set = tileset
-			if layer == LAYER_CENTER:
-				new_tilemap.collision_layer = 1
-				new_tilemap.collision_mask = 1
-			else:
+			if layer != LAYER_CENTER:
 				new_tilemap.collision_layer = 0
 				new_tilemap.collision_mask = 0
 			new_tilemap.set_owner(level)
@@ -1137,7 +1134,7 @@ func level_add_decor():
 func level_add_objects():
 	var object = PackedScene.new()
 	object = load(place_selected_object.editor_properties[\"object_path\"])
-	var new_object = object.instance()
+	var new_object : Node = object.instance()
 	var object_type : String = new_object.editor_properties[\"object_type\"]
 	
 	var attachable
@@ -1179,6 +1176,14 @@ func level_add_objects():
 	new_object.modulate = place_selected_object.modulate
 	if object_type != \"camera\": new_object.use_parent_material = true
 	new_object.z_index += z_add
+	if place_current_layer != LAYER_CENTER and new_object.editor_properties[\"layer\"] != \"special\":
+		for i in new_object.get_property_list():
+			if i[\"name\"] == \"collision_layer\":
+				print(i[\"name\"])
+				new_object.collision_layer = 0
+			if i[\"name\"] == \"collision_mask\":
+				print(i[\"name\"])
+				new_object.collision_mask = 0
 	new_object.set_owner(level)
 	for i in place_selected_object.editor_properties[\"editable_properties\"].keys():
 		new_object.set(i, place_selected_object.get(i))
@@ -3695,11 +3700,11 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
