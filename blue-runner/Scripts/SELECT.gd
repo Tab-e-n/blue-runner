@@ -43,7 +43,7 @@ func _ready():
 func menu_update():
 	var update_level_text = false
 	var update_group_text = false
-	var user_group = loaded_level_groups[selected_group + group_shift][1] == "user://"
+	var user_group = loaded_level_groups[selected_group][1] == "user://"
 	
 	if Input.is_action_just_pressed("reset"):
 		group_select = !group_select
@@ -78,7 +78,7 @@ func menu_update():
 			selected_level -= 1
 			if user_group and selected_level - user_levels_page * 20 < 0:
 				user_levels_page -= 1
-				if user_levels_page == -1:
+				if user_levels_page <= -1:
 					user_levels_page += 1
 					selected_level += 1
 				else:
@@ -89,7 +89,7 @@ func menu_update():
 			selected_level += 1
 			if user_group and selected_level - user_levels_page * 20 > 19:
 				user_levels_page += 1
-				if user_levels_page == user_pages:
+				if user_levels_page >= user_pages:
 					user_levels_page -= 1
 					selected_level -= 1
 				else:
@@ -100,7 +100,7 @@ func menu_update():
 			selected_level -= 5
 			if user_group and selected_level - user_levels_page * 20 < 0:
 				user_levels_page -= 1
-				if user_levels_page == -1:
+				if user_levels_page <= -1:
 					user_levels_page += 1
 					selected_level += 5
 				else:
@@ -111,7 +111,7 @@ func menu_update():
 			selected_level += 5
 			if user_group and selected_level - user_levels_page * 20 > 19:
 				user_levels_page += 1
-				if user_levels_page == user_pages:
+				if user_levels_page >= user_pages:
 					user_levels_page -= 1
 					selected_level -= 5
 				else:
@@ -138,6 +138,9 @@ func menu_update():
 	
 	selected_level_name = get_node("L/Level_" + String(selected_level)).level_name
 	selected_level_location = get_node("L/Level_" + String(selected_level)).level_location
+	
+	if parent.move:
+		$dependencies.visible = false
 	
 	if (parent.move and !group_select) or update_level_text:
 		#print(selected_level_location + selected_level_name)
@@ -270,7 +273,24 @@ func reload_all_levels():
 func character_select():
 	global.current_level = selected_level_name
 	global.current_level_location = selected_level_location
-	if global.unlocked["*char_select_active"]:
+	
+	var level_dat =  get_node("L/Level_" + String(selected_level)).level_dat.duplicate()
+	var error : int = false
+	if !level_dat.has("dependencies"):
+		error = true
+	else:
+		for i in level_dat["dependencies"]:
+			if !Global.mods_installed.has(i):
+				error = true
+				$dependencies.visible = true
+	var file : File = File.new()
+	if !file.file_exists(global.current_level_location + global.current_level + ".tscn"):
+		error = true
+	
+	if error:
+		$Cursor/AnimationPlayer.play("Refuse")
+		selected = false
+	elif global.unlocked["*char_select_active"]:
 		parent.get_node("AnimationPlayer").play("SELECT-CHARACTER")
 		parent.menu = "CHARACTER"
 		$Cursor/AnimationPlayer.play("Reset")
@@ -278,8 +298,7 @@ func character_select():
 		#parent.get_node("CHARACTER").selected_level = selected_level_name
 		#parent.get_node("CHARACTER").selected_location = selected_level_location
 	else:
-		var error = get_tree().change_scene(selected_level_location + selected_level_name + ".tscn")
-		if error != OK:
+		if get_tree().change_scene(global.current_level_location + global.current_level + ".tscn") != OK:
 			$Cursor/AnimationPlayer.play("Refuse")
 			selected = false
 

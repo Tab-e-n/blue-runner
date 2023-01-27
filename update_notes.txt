@@ -1,8 +1,15 @@
-1.1
+1.0 THE MAKEOVER UPDATE
+NOTES
+ - It is recommended that you backup your save fodler,
+   nothing should happen to it, but you never know.
+	(Users\[username]\AppData\Roaming\HowDoesOneName on windows,
+	Home\[username]\.local\HowDoesOneName i think on linux)
+
 NEW ADDITIONS
  - Sound
  - "Added" character XT9
  - "Added" character missing
+ - (You can only play as them through special means for now)
  - Added portals that unlock new levels
  - Added a option to turn on a onscreen timer while gaming
  - Added more hints about what to press
@@ -24,6 +31,12 @@ LEVELS
  - Levels now have actual names
  - Also minor thing, but a level editor now exists
 
+LEVEL EDITOR
+ - You are now able to make levels
+ - You can also make mods it can load them
+   (guide on how to do this comming sonn)
+ - you know very minor things
+
 VISUAL
  - Sprites are no longer blurry when viewed up-close
  - A sizeable amount of sprites were recolored to be more consistent
@@ -35,3 +48,6 @@ FIXES
  - Fixed game not being on github
  - Improved Performance (It ran well on everything i knew of
    exept my old laptop, for most this was a non issue)
+
+0.X
+???
