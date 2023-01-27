@@ -1,21 +1,26 @@
+GENERAL
+
+manual
+
 EDITOR
 
-exit editor
+exit editor shortcut
 dependency stripper
 default-mod
 f1 for help
-rebind move to something else maybe
 random scale
-undo system (optional)
+
+rebind move to something else maybe
+undo system (i dont really wanna)
 
 RUNNER
 
+check dependencies level
 select bg change
 pixelate gray ground and bricks
-check dependencies level
 character select
 character unlocks in characters.dat
 character missing
 character greenbox
 touchup replay menu
-changing level groups
+changing prebuilt level groups

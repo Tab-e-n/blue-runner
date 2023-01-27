@@ -3336,6 +3336,17 @@ visible = false
 color = Color( 0.0156863, 0.0235294, 0.133333, 0 )
 polygon = PoolVector2Array( -1024, 768, 1024, 768, 1024, -768, -1024, -768 )
 
+[node name="dependencies" type="Label" parent="SELECT"]
+visible = false
+margin_left = -32.0
+margin_top = -168.0
+margin_right = 322.0
+margin_bottom = -100.0
+rect_scale = Vector2( 2, 2 )
+theme = ExtResource( 56 )
+text = "This level requires mods
+you don't have installed"
+
 [node name="CHARACTER" type="Node2D" parent="."]
 visible = false
 position = Vector2( 2264, 1320 )
@@ -3988,14 +3999,15 @@ anims/Down = SubResource( 27 )
 anims/StandBy = SubResource( 28 )
 anims/Up = SubResource( 29 )
 
-[node name="NewVersionPopup" type="AcceptDialog" parent="."]
-margin_left = -488.0
-margin_top = -192.0
+[node name="NewVersionPopup" type="Label" parent="."]
+visible = false
+margin_left = 56.0
+margin_top = -136.0
+margin_right = 512.0
 margin_bottom = 1.0
 rect_scale = Vector2( 2, 2 )
 theme = ExtResource( 56 )
-window_title = "Version Alert"
-dialog_text = "You have some files from an
-older version of SR. They might
+text = "You are loading into a new
+version of SR. Some files might
 not open correctly, if they
 open at all."

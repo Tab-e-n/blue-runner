@@ -1,26 +1,37 @@
 # Sonic Runner
-Sonic Runner je open source hra ve stylu hry super meat boy. Tento repozitar je urceny pro tuto hru samotnou a jeji level editor (WIP).
-Hra je vytvorena v open source game engine zvane godot, abyste ji mohli editovat nebo vyexportovat potrebujete si tento game engine stahnout.
-(vice detailu muzete najit v sekci "Jak muzu modifikovat / hrat tuto hru z tohoto repozitare?")
+Sonic Runner (SR) je open source hra na stylu her jako např. Super Meat Boy. V tomto repozitáři můžete najít tuto hru a její level editor.
+Hra je vytvořena v open source game engine zvané Godot, abyste ji mohli modifikovat nebo vyexportovat potřebujete si tento game engine stáhnout.
 
-### Napady
+## Jak si můžu stáhnout SR?
 
-V sekci "Issues" samozrejme muzete reportovat buggy, ale taky delat feature request, a mozna, pokud se mi vase napady budou libit,
-tak je i pridam do hry. Tohle pravidlo take plati podku neco sami vytvorite a chteli byste, abych to dal do hry.
+Hra se dá stáhnout na stránce [Itch.io](https://howdoesonename.itch.io/sonic-runner) nebo tady na githubu pod kolonkou releases.
 
-V sekci "Projects" mam take TODO listinu kde je vyzobrazeno, na cem prave pracuji.
+Pokud ale chcete hrát developmentskou verzi, musíte si nejdříve stáhnout zdrojový kód. Pak si stáhněte [Godot 3.2.3](https://downloads.tuxfamily.org/godotengine/3.2.3/),
+což je verze Godotu na které hra běží. Až otevřete Godot, musíte nejdříve importovat tento projekt. Zmáčkněte čudlík "Import", a pak do kolonky "project path" zadejte místo, kde se nachazí soubor "project.godot".
+Poté, co vyberete umíštění "project.godot", můžete dát "import & edit", což otevře vam otevře nové okno s projektem. Projekt pak zapnete kliknutim na cudlik play v pravem hornim rohu nebo stisknutim F5.
+Hra a jeji Level Editor mají oba vlastní "project.godot", takže tohle musíte udělat na dvakrát.
 
-### Jak muzu modifikovat / hrat tuto hru z tohoto repozitare?
+## Jak můžu modifikovat SR?
 
-(Tato sekce bude v budoucnu nahrazena videem)
-Abyste mohli modifikovat / hrat tento projekt, nejdrive si musite stahnout game engine na kterym tento projekt jede, coz je Godot,
-specificky verzi [Godot 3.2.3](https://downloads.tuxfamily.org/godotengine/3.2.3/) protoze jinak to nemusi jet spravne.
+Abyste mohli modifikovat tento projekt, nejdříve si musíte stáhnout projekt stejnou cestou, jako je popsaná v předchozí sekci.
 
-V godote pak musite zmacknout cudlik "Import". Pak do kolonky "project path" musite zadat misto, kde se nachazi soubor "project.godot".
-Level editor a hra maji oba vlastni "project.godot", protoze nejsou jeden projekt ale dva rozdilne projekty. Pote, co vyberete umisteni "project.godot",
-muzete dat "import & edit".
+V budoucnu planuji udělat manuál, ve kterém bude popsáno, jak udělat módy pro SR, ale ten zatím neexistuje.
 
-Pokud jste udelali vse spravne, meli by jste byt v editoru s otevrenym projektem. Projekt pak zapnete kliknutim na cudlik play v pravem hornim rohu nebo stisknutim F5.
+## Otázky, co můžete mýt
 
-Hru si muzete take stahnout na strance [Itch.io](https://howdoesonename.itch.io/sonic-runner), bude to s mene bugama, ale nebudete tam myt nektere veci co jsou zde.
-Level editor si zatim nikde jinde nemuzete stahnout.
+### Kam mám reportovat buggy, když nějaké najdu?
+
+Buggy můžete reportovat v sekci "Issues".
+
+### Kam mám psát své návrhy pro SR?
+
+Své návrhy na různé věci, co byste chtěli abych přidal, můžete také psát v sekci "Issues", a možná, pokud se mi vaše nápady budou líbit,
+tak je i přidám do hry. Tohle pravidlo také platí pokud něco sami vytvoříte a chtěli by jste, abych to přidal do hry.
+
+Prosím vás ale, abyste nepsali nic, co už mám naplánované udělat. 
+V sekci "Projects" nebo ve souboru todo.txt mužete najít, co plánuji a na čem právě pracuji, takže se na to podívejte před tím,
+než udeláte feature request.
+
+### Můžu se připojit k vývoji SR?
+
+Prozatím pracuji sám. Pomoci mi můžete jen maximálně způsobem, který jsem popsal v minulé otázce.

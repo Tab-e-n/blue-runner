@@ -272,15 +272,8 @@ func key_names(key : int):
 		KEY_UNKNOWN: return "???"
 	return "WHAT IS THIS?"
 
-func unlock_check():
+func change_level():
 	return
-	var test : int = 0
-	if !unlocked["res://Scenes/Level_1--1"]:
-		test = 0
-		for i in range(15):
-			if level_completion.has("res://Scenes/Level_1-" + String(i)): if level_completion["res://Scenes/Level_1-" + String(i)][0] != null:
-				test+=1
-		if test>=15: unlocked["res://Scenes/Level_1--1"] = true
 
 func save_game(timer : float = 0, par : float = 0, collectible : String = "", level = null, recording : Dictionary = {}):
 	var savefile = File.new()
@@ -590,13 +583,23 @@ func load_level_group():
 	return true
 
 func load_data():
-	# FIND EVERY LEVEL AND LEVEL GROUP
+	# FIND EVERY LEVEL GROUP
 	# CHARACTERS.DAT
 	scan_for_directories("res://Scenes/", loaded_level_groups, "group")
 	for mod_name in mods_installed:
 		scan_for_directories("Mods/" + mod_name + "/Scenes/", loaded_level_groups, "group")
 	scan_for_directories("user://SRLevels/", loaded_level_groups, "group")
-	pass
+	
+	var temp_level_groups = loaded_level_groups.duplicate()
+	for group in range(loaded_level_groups.size()):
+		var level_dat = load_level_dat_file(loaded_level_groups[group][1] + loaded_level_groups[group][0] + "/level_group")
+		for i in level_dat["dependencies"]:
+			if !Global.mods_installed.has(i):
+				temp_level_groups.remove(group)
+	loaded_level_groups = temp_level_groups.duplicate()
+	
+	
+	loaded_level_groups.append(["SRLevels","user://"])
 
 func scan_single_directory(main_directory : String, sub_directory : String, storage : Array, file_type : String, _file_descriptor : String):
 	var directory : Directory = Directory.new()

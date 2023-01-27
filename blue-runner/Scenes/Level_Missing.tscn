@@ -72,9 +72,9 @@ texture = ExtResource( 5 )
 
 [node name="Text" parent="DECOR_WALL" instance=ExtResource( 3 )]
 margin_left = -632.0
-margin_top = -192.0
+margin_top = -184.0
 margin_right = -232.0
-margin_bottom = -104.0
+margin_bottom = -56.0
 text = "Sorry no level"
 
 [node name="DANGER" type="Node2D" parent="."]

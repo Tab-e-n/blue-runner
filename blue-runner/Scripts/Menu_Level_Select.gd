@@ -25,21 +25,27 @@ func _ready():
 			if current_file.ends_with(".tscn"):
 				$SELECT.user_levels.append(current_file.trim_suffix(".tscn"))
 			current_file = directory.get_next()
-	$SELECT.user_pages = $SELECT.user_levels.size() / 20
-	for i in range($SELECT.user_levels.size()):
-		if $SELECT.user_levels[i] == global.current_level:
-			$SELECT.selected_level = int(i) % 20
-			$SELECT.user_levels_page = int(i) / 20
-			$SELECT.visible = true
-			start = false
-			break
+		$SELECT.user_pages = $SELECT.user_levels.size() / 20
+	
+	if global.current_level_location == "user://SRLevels/":
+		for i in range($SELECT.user_levels.size()):
+			if $SELECT.user_levels[i] == global.current_level:
+				$SELECT.selected_level = int(i)
+				# warning-ignore:integer_division
+				$SELECT.user_levels_page = int(i) / 20
+				$SELECT.visible = true
+				start = false
+				break
+	$SELECT.selected_level_name = global.current_level
+	$SELECT.selected_level_location = global.current_level_location
 	$SELECT.reload_all_levels()
-	if start != false: for i in range(20):
-		if get_node("SELECT/L/Level_" + String(i)).level_name == global.current_level:
-			$SELECT.selected_level = i
-			$SELECT.visible = true
-			start = false
-			break
+	if start != false: 
+		for i in range(20):
+			if get_node("SELECT/L/Level_" + String(i)).level_name == global.current_level and get_node("SELECT/L/Level_" + String(i)).level_location == global.current_level_location:
+				$SELECT.selected_level = i
+				$SELECT.visible = true
+				start = false
+				break
 	
 	
 	if start or global.replay_menu:
@@ -64,7 +70,7 @@ func _ready():
 	if !start:
 		$menu_circle_2.scale = Vector2(0, 0)
 	if Global.new_version_alert:
-		$NewVersionPopup.popup()
+		$NewVersionPopup.visible = true
 		Global.new_version_alert = false
 
 func _process(_delta):
@@ -120,4 +126,6 @@ func _process(_delta):
 		"REPLAY":
 			$REPLAY.menu_update()
 	
-	move = false
+	if move == true:
+		$NewVersionPopup.visible = false
+		move = false
