@@ -215,7 +215,7 @@ func load_game(fail = false):
 		#last_input_events[i] = last_input_events[i]
 		#settings[\"editor_keys\"][i] = last_input_events[i].scancode
 
-func update_old_version(version, temp):
+func update_old_version(_version, _temp):
 	pass
 
 func load_transfer(section : Dictionary, section_name : String, temp : Dictionary):
@@ -358,6 +358,7 @@ func scan_multi_directory(main_directory : String, start_directory : String, sto
 func load_base(main_directory : String):
 	var file : File = File.new()
 	var temp = {}
+	# warning-ignore:return_value_discarded
 	file.open(main_directory + \"/Visual/Level/base.dat\", File.READ)
 	
 	while file.get_position() < file.get_len():

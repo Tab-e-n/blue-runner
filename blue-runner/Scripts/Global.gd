@@ -541,6 +541,8 @@ func load_level_dat_file(filename_ : String, _official : bool = true):
 	#else:
 	#	file_prefix = "Mods/Scenes/"
 	
+	#print(filename_)
+	
 	var loadfile = File.new()
 	var temp = {}
 	
@@ -564,11 +566,13 @@ func load_level_group():
 	var loadfile = File.new()
 	var temp = {}
 	
-	if not loadfile.file_exists(current_level_location + "/level_group.dat"): # does file exist
+	#print(current_level_location + "level_group.dat")
+	
+	if not loadfile.file_exists(current_level_location + "level_group.dat"): # does file exist
 		level_group = {}
 		return false
 	
-	loadfile.open(current_level_location + "/level_group.dat", File.READ)
+	loadfile.open(current_level_location + "level_group.dat", File.READ)
 	
 	while loadfile.get_position() < loadfile.get_len():
 		var parsedData = parse_json(loadfile.get_line())
