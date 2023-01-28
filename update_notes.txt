@@ -1,7 +1,28 @@
-VISUAL
+
+# 1.1.0 THE I FIX MANY F*** UPS UPDATE PATH NOTES
+
+ - So the last update was... something to say at least. Lets hope this one is better!
+
+### NEW ADDITIONS
+
+ - New loading sequence for SR
+	 - If you can't bind your keys through the options, (because you did a funny and bound everything to the same key)
+	   you can now interupt this new sequence by pressing F12, which will allow you to rebind your keys
+ - You can now see exact stats for what levels you beaten, unlocked etc.
+
+### VISUAL
+
  - The recoloring continues
 
-LEVEL EDITOR FIXES
+### SONIC RUNNER FIXES & CHANGES
+
+ - Fixed a game breaking bug where the game would crash upon deleting a save, and the wasn't able to load
+ - The game now properly loads saves from version 0.X
+ - When you rebound keys, the select menu didn't show the newly rebound key
+ - Level_1-12 (Sunset Hopper) no longer goes to itself when you want to go the next level
+
+### LEVEL EDITOR FIXES & CHANGES
+
  - Placing down a portal no longer crashes the editor
  - Objects placed outside the center layer had collision, which wasn't intended
  - Ghost now always appears behind player

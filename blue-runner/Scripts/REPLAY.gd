@@ -44,7 +44,8 @@ func menu_update():
 					if level_file.find("/") == -1:
 						level_file = "res://Scenes/waterway/" + level_file
 					
-					get_tree().change_scene(level_file + ".tscn")
+					
+					Global.change_level("*" + level_file + ".tscn")
 			if replay_menu_mode == 2:
 				if delete_confirmation:
 					var selected_list_replay = $replay_list.get_selected_items()[0]

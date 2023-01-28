@@ -458,7 +458,7 @@ position = Vector2( -640, 64 )
 
 [node name="Finish" parent="." instance=ExtResource( 6 )]
 position = Vector2( 4448, 192 )
-tele_destination = "Level_1-12"
+tele_destination = "Level_1-13"
 par = 7.7
 
 [node name="DECOR_GROUND" type="Node2D" parent="."]

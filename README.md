@@ -1,4 +1,5 @@
 # Sonic Runner
+
 Sonic Runner (SR) je open source hra na stylu her jako např. Super Meat Boy. V tomto repozitáři můžete najít tuto hru a její level editor.
 Hra je vytvořena v open source game engine zvané Godot, abyste ji mohli modifikovat nebo vyexportovat potřebujete si tento game engine stáhnout.
 
@@ -17,21 +18,26 @@ Abyste mohli modifikovat tento projekt, nejdříve si musíte stáhnout projekt 
 
 V budoucnu planuji udělat manuál, ve kterém bude popsáno, jak udělat módy pro SR, ale ten zatím neexistuje.
 
-## Otázky, co můžete mýt
+## Mohu nějak pomoci s vývojem hry?
 
-### Kam mám reportovat buggy, když nějaké najdu?
+I když na hře pracuji zatím sám, neznamená to, že mi nemůžete pomoct při vývoji SR. Je tu spoustu možností, co můžete udělat, abyste my pomohli:
 
-Buggy můžete reportovat v sekci "Issues".
+### Natočte video, jak hrajete hru, a potom mi ho pošlete
 
-### Kam mám psát své návrhy pro SR?
+Ja SR hrál už nějakou dobu, takže hru dost dobře umím hrát a také znám všechny kouty SR jako moji vlastní ruku. Ale, to co já umím, nebude umět
+někdo, kdo tu hru hraje poprvé v životě. Takže bz se mi hodilo vidět, jak takový hráč reaguje na různé věci, kde se sekl, atd. Natočením videa, jak hrajete hru mi můžete s tímto pomoct,
+abych nemusel hádat tyto věci, ale abych je mohl předem vědět.
 
-Své návrhy na různé věci, co byste chtěli abych přidal, můžete také psát v sekci "Issues", a možná, pokud se mi vaše nápady budou líbit,
-tak je i přidám do hry. Tohle pravidlo také platí pokud něco sami vytvoříte a chtěli by jste, abych to přidal do hry.
+### Reportování nalezených bugů
+
+Pokud najdete něco, co se vám nezdá jako správné chování hry, napište mi o tom v sekci "Issues", nejlépe s důkladným popisem a přílohami.
+I když dokážu nají spousty bugů sám, všechno najít nedokážu.
+
+### Návrhy pro zlepšení hry
+
+Pokud vymyslíte něco, co by podle vás zlepšilo hru, klidně o tom napište v sekci "Issues", a pokud se mi váš nápad bude líbit, může se i officialně dostat do hry.  
+Tohle pravidlo také platí pokud něco sami vytvoříte a chtěli by jste, abych to přidal do hry, jako třeba vlastní levely nebo objekty.
 
 Prosím vás ale, abyste nepsali nic, co už mám naplánované udělat. 
 V sekci "Projects" nebo ve souboru todo.txt mužete najít, co plánuji a na čem právě pracuji, takže se na to podívejte před tím,
 než udeláte feature request.
-
-### Můžu se připojit k vývoji SR?
-
-Prozatím pracuji sám. Pomoci mi můžete jen maximálně způsobem, který jsem popsal v minulé otázce.

@@ -1,62 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Text/Text_White.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Scripts/Load.gd" type="Script" id=3]
+[ext_resource path="res://Text/Text_Editor.tscn" type="PackedScene" id=4]
 
 [sub_resource type="Animation" id=1]
-resource_name = "in"
-length = 2.0
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:scale")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ Vector2( 1, 1 ) ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath("hint:percent_visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0, 0.1, 1.5 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
-"update": 0,
-"values": [ 0.0, 0.0, 1.0 ]
-}
-tracks/2/type = "value"
-tracks/2/path = NodePath("keys:percent_visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/keys = {
-"times": PoolRealArray( 0, 0.4, 1.7 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
-"update": 0,
-"values": [ 0.0, 0.0, 1.0 ]
-}
-tracks/3/type = "value"
-tracks/3/path = NodePath("keys2:percent_visible")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/keys = {
-"times": PoolRealArray( 0, 0.6, 1.9 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
-"update": 0,
-"values": [ 0.0, 0.0, 1.0 ]
-}
-
-[sub_resource type="Animation" id=2]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:scale")
@@ -85,34 +33,6 @@ tracks/1/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=3]
-resource_name = "prompt"
-length = 2.0
-tracks/0/type = "value"
-tracks/0/path = NodePath("end1:percent_visible")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 1.2 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ 0.0, 1.0 ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath("end2:percent_visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0, 1.4, 1.8 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
-"update": 0,
-"values": [ 0.0, 0.0, 1.0 ]
-}
-
 [node name="Load" type="Node2D"]
 script = ExtResource( 3 )
 
@@ -127,67 +47,12 @@ polygon = PoolVector2Array( -1024, -768, 1024, -768, 1024, 768, -1024, 768 )
 [node name="t" type="Node2D" parent="."]
 
 [node name="anim" type="AnimationPlayer" parent="t"]
-anims/in = SubResource( 1 )
-anims/out = SubResource( 2 )
-anims/prompt = SubResource( 3 )
+anims/out = SubResource( 1 )
 
-[node name="hint" parent="t" instance=ExtResource( 2 )]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -528.0
-margin_top = -448.0
-margin_right = 528.0
-margin_bottom = -384.0
-size_flags_horizontal = 2
-visible_characters = 0
-percent_visible = 0.0
-text = "Press the keys you would like to use:"
-scroll_active = true
-
-[node name="keys" parent="t" instance=ExtResource( 2 )]
-margin_left = -512.0
-margin_top = -320.0
-margin_right = 0.0
-margin_bottom = 192.0
-visible_characters = 0
-percent_visible = 0.0
-text = "LEFT
-RIGHT
-UP
-DOWN
-JUMP / ACCEPT
-SPECIAL
-RESET
-RETURN"
-scroll_active = true
-
-[node name="keys2" parent="t" instance=ExtResource( 2 )]
-margin_top = -320.0
-margin_right = 1024.0
-margin_bottom = 256.0
-visible_characters = 0
-percent_visible = 0.0
-text = "???"
-scroll_active = true
-
-[node name="end1" parent="t" instance=ExtResource( 2 )]
-margin_left = -440.0
-margin_top = 256.0
-margin_right = 448.0
-margin_bottom = 448.0
-visible_characters = 0
-percent_visible = 0.0
-text = "If you are unhappy with these binding, you can always change them in the options! "
-scroll_active = true
-
-[node name="end2" parent="t" instance=ExtResource( 2 )]
-margin_left = -96.0
-margin_top = 512.0
-margin_right = 744.0
-margin_bottom = 576.0
-visible_characters = 0
-percent_visible = 0.0
-text = "Press any key to continue..."
-scroll_active = true
+[node name="boot" parent="t" instance=ExtResource( 4 )]
+margin_left = -1024.0
+margin_top = -768.0
+margin_right = 1707.0
+margin_bottom = 1280.0
+rect_scale = Vector2( 0.75, 0.75 )
+text = ""
