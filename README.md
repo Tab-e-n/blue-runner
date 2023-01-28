@@ -40,4 +40,4 @@ Tohle pravidlo také platí pokud něco sami vytvoříte a chtěli by jste, abyc
 
 Prosím vás ale, abyste nepsali nic, co už mám naplánované udělat. 
 V sekci "Projects" nebo ve souboru todo.txt mužete najít, co plánuji a na čem právě pracuji, takže se na to podívejte před tím,
-než udeláte feature request.
+než uděláte feature request.
