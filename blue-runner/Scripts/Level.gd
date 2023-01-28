@@ -58,14 +58,14 @@ func reload():
 	$boltcollect.visible = false
 	if locked:
 		$icon.texture = load(level_dat["level_base"][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][1])
-	elif global.level_completion.has(level_location + level_name):
-		if global.level_completion[level_location + level_name][0] != null:
-			time = global.level_completion[level_location + level_name][0]
-			par = global.level_completion[level_location + level_name][1]
+	elif global.level_completion[level_location].has(level_name):
+		if global.level_completion[level_location][level_name][0] != null:
+			time = global.level_completion[level_location][level_name][0]
+			par = global.level_completion[level_location][level_name][1]
 			
 			var collectible_amount = 0
 			for i in range(3):
-				if global.level_completion["*collectibles"].has(level_location + level_name + "*" + String(i)):
+				if global.level_completion["*collectibles"][level_location].has(level_name + "*" + String(i)):
 					collectible_amount += 1
 			
 			$boltcollect/Anim.stop()

@@ -99,15 +99,12 @@ func _physics_process(delta):
 			if replay_data.size() > 5: play_sound(replay_data[5])
 		else:
 			if timer > replay_timer + 2 and !ghost:
-				# warning-ignore:return_value_discarded
-				get_tree().change_scene("res://Scenes/Menu_Level_Select.tscn")
+				Global.change_level("*Menu_Level_Select")
 	# - - - DEATH STATE - - -
 	elif dead:
 		death_wait += 1
 		if death_wait >= 20:
-			# warning-ignore:return_value_discarded
-			#get_tree().change_scene("res://Scenes/" + get_tree().current_scene.name + ".tscn")
-			get_tree().change_scene(get_tree().current_scene.filename)
+			Global.change_level("")
 			var _name : String = global.current_level_location + get_parent().name
 			if global.level_completion.has(_name):
 				if global.level_completion[_name].size() > 2:

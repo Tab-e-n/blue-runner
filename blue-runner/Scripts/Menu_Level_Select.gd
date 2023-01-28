@@ -47,7 +47,6 @@ func _ready():
 				start = false
 				break
 	
-	
 	if start or global.replay_menu:
 		$menu_circle_2.scale = Vector2(2.75, 2.75)
 		$menu_button.position = Vector2(0, -64)
@@ -94,6 +93,7 @@ func _process(_delta):
 	if $AnimationPlayer.current_animation != "ENTERING":
 		$dim.color = Color(0.02, 0.02, 0.13, 0)
 	if $AnimationPlayer.current_animation == "MAIN-SELECT":
+		$SELECT.change_controls()
 		move = true
 	
 	

@@ -1,18 +1,18 @@
 extends Control
 
 #game Stuff
-var version_internal : int = 1
+const VERSION : String = "1.1.0-dev"
 var new_version_alert : bool = false
 var user_directory : String = "user://sonicRunner"
 var mod_user_directory : String = "user://sonicRunnerMods"
 var level_completion = {
-	"*collectibles" : [],
+	"*collectibles" : {},
 }
 var unlocked = {
 	"*char_select_active" : false,
 }
 var options = {
-	"*version" : 1,
+	"*version" : VERSION,
 	"*left" : KEY_LEFT,
 	"*right" : KEY_RIGHT,
 	"*up" : KEY_UP,
@@ -27,7 +27,7 @@ var options = {
 }
 var mods_installed = []
 var default_options = {
-	"*version" : 1,
+	"*version" : VERSION,
 	"*left" : KEY_LEFT,
 	"*right" : KEY_RIGHT,
 	"*up" : KEY_UP,
@@ -60,6 +60,8 @@ var loaded_level_groups = []
 var level_group = {}
 
 var last_input_events : Array = range(8)
+
+
 
 func _ready():
 	rand.randomize()
@@ -121,11 +123,9 @@ func _ready():
 func _process(_delta):
 	var curr_scene = get_tree().current_scene.name
 	if Input.is_action_just_pressed("return") and !(curr_scene == "Menu_Level_Select" or curr_scene == "Load"):
-		# warning-ignore:return_value_discarded
-		get_tree().change_scene("res://Scenes/Menu_Level_Select.tscn")
+		change_level("*Menu_Level_Select")
 	if Input.is_action_just_pressed("reset") and !(curr_scene == "Menu_Level_Select" or curr_scene == "Load"):
-		# warning-ignore:return_value_discarded
-		get_tree().change_scene(get_tree().current_scene.filename)
+		change_level("")
 
 func _exit_tree():
 	save_game()
@@ -272,8 +272,25 @@ func key_names(key : int):
 		KEY_UNKNOWN: return "???"
 	return "WHAT IS THIS?"
 
-func change_level():
-	return
+func change_level(destination : String, return_value : bool = false):
+	var destination_new : String
+	
+	if destination == "":
+		destination_new = current_level_location + current_level + ".tscn"
+	elif destination == "*Menu_Level_Select":
+		destination_new = "res://Scenes/Menu_Level_Select.tscn"
+	elif destination == "*Level_Missing":
+		destination_new = "res://Scenes/Level_Missing.tscn"
+	elif destination.begins_with("*"):
+		destination_new = destination.trim_prefix("*")
+	else:
+		destination_new = current_level_location + destination + ".tscn"
+	
+	var error = get_tree().change_scene(destination_new)
+	if return_value:
+		return error
+	elif error != OK:
+		get_tree().change_scene("res://Scenes/Menu_Level_Select.tscn")
 
 func save_game(timer : float = 0, par : float = 0, collectible : String = "", level = null, recording : Dictionary = {}):
 	var savefile = File.new()
@@ -281,21 +298,21 @@ func save_game(timer : float = 0, par : float = 0, collectible : String = "", le
 	
 	temp = level_completion.duplicate()
 	
-	if level != null: level = current_level_location + level
-	
-	if temp.has(level):
-		if temp[level].size() < 3: temp[level].resize(3)
-		if temp[level][0] == null:
-			temp[level][0] = timer
-		elif temp[level][0] > timer:
-			temp[level][0] = timer
-		temp[level][1] = par
+	if !temp.has(current_level_location): temp[current_level_location] = {}
+	if temp[current_level_location].has(level):
+		if temp[current_level_location][level].size() < 3: temp[current_level_location][level].resize(3)
+		if temp[current_level_location][level][0] == null:
+			temp[current_level_location][level][0] = timer
+		elif temp[current_level_location][level][0] > timer:
+			temp[current_level_location][level][0] = timer
+		temp[current_level_location][level][1] = par
 	elif level != null:
-		temp[level] = [timer, par, 0]
+		temp[current_level_location][level] = [timer, par, 0]
 	
-	if !temp.has("*collectibles"): temp["*collectibles"] = []
-	if collectible != "" and !temp["*collectibles"].has(collectible):
-		temp["*collectibles"].append(collectible)
+	if !temp.has("*collectibles"): temp["*collectibles"] = {}
+	if !temp["*collectibles"].has(current_level_location): temp["*collectibles"][current_level_location] = []
+	if collectible != "" and !temp["*collectibles"][current_level_location].has(collectible):
+		temp["*collectibles"][current_level_location].append(collectible)
 	
 	var temp_full = {
 		"level_completion" : {},
@@ -307,7 +324,7 @@ func save_game(timer : float = 0, par : float = 0, collectible : String = "", le
 	temp_full["options"] = options.duplicate()
 	temp_full["unlocked"] = unlocked.duplicate()
 	
-	temp_full = update_old_save(version_internal, temp_full.duplicate())
+	temp_full = update_old_save(VERSION, temp_full.duplicate())
 	
 	#print("save: ", temp_full)
 	
@@ -336,15 +353,17 @@ func load_game():
 	loadfile.close()
 	
 	#print("load: ", temp)
-	var version : int
+	var version : String
 	if !temp.has("options"):
-		version = 0
+		version = "0.X"
 	elif !temp["options"].has("*version"):
-		version = 0
+		version = "1.0.0-dev"
+	elif typeof(temp["options"]["*version"]) == TYPE_REAL:
+		version = "1.0.0"
 	else:
 		version = temp["options"]["*version"]
 	
-	if version != version_internal:
+	if version != VERSION:
 		new_version_alert = true
 	
 	temp = update_old_save(version, temp.duplicate())
@@ -367,66 +386,82 @@ func load_game():
 	
 	mods_installed = temp["*mods"].duplicate()
 
-func update_old_save(version, save : Dictionary):
+func update_old_save(version : String, save : Dictionary):
 	var settings : Dictionary = {}
 	var unlocks : Dictionary = {}
 	var levels : Dictionary = {}
-	if version == 0:
+	#print(version)
+	if version == "0.X":
+		
+		settings = {}
+		levels = {}
+		
 		for i in default_options.keys():
 			if save.has(i):
 				settings[i] = save[i]
-# warning-ignore:return_value_discarded
+				# warning-ignore:return_value_discarded
 				save.erase(i)
 			else:
 				settings[i] = default_options[i]
 		
-		if save.has("*unlocked"):
-			unlocks = save["*unlocked"].duplicate()
-# warning-ignore:return_value_discarded
-			save.erase("*unlocked")
-		if save.has("*char_select_active"):
-			unlocks["*char_select_active"] = save["*char_select_active"]
-# warning-ignore:return_value_discarded
-			save.erase("*char_select_active")
-		else:
-			unlocks["*char_select_active"] = false
 		levels = save.duplicate()
 		
 		save.clear()
 		
+		settings["*first_time_load"] = false
+		
+		save["options"] = settings.duplicate()
+		
 		save["level_completion"] = {}
-		for i in levels.keys():
-			if i.begins_with("Level"):
-				save["level_completion"]["res://Scenes/" + i] = levels[i]
-# warning-ignore:return_value_discarded
+		save["level_completion"]["*collectibles"] = {}
+		save["level_completion"]["*collectibles"]["res://Scenes/waterway/"] = []
+		save["level_completion"]["res://Scenes/waterway/"] = {}
+		
+		for i in ["4", "6", "7", "9", "11", "13"]:
+			if levels.has(i):
+				save["level_completion"]["*collectibles"]["res://Scenes/waterway/"].append("Level_1-" + i + "*1")
 				levels.erase(i)
 		
-		save["level_completion"]["*collectibles"] = []
-		if levels.has("4"):
-			save["level_completion"]["*collectibles"].append("res://Scenes/Level_1-4*1")
-		if levels.has("6"):
-			save["level_completion"]["*collectibles"].append("res://Scenes/Level_1-6*1")
-		if levels.has("7"):
-			save["level_completion"]["*collectibles"].append("res://Scenes/Level_1-7*1")
-		if levels.has("9"):
-			save["level_completion"]["*collectibles"].append("res://Scenes/Level_1-9*1")
-		if levels.has("11"):
-			save["level_completion"]["*collectibles"].append("res://Scenes/Level_1-11*1")
-		if levels.has("13"):
-			save["level_completion"]["*collectibles"].append("res://Scenes/Level_1-13*1")
-		if levels.has("*collectibles"): for i in levels["*collectibles"].keys():
-			save["level_completion"]["*collectibles"].append("res://Scenes/" + i)
+		for i in levels.keys():
+			save["level_completion"]["res://Scenes/waterway/"][i] = levels[i]
+			# warning-ignore:return_value_discarded
+			levels.erase(i)
 		
+		save["unlocked"] = {}
+		save["unlocked"]["*char_select_active"] = false
 		
-		save["unlocked"] = unlocks.duplicate()
-		save["options"] = settings.duplicate()
-		version += 1
+		version = "1.1.0"
+	if version == "1.0.0" or version == "1.0.0-dev":
+		levels = save["level_completion"].duplicate()
+		save["level_completion"].clear()
+		
+		save["level_completion"]["*collectibles"] = {}
+		for i in levels["*collectibles"]:
+			var level_name = i.substr(i.find_last("/") + 1, i.length() - i.find_last("/"))
+			var level_location = i.substr(0, i.find_last("/") + 1)
+			if !save["level_completion"]["*collectibles"].has(level_location):
+				save["level_completion"]["*collectibles"][level_location] = []
+			save["level_completion"]["*collectibles"][level_location].append(level_name)
+		levels.erase("*collectibles")
+		
+		for i in levels.keys():
+			var level_name = i.substr(i.find_last("/") + 1, i.length() - i.find_last("/"))
+			var level_location = i.substr(0, i.find_last("/") + 1)
+			if !save["level_completion"].has(level_location):
+				save["level_completion"][level_location] = {}
+			save["level_completion"][level_location][level_name] = levels[i]
+		
+		version = "1.1.0"
 	
 	if !save["unlocked"].has("*char_select_active"): save["unlocked"]["*char_select_active"] = false
-	if !save["options"].has("*version"): save["options"]["*version"] = 0
 	for i in default_options.keys():
-		if !save["options"].has(i): save["options"][i] = default_options[i]
+		if !save["options"].has(i):
+			save["options"][i] = default_options[i]
+			print(i)
 	if !save["level_completion"].has("*collectibles"):  save["level_completion"]["*collectibles"] = []
+	
+	save["options"]["*version"] = VERSION
+	
 	return save
 
 func condicional_save_replay(replay_name, recording : Dictionary):

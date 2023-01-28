@@ -60,11 +60,10 @@ func _physics_process(_delta):
 		
 		# warning-ignore:return_value_discarded
 		if color_timer == 13: 
-			if $"/root/Global".race_mode:
-				get_tree().change_scene("res://Scenes/Menu_Level_Select.tscn")
-			# warning-ignore:return_value_discarded
+			if Global.race_mode:
+				Global.change_level("*Menu_Level_Select")
 			else: 
-				get_tree().change_scene(tele_destination)
+				Global.change_level(tele_destination)
 	
 	if !end_zoom:
 		position.x = int(cam_target.position.x / 2) * 2

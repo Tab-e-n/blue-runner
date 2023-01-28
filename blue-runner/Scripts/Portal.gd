@@ -37,21 +37,13 @@ func teleport(timer : float, collectible : String):
 	# warning-ignore:return_value_discarded
 	if unlock != "": Global.unlocked[Global.current_level_location][unlock] = true
 	
-	var tele_destination_new
-	if tele_destination == "*Menu_Level_Select":
-		tele_destination_new = "res://Scenes/Menu_Level_Select.tscn"
-	elif tele_destination == "*Level_Missing":
-		tele_destination_new = "res://Scenes/Level_Missing.tscn"
-	else:
-		tele_destination_new = Global.current_level_location + tele_destination + ".tscn"
-	
 	if name == "Portal":
 		Global.save_game()
 		
-		get_tree().change_scene(tele_destination_new)
+		Global.change_level(tele_destination)
 	
 	if name == "Finish":
 		Global.save_game(timer, par, collectible, get_parent().name, get_parent().get_node("Player").recording.duplicate())
 		
 		if type == 0: $Visual_XT9/AnimationPlayer.current_animation = "Call"
-		get_parent().get_node("Camera").end_zoom_in(self, tele_destination_new, timer)
+		get_parent().get_node("Camera").end_zoom_in(self, tele_destination, timer)

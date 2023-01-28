@@ -18,11 +18,11 @@ undo system (i dont really wanna)
 
 RUNNER
 
-User being a big dumbass when binding keys fix
 select bg change
 pixelate bricks
 character select
 character unlocks in characters.dat
+tutorial level
 character missing
 character greenbox
 touchup replay menu

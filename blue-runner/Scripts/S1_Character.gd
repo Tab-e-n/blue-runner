@@ -8,6 +8,9 @@ onready var col_2 : Node2D = get_parent().get_node("col_2")
 
 export (PackedScene) var particle
 var particle_disable : int = 0
+export var particle_start : Color = Color(0.05, 0.9, 0.95, 1)
+export var particle_end : Color = Color(0.13, 0.21, 0.38, 1)
+export var particle_star : Color = Color(0.05, 0.9, 0.95, 1)
 
 var gravity_up : int = 26
 var gravity_down : int = 40
@@ -370,6 +373,9 @@ func particle_summon(particle_position : Vector2, particle_rotation : float, typ
 		player.get_parent().add_child(node_creator)
 		node_creator.position = player.position + particle_position
 		node_creator.rotation = particle_rotation
+		node_creator.color_start = particle_start
+		node_creator.color_end = particle_end
+		node_creator.color_star = particle_star
 		node_creator.start(type)
 		particle_disable = 6
 

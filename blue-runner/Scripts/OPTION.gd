@@ -79,8 +79,9 @@ func option_selected():
 	var last_pos = cursor_positions.size() - 1
 	if delete_confirmation: 
 		global.level_completion.clear()
-		for i in global.unlocked.keys():
-			global.unlocked[i] = false
+		global.unlocked.clear()
+		#for i in global.unlocked.keys():
+		#	global.unlocked[i] = false
 		global.save_game()
 		
 		parent.get_node("SELECT").reload_all_levels()

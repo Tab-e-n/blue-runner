@@ -1,4 +1,4 @@
-[gd_scene load_steps=86 format=2]
+[gd_scene load_steps=87 format=2]
 
 [ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Objects/Backgrounds/BG_WaterWay.tscn" type="PackedScene" id=2]
@@ -56,6 +56,7 @@
 [ext_resource path="res://Visual/Menu/completion_outline.png" type="Texture" id=54]
 [ext_resource path="res://Scripts/CHARACTER.gd" type="Script" id=55]
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=56]
+[ext_resource path="res://Text/Text_Outlined.tscn" type="PackedScene" id=57]
 
 [sub_resource type="Animation" id=1]
 resource_name = "AAA_RESET"
@@ -3073,7 +3074,6 @@ limit_x = Vector2( -2048, 0 )
 limit_y = Vector2( 0, 2048 )
 
 [node name="SELECT" type="Node2D" parent="."]
-visible = false
 script = ExtResource( 25 )
 
 [node name="BG_0" parent="SELECT" instance=ExtResource( 2 )]
@@ -3280,15 +3280,18 @@ texture = ExtResource( 52 )
 [node name="back" parent="SELECT" instance=ExtResource( 40 )]
 margin_left = -984.0
 margin_top = -728.0
-margin_right = 1024.0
+margin_right = 2952.0
 margin_bottom = -600.0
 rect_scale = Vector2( 0.5, 0.5 )
+bbcode_enabled = true
+bbcode_text = "[right]EXIT - GO BACK
+RETURN - CHANGE ZONE[/right]"
 text = "EXIT - GO BACK
 RETURN - CHANGE ZONE"
 
 [node name="completion_filling" type="Sprite" parent="SELECT"]
 self_modulate = Color( 0.87451, 0.901961, 0.937255, 1 )
-position = Vector2( 320, -80 )
+position = Vector2( -832, -704 )
 texture = ExtResource( 53 )
 
 [node name="bar" type="Polygon2D" parent="SELECT/completion_filling"]
@@ -3306,6 +3309,17 @@ margin_top = -28.0
 margin_right = 72.0
 margin_bottom = 28.0
 text = "100%"
+
+[node name="Stats" parent="SELECT" instance=ExtResource( 57 )]
+margin_left = -992.0
+margin_top = -664.0
+margin_right = -352.0
+margin_bottom = 136.0
+rect_scale = Vector2( 0.75, 0.75 )
+text = "Beat:
+Par:
+Unlocked:
+Bonuses:"
 
 [node name="group_select" type="Panel" parent="SELECT"]
 visible = false
