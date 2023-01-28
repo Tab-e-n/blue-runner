@@ -8,7 +8,7 @@ dependency stripper
 default-mod
 f1 for help
 random scale
-layer switching
+layer switching shortcut
 prevent shortcuts from working when focused on a line edit
 z_index has some buggy behavior
 exit editor shortcut
@@ -18,7 +18,6 @@ undo system (i dont really wanna)
 
 RUNNER
 
-select bg change
 pixelate bricks
 character select
 character unlocks in characters.dat

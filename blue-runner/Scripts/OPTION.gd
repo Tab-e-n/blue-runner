@@ -80,8 +80,6 @@ func option_selected():
 	if delete_confirmation: 
 		global.level_completion.clear()
 		global.unlocked.clear()
-		#for i in global.unlocked.keys():
-		#	global.unlocked[i] = false
 		global.save_game()
 		
 		parent.get_node("SELECT").reload_all_levels()

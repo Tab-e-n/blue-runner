@@ -30,7 +30,7 @@ func _ready():
 	if global.current_level_location == "user://SRLevels/":
 		for i in range($SELECT.user_levels.size()):
 			if $SELECT.user_levels[i] == global.current_level:
-				$SELECT.selected_level = int(i)
+				$SELECT.user_selected_level = int(i)
 				# warning-ignore:integer_division
 				$SELECT.user_levels_page = int(i) / 20
 				$SELECT.visible = true
@@ -38,7 +38,7 @@ func _ready():
 				break
 	$SELECT.selected_level_name = global.current_level
 	$SELECT.selected_level_location = global.current_level_location
-	$SELECT.reload_all_levels()
+	$SELECT.reload_all_levels(true)
 	if start != false: 
 		for i in range(20):
 			if get_node("SELECT/L/Level_" + String(i)).level_name == global.current_level and get_node("SELECT/L/Level_" + String(i)).level_location == global.current_level_location:

@@ -8,3 +8,24 @@
 glitch gallery
 20 levels		- 4 - unlock (worth 2), normal, par	- 80 -
 20 collectibles		- 1 - collect				- 20 -
+
+
+
+[UNLOCK_TYPE, ...]
+UNLOCK_TYPE =	"none",	"beat",	"par", 	"completion",	"bonus"	"custom",
+UNLOCK_TYPE =	0,	1,	2,	3,		4,	5,
+
+["beat", GROUP, LEVEL]
+["par", GROUP, LEVEL]
+GROUP = group filepath (ig. res://Scenes/waterway/)
+LEVEL = level name (ig. Level_1-1)
+
+["completion", GROUP, PERCENTAGE]
+PERCENTAGE = 0 - 100, GROUP completion must be bigger than it to unlock
+
+["bonus", LOCATION, AMOUNT]
+LOCATION = res://Scenes/, user://SRLevels/, or a Mods/[MODENAME]/Scenes
+AMOUNT = amount of bonuses required
+
+["custom", NAME, null]
+NAME = unlocks name, can be whatever

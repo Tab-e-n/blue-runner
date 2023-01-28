@@ -61,8 +61,6 @@ var level_group = {}
 
 var last_input_events : Array = range(8)
 
-
-
 func _ready():
 	rand.randomize()
 	var scaling = OS.window_size.x / OS.window_size.y
@@ -290,7 +288,19 @@ func change_level(destination : String, return_value : bool = false):
 	if return_value:
 		return error
 	elif error != OK:
+		# warning-ignore:return_value_discarded
 		get_tree().change_scene("res://Scenes/Menu_Level_Select.tscn")
+
+func convert_float_to_time(timer : float, limit_size : bool = true):
+	var minutes : int = int(floor(timer) / 60)
+	var seconds : int = int(floor(timer)) - minutes * 60
+	var decimal : int = int(floor(timer * 100 + 0.1)) % 100
+	if timer >= 6000 and limit_size:
+		return "too much"
+	else:
+		# warning-ignore:integer_division
+		# warning-ignore:integer_division
+		return String(minutes)+":"+String(seconds/10)+String(seconds%10)+"."+String(decimal/10)+String(decimal%10)
 
 func save_game(timer : float = 0, par : float = 0, collectible : String = "", level = null, recording : Dictionary = {}):
 	var savefile = File.new()
@@ -420,6 +430,7 @@ func update_old_save(version : String, save : Dictionary):
 		for i in ["4", "6", "7", "9", "11", "13"]:
 			if levels.has(i):
 				save["level_completion"]["*collectibles"]["res://Scenes/waterway/"].append("Level_1-" + i + "*1")
+				# warning-ignore:return_value_discarded
 				levels.erase(i)
 		
 		for i in levels.keys():
@@ -442,6 +453,7 @@ func update_old_save(version : String, save : Dictionary):
 			if !save["level_completion"]["*collectibles"].has(level_location):
 				save["level_completion"]["*collectibles"][level_location] = []
 			save["level_completion"]["*collectibles"][level_location].append(level_name)
+		# warning-ignore:return_value_discarded
 		levels.erase("*collectibles")
 		
 		for i in levels.keys():
@@ -622,8 +634,6 @@ func load_level_group():
 	return true
 
 func load_data():
-	# FIND EVERY LEVEL GROUP
-	# CHARACTERS.DAT
 	scan_for_directories("res://Scenes/", loaded_level_groups, "group")
 	for mod_name in mods_installed:
 		scan_for_directories("Mods/" + mod_name + "/Scenes/", loaded_level_groups, "group")
@@ -637,8 +647,9 @@ func load_data():
 				temp_level_groups.remove(group)
 	loaded_level_groups = temp_level_groups.duplicate()
 	
-	
 	loaded_level_groups.append(["SRLevels","user://"])
+	
+	# CHARACTERS.DAT
 
 func scan_single_directory(main_directory : String, sub_directory : String, storage : Array, file_type : String, _file_descriptor : String):
 	var directory : Directory = Directory.new()
