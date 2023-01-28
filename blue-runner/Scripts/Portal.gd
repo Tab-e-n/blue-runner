@@ -35,7 +35,8 @@ func _process(_delta):
 
 func teleport(timer : float, collectible : String):
 	# warning-ignore:return_value_discarded
-	if unlock != "": Global.unlocked[Global.current_level_location][unlock] = true
+	if unlock != "":
+		Global.unlocked[Global.current_level_location][unlock] = true
 	
 	if name == "Portal":
 		Global.save_game()
@@ -46,4 +47,4 @@ func teleport(timer : float, collectible : String):
 		Global.save_game(timer, par, collectible, get_parent().name, get_parent().get_node("Player").recording.duplicate())
 		
 		if type == 0: $Visual_XT9/AnimationPlayer.current_animation = "Call"
-		get_parent().get_node("Camera").end_zoom_in(self, tele_destination, timer)
+		get_parent().get_node("Camera").end_zoom_in(self, tele_destination, timer, par)

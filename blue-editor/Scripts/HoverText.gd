@@ -37,6 +37,7 @@ export var appear_time : int = 60
 
 func _process(_delta):
 	$Text.rect_scale = text_scale / scale
+	$editor_point.scale = Vector2(1, 1) / scale
 	$Text.rect_size = text_size
 	$Text.text = text
 	$Text.modulate = Color(text_color.r, text_color.g, text_color.b, 1)

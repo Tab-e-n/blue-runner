@@ -1,7 +1,6 @@
-[gd_scene load_steps=87 format=2]
+[gd_scene load_steps=88 format=2]
 
 [ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Objects/Backgrounds/BG_WaterWay.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Visual/Level/C.png" type="Texture" id=3]
 [ext_resource path="res://Visual/Level/A.png" type="Texture" id=4]
 [ext_resource path="res://Visual/Level/boss.png" type="Texture" id=5]
@@ -57,6 +56,7 @@
 [ext_resource path="res://Scripts/CHARACTER.gd" type="Script" id=55]
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=56]
 [ext_resource path="res://Text/Text_Outlined.tscn" type="PackedScene" id=57]
+[ext_resource path="res://Text/Lacrimae_Outlined.tres" type="DynamicFont" id=58]
 
 [sub_resource type="Animation" id=1]
 resource_name = "AAA_RESET"
@@ -2145,6 +2145,36 @@ tracks/1/keys = {
 "values": [ Vector2( 1, 1 ), Vector2( 0, 1 ), Vector2( 1, 1 ) ]
 }
 
+[sub_resource type="Animation" id=30]
+resource_name = "change"
+length = 0.7
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:bg_transition")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.7 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.7 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "bg_end_changing"
+} ]
+}
+
 [sub_resource type="Animation" id=18]
 length = 0.1
 step = 0.05
@@ -3076,10 +3106,6 @@ limit_y = Vector2( 0, 2048 )
 [node name="SELECT" type="Node2D" parent="."]
 script = ExtResource( 25 )
 
-[node name="BG_0" parent="SELECT" instance=ExtResource( 2 )]
-bg_color = Color( 0, 0.6, 0.86, 1 )
-hill_offset = Vector2( 640, 0 )
-
 [node name="Cursor" type="Node2D" parent="SELECT"]
 position = Vector2( -192, 0 )
 
@@ -3277,12 +3303,12 @@ position = Vector2( 0, -448 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 52 )
 
-[node name="back" parent="SELECT" instance=ExtResource( 40 )]
-margin_left = -984.0
-margin_top = -728.0
-margin_right = 2952.0
+[node name="back" parent="SELECT" instance=ExtResource( 57 )]
+margin_left = -640.0
+margin_top = -736.0
+margin_right = 1525.0
 margin_bottom = -600.0
-rect_scale = Vector2( 0.5, 0.5 )
+rect_scale = Vector2( 0.75, 0.75 )
 bbcode_enabled = true
 bbcode_text = "[right]EXIT - GO BACK
 RETURN - CHANGE ZONE[/right]"
@@ -3290,17 +3316,17 @@ text = "EXIT - GO BACK
 RETURN - CHANGE ZONE"
 
 [node name="completion_filling" type="Sprite" parent="SELECT"]
-self_modulate = Color( 0.87451, 0.901961, 0.937255, 1 )
+self_modulate = Color( 0.313726, 0.282353, 0.560784, 1 )
 position = Vector2( -832, -704 )
 texture = ExtResource( 53 )
 
 [node name="bar" type="Polygon2D" parent="SELECT/completion_filling"]
-self_modulate = Color( 0.454902, 0.54902, 0.662745, 1 )
-position = Vector2( -152, 0 )
-polygon = PoolVector2Array( -3, -27, 307, -27, 307, 28, -3, 28 )
+self_modulate = Color( 0.627451, 0.239216, 0.643137, 1 )
+position = Vector2( -156, 0 )
+polygon = PoolVector2Array( 0, -28, 312, -28, 312, 28, 0, 28 )
 
 [node name="completion_outline" type="Sprite" parent="SELECT/completion_filling"]
-self_modulate = Color( 0.454902, 0.54902, 0.662745, 1 )
+self_modulate = Color( 0.627451, 0.239216, 0.643137, 1 )
 texture = ExtResource( 54 )
 
 [node name="text" parent="SELECT/completion_filling" instance=ExtResource( 38 )]
@@ -3308,6 +3334,11 @@ margin_left = -56.0
 margin_top = -28.0
 margin_right = 72.0
 margin_bottom = 28.0
+custom_fonts/mono_font = ExtResource( 58 )
+custom_fonts/bold_italics_font = ExtResource( 58 )
+custom_fonts/italics_font = ExtResource( 58 )
+custom_fonts/bold_font = ExtResource( 58 )
+custom_fonts/normal_font = ExtResource( 58 )
 text = "100%"
 
 [node name="Stats" parent="SELECT" instance=ExtResource( 57 )]
@@ -3360,6 +3391,9 @@ rect_scale = Vector2( 2, 2 )
 theme = ExtResource( 56 )
 text = "This level requires mods
 you don't have installed"
+
+[node name="bg_anim" type="AnimationPlayer" parent="SELECT"]
+anims/change = SubResource( 30 )
 
 [node name="CHARACTER" type="Node2D" parent="."]
 visible = false

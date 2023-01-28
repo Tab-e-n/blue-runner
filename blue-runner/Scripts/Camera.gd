@@ -54,8 +54,6 @@ func _physics_process(_delta):
 		if color_timer == 11: $Fade.visible = false
 	if color_timer > 13:
 		var color = $Fade.color
-		$Fade.color = Color(color.r,color.g,color.b,(24-color_timer)/10)
-		
 		color_timer -= 1
 		
 		# warning-ignore:return_value_discarded
@@ -64,6 +62,8 @@ func _physics_process(_delta):
 				Global.change_level("*Menu_Level_Select")
 			else: 
 				Global.change_level(tele_destination)
+		else:
+			$Fade.color = Color(color.r,color.g,color.b,(24-color_timer)/10)
 	
 	if !end_zoom:
 		position.x = int(cam_target.position.x / 2) * 2
@@ -133,7 +133,7 @@ func _physics_process(_delta):
 	$border.scale = zoom
 	$info.scale = zoom
 
-func end_zoom_in(target : Node2D, tele, timer : float):
+func end_zoom_in(target : Node2D, tele, timer : float, par : float):
 	end_zoom = true
 	cam_target = target
 	tele_destination = tele
@@ -144,14 +144,11 @@ func end_zoom_in(target : Node2D, tele, timer : float):
 	$border_thing.scale = zoom * 4
 	$camera_inputs.scale = zoom * 4
 	
-	$border_thing/replay.text = "SAVE REPLAY - " + $"/root/Global".key_names(5)
-	if timer < 6000:
-		var minutes : int = int(floor(timer) / 60)
-		var seconds : int = int(floor(timer)) - minutes * 60
-		var decimal : int = int(floor(timer * 100 + 0.1)) % 100
-		
-		# warning-ignore:integer_division
-		# warning-ignore:integer_division
-		$border_thing/camera_square/timer.text = String(minutes)+":"+String(seconds/10)+String(seconds%10)+"."+String(decimal/10)+String(decimal%10)
+	$border_thing/replay.text = "SAVE REPLAY - " + Global.key_names(5)
+	
+	$border_thing/camera_square/timer.text = Global.convert_float_to_time(timer)
+	if par == 0:
+		$border_thing/camera_square/par.text = "no par\ntime"
 	else:
-		$border_thing/camera_square/timer.text = "too much"
+		$border_thing/camera_square/par.text = "par\n" + Global.convert_float_to_time(par)
+	

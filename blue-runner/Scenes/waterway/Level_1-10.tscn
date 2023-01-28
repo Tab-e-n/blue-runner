@@ -27,6 +27,7 @@ limit_y = Vector2( -1536, 0 )
 [node name="BG" parent="." instance=ExtResource( 7 )]
 bg_color = Color( 0.501961, 0.65098, 0.729412, 1 )
 hill_offset = Vector2( 256, 256 )
+sun_position = Vector2( 0, 0 )
 
 [node name="DECOR_BACKGROUND_1" type="Node2D" parent="."]
 z_index = -30

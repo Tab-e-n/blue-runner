@@ -9,6 +9,9 @@
 [node name="BG" type="Node2D"]
 z_index = -100
 script = ExtResource( 5 )
+bg_color = Color( 0.160784, 0.25098, 0.501961, 1 )
+hill_offset = Vector2( 512, 0 )
+sun_position = Vector2( 0, -1024 )
 
 [node name="back" type="Polygon2D" parent="."]
 polygon = PoolVector2Array( -1024, -768, 1024, -768, 1024, 768, -1024, 768 )
