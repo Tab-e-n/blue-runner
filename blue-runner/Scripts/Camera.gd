@@ -113,7 +113,7 @@ func _physics_process(_delta):
 			if Input.is_action_just_pressed("special") and replay_saved:
 				var date = OS.get_datetime()
 				
-				$"/root/Global".save_replay(get_parent().name
+				Global.save_replay(get_parent().name
 				+"_"+String(date["year"])
 				+"-"+String(date["month"])
 				+"-"+String(date["day"])

@@ -3392,6 +3392,17 @@ theme = ExtResource( 56 )
 text = "This level requires mods
 you don't have installed"
 
+[node name="fail" type="Label" parent="SELECT"]
+visible = false
+margin_left = 88.0
+margin_top = -168.0
+margin_right = 322.0
+margin_bottom = -100.0
+rect_scale = Vector2( 2, 2 )
+theme = ExtResource( 56 )
+text = "Failed to load
+this level, sorry"
+
 [node name="bg_anim" type="AnimationPlayer" parent="SELECT"]
 anims/change = SubResource( 30 )
 

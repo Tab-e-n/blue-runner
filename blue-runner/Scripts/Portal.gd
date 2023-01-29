@@ -33,10 +33,10 @@ func _process(_delta):
 		if get_parent().get_node("Player").position.x < position.x:
 			scale.x = -1
 
-func teleport(timer : float, collectible : String):
+func teleport(timer : float, collectible : String, collectible_unlock : String):
 	# warning-ignore:return_value_discarded
-	if unlock != "":
-		Global.unlocked[Global.current_level_location][unlock] = true
+	Global.unlock(unlock)
+	Global.unlock(collectible_unlock)
 	
 	if name == "Portal":
 		Global.save_game()

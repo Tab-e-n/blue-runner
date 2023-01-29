@@ -291,6 +291,20 @@ func change_level(destination : String, return_value : bool = false):
 		# warning-ignore:return_value_discarded
 		get_tree().change_scene("res://Scenes/Menu_Level_Select.tscn")
 
+func unlock(unlock):
+	if unlock != "":
+		if unlock.begins_with("*"):
+			unlocked[unlock] = true
+		else:
+			unlocked[current_level_location][unlock] = true
+
+func check_unlock(unlock):
+	if unlock != "":
+		if unlock.begins_with("*"):
+			return unlocked[unlock]
+		else:
+			return unlocked[current_level_location][unlock]
+
 func convert_float_to_time(timer : float, limit_size : bool = true):
 	var minutes : int = int(floor(timer) / 60)
 	var seconds : int = int(floor(timer)) - minutes * 60
@@ -321,6 +335,7 @@ func save_game(timer : float = 0, par : float = 0, collectible : String = "", le
 	
 	if !temp.has("*collectibles"): temp["*collectibles"] = {}
 	if !temp["*collectibles"].has(current_level_location): temp["*collectibles"][current_level_location] = []
+	if typeof(temp["*collectibles"][current_level_location]) == TYPE_DICTIONARY: temp["*collectibles"][current_level_location] = []
 	if collectible != "" and !temp["*collectibles"][current_level_location].has(collectible):
 		temp["*collectibles"][current_level_location].append(collectible)
 	
@@ -342,7 +357,7 @@ func save_game(timer : float = 0, par : float = 0, collectible : String = "", le
 	savefile.store_line(to_json(temp_full))
 	savefile.close()
 	
-	if level != null: condicional_save_replay(level + "_Best", recording)
+	if level != null: condicional_save_replay(current_level_location + level + "_Best", recording)
 
 func load_game():
 	
@@ -469,7 +484,7 @@ func update_old_save(version : String, save : Dictionary):
 	for i in default_options.keys():
 		if !save["options"].has(i):
 			save["options"][i] = default_options[i]
-			print(i)
+			#print(i)
 	if !save["level_completion"].has("*collectibles"):  save["level_completion"]["*collectibles"] = []
 	
 	save["options"]["*version"] = VERSION
@@ -490,6 +505,8 @@ func save_replay(new_name : String, recording : Dictionary, level : bool = true)
 	
 	replay_name = "user://SRReplays/" + replay_name
 	
+	#print("save: " + replay_name)
+	
 	var savefile = File.new()
 	var temp = recording.duplicate()
 	
@@ -504,6 +521,8 @@ func load_replay(new_name, existance_check : bool = false, level : bool = true):
 	if level: replay_name = replay_filename(new_name, false)
 	
 	replay_name = "user://SRReplays/" + replay_name
+	
+	#print("load: " + replay_name)
 	
 	var loadfile = File.new()
 	var temp = {}
@@ -533,6 +552,8 @@ func delete_replay(new_name, level : bool = true):
 	if level: replay_name = replay_filename(new_name, false)
 	replay_name = "user://SRReplays/" + replay_name
 	
+	#print("delete: " + replay_name)
+	
 	var deletefile = Directory.new()
 	
 	deletefile.remove(replay_name)
@@ -541,17 +562,21 @@ func replay_filename(new_name : String, create_dir : bool):
 	var replay_name
 	replay_name = new_name.substr(new_name.find_last("/") + 1, new_name.length())
 	var folder_path : String = new_name.substr(0, new_name.find_last("/"))
-	
-	var folder_name = folder_path.substr(folder_path.find_last("/") + 1, folder_path.length())
-	
+	#print(folder_path)
+	var folder_name = folder_path.substr(folder_path.find_last("/") + 1, folder_path.length()) + "/"
+	#print(folder_name)
 	var directory : Directory = Directory.new()
 	match(new_name.substr(0, new_name.find("/"))):
 		"res:":
-			replay_name = "res/" + folder_name + "/" + replay_name
+			if folder_path == "res://Scenes":
+				folder_name = ""
+			replay_name = "res/" + folder_name + replay_name
 			# warning-ignore:return_value_discarded
 			if create_dir: directory.make_dir_recursive("user://SRReplays/res/" + folder_name)
 		"user:":
-			replay_name = "user/" + folder_name + "/" + replay_name
+			if folder_path == "user://SRLevels":
+				folder_name = ""
+			replay_name = "user/" + folder_name + replay_name
 			# warning-ignore:return_value_discarded
 			if create_dir: directory.make_dir_recursive("user://SRReplays/user/" + folder_name)
 		"Mods":
@@ -643,11 +668,16 @@ func load_data():
 	for group in range(loaded_level_groups.size()):
 		var level_dat = load_level_dat_file(loaded_level_groups[group][1] + loaded_level_groups[group][0] + "/level_group")
 		for i in level_dat["dependencies"]:
-			if !Global.mods_installed.has(i):
+			if !mods_installed.has(i):
 				temp_level_groups.remove(group)
 	loaded_level_groups = temp_level_groups.duplicate()
 	
 	loaded_level_groups.append(["SRLevels","user://"])
+	
+	for i in range(loaded_level_groups.size()):
+		loaded_level_groups[i].resize(4)
+		loaded_level_groups[i][2] = ""
+		loaded_level_groups[i][3] = ""
 	
 	# CHARACTERS.DAT
 

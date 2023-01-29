@@ -40,7 +40,6 @@ script = ExtResource( 1 )
 editor_properties = {
 "attachable": false,
 "editable_properties": {
-"par": [ 3, 0, 0, 0 ],
 "tele_destination": [ 4, 0, 0, 0 ],
 "type": [ 2, 0, 1, 1 ],
 "unlock": [ 4, 0, 0, 0 ]
@@ -52,7 +51,7 @@ editor_properties = {
 "unchangeable_properties": {
 "color": false,
 "order": true,
-"rotation": false,
+"rotation": true,
 "scale": false,
 "z_index": false
 }
