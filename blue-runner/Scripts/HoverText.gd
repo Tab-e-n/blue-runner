@@ -22,6 +22,8 @@ func _ready():
 	$Text.rect_size = text_size
 	$Text.rect_scale = text_scale
 	$Text.text = text
+	if !follow_player:
+		$Text.rect_position = offset
 
 func _physics_process(_delta):
 	if appearing:
@@ -39,9 +41,11 @@ func _physics_process(_delta):
 
 
 func _on_HoverText_body_entered(body):
-	appearing = true
-	following_body = body
+	if body.name == "Player":
+		appearing = true
+		following_body = body
 
-func _on_HoverText_body_exited(_body):
-	appearing = false
-	delay_timer = 0
+func _on_HoverText_body_exited(body):
+	if body.name == "Player":
+		appearing = false
+		delay_timer = 0

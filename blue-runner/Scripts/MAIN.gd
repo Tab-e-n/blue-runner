@@ -42,19 +42,19 @@ func menu_update():
 				1:
 					parent.get_node("AnimationPlayer").play("MAIN-REPLAY")
 					parent.menu = "REPLAY"
-					parent.move = true
+					parent.set_deferred("move", true)
 				2:
 					parent.get_node("AnimationPlayer").play("MAIN-OPTION")
 					parent.menu = "OPTION"
-					parent.move = true
+					parent.set_deferred("move", true)
 				3:
 					parent.get_node("AnimationPlayer").play("MAIN-HELP")
 					parent.menu = "HELP"
-					parent.move = true
+					parent.set_deferred("move", true)
 				4:
 					parent.get_node("AnimationPlayer").play("MAIN-SELECT")
 					parent.menu = "SELECT"
-					parent.move = true
+					parent.set_deferred("move", true)
 		
 		if Input.is_action_pressed("up") and parent.move:
 			if $AnimationPlayer.current_animation != "StandBy":

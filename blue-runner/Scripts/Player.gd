@@ -19,6 +19,7 @@ var death_wait : int = 0
 
 var timer : float = 0
 var collectible : String = ""
+var unlock : String = ""
 export var ghost : bool = false
 
 var replay : bool = false
@@ -207,4 +208,4 @@ func finish(collision):
 	#global.current_recording = recording.duplicate()
 	deny_input = true
 	end = true
-	get_slide_collision(collision).collider.teleport(float(int(timer * 100)) / 100, collectible)
+	get_slide_collision(collision).collider.teleport(float(int(timer * 100)) / 100, collectible, unlock)

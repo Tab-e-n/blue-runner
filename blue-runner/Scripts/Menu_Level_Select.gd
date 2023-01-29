@@ -92,9 +92,8 @@ func _process(_delta):
 				menu = "MAIN"
 	if $AnimationPlayer.current_animation != "ENTERING":
 		$dim.color = Color(0.02, 0.02, 0.13, 0)
-	if $AnimationPlayer.current_animation == "MAIN-SELECT":
+	if $AnimationPlayer.current_animation == "MAIN-SELECT" and move == true:
 		$SELECT.change_controls()
-		move = true
 	
 	
 	# MENU INPUT

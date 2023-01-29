@@ -42,4 +42,4 @@ func _process(_delta):
 	$Text.text = text
 	$Text.modulate = Color(text_color.r, text_color.g, text_color.b, 1)
 	$editor_point.modulate = Color(text_color.r, text_color.g, text_color.b, 1)
-	$Text.rect_position = offset
+	$Text.rect_position = offset / scale

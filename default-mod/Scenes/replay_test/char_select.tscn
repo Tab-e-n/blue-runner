@@ -1,0 +1,314 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://Scripts/Camera.gd" type="Script" id=1]
+[ext_resource path="res://Scripts/Collectible.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/Player.gd" type="Script" id=3]
+[ext_resource path="res://Scripts/Spike.gd" type="Script" id=4]
+[ext_resource path="res://Objects/Tilesets/WaterWay.tres" type="TileSet" id=5]
+[ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Scripts/HoverText.gd" type="Script" id=7]
+[ext_resource path="res://Objects/HoverText.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Objects/Collectible.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Objects/KillFloor.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Objects/Spike.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Objects/Player/Ghost.tscn" type="PackedScene" id=12]
+[ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=13]
+[ext_resource path="res://Scripts/Portal.gd" type="Script" id=14]
+[ext_resource path="res://Objects/Finish.tscn" type="PackedScene" id=15]
+[ext_resource path="res://Visual/Editor/editor_circle.png" type="Texture" id=16]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+var editor_properties : Dictionary = {
+	\"object_path\" : \"res://Objects/KillFloor.tscn\",
+	\"object_type\" : \"normal\",
+	\"layer\" : \"selected\",
+	\"rect\" : Rect2(0, 0, 768, 64),
+	\"editable_properties\" : {
+		#\"name\" : [TYPE, min, max, step],
+	},
+	\"unchangeable_properties\" : {
+		\"scale\" : false,
+		\"rotation\" : false,
+		\"z_index\" : false,
+		\"color\" : false,
+		\"order\" : false,
+	},
+	\"attachable\" : false,
+}
+"
+
+[node name="char_select" type="Node2D"]
+
+[node name="Player" type="Node2D" parent="." instance=ExtResource( 6 )]
+use_parent_material = true
+position = Vector2( -896, 512 )
+z_index = 20
+script = ExtResource( 3 )
+editor_properties = {
+"attachable": false,
+"editable_properties": {
+"character_location": [ 4, 0, 0, 0 ],
+"character_name": [ 4, 0, 0, 0 ],
+"facing": [ 4, 0, 0, 0 ]
+},
+"layer": "special",
+"object_path": "res://Objects/Player/Player.tscn",
+"object_type": "player",
+"rect": Rect2( 0, -32, 64, 64 ),
+"unchangeable_properties": {
+"color": false,
+"order": true,
+"rotation": true,
+"scale": true,
+"z_index": true
+}
+}
+character_name = ""
+character_location = "res:/"
+facing = "right"
+deny_input = true
+ghost = false
+
+[node name="Finish" type="StaticBody2D" parent="." instance=ExtResource( 15 )]
+use_parent_material = true
+position = Vector2( -528, 384 )
+z_index = 20
+script = ExtResource( 14 )
+editor_properties = {
+"attachable": false,
+"editable_properties": {
+"par": [ 3, 0, 0, 0 ],
+"tele_destination": [ 4, 0, 0, 0 ],
+"type": [ 2, 0, 1, 1 ],
+"unlock": [ 4, 0, 0, 0 ]
+},
+"layer": "special",
+"object_path": "res://Objects/Finish.tscn",
+"object_type": "finish",
+"rect": Rect2( 0, -32, 64, 64 ),
+"unchangeable_properties": {
+"color": false,
+"order": true,
+"rotation": false,
+"scale": false,
+"z_index": false
+}
+}
+tele_destination = "*Menu_Level_Select.tscn"
+par = 0.0
+type = 0.0
+unlock = ""
+
+[node name="objects_background" type="Node2D" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+z_index = -40
+
+[node name="decor_background" type="Node2D" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+z_index = -40
+
+[node name="tiles_background_0" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+scale = Vector2( 0.75, 0.75 )
+z_index = -30
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_background_1" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+scale = Vector2( 0.75, 0.75 )
+z_index = -30
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_background_2" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+scale = Vector2( 0.75, 0.75 )
+z_index = -30
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="objects_back" type="Node2D" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+z_index = -20
+
+[node name="decor_back" type="Node2D" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+z_index = -20
+
+[node name="tiles_back_0" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+z_index = -10
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_back_1" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+z_index = -10
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_back_2" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+z_index = -10
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="objects_center" type="Node2D" parent="."]
+
+[node name="HoverText" type="Node2D" parent="objects_center" instance=ExtResource( 8 )]
+use_parent_material = true
+position = Vector2( -576, 256 )
+scale = Vector2( 2, 2 )
+script = ExtResource( 7 )
+text = "Come and get it!"
+offset = Vector2( 64, 0 )
+text_size = Vector2( 500, 85 )
+text_scale = Vector2( 0.75, 0.75 )
+text_color = Color( 1, 1, 1, 1 )
+follow_player = false
+delay_until_appearing = 0
+appear_time = 60
+
+[node name="Collectible" type="Area2D" parent="objects_center" instance=ExtResource( 9 )]
+use_parent_material = true
+position = Vector2( 0, -416 )
+script = ExtResource( 2 )
+id = 1
+unlock = "*char_select_active"
+
+[node name="KillFloor" type="StaticBody2D" parent="objects_center" instance=ExtResource( 10 )]
+use_parent_material = true
+position = Vector2( -1152, 512 )
+rotation = 1.5708
+scale = Vector2( 2, 2 )
+script = SubResource( 1 )
+
+[node name="@KillFloor@324" type="StaticBody2D" parent="objects_center" instance=ExtResource( 10 )]
+use_parent_material = true
+position = Vector2( 1152, 512 )
+rotation = -1.5708
+scale = Vector2( 2, 2 )
+script = SubResource( 1 )
+
+[node name="Spike" type="StaticBody2D" parent="objects_center" instance=ExtResource( 11 )]
+use_parent_material = true
+position = Vector2( -144, -240 )
+scale = Vector2( 2, 2 )
+script = ExtResource( 4 )
+
+[node name="decor_center" type="Node2D" parent="."]
+
+[node name="@@440" type="Sprite" parent="decor_center"]
+use_parent_material = true
+position = Vector2( 0, -416 )
+scale = Vector2( 1.2, 1.2 )
+texture = ExtResource( 16 )
+
+[node name="@@441" type="Sprite" parent="decor_center"]
+use_parent_material = true
+position = Vector2( 0, -416 )
+scale = Vector2( 0.65, 0.65 )
+texture = ExtResource( 16 )
+
+[node name="@@442" type="Sprite" parent="decor_center"]
+use_parent_material = true
+position = Vector2( 0, -416 )
+scale = Vector2( 0.3, 0.3 )
+texture = ExtResource( 16 )
+
+[node name="@@443" type="Sprite" parent="decor_center"]
+use_parent_material = true
+position = Vector2( 0, -416 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 16 )
+
+[node name="tiles_center_0" type="TileMap" parent="."]
+z_index = 10
+tile_set = ExtResource( 5 )
+format = 1
+
+[node name="tiles_center_1" type="TileMap" parent="."]
+z_index = 10
+tile_set = ExtResource( 5 )
+format = 1
+tile_data = PoolIntArray( 1, 18, 0, 2, 18, 0, 65537, 18, 0, 65538, 18, 0, 131073, 18, 0, 131074, 18, 0, 131080, 18, 0, 131081, 18, 0, 196616, 18, 0, 196617, 18, 0, 262152, 18, 0, 262153, 18, 0, 327688, 18, 0, 327689, 18, 0, 458741, 18, 0, 458742, 18, 0, 458743, 18, 0, 458744, 18, 0, 393224, 18, 0, 393225, 18, 0, 524277, 18, 0, 524278, 18, 0, 524279, 18, 0, 524280, 18, 0, 458760, 18, 0, 458761, 18, 0, 589806, 18, 0, 589807, 18, 0, 589808, 18, 0, 589809, 18, 0, 589810, 18, 0, 589811, 18, 0, 589812, 18, 0, 589813, 18, 0, 589814, 18, 0, 589815, 18, 0, 589816, 18, 0, 589817, 18, 0, 589818, 18, 0, 589819, 18, 0, 589820, 18, 0, 589821, 18, 0, 589822, 18, 0, 589823, 18, 0, 524288, 18, 0, 524289, 18, 0, 524290, 18, 0, 524291, 18, 0, 524292, 18, 0, 524293, 18, 0, 524294, 18, 0, 524295, 18, 0, 524296, 18, 0, 524297, 18, 0, 524298, 18, 0, 524299, 18, 0, 524300, 18, 0, 524301, 18, 0, 524302, 18, 0, 524303, 18, 0, 524304, 18, 0, 524305, 18, 0, 655344, 18, 0, 655345, 18, 0, 655346, 18, 0, 655347, 18, 0, 655348, 18, 0, 655349, 18, 0, 655350, 18, 0, 655351, 18, 0, 655352, 18, 0, 655353, 18, 0, 655354, 18, 0, 655355, 18, 0, 655356, 18, 0, 655357, 18, 0, 655358, 18, 0, 655359, 18, 0, 589824, 18, 0, 589825, 18, 0, 589826, 18, 0, 589827, 18, 0, 589828, 18, 0, 589829, 18, 0, 589830, 18, 0, 589831, 18, 0, 589832, 18, 0, 589833, 18, 0, 589834, 18, 0, 589835, 18, 0, 589836, 18, 0, 589837, 18, 0, 589838, 18, 0, 589839, 18, 0, 720880, 18, 0, 720881, 18, 0, 720882, 18, 0, 720883, 18, 0, 720884, 18, 0, 720885, 18, 0, 720886, 18, 0, 720887, 18, 0, 720888, 18, 0, 720889, 18, 0, 720890, 18, 0, 720891, 18, 0, 720892, 18, 0, 720893, 18, 0, 720894, 18, 0, 720895, 18, 0, 655360, 18, 0, 655361, 18, 0, 655362, 18, 0, 655363, 18, 0, 655364, 18, 0, 655365, 18, 0, 655366, 18, 0, 655367, 18, 0, 655368, 18, 0, 655369, 18, 0, 655370, 18, 0, 655371, 18, 0, 655372, 18, 0, 655373, 18, 0, 655374, 18, 0, 655375, 18, 0, 786416, 18, 0, 786417, 18, 0, 786418, 18, 0, 786419, 18, 0, 786420, 18, 0, 786421, 18, 0, 786422, 18, 0, 786423, 18, 0, 786424, 18, 0, 786425, 18, 0, 786426, 18, 0, 786427, 18, 0, 786428, 18, 0, 786429, 18, 0, 786430, 18, 0, 786431, 18, 0, 720896, 18, 0, 720897, 18, 0, 720898, 18, 0, 720899, 18, 0, 720900, 18, 0, 720901, 18, 0, 720902, 18, 0, 720903, 18, 0, 720904, 18, 0, 720905, 18, 0, 720906, 18, 0, 720907, 18, 0, 720908, 18, 0, 720909, 18, 0, 720910, 18, 0, 720911, 18, 0 )
+
+[node name="tiles_center_2" type="TileMap" parent="."]
+z_index = 10
+tile_set = ExtResource( 5 )
+format = 1
+
+[node name="objects_front" type="Node2D" parent="."]
+z_index = 40
+
+[node name="decor_front" type="Node2D" parent="."]
+z_index = 40
+
+[node name="tiles_front_0" type="TileMap" parent="."]
+z_index = 50
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_front_1" type="TileMap" parent="."]
+z_index = 50
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_front_2" type="TileMap" parent="."]
+z_index = 50
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="Ghost" type="Node2D" parent="." instance=ExtResource( 12 )]
+z_index = -1
+script = ExtResource( 3 )
+editor_properties = {
+"attachable": false,
+"editable_properties": {
+
+},
+"layer": "special",
+"object_path": "res://Objects/Player/Ghost.tscn",
+"object_type": "ghost",
+"rect": Rect2( 0, -32, 64, 64 ),
+"unchangeable_properties": {
+"color": true,
+"order": true,
+"rotation": true,
+"scale": true,
+"z_index": true
+}
+}
+character_name = ""
+character_location = "res:/"
+facing = "right"
+deny_input = true
+ghost = true
+
+[node name="Camera" type="Node2D" parent="." instance=ExtResource( 13 )]
+z_index = 100
+script = ExtResource( 1 )
+limit_x = Vector2( 0, 0 )
+limit_y = Vector2( 0, 0 )
+zoom = Vector2( 2, 2 )

@@ -131,6 +131,8 @@ var edit_buttons : Array = []
 onready var edit_scroll : VScrollBar = $GUI/Edit_Items/Panel/objects/scroll
 var edit_scroll_last_value : int = 0
 
+var shortcuts : bool = true
+
 func _ready():
 	print(\"main ready\")
 	# Create bulk nodes
@@ -333,6 +335,8 @@ func _ready():
 	place_grid_snap = data.settings[\"editor_default_grid_snap\"]
 	
 	done_action(\"start level editor\", \"#0ce6f2\")
+	
+	get_viewport().connect(\"gui_focus_changed\", self, \"_on_focus_changed\")
 
 func ready_optionbutton_setup(option_button : OptionButton, data_array : Array):
 	var last_directory : String = \"res:/\"
@@ -343,6 +347,13 @@ func ready_optionbutton_setup(option_button : OptionButton, data_array : Array):
 			last_directory = i[1]
 		option_button.add_item(i[0])
 		option_button.set_item_metadata(option_button.get_item_count() - 1, i[1])
+
+func _on_focus_changed(control : Control):
+	if control != null:
+		if control is LineEdit or control.name == \"Level\":
+			shortcuts = false
+		else:
+			shortcuts = true
 
 func _process(_delta):
 	var window = get_viewport().get_visible_rect().end
@@ -366,16 +377,16 @@ func _process(_delta):
 	level_mouse_position.y = stepify((-level.position.y + mouse_pos.y - window.y / 2) / level.scale.y, 1)
 	
 	# Level Hotkeys
-	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"0\"):
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"0\") and shortcuts:
 		$GUI.visible = !$GUI.visible
-	var transform_mode : bool = Input.is_action_pressed(\"1\") and place_current_tab != PLACE_TILES
-	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"1\"):
+	var transform_mode : bool = Input.is_action_pressed(\"1\") and shortcuts and place_current_tab != PLACE_TILES
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"1\") and shortcuts:
 		$GUI/Edit_Items/Panel/other/scale_y.value = 1
 		$GUI/Edit_Items/Panel/other/scale_x.value = 1
 		$GUI/Edit_Items/Panel/other/rotation.value = 0
-	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"2\"):
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"2\") and shortcuts:
 		place_grid_snap = !place_grid_snap
-	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"3\"):
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"3\") and shortcuts:
 		var temp_level_position_hinge = level.position
 		var temp_level_scale_hinge = level.scale
 		
@@ -386,61 +397,61 @@ func _process(_delta):
 		level.scale.x = level.scale.y
 		level.position = temp_level_position_hinge * (level.scale / temp_level_scale_hinge)
 		
-	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"4\"):
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"4\") and shortcuts:
 		place_attach_mode = !place_attach_mode
 	
-	var edit_mode : bool = Input.is_action_pressed(\"15\") and place_current_tab == PLACE_OBJECTS
+	var edit_mode : bool = Input.is_action_pressed(\"15\") and shortcuts and place_current_tab == PLACE_OBJECTS
 	
 	# Tab / Mode Hotkeys
-	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"5\"):
+	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"5\") and shortcuts:
 		place_tab_move(0, PLACE_TILES)
-	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"6\"):
+	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"6\") and shortcuts:
 		place_tab_move(0, PLACE_DECOR)
-	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"7\"):
+	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"7\") and shortcuts:
 		place_tab_move(0, PLACE_OBJECTS)
-	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"8\"):
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"8\") and shortcuts:
 		place_mode_toggled(true, PLACEMODE_MOVE, true)
-	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"9\"):
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"9\") and shortcuts:
 		place_mode_toggled(true, PLACEMODE_PAINT, true)
-	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"10\"):
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"10\") and shortcuts:
 		place_mode_toggled(true, PLACEMODE_ERASER, true)
-	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"11\"):
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"11\") and shortcuts:
 		place_mode_toggled(true, PLACEMODE_COG, true)
 	
 	# File Hotkeys
-	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"12\"):
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"12\") and shortcuts:
 		save_popup()
-	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"13\"):
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"13\") and shortcuts:
 		load_popup()
-	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"14\"):
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"14\") and shortcuts:
 		create_new_level()
 	
 	
 	# Focus Hotkeys
-	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"16\"):
+	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"16\") and shortcuts:
 		$GUI/File/Panel/slider.pressed = !$GUI/File/Panel/slider.pressed
-	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"17\"):
+	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"17\") and shortcuts:
 		$GUI/Edit_Layers.focus_toggle(true)
 		
 		$GUI/Place/Panel/more.pressed = false
 		
 		$GUI/Edit_Items.focus_toggle(false)
 		$GUI/Edit_Tiles.focus_toggle(false)
-	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"18\"):
+	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"18\") and shortcuts:
 		$GUI/Edit_Layers.focus_toggle(false)
 		
 		$GUI/Place/Panel/more.pressed = true
 		
 		$GUI/Edit_Items.focus_toggle(false)
 		$GUI/Edit_Tiles.focus_toggle(false)
-	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"19\"):
+	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"19\") and shortcuts:
 		$GUI/Edit_Layers.focus_toggle(false)
 		
 		$GUI/Place/Panel/more.pressed = false
 		
 		$GUI/Edit_Items.focus_toggle(place_current_tab != PLACE_TILES)
 		$GUI/Edit_Tiles.focus_toggle(place_current_tab == PLACE_TILES)
-	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"20\"):
+	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"20\") and shortcuts:
 		$GUI/Place/Panel/slider.pressed = !$GUI/Place/Panel/slider.pressed
 	
 	# Mouse Input
@@ -449,7 +460,11 @@ func _process(_delta):
 	if Input.is_action_just_released(\"mouse_right\"):
 		level_input.pressed = false
 	
-	if edit_mode:
+	if !shortcuts:
+		if level_input.pressed:
+			shortcuts = true
+			level_input.pressed = false
+	elif edit_mode:
 		var edit_node
 		if place_selected_object.editor_properties[\"object_type\"] != \"bg\":
 			edit_node = place_selected_object
@@ -629,7 +644,7 @@ func _process(_delta):
 	elif transform_mode:
 		$GUI/Place/Panel/mode.bbcode_text += \"[color=#c837af]TRANSFORM[/color]\"
 		$GUI/border.default_color = Color(0.78, 0.22, 0.69, 0.53)
-	elif Input.is_action_pressed(\"3\"):
+	elif Input.is_action_pressed(\"3\") and shortcuts:
 		$GUI/Place/Panel/mode.bbcode_text += \"[color=#0ce6f2]MOVE[/color]\"
 		$GUI/border.default_color = Color(0.05, 0.9, 0.95, 0.53)
 	elif place_attach_mode:
@@ -1280,7 +1295,7 @@ func level_remove_closest_item():
 		else:
 			return
 	
-	if node != null:
+	if node != null and node != level_objects[\"bg\"]:
 		node.queue_free()
 	
 	if attachable != null: attachable.detached(node)
@@ -2326,7 +2341,6 @@ __meta__ = {
 }
 
 [node name="border" type="Line2D" parent="GUI"]
-visible = false
 points = PoolVector2Array( 0, 0, 1024, 0, 1024, 768, 0, 768, 0, 0 )
 width = 8.0
 default_color = Color( 0.784314, 0.215686, 0.686275, 1 )
@@ -3700,11 +3714,11 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]

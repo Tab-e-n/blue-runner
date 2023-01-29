@@ -12,6 +12,11 @@
 
 ## SONIC RUNNER
 
+### VISUAL
+
+ - Fixed the white pixel on the completion bar in the select menu
+ - When transitioning from level to level, the screen didn't go completely black
+
 ### NEW ADDITIONS
 
  - New loading sequence for SR
@@ -25,21 +30,30 @@
  - Fixed a game breaking bug where the game would crash upon deleting a save, and the wasn't able to load
  - The game now properly loads saves from version 0.X
  - When you rebound keys, the select menu didn't show the newly rebound key
- - Fixed the white pixel on the completion bar in the select menu
  - Fixed the User Universe page system just not working. Like, at all.
- - When transitioning from level to level, the screen didn't go completely black
+
  - Level_1-12 (Sunset Hopper) no longer goes to itself when you want to go the next level
 
 ## SONIC RUNNER EDITOR
+
+ - Portals aren't now the only objects that can unlock things, collectibles can now share this ability as well
 
 ### VISUAL
 
  - More objects now show their hitboxes
  - HoverText's point no longer scales up when scaling up the HoverText
+ - HoverText text offset now appears correctly
 
 ### FIXES & CHANGES
 
- - Placing down a portal no longer crashes the editor
+ - In the options, setting the default level name would set the default author name and vice versa
+
+ - While you edit text, keyboard shortcuts won't do anything until you stop editing text
  - Objects placed outside the center layer had collision, which wasn't intended
+ - Fixed the ability to erase the background with the erase tool
  - Ghost now always appears behind player
- - Changing the bg of the level group now actually does something in SR
+ - HoverText no longer triggers if its touching something that isn't the player
+ - Fixed HoverText text offset not working if follow_player wasn't turned on
+ - Placing down a portal no longer crashes the editor
+
+ - Changing the bg of a level group now actually does something in SR

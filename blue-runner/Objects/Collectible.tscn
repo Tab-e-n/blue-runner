@@ -10,7 +10,7 @@ extents = Vector2( 16, 24 )
 resource_name = "Collect"
 length = 0.7
 tracks/0/type = "value"
-tracks/0/path = NodePath("boltcollect:scale")
+tracks/0/path = NodePath("collect:scale")
 tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -22,7 +22,7 @@ tracks/0/keys = {
 "values": [ Vector2( 1.3, 1.3 ), Vector2( 1.5, 1.5 ), Vector2( 0, 0 ) ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("boltcollect:rotation_degrees")
+tracks/1/path = NodePath("collect:rotation_degrees")
 tracks/1/interp = 2
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -64,7 +64,7 @@ tracks/3/keys = {
 resource_name = "Collect Alt"
 length = 0.7
 tracks/0/type = "value"
-tracks/0/path = NodePath("boltcollect:scale")
+tracks/0/path = NodePath("collect:scale")
 tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -76,7 +76,7 @@ tracks/0/keys = {
 "values": [ Vector2( 1.3, 1.3 ), Vector2( 1.5, 1.5 ), Vector2( 0, 0 ) ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("boltcollect:rotation_degrees")
+tracks/1/path = NodePath("collect:rotation_degrees")
 tracks/1/interp = 2
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -125,7 +125,7 @@ script = ExtResource( 2 )
 [node name="Collision" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
 
-[node name="boltcollect" type="Sprite" parent="."]
+[node name="collect" type="Sprite" parent="."]
 scale = Vector2( 1.3, 1.3 )
 texture = ExtResource( 1 )
 
