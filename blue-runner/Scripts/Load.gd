@@ -7,13 +7,13 @@ var current_key : int = 0
 var booting = true
 
 var text = [
-	"MOTRBIOS (C) 2021 Luke Adams\n",
+	"MOTRBIOS (C) 2022 Luke Adams\n",
 	"BIOS date 29/2/00 14:10:32\n",
 	"CPU:",
 	" VVIDYA Jetstream Nano\n",
 	"Memory:",
 	" SD/CCMN 4096MB\n",
-	"WARNING: System seems to be in bad condition\n\n",
+	"WARNING: System has been tampered with\n\n",
 	
 	"Checking motor settings",
 	".",

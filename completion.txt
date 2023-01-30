@@ -24,7 +24,7 @@ LEVEL = level name (ig. Level_1-1)
 PERCENTAGE = 0 - 100, GROUP completion must be bigger than it to unlock
 
 ["bonus", LOCATION, AMOUNT]
-LOCATION = res://Scenes/, user://SRLevels/, or a Mods/[MODENAME]/Scenes
+LOCATION = res://, user://, or a Mods/[MODENAME]/
 AMOUNT = amount of bonuses required
 
 ["custom", NAME, null]

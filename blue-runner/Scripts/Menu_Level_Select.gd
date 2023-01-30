@@ -47,6 +47,13 @@ func _ready():
 				start = false
 				break
 	
+	$CHARACTER.unlocked_characters
+	for place in Global.loaded_characters.keys():
+		for character in Global.loaded_characters[place].keys():
+			$CHARACTER.unlocked_characters.append([character, place, ""])
+	
+	$CHARACTER.ready_renders()
+	
 	if start or global.replay_menu:
 		$menu_circle_2.scale = Vector2(2.75, 2.75)
 		$menu_button.position = Vector2(0, -64)
@@ -107,7 +114,7 @@ func _process(_delta):
 	
 	if hold >= 20:
 		var hold_shift : int = 6
-		if menu == "MAIN" or menu == "HELP": hold_shift = 10
+		if menu == "MAIN" or menu == "HELP" or menu == "CHARACTER": hold_shift = 10
 		hold -= hold_shift
 		move = true
 	

@@ -23,6 +23,7 @@
 	 - If you can't bind your keys through the options, (because you did a funny and bound everything to the same key)
 	   you can now interupt this new sequence by pressing F12, which will allow you to rebind your keys
  - You can now see exact stats for what levels you beaten, unlocked etc.
+ - New character select menu!
  - When beating a level, it now shows you the levels par time
 
 ### FIXES & CHANGES
@@ -36,10 +37,15 @@
 
 ## SONIC RUNNER EDITOR
 
- - Portals aren't now the only objects that can unlock things, collectibles can now share this ability as well
+### NEW ADDITIONS
+
+ - Portals now aren't the only objects that can unlock things, collectibles now share this ability as well
+ - You can now set unlock requirements for characters
 
 ### VISUAL
 
+ - In the edit menu, when editing an objects unique properties, the text is now smaller, so it can fit more text.
+ - If a objects unique property is uneditable with the edit panel, it now says so (SpinningArm and Track)
  - More objects now show their hitboxes
  - HoverText's point no longer scales up when scaling up the HoverText
  - HoverText text offset now appears correctly

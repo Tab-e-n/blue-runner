@@ -59,6 +59,8 @@ var current_level_location : String = "res://Scenes/waterway/"
 var loaded_level_groups = []
 var level_group = {}
 
+var loaded_characters = {}
+
 var last_input_events : Array = range(8)
 
 func _ready():
@@ -315,6 +317,15 @@ func convert_float_to_time(timer : float, limit_size : bool = true):
 		# warning-ignore:integer_division
 		# warning-ignore:integer_division
 		return String(minutes)+":"+String(seconds/10)+String(seconds%10)+"."+String(decimal/10)+String(decimal%10)
+
+func scale_down_sprite(sprite : Sprite, final_scale : Vector2 = Vector2(1, 1), desired_rect : Vector2 = Vector2(64, 64)):
+	sprite.scale = Vector2(1, 1)
+	var sprite_rect : Vector2 = sprite.get_rect().size
+	if sprite_rect.x > sprite_rect.y:
+		sprite.scale.x = final_scale.x / (sprite_rect.x / desired_rect.x)
+	else:
+		sprite.scale.x = final_scale.y / (sprite_rect.y / desired_rect.y)
+	sprite.scale.y = sprite.scale.x
 
 func save_game(timer : float = 0, par : float = 0, collectible : String = "", level = null, recording : Dictionary = {}):
 	var savefile = File.new()
@@ -607,11 +618,10 @@ func save_level_dat_file(data : Dictionary, filename_ : String, official : bool 
 	savefile.close()
 
 func load_level_dat_file(filename_ : String, _official : bool = true):
-	#var file_prefix : String
-	#if _official:
-	#	file_prefix = "Scenes/"
-	#else:
-	#	file_prefix = "Mods/Scenes/"
+	print(filename_)
+	return load_dat_file(filename_)
+
+func load_dat_file(filename_ : String):
 	
 	#print(filename_)
 	
@@ -666,7 +676,7 @@ func load_data():
 	
 	var temp_level_groups = loaded_level_groups.duplicate()
 	for group in range(loaded_level_groups.size()):
-		var level_dat = load_level_dat_file(loaded_level_groups[group][1] + loaded_level_groups[group][0] + "/level_group")
+		var level_dat = load_dat_file(loaded_level_groups[group][1] + loaded_level_groups[group][0] + "/level_group")
 		for i in level_dat["dependencies"]:
 			if !mods_installed.has(i):
 				temp_level_groups.remove(group)
@@ -680,6 +690,17 @@ func load_data():
 		loaded_level_groups[i][3] = ""
 	
 	# CHARACTERS.DAT
+	
+	var scan_places = ["res:/"]
+	for mod_name in mods_installed:
+		scan_places.append("Mods/" + mod_name)
+	for place in scan_places:
+		var dat_file = load_dat_file(place + "/Objects/Player/characters")
+		
+		if dat_file.size() > 0:
+			loaded_characters[place] = dat_file["*characters"].duplicate()
+	
+	print(loaded_characters)
 
 func scan_single_directory(main_directory : String, sub_directory : String, storage : Array, file_type : String, _file_descriptor : String):
 	var directory : Directory = Directory.new()

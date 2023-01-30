@@ -1,6 +1,6 @@
 GENERAL
 
-manual
+documentation
 
 EDITOR
 
@@ -12,9 +12,10 @@ layer switching shortcut
 prevent shortcuts from working when focused on a line edit
 z_index has some buggy behavior
 exit editor shortcut
+mod version compatability
 
-rebind move to something else maybe
 undo system (i dont really wanna)
+rebind move to something else maybe
 
 RUNNER
 
@@ -23,6 +24,9 @@ character select
 character unlocks in characters.dat
 tutorial level
 character missing
-character greenbox
 touchup replay menu
+character greenbox
+
+level group unlocks
 changing prebuilt level groups
+Cheat code menu

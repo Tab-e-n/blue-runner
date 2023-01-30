@@ -185,7 +185,7 @@ func menu_update():
 	
 	if (parent.move and !group_select) or update_level_text:
 		#print(selected_level_location + selected_level_name)
-		var level_dat = Global.load_level_dat_file(selected_level_location + selected_level_name)
+		var level_dat = Global.load_dat_file(selected_level_location + selected_level_name)
 		#print(level_dat)
 		$Level_Descriptor/level_name.text = selected_level_name
 		$Level_Descriptor/creator.text = ""
@@ -241,18 +241,19 @@ func group_visuals():
 	if repetitions > 12:
 		repetitions = 12
 	for i in range(repetitions):
+		var file : String = Global.loaded_level_groups[i + group_shift][1] + Global.loaded_level_groups[i + group_shift][0] + "/logo.png"
 		if Global.loaded_level_groups[i + group_shift][1] == "user://":
 			get_node("group_select/" + String(i)).texture = preload("res://Visual/Title/logo_user.png")
-			continue
-		if Global.loaded_level_groups[i + group_shift][3] != "":
+		elif Global.loaded_level_groups[i + group_shift][3] != "":
 			get_node("group_select/" + String(i)).texture = load(Global.loaded_level_groups[i + group_shift][3])
-			continue
-		var file : String = Global.loaded_level_groups[i + group_shift][1] + Global.loaded_level_groups[i + group_shift][0] + "/logo.png"
-		get_node("group_select/" + String(i)).texture = load(file)
-		Global.loaded_level_groups[i + group_shift][3] = file
-		if get_node("group_select/" + String(i)).texture == null:
-			get_node("group_select/" + String(i)).texture = preload("res://Visual/Title/logo_custom.png")
-			Global.loaded_level_groups[i + group_shift][3] = "res://Visual/Title/logo_custom.png"
+		else:
+			get_node("group_select/" + String(i)).texture = load(file)
+			Global.loaded_level_groups[i + group_shift][3] = file
+			if get_node("group_select/" + String(i)).texture == null:
+				get_node("group_select/" + String(i)).texture = preload("res://Visual/Title/logo_custom.png")
+				Global.loaded_level_groups[i + group_shift][3] = "res://Visual/Title/logo_custom.png"
+		
+		Global.scale_down_sprite(get_node("group_select/" + String(i)), Vector2(2, 2))
 
 func reload_all_levels(start : bool = false):
 	var user_group = Global.current_level_location == "user://SRLevels/"
