@@ -1,4 +1,4 @@
-[gd_scene load_steps=72 format=2]
+[gd_scene load_steps=73 format=2]
 
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=1]
 [ext_resource path="res://Visual/Editor/editor_paintbrush.png" type="Texture" id=2]
@@ -50,6 +50,7 @@
 [ext_resource path="res://Visual/Editor/editor_exit_enabled.png" type="Texture" id=48]
 [ext_resource path="res://Visual/Editor/editor_exit.png" type="Texture" id=49]
 [ext_resource path="res://Visual/Editor/editor_new_hover.png" type="Texture" id=50]
+[ext_resource path="res://Text/Lacrimae_Small_Spaced.tres" type="DynamicFont" id=51]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
@@ -938,15 +939,6 @@ func set_owner_recursive(nodes : Array):
 		if node.get_children() != []:
 			set_owner_recursive(node.get_children())
 
-func scale_down_sprite(item : Sprite, scale_down_to : Vector2 = Vector2(1, 1)):
-	item.scale = Vector2(1, 1)
-	var item_rect : Vector2 = item.get_rect().size
-	if item_rect.x > item_rect.y:
-		item.scale.x = scale_down_to.x / (item_rect.x / 64)
-	else:
-		item.scale.x = scale_down_to.y / (item_rect.y / 64)
-	item.scale.y = item.scale.x
-
 func convert_object_into_sprite(path : String):
 	var item_texture_name : String = path.right(path.find_last(\"/\") + 1)
 	var item_texture_place : String = path.left(path.find(\"/\"))
@@ -1421,7 +1413,7 @@ func place_update_items(tab : int):
 				current_sprite.texture = texture_missing
 			else:
 				current_sprite.texture = loaded_texture
-			scale_down_sprite(current_sprite)
+			data.scale_down_sprite(current_sprite)
 
 			button.disabled = false
 
@@ -1646,7 +1638,7 @@ func items_update_items(current_row, directory, tab):
 		if loaded_texture == null:
 			loaded_texture = texture_missing
 		sprite.texture = loaded_texture
-		scale_down_sprite(sprite)
+		data.scale_down_sprite(sprite)
 
 		if tab == PLACE_OBJECTS:
 			button.disabled = sprite_index >= data.place_objects[directory].size()
@@ -1740,7 +1732,7 @@ func edit_item_change(path : String, texture : Texture = null):
 	else:
 		$GUI/Edit_Items/Panel/item.texture = texture_missing
 		change_filepath_text(\"???\")
-	scale_down_sprite($GUI/Edit_Items/Panel/item, Vector2(2, 2))
+	data.scale_down_sprite($GUI/Edit_Items/Panel/item, Vector2(2, 2))
 	
 	
 
@@ -1775,7 +1767,10 @@ func edit_item_properties_update(properties : Dictionary, node : Node):
 			TYPE_BOOL:
 				button_amount = 1
 		for l in range(button_amount):
-			$GUI/Edit_Items/Panel/objects/text.text += property + button_descriptors[l] + \":\\n\\n\"
+			$GUI/Edit_Items/Panel/objects/text.text += property + button_descriptors[l] + \":\\n\"
+			if properties[property][0] == TYPE_NIL:
+				$GUI/Edit_Items/Panel/objects/text.text += \"Cannot edit this directly\"
+			$GUI/Edit_Items/Panel/objects/text.text += \"\\n\"
 		var new_buttons : Array = edit_item_buttons(properties[property], button_amount, Vector2(16, position_y + 32))
 		
 		edit_buttons.append([[], \"value\", node, property, properties[property][0]])
@@ -2890,7 +2885,6 @@ anims/Focus = SubResource( 7 )
 anims/Unfocus = SubResource( 8 )
 
 [node name="Edit_Items" type="Control" parent="GUI"]
-visible = false
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
@@ -2909,6 +2903,7 @@ __meta__ = {
 }
 
 [node name="decor" type="Control" parent="GUI/Edit_Items/Panel"]
+visible = false
 margin_right = 304.0
 margin_bottom = 464.0
 mouse_filter = 2
@@ -2953,7 +2948,6 @@ focus_next = NodePath(".")
 focus_previous = NodePath("../flip_h")
 
 [node name="objects" type="Control" parent="GUI/Edit_Items/Panel"]
-visible = false
 margin_top = 136.0
 margin_right = 304.0
 margin_bottom = 456.0
@@ -2965,9 +2959,14 @@ __meta__ = {
 
 [node name="text" parent="GUI/Edit_Items/Panel/objects" instance=ExtResource( 10 )]
 margin_left = 16.0
-margin_right = 272.0
-margin_bottom = -256.0
+margin_right = 448.0
+margin_bottom = 320.0
 mouse_filter = 0
+custom_fonts/mono_font = ExtResource( 51 )
+custom_fonts/bold_italics_font = ExtResource( 51 )
+custom_fonts/italics_font = ExtResource( 51 )
+custom_fonts/bold_font = ExtResource( 51 )
+custom_fonts/normal_font = ExtResource( 51 )
 text = ""
 fit_content_height = true
 
@@ -2994,6 +2993,7 @@ __meta__ = {
 }
 
 [node name="other" type="Control" parent="GUI/Edit_Items/Panel"]
+visible = false
 margin_right = 304.0
 margin_bottom = 464.0
 mouse_filter = 2
@@ -3714,11 +3714,11 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
@@ -3738,8 +3738,8 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_back" to="." method="layer_color_changed" binds= [ 1 ]]
 [connection signal="value_changed" from="GUI/Edit_Layers/Panel/scale_background" to="." method="layer_scale_changed" binds= [ 0 ]]
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_background" to="." method="layer_color_changed" binds= [ 0 ]]
-[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
 [connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
+[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
 [connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
 [connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="items_scroll_scrolling"]
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]

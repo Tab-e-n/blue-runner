@@ -14,7 +14,7 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
-const options_span : int = 1344
+const options_span : int = 1408
 
 func _ready():
 	ready_optionbutton_setup($GUI/base/base_normal, data.level_icon)
@@ -23,6 +23,8 @@ func _ready():
 	ready_optionbutton_setup($GUI/base/base_perfect, data.level_icon)
 	
 	$VScrollBar.max_value = options_span / 64
+	
+	character_changed_unlock_type(0)
 
 func ready_optionbutton_setup(option_button : OptionButton, data_array : Array):
 	var last_directory : String = \"res:/\"
@@ -65,7 +67,7 @@ func base_save():
 		$GUI/base/base_perfect.get_item_text($GUI/base/base_perfect.selected)
 	]
 	if !temp.has(\"*base\"): temp[\"*base\"] = []
-	temp[\"*base\"].append($GUI/base/base_name.text)
+	if !temp[\"*base\"].has($GUI/base/base_name.text): temp[\"*base\"].append($GUI/base/base_name.text)
 	
 	savefile.open(\"base.dat\", File.WRITE)
 	savefile.store_line(to_json(temp))
@@ -93,6 +95,51 @@ func base_remove():
 		savefile.store_line(to_json(temp))
 		savefile.close()
 
+enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
+
+func character_changed_unlock_type(index):
+	$\"GUI/character/1_text\".text = \"\"
+	$\"GUI/character/2_text\".text = \"\"
+	$\"GUI/character/2_number\".value = 0
+	match(index):
+		UNLOCK_ALWAYS:
+			$\"GUI/character/1_text\".visible = false
+			$\"GUI/character/2_text\".visible = false
+			$\"GUI/character/2_number\".visible = false
+			$GUI/character/text_edit.text = \"Unlock Type\\n\"
+		UNLOCK_BEAT:
+			$\"GUI/character/1_text\".visible = true
+			$\"GUI/character/2_text\".visible = true
+			$\"GUI/character/2_number\".visible = false
+			$GUI/character/text_edit.text = \"Unlock Type\\nLevel Group\\nLevel Name\"
+		UNLOCK_PAR:
+			$\"GUI/character/1_text\".visible = true
+			$\"GUI/character/2_text\".visible = true
+			$\"GUI/character/2_number\".visible = false
+			$GUI/character/text_edit.text = \"Unlock Type\\nLevel Group\\nLevel Name\"
+		UNLOCK_COMPLETION:
+			$\"GUI/character/1_text\".visible = true
+			$\"GUI/character/2_text\".visible = false
+			$\"GUI/character/2_number\".visible = true
+			$\"GUI/character/2_number\".allow_greater = false
+			$GUI/character/text_edit.text = \"Unlock Type\\nLevel Group\\nPercentage\"
+		UNLOCK_BONUS:
+			$\"GUI/character/1_text\".visible = true
+			$\"GUI/character/2_text\".visible = false
+			$\"GUI/character/2_number\".visible = true
+			$\"GUI/character/2_number\".allow_greater = true
+			$GUI/character/text_edit.text = \"Unlock Type\\nBonus Group\\nAmount of Bonus\"
+		UNLOCK_CUSTOM:
+			$\"GUI/character/1_text\".visible = true
+			$\"GUI/character/2_text\".visible = false
+			$\"GUI/character/2_number\".visible = false
+			$GUI/character/text_edit.text = \"Unlock Type\\nUnlock Name\"
+		UNLOCK_NEVER:
+			$\"GUI/character/1_text\".visible = false
+			$\"GUI/character/2_text\".visible = false
+			$\"GUI/character/2_number\".visible = false
+			$GUI/character/text_edit.text = \"Unlock Type\\n\"
+
 func character_save():
 	var loadfile = File.new()
 	var temp = {}
@@ -108,8 +155,13 @@ func character_save():
 	
 	var savefile = File.new()
 	
-	if !temp.has(\"*characters\"): temp[\"*characters\"] = []
-	temp[\"*characters\"].append($GUI/character/name.text)
+	if !temp.has(\"*characters\"): temp[\"*characters\"] = {}
+	temp[\"*characters\"][$GUI/character/name.text] = [$GUI/character/type.selected, $\"GUI/character/1_text\".text, null]
+	
+	if $GUI/character/type.selected == UNLOCK_COMPLETION or $GUI/character/type.selected == UNLOCK_BONUS:
+		temp[\"*characters\"][$GUI/character/name.text][2] = $\"GUI/character/2_number\".value
+	else:
+		temp[\"*characters\"][$GUI/character/name.text][2] = $\"GUI/character/2_text\".text
 	
 	savefile.open(\"characters.dat\", File.WRITE)
 	savefile.store_line(to_json(temp))
@@ -228,7 +280,7 @@ __meta__ = {
 
 [node name="instructions" type="Panel" parent="GUI"]
 margin_left = 152.0
-margin_top = 8.0
+margin_top = -8.0
 margin_right = 944.0
 margin_bottom = 296.0
 __meta__ = {
@@ -239,7 +291,7 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 16.0
 margin_right = -296.0
-margin_bottom = -152.0
+margin_bottom = -213.0
 rect_scale = Vector2( 0.75, 0.75 )
 text = "INSTRUCTIONS"
 
@@ -247,7 +299,7 @@ text = "INSTRUCTIONS"
 margin_left = 16.0
 margin_top = 72.0
 margin_right = 744.0
-margin_bottom = 104.0
+margin_bottom = 88.0
 text = "To edit a dat file, place it next to the SR Editor executable. Then you'll be able to edit it using these tools, without making syntax mistakes. If there aren't any files to edit, the SR Editor will make new ones.
 For further instruction look at the SR manual."
 
@@ -273,8 +325,8 @@ margin_left = 616.0
 margin_top = 8.0
 margin_right = 680.0
 margin_bottom = 72.0
-texture_normal = ExtResource( 7 )
-texture_pressed = ExtResource( 3 )
+texture_normal = ExtResource( 4 )
+texture_pressed = ExtResource( 8 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -326,18 +378,18 @@ margin_bottom = 8.0
 text = "Perfect"
 
 [node name="base_name" type="LineEdit" parent="GUI/base"]
-margin_left = 320.0
+margin_left = 328.0
 margin_top = 88.0
-margin_right = 704.0
+margin_right = 712.0
 margin_bottom = 120.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="base_normal" type="OptionButton" parent="GUI/base"]
-margin_left = 320.0
+margin_left = 328.0
 margin_top = 136.0
-margin_right = 704.0
+margin_right = 712.0
 margin_bottom = 168.0
 clip_text = true
 __meta__ = {
@@ -345,23 +397,23 @@ __meta__ = {
 }
 
 [node name="base_locked" type="OptionButton" parent="GUI/base"]
-margin_left = 320.0
+margin_left = 328.0
 margin_top = 232.0
-margin_right = 704.0
+margin_right = 712.0
 margin_bottom = 264.0
 clip_text = true
 
 [node name="base_done" type="OptionButton" parent="GUI/base"]
-margin_left = 320.0
+margin_left = 328.0
 margin_top = 184.0
-margin_right = 704.0
+margin_right = 712.0
 margin_bottom = 216.0
 clip_text = true
 
 [node name="base_perfect" type="OptionButton" parent="GUI/base"]
-margin_left = 320.0
+margin_left = 328.0
 margin_top = 280.0
-margin_right = 704.0
+margin_right = 712.0
 margin_bottom = 312.0
 clip_text = true
 __meta__ = {
@@ -372,7 +424,7 @@ __meta__ = {
 margin_left = 152.0
 margin_top = 664.0
 margin_right = 944.0
-margin_bottom = 808.0
+margin_bottom = 936.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -381,7 +433,7 @@ __meta__ = {
 margin_left = 16.0
 margin_top = 16.0
 margin_right = 149.0
-margin_bottom = -53.0
+margin_bottom = -181.0
 rect_scale = Vector2( 0.75, 0.75 )
 text = "CHARACTERS.DAT"
 
@@ -390,8 +442,8 @@ margin_left = 616.0
 margin_top = 8.0
 margin_right = 680.0
 margin_bottom = 72.0
-texture_normal = ExtResource( 7 )
-texture_pressed = ExtResource( 3 )
+texture_normal = ExtResource( 4 )
+texture_pressed = ExtResource( 8 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -411,7 +463,7 @@ __meta__ = {
 margin_left = 72.0
 margin_top = 88.0
 margin_right = -208.0
-margin_bottom = 8.0
+margin_bottom = -120.0
 text = "Character"
 
 [node name="name" type="LineEdit" parent="GUI/character"]
@@ -423,11 +475,52 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="text_edit" parent="GUI/character" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 136.0
+margin_right = -208.0
+margin_bottom = 56.0
+text = "Unlock Type"
+
+[node name="type" type="OptionButton" parent="GUI/character"]
+margin_left = 328.0
+margin_top = 136.0
+margin_right = 712.0
+margin_bottom = 168.0
+text = "Always Unlocked"
+clip_text = true
+items = [ "Always Unlocked", null, false, 0, null, "Beat Level", null, false, 1, null, "Par Level", null, false, 2, null, "Group Completion", null, false, 3, null, "Bonus Amount", null, false, 4, null, "Custom Unlock", null, false, 5, null, "Never Unlocked", null, false, 6, null ]
+selected = 0
+
+[node name="1_text" type="LineEdit" parent="GUI/character"]
+margin_left = 328.0
+margin_top = 168.0
+margin_right = 712.0
+margin_bottom = 200.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="2_text" type="LineEdit" parent="GUI/character"]
+margin_left = 328.0
+margin_top = 200.0
+margin_right = 712.0
+margin_bottom = 232.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="2_number" type="SpinBox" parent="GUI/character"]
+margin_left = 328.0
+margin_top = 200.0
+margin_right = 712.0
+margin_bottom = 232.0
+
 [node name="mod" type="Panel" parent="GUI"]
 margin_left = 152.0
-margin_top = 824.0
+margin_top = 952.0
 margin_right = 944.0
-margin_bottom = 1288.0
+margin_bottom = 1416.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -551,6 +644,7 @@ texture_pressed = ExtResource( 9 )
 [connection signal="pressed" from="GUI/base/base_remove" to="." method="base_remove"]
 [connection signal="pressed" from="GUI/character/save" to="." method="character_save"]
 [connection signal="pressed" from="GUI/character/remove" to="." method="character_remove"]
+[connection signal="item_selected" from="GUI/character/type" to="." method="character_changed_unlock_type"]
 [connection signal="pressed" from="GUI/mod/modify" to="." method="mod_modify"]
 [connection signal="pressed" from="GUI/mod/save" to="." method="dependecies_save"]
 [connection signal="pressed" from="GUI/mod/remove" to="." method="dependecies_remove"]

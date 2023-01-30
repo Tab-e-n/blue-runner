@@ -74,7 +74,7 @@ func _ready():
 			character_location = global.current_character_location
 	
 	var char_load : PackedScene = load(character_location + "/Objects/Player/" + character_name + "_Character.tscn")
-	if char_load == null: char_load = load("res://Objects/Player/missing_Character.tscn")
+	if char_load == null: char_load = preload("res://Objects/Player/missing_Character.tscn")
 	var char_node = char_load.instance()
 	add_child(char_node)
 	character = char_node

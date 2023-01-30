@@ -21,7 +21,7 @@ func _process(_delta):
 	pass
 
 func load_base():
-	level_dat = global.load_level_dat_file(level_location + level_name, true)
+	level_dat = global.load_dat_file(level_location + level_name)
 	if !level_dat.has("level_base"): level_dat["level_base"] = ["base","res:/"] #typeof(level_dat) == TYPE_NIL:
 	if !level_dat.has("level_icon"): level_dat["level_icon"] = ["questionmark.png","res:/"]
 	
