@@ -39,11 +39,12 @@ func mod_selected(index):
 		$mod_status.modulate = Color(0, 1, 0, 1)
 		$mod_name.bbcode_text = \"Vanilla Sonic Runner\"
 		$mod_author.bbcode_text = \"Tabin\"
-		$mod_description.bbcode_text = \"The base for all additions\"
+		$mod_description.bbcode_text = \"The base for all other additions.\"
 		$mod_active.pressed = true
 		$mod_active.disabled = true
 		$logo.texture = load(\"res://Visual/S1/head.png\")
 		$logo.scale = Vector2(1, 1)
+		
 		var item_rect : Vector2 = $logo.get_rect().size
 		$logo.scale.y = 1 / (item_rect.y / 128)
 		$logo.scale.x = $logo.scale.y

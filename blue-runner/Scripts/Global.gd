@@ -298,14 +298,56 @@ func unlock(unlock):
 		if unlock.begins_with("*"):
 			unlocked[unlock] = true
 		else:
+			if !unlocked.has(current_level_location):
+				unlocked[current_level_location] = []
 			unlocked[current_level_location][unlock] = true
 
 func check_unlock(unlock):
 	if unlock != "":
 		if unlock.begins_with("*"):
+			if !unlocked.has(unlock):
+				unlocked[unlock] = false
 			return unlocked[unlock]
 		else:
+			if !unlocked.has(current_level_location):
+				unlocked[current_level_location] = []
+			if !unlocked[current_level_location].has(unlock):
+				unlocked[unlock] = false
 			return unlocked[current_level_location][unlock]
+
+enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
+func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
+	
+	if unlock_type == UNLOCK_NEVER:
+		return false
+	
+	if unlock_type == UNLOCK_BEAT or unlock_type == UNLOCK_PAR:
+		if !level_completion[parameter_1].has(parameter_2):
+			return false
+		if level_completion[parameter_1][parameter_2][0] == null:
+			return false
+		
+		var time = level_completion[parameter_1][parameter_2][0]
+		var par = level_completion[parameter_1][parameter_2][1]
+		if time > par and par != 0 and unlock_type == UNLOCK_PAR:
+			return false
+	
+	if unlock_type == UNLOCK_COMPLETION:
+		if parameter_2 > loaded_level_groups[parameter_1][4]:
+			return false
+	
+	if unlock_type == UNLOCK_BONUS:
+		var collectible_amount : int = 0
+		for i in level_completion["*collectibles"].keys():
+			if i.begins_with(parameter_1):
+				collectible_amount += Global.level_completion["*collectibles"][i].size()
+		if parameter_2 > collectible_amount:
+			return false
+	
+	if unlock_type == UNLOCK_CUSTOM:
+		return check_unlock("*" + parameter_2 + "*" + parameter_1)
+	
+	return true
 
 func convert_float_to_time(timer : float, limit_size : bool = true):
 	var minutes : int = int(floor(timer) / 60)
@@ -327,7 +369,7 @@ func scale_down_sprite(sprite : Sprite, final_scale : Vector2 = Vector2(1, 1), d
 		sprite.scale.x = final_scale.y / (sprite_rect.y / desired_rect.y)
 	sprite.scale.y = sprite.scale.x
 
-func save_game(timer : float = 0, par : float = 0, collectible : String = "", level = null, recording : Dictionary = {}):
+func save_game(timer : float = 0, par : float = 0, collectible : Array = [], level = null, recording : Dictionary = {}):
 	var savefile = File.new()
 	var temp = {}
 	
@@ -347,8 +389,9 @@ func save_game(timer : float = 0, par : float = 0, collectible : String = "", le
 	if !temp.has("*collectibles"): temp["*collectibles"] = {}
 	if !temp["*collectibles"].has(current_level_location): temp["*collectibles"][current_level_location] = []
 	if typeof(temp["*collectibles"][current_level_location]) == TYPE_DICTIONARY: temp["*collectibles"][current_level_location] = []
-	if collectible != "" and !temp["*collectibles"][current_level_location].has(collectible):
-		temp["*collectibles"][current_level_location].append(collectible)
+	for collect in collectible:
+		if collect != "" and !temp["*collectibles"][current_level_location].has(collect):
+			temp["*collectibles"][current_level_location].append(collect)
 	
 	var temp_full = {
 		"level_completion" : {},
@@ -685,9 +728,10 @@ func load_data():
 	loaded_level_groups.append(["SRLevels","user://"])
 	
 	for i in range(loaded_level_groups.size()):
-		loaded_level_groups[i].resize(4)
+		loaded_level_groups[i].resize(6)
 		loaded_level_groups[i][2] = ""
 		loaded_level_groups[i][3] = ""
+		loaded_level_groups[i][4] = 0
 	
 	# CHARACTERS.DAT
 	
@@ -700,7 +744,7 @@ func load_data():
 		if dat_file.size() > 0:
 			loaded_characters[place] = dat_file["*characters"].duplicate()
 	
-	print(loaded_characters)
+	#print(loaded_characters)
 
 func scan_single_directory(main_directory : String, sub_directory : String, storage : Array, file_type : String, _file_descriptor : String):
 	var directory : Directory = Directory.new()

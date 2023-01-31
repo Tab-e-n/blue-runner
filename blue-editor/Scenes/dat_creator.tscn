@@ -156,12 +156,15 @@ func character_save():
 	var savefile = File.new()
 	
 	if !temp.has(\"*characters\"): temp[\"*characters\"] = {}
-	temp[\"*characters\"][$GUI/character/name.text] = [$GUI/character/type.selected, $\"GUI/character/1_text\".text, null]
+	temp[\"*characters\"][$GUI/character/file.text] = [$GUI/character/type.selected, $\"GUI/character/1_text\".text, null, \"\", \"\"]
 	
 	if $GUI/character/type.selected == UNLOCK_COMPLETION or $GUI/character/type.selected == UNLOCK_BONUS:
-		temp[\"*characters\"][$GUI/character/name.text][2] = $\"GUI/character/2_number\".value
+		temp[\"*characters\"][$GUI/character/file.text][2] = $\"GUI/character/2_number\".value
 	else:
-		temp[\"*characters\"][$GUI/character/name.text][2] = $\"GUI/character/2_text\".text
+		temp[\"*characters\"][$GUI/character/file.text][2] = $\"GUI/character/2_text\".text
+	
+	temp[\"*characters\"][$GUI/character/file.text][3] = $GUI/character/name.text
+	temp[\"*characters\"][$GUI/character/file.text][4] = $GUI/character/description.text
 	
 	savefile.open(\"characters.dat\", File.WRITE)
 	savefile.store_line(to_json(temp))
@@ -424,7 +427,7 @@ __meta__ = {
 margin_left = 152.0
 margin_top = 664.0
 margin_right = 944.0
-margin_bottom = 936.0
+margin_bottom = 1128.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -463,10 +466,10 @@ __meta__ = {
 margin_left = 72.0
 margin_top = 88.0
 margin_right = -208.0
-margin_bottom = -120.0
+margin_bottom = -312.0
 text = "Character"
 
-[node name="name" type="LineEdit" parent="GUI/character"]
+[node name="file" type="LineEdit" parent="GUI/character"]
 margin_left = 328.0
 margin_top = 88.0
 margin_right = 712.0
@@ -475,18 +478,51 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="text_edit" parent="GUI/character" instance=ExtResource( 1 )]
+[node name="text2" parent="GUI/character" instance=ExtResource( 1 )]
 margin_left = 72.0
 margin_top = 136.0
+margin_right = -208.0
+margin_bottom = -264.0
+text = "Name"
+
+[node name="name" type="LineEdit" parent="GUI/character"]
+margin_left = 328.0
+margin_top = 136.0
+margin_right = 712.0
+margin_bottom = 168.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text3" parent="GUI/character" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 184.0
+margin_right = -208.0
+margin_bottom = -24.0
+tab_size = 0
+text = "Description"
+
+[node name="description" type="TextEdit" parent="GUI/character"]
+margin_left = 328.0
+margin_top = 184.0
+margin_right = 712.0
+margin_bottom = 312.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text_edit" parent="GUI/character" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 328.0
 margin_right = -208.0
 margin_bottom = 56.0
 text = "Unlock Type"
 
 [node name="type" type="OptionButton" parent="GUI/character"]
 margin_left = 328.0
-margin_top = 136.0
+margin_top = 328.0
 margin_right = 712.0
-margin_bottom = 168.0
+margin_bottom = 360.0
 text = "Always Unlocked"
 clip_text = true
 items = [ "Always Unlocked", null, false, 0, null, "Beat Level", null, false, 1, null, "Par Level", null, false, 2, null, "Group Completion", null, false, 3, null, "Bonus Amount", null, false, 4, null, "Custom Unlock", null, false, 5, null, "Never Unlocked", null, false, 6, null ]
@@ -494,33 +530,33 @@ selected = 0
 
 [node name="1_text" type="LineEdit" parent="GUI/character"]
 margin_left = 328.0
-margin_top = 168.0
+margin_top = 360.0
 margin_right = 712.0
-margin_bottom = 200.0
+margin_bottom = 392.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="2_text" type="LineEdit" parent="GUI/character"]
 margin_left = 328.0
-margin_top = 200.0
+margin_top = 392.0
 margin_right = 712.0
-margin_bottom = 232.0
+margin_bottom = 424.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="2_number" type="SpinBox" parent="GUI/character"]
 margin_left = 328.0
-margin_top = 200.0
+margin_top = 392.0
 margin_right = 712.0
-margin_bottom = 232.0
+margin_bottom = 424.0
 
 [node name="mod" type="Panel" parent="GUI"]
 margin_left = 152.0
-margin_top = 952.0
+margin_top = 1160.0
 margin_right = 944.0
-margin_bottom = 1416.0
+margin_bottom = 1624.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -588,6 +624,9 @@ margin_left = 328.0
 margin_top = 184.0
 margin_right = 712.0
 margin_bottom = 312.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="save" type="TextureButton" parent="GUI/mod"]
 margin_left = 616.0

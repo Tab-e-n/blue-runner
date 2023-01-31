@@ -123,7 +123,7 @@ func menu_update():
 			user_selected_level += 1
 			if user_group and user_selected_level - user_levels_page * 20 > 19:
 				user_levels_page += 1
-				if user_levels_page >= user_pages:
+				if user_levels_page > user_pages:
 					user_levels_page -= 1
 					user_selected_level -= 1
 				else:
@@ -198,7 +198,12 @@ func menu_update():
 				$Level_Descriptor/best_time.text = ""
 		elif level_dat != null:
 			$Level_Descriptor/level_name.text = level_dat["level_name"]
-			if level_dat["official"]:
+			if !level_dat.has("tags"):
+				if level_dat["official"]: 
+					$Level_Descriptor/creator.text = "This level was made by " + level_dat["creator"] + " in an older version."
+				else:
+					$Level_Descriptor/creator.text = "  Creator:" + level_dat["creator"]
+			elif level_dat["tags"].has("official"):
 				if level_dat["creator"] != "Tabin": 
 					$Level_Descriptor/creator.text = "My thanks goes to " + level_dat["creator"] + " for making this!"
 			else:
@@ -332,6 +337,9 @@ func reload_all_levels(start : bool = false):
 	if !user_group: $Stats.text += "Unlocked: " + String(stats[3]) + "\n"
 	$Stats.text += "Bonuses: " + String(stats[4])
 	
+	Global.loaded_level_groups[selected_group][4] = stats[0]
+	#Global.loaded_level_groups[selected_group][5] = stats[4]
+	
 	for i in range(20):
 		get_node("L/Level_" + String(i)).reload()
 	
@@ -359,21 +367,27 @@ func character_select():
 	if !file.file_exists(Global.current_level_location + Global.current_level + ".tscn"):
 		error = true
 	
+	var activate_char_select : bool = true
+	
+	if !Global.unlocked["*char_select_active"]: activate_char_select = false
+	if Global.replay: activate_char_select = false
+	if level_dat.has("tags"): if level_dat["tags"].has("character_preselected"): activate_char_select = false
+	
 	if error:
 		$Cursor/AnimationPlayer.play("Refuse")
 		selected = false
-	elif !Global.unlocked["*char_select_active"] or Global.replay:
-		if Global.change_level("", true) != OK:
-			$Cursor/AnimationPlayer.play("Refuse")
-			$fail.visible = true
-			selected = false
-	else:
+	elif activate_char_select:
 		parent.get_node("AnimationPlayer").play("SELECT-CHARACTER")
 		parent.menu = "CHARACTER"
 		$Cursor/AnimationPlayer.play("Reset")
 		selected = false
 		#parent.get_node("CHARACTER").selected_level = selected_level_name
 		#parent.get_node("CHARACTER").selected_location = selected_level_location
+	else:
+		if Global.change_level("", true) != OK:
+			$Cursor/AnimationPlayer.play("Refuse")
+			$fail.visible = true
+			selected = false
 
 
 func completion_percentage():

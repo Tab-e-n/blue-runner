@@ -12,19 +12,20 @@
 
 ## SONIC RUNNER
 
-### VISUAL
-
- - Fixed the white pixel on the completion bar in the select menu
- - When transitioning from level to level, the screen didn't go completely black
-
 ### NEW ADDITIONS
 
  - New loading sequence for SR
 	 - If you can't bind your keys through the options, (because you did a funny and bound everything to the same key)
 	   you can now interupt this new sequence by pressing F12, which will allow you to rebind your keys
  - You can now see exact stats for what levels you beaten, unlocked etc.
- - New character select menu!
+ - New character select menu! It is active when you have more than one character unlocked.
+ - You can now unlock XT9 by collecting all 6 bonuses in waterway.
  - When beating a level, it now shows you the levels par time
+
+### VISUAL
+
+ - Fixed the white pixel on the completion bar in the select menu
+ - When transitioning from level to level, the screen didn't go completely black
 
 ### FIXES & CHANGES
 
@@ -58,6 +59,7 @@
  - Objects placed outside the center layer had collision, which wasn't intended
  - Fixed the ability to erase the background with the erase tool
  - Ghost now always appears behind player
+ - You are now able to collect more than just one collectible per level playthrough
  - HoverText no longer triggers if its touching something that isn't the player
  - Fixed HoverText text offset not working if follow_player wasn't turned on
  - Placing down a portal no longer crashes the editor

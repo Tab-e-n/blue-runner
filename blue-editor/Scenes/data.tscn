@@ -477,14 +477,14 @@ func load_mods_data_files(mod_name : String):
 	if !mods_enabled[mod_name][0] and !mods_enabled[mod_name][1]:
 		return 2
 
-func scale_down_sprite(item : Sprite, scale_down_to : Vector2 = Vector2(1, 1)):
-	item.scale = Vector2(1, 1)
-	var item_rect : Vector2 = item.get_rect().size
-	if item_rect.x > item_rect.y:
-		item.scale.x = scale_down_to.x / (item_rect.x / 64)
+func scale_down_sprite(sprite : Sprite, final_scale : Vector2 = Vector2(1, 1), desired_rect : Vector2 = Vector2(64, 64)):
+	sprite.scale = Vector2(1, 1)
+	var sprite_rect : Vector2 = sprite.get_rect().size
+	if sprite_rect.x > sprite_rect.y:
+		sprite.scale.x = final_scale.x / (sprite_rect.x / desired_rect.x)
 	else:
-		item.scale.x = scale_down_to.y / (item_rect.y / 64)
-	item.scale.y = item.scale.x
+		sprite.scale.x = final_scale.y / (sprite_rect.y / desired_rect.y)
+	sprite.scale.y = sprite.scale.x
 
 func key_names(key_number : int):
 	if key_number >= 33 and key_number <= 255: return char(key_number)

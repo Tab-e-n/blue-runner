@@ -10,13 +10,47 @@ var selected_char : int = 0
 enum {PREVIOUS, CURRENT, NEXT, BONUS}
 var updated_textures : Array = [null, null, null, null]
 
+func check_character_unlocks():
+	
+	unlocked_characters = []
+	for place in Global.loaded_characters.keys():
+		for character in Global.loaded_characters[place].keys():
+			
+			var unlock_type : int = Global.loaded_characters[place][character][0]
+			var parameter_1 = Global.loaded_characters[place][character][1]
+			var parameter_2 = Global.loaded_characters[place][character][2]
+			
+			var check : bool = false
+			
+			if unlock_type == 5:
+				check = Global.check_unlock_requirements(unlock_type, parameter_1, place)
+			else:
+				check = Global.check_unlock_requirements(unlock_type, parameter_1, parameter_2)
+			
+			if check:
+				unlocked_characters.append([character, place, ""])
+				
+				if unlocked_characters.size() > 1: Global.unlock("*char_select_active")
+	
+	change_text()
+
+func change_text():
+	if Global.loaded_characters[unlocked_characters[selected_char][1]][unlocked_characters[selected_char][0]].size() > 3:
+		$name.bbcode_text = Global.loaded_characters[unlocked_characters[selected_char][1]][unlocked_characters[selected_char][0]][3]
+		$description.bbcode_text = Global.loaded_characters[unlocked_characters[selected_char][1]][unlocked_characters[selected_char][0]][4]
+	else:
+		$name.bbcode_text = unlocked_characters[selected_char][0]
+		$description.bbcode_text = ""
+
 func shift_renders(direction : int):
-	direction = sign(direction)
+	direction = float(sign(direction))
 	selected_char += direction
 	if selected_char < 0:
 		selected_char += unlocked_characters.size()
 	if selected_char >= unlocked_characters.size():
 		selected_char -= unlocked_characters.size()
+	
+	change_text()
 	
 	if direction == -1:
 		updated_textures[BONUS] = $char_next/sprite.texture

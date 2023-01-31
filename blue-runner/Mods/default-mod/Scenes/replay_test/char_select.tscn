@@ -7,7 +7,7 @@
 [ext_resource path="res://Objects/Tilesets/WaterWay.tres" type="TileSet" id=5]
 [ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Scripts/HoverText.gd" type="Script" id=7]
-[ext_resource path="res://Objects/HoverText.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Objects/Decor/HoverText.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Objects/Collectible.tscn" type="PackedScene" id=9]
 [ext_resource path="res://Objects/KillFloor.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Objects/Spike.tscn" type="PackedScene" id=11]
@@ -16,6 +16,7 @@
 [ext_resource path="res://Scripts/Portal.gd" type="Script" id=14]
 [ext_resource path="res://Objects/Finish.tscn" type="PackedScene" id=15]
 [ext_resource path="res://Visual/Editor/editor_circle.png" type="Texture" id=16]
+
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D

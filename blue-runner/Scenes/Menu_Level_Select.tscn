@@ -377,7 +377,7 @@ tracks/25/keys = {
 
 [sub_resource type="Animation" id=2]
 resource_name = "CHARACTER-SELECT"
-length = 0.4
+length = 0.3
 tracks/0/type = "value"
 tracks/0/path = NodePath("CHARACTER:position")
 tracks/0/interp = 2
@@ -385,7 +385,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.4 ),
+"times": PoolRealArray( 0, 0.3 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ Vector2( 0, 0 ), Vector2( 2264, 1320 ) ]
@@ -397,7 +397,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.4 ),
+"times": PoolRealArray( 0, 0.3 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ Vector2( 616, -1064 ), Vector2( 952, -1656 ) ]
@@ -409,7 +409,7 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.4 ),
+"times": PoolRealArray( 0, 0.3 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ Vector2( -480, 824 ), Vector2( -936, 1592 ) ]
@@ -421,7 +421,7 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.4 ),
+"times": PoolRealArray( 0, 0.3 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ true, true ]
@@ -433,7 +433,7 @@ tracks/4/loop_wrap = true
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/keys = {
-"times": PoolRealArray( 0, 0.4 ),
+"times": PoolRealArray( 0, 0.3 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ true, false ]
@@ -1593,7 +1593,7 @@ tracks/11/keys = {
 
 [sub_resource type="Animation" id=11]
 resource_name = "SELECT-CHARACTER"
-length = 0.5
+length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("CHARACTER:position")
 tracks/0/interp = 2
@@ -1601,7 +1601,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.5 ),
+"times": PoolRealArray( 0, 0.4 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ Vector2( 2264, 1320 ), Vector2( 0, 0 ) ]
@@ -1625,7 +1625,7 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.5 ),
+"times": PoolRealArray( 0, 0.4 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ Vector2( -936, 1592 ), Vector2( -480, 824 ) ]
@@ -1637,7 +1637,7 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.5 ),
+"times": PoolRealArray( 0, 0.4 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ true, false ]
@@ -1649,7 +1649,7 @@ tracks/4/loop_wrap = true
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/keys = {
-"times": PoolRealArray( 0, 0.5 ),
+"times": PoolRealArray( 0, 0.4 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ true, true ]
@@ -2176,7 +2176,7 @@ tracks/1/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=33]
+[sub_resource type="Animation" id=19]
 resource_name = "AAA_reset"
 length = 0.2
 tracks/0/type = "value"
@@ -2336,7 +2336,7 @@ tracks/12/keys = {
 "values": [ false ]
 }
 
-[sub_resource type="Animation" id=32]
+[sub_resource type="Animation" id=20]
 resource_name = "Down"
 length = 0.2
 tracks/0/type = "value"
@@ -2510,7 +2510,7 @@ tracks/13/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=31]
+[sub_resource type="Animation" id=21]
 resource_name = "Up"
 length = 0.2
 tracks/0/type = "value"
@@ -2684,7 +2684,7 @@ tracks/13/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=19]
+[sub_resource type="Animation" id=22]
 length = 0.1
 step = 0.05
 tracks/0/type = "value"
@@ -2700,7 +2700,7 @@ tracks/0/keys = {
 "values": [ Vector2( 0, 608 ), Vector2( 0, 624 ), Vector2( 0, 608 ) ]
 }
 
-[sub_resource type="Animation" id=20]
+[sub_resource type="Animation" id=23]
 length = 0.1
 step = 0.05
 tracks/0/type = "value"
@@ -2716,7 +2716,7 @@ tracks/0/keys = {
 "values": [ Vector2( 0, -608 ), Vector2( 0, -624 ), Vector2( 0, -608 ) ]
 }
 
-[sub_resource type="Animation" id=21]
+[sub_resource type="Animation" id=24]
 length = 6.0
 loop = true
 tracks/0/type = "value"
@@ -2744,7 +2744,7 @@ tracks/1/keys = {
 "values": [ Color( 0, 0.596078, 0.858824, 1 ), Color( 0, 0.596078, 0.858824, 0 ) ]
 }
 
-[sub_resource type="Animation" id=22]
+[sub_resource type="Animation" id=25]
 length = 7.0
 loop = true
 tracks/0/type = "value"
@@ -2772,7 +2772,7 @@ tracks/1/keys = {
 "values": [ Color( 0.12549, 0.207843, 0.384314, 1 ), Color( 0.12549, 0.207843, 0.384314, 0 ) ]
 }
 
-[sub_resource type="Animation" id=23]
+[sub_resource type="Animation" id=26]
 length = 0.5
 step = 0.05
 tracks/0/type = "value"
@@ -2826,7 +2826,7 @@ tracks/3/keys = {
 "values": [ Color( 0.145098, 0.141176, 0.27451, 1 ), Color( 0.145098, 0.141176, 0.27451, 1 ), Color( 0.0235294, 0.901961, 0.631373, 1 ), Color( 0.145098, 0.141176, 0.27451, 1 ) ]
 }
 
-[sub_resource type="Animation" id=24]
+[sub_resource type="Animation" id=27]
 length = 0.7
 step = 0.05
 tracks/0/type = "value"
@@ -2866,7 +2866,7 @@ tracks/2/keys = {
 "values": [ Vector2( 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=25]
+[sub_resource type="Animation" id=28]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("sprite:color")
@@ -2893,7 +2893,7 @@ tracks/1/keys = {
 "values": [ Vector2( 1, 1 ), Vector2( 0, 1 ), Vector2( 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=26]
+[sub_resource type="Animation" id=29]
 length = 0.3
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:scale")
@@ -2920,7 +2920,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[sub_resource type="Animation" id=27]
+[sub_resource type="Animation" id=30]
 length = 0.3
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:scale")
@@ -2947,7 +2947,7 @@ tracks/1/keys = {
 "values": [ true, true ]
 }
 
-[sub_resource type="Animation" id=28]
+[sub_resource type="Animation" id=31]
 length = 0.2
 tracks/0/type = "value"
 tracks/0/path = NodePath("menu_button1:position")
@@ -3154,7 +3154,7 @@ tracks/16/keys = {
 "values": [ Color( 0.145098, 0.141176, 0.27451, 1 ), Color( 0.0156863, 0.0235294, 0.133333, 1 ) ]
 }
 
-[sub_resource type="Animation" id=29]
+[sub_resource type="Animation" id=32]
 length = 0.2
 loop = true
 tracks/0/type = "value"
@@ -3374,7 +3374,7 @@ tracks/17/keys = {
 "values": [ Color( 0.0156863, 0.0235294, 0.133333, 1 ) ]
 }
 
-[sub_resource type="Animation" id=30]
+[sub_resource type="Animation" id=33]
 length = 0.2
 step = 0.05
 tracks/0/type = "value"
@@ -3917,8 +3917,6 @@ this level, sorry"
 anims/change = SubResource( 18 )
 
 [node name="CHARACTER" type="Node2D" parent="."]
-visible = false
-position = Vector2( 2264, 1320 )
 script = ExtResource( 55 )
 
 [node name="menu_rectangle" type="Sprite" parent="CHARACTER"]
@@ -3930,14 +3928,14 @@ texture = ExtResource( 41 )
 
 [node name="menu_rectangle2" type="Sprite" parent="CHARACTER"]
 modulate = Color( 0.145098, 0.141176, 0.27451, 1 )
-position = Vector2( 952, -1656 )
+position = Vector2( 616, -1064 )
 rotation = 0.523598
 scale = Vector2( 2, 2 )
 texture = ExtResource( 41 )
 
 [node name="menu_rectangle3" type="Sprite" parent="CHARACTER"]
 modulate = Color( 0.145098, 0.141176, 0.27451, 1 )
-position = Vector2( -936, 1592 )
+position = Vector2( -480, 824 )
 rotation = 0.523598
 scale = Vector2( 2, 2 )
 texture = ExtResource( 41 )
@@ -3977,7 +3975,7 @@ texture = ExtResource( 2 )
 [node name="back" parent="CHARACTER" instance=ExtResource( 40 )]
 margin_left = 8.0
 margin_top = -760.0
-margin_right = 2016.0
+margin_right = 1056.0
 margin_bottom = -688.0
 text = ""
 
@@ -3987,9 +3985,26 @@ points = PoolVector2Array( 1024, 768, 1024, -768, -1024, -768, -1024, 768, 1024,
 default_color = Color( 1, 0.737255, 0.4, 1 )
 
 [node name="anim" type="AnimationPlayer" parent="CHARACTER"]
-anims/AAA_reset = SubResource( 33 )
-anims/Down = SubResource( 32 )
-anims/Up = SubResource( 31 )
+anims/AAA_reset = SubResource( 19 )
+anims/Down = SubResource( 20 )
+anims/Up = SubResource( 21 )
+
+[node name="name" parent="CHARACTER" instance=ExtResource( 40 )]
+margin_left = -1024.0
+margin_top = 256.0
+margin_right = -469.0
+margin_bottom = 320.0
+rect_scale = Vector2( 1.5, 1.5 )
+bbcode_enabled = true
+text = ""
+
+[node name="description" parent="CHARACTER" instance=ExtResource( 40 )]
+margin_left = -1024.0
+margin_top = 352.0
+margin_right = 0.0
+margin_bottom = 768.0
+bbcode_enabled = true
+text = ""
 
 [node name="menu_circle_4" type="Sprite" parent="."]
 visible = false
@@ -4375,8 +4390,8 @@ text = "<- Drop
 for a bit"
 
 [node name="anim" type="AnimationPlayer" parent="HELP"]
-anims/down = SubResource( 19 )
-anims/up = SubResource( 20 )
+anims/down = SubResource( 22 )
+anims/up = SubResource( 23 )
 
 [node name="OPTION" type="Node2D" parent="."]
 visible = false
@@ -4390,7 +4405,7 @@ scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 27 )
 
 [node name="Anim" type="AnimationPlayer" parent="OPTION/menu_circle2"]
-anims/Animate = SubResource( 21 )
+anims/Animate = SubResource( 24 )
 
 [node name="menu_circle" type="Sprite" parent="OPTION"]
 modulate = Color( 0.12549, 0.207843, 0.384314, 0 )
@@ -4399,7 +4414,7 @@ scale = Vector2( 2, 2 )
 texture = ExtResource( 27 )
 
 [node name="Anim" type="AnimationPlayer" parent="OPTION/menu_circle"]
-anims/Animate = SubResource( 22 )
+anims/Animate = SubResource( 25 )
 
 [node name="menu_rectangle" type="Sprite" parent="OPTION"]
 modulate = Color( 0, 0.596078, 0.858824, 1 )
@@ -4415,9 +4430,9 @@ color = Color( 0.145098, 0.141176, 0.27451, 1 )
 polygon = PoolVector2Array( 0, 0, -24, -48, 24, -48 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="OPTION/Cursor2"]
-anims/Go_In = SubResource( 23 )
-anims/Refuse = SubResource( 24 )
-anims/Spin = SubResource( 25 )
+anims/Go_In = SubResource( 26 )
+anims/Refuse = SubResource( 27 )
+anims/Spin = SubResource( 28 )
 
 [node name="main" type="Node2D" parent="OPTION"]
 
@@ -4602,13 +4617,13 @@ scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 34 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="MAIN/menu_confirmation"]
-anims/popdown = SubResource( 26 )
-anims/popup = SubResource( 27 )
+anims/popdown = SubResource( 29 )
+anims/popup = SubResource( 30 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="MAIN"]
-anims/Down = SubResource( 28 )
-anims/StandBy = SubResource( 29 )
-anims/Up = SubResource( 30 )
+anims/Down = SubResource( 31 )
+anims/StandBy = SubResource( 32 )
+anims/Up = SubResource( 33 )
 
 [node name="NewVersionPopup" type="Label" parent="."]
 visible = false

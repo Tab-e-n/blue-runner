@@ -7,14 +7,18 @@ export(int, "XT9", "S1") var type = 0
 export var unlock : String = ""
 
 func _ready():
+	var player_character : String
+	if name == "Finish":
+		player_character = get_parent().get_node("Player").character_name
 	if name == "Portal":
 		$AnimationPlayer.current_animation = "Speen"
-	if name == "Finish" and type == 0:
-		$Visual_XT9.visible = true
-		$Visual_XT9/AnimationPlayer.current_animation = "Call"
-	if name == "Finish" and type == 1:
-		$Visual_S1.visible = true
-		$Visual_S1/AnimationPlayer.current_animation = "Call"
+	if name == "Finish":
+		if type == 0 or player_character == "S1":
+			$Visual_XT9.visible = true
+			$Visual_XT9/AnimationPlayer.current_animation = "Call"
+		if type == 1 or player_character == "XT9":
+			$Visual_S1.visible = true
+			$Visual_S1/AnimationPlayer.current_animation = "Call"
 	
 	# Pretty Portal Colors
 	#$Visual/portal_1.modulate = Color(1,1,0,1)
@@ -33,10 +37,11 @@ func _process(_delta):
 		if get_parent().get_node("Player").position.x < position.x:
 			scale.x = -1
 
-func teleport(timer : float, collectible : String, collectible_unlock : String):
+func teleport(timer : float, collectible : Array, collectible_unlock : Array, recording : Dictionary):
 	# warning-ignore:return_value_discarded
 	Global.unlock(unlock)
-	Global.unlock(collectible_unlock)
+	for i in collectible_unlock:
+		Global.unlock(i)
 	
 	if name == "Portal":
 		Global.save_game()
@@ -44,7 +49,8 @@ func teleport(timer : float, collectible : String, collectible_unlock : String):
 		Global.change_level(tele_destination)
 	
 	if name == "Finish":
-		Global.save_game(timer, par, collectible, get_parent().name, get_parent().get_node("Player").recording.duplicate())
+		Global.save_game(timer, par, collectible, get_parent().name, recording)
 		
-		if type == 0: $Visual_XT9/AnimationPlayer.current_animation = "Call"
+		# Victory anim
+		#if type == 0: $Visual_XT9/AnimationPlayer.current_animation = "Call"
 		get_parent().get_node("Camera").end_zoom_in(self, tele_destination, timer, par)
