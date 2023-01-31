@@ -133,6 +133,7 @@ onready var edit_scroll : VScrollBar = $GUI/Edit_Items/Panel/objects/scroll
 var edit_scroll_last_value : int = 0
 
 var shortcuts : bool = true
+var pause_level_input : bool = false
 
 func _ready():
 	print(\"main ready\")
@@ -351,8 +352,9 @@ func ready_optionbutton_setup(option_button : OptionButton, data_array : Array):
 
 func _on_focus_changed(control : Control):
 	if control != null:
-		if control is LineEdit or control.name == \"Level\":
+		if control is LineEdit:
 			shortcuts = false
+			pause_level_input = true
 		else:
 			shortcuts = true
 
@@ -461,9 +463,9 @@ func _process(_delta):
 	if Input.is_action_just_released(\"mouse_right\"):
 		level_input.pressed = false
 	
-	if !shortcuts:
+	if pause_level_input:
 		if level_input.pressed:
-			shortcuts = true
+			pause_level_input = false
 			level_input.pressed = false
 	elif edit_mode:
 		var edit_node
@@ -801,10 +803,15 @@ func save_level(level_filename : String = \"Level\"):
 
 	temp[\"level_name\"] = level_name.text
 	temp[\"creator\"] = creator.text
-	temp[\"official\"] = official.pressed
 	temp[\"level_icon\"] = [level_icon.get_item_text(level_icon.selected),level_icon.get_selected_metadata()]
 	temp[\"level_base\"] = [level_base.get_item_text(level_base.selected),level_base.get_selected_metadata()]
 	temp[\"dependencies\"] = data.mods_installed.duplicate()
+	temp[\"tags\"] = []
+	if level_objects[\"player\"] != null:
+		if level_objects[\"player\"].character_name != \"\":
+			temp[\"tags\"].append(\"character_preselected\")
+	if official.pressed:
+		temp[\"tags\"].append(\"official\")
 	
 	var dat_filename : String = level_filename.left(level_filename.find_last(\".\")) + \".dat\"
 	
@@ -847,7 +854,10 @@ func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
 		# CHECKS PASSED
 		level_name.text = temp[\"level_name\"]
 		creator.text = temp[\"creator\"]
-		official.pressed = temp[\"official\"]
+		if temp.has(\"tags\"):
+			official.pressed = temp[\"tags\"].has(\"official\")
+		else:
+			official.pressed = temp[\"official\"]
 		
 		var load_tileset : TileSet = get_node(\"Game/Level/tiles_back_0\").tile_set
 		
@@ -3714,10 +3724,10 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]

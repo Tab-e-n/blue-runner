@@ -1,7 +1,7 @@
 extends Node2D
 
 var editor_properties : Dictionary = {
-	"object_path" : "res://Objects/HoverText.tscn",
+	"object_path" : "res://Objects/Decor/HoverText.tscn",
 	"object_type" : "normal",
 	"layer" : "selected",
 	"rect" : Rect2(0, 0, 64, 64),

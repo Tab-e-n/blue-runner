@@ -5,28 +5,30 @@ documentation
 EDITOR
 
 dependency stripper
-default-mod
 f1 for help
+change look_at() to a custom equation
 random scale
+do you wanna do scrollers?
 layer switching shortcut
-prevent shortcuts from working when focused on a line edit
+default-mod
 z_index has some buggy behavior
 exit editor shortcut
 mod version compatability
+that shader thing
 
 undo system (i dont really wanna)
-rebind move to something else maybe
+rebind move to something if undo system
 
 RUNNER
 
+test if you are able to pickup multiple collectibles
+
 pixelate bricks
-character select
-character unlocks in characters.dat
 tutorial level
-character missing
 touchup replay menu
 character greenbox
 
+character missing
 level group unlocks
 changing prebuilt level groups
 Cheat code menu

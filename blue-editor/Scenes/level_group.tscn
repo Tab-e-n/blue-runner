@@ -294,7 +294,12 @@ func save_level_dat():
 		
 		temp[\"level_name\"] = $Edits/level_name.text
 		temp[\"creator\"] = $Edits/level_author.text
-		temp[\"official\"] = $Edits/level_official.pressed
+		if temp.has(\"tags\") and $Edits/level_official.pressed:
+			temp[\"tags\"].append(\"official\")
+		elif temp.has(\"tags\"):
+			temp[\"tags\"].erase(\"official\")
+		else:
+			temp[\"official\"] = $Edits/level_official.pressed
 		temp[\"level_icon\"] = [$Edits/level_icon.get_item_text($Edits/level_icon.selected),$Edits/level_icon.get_selected_metadata()]
 		temp[\"level_base\"] = [$Edits/level_base.get_item_text($Edits/level_base.selected),$Edits/level_base.get_selected_metadata()]
 		
@@ -326,7 +331,10 @@ func load_level_dat(level : int, values_only : bool = false):
 		
 		$Edits/level_name.text = temp[\"level_name\"]
 		$Edits/level_author.text = temp[\"creator\"]
-		$Edits/level_official.pressed = temp[\"official\"]
+		if temp.has(\"tags\"):
+			$Edits/level_official.pressed = temp[\"tags\"].has(\"official\")
+		else:
+			$Edits/level_official.pressed = temp[\"official\"]
 		for i in range($Edits/level_icon.get_item_count()):
 			if $Edits/level_icon.get_item_text(i) == temp[\"level_icon\"][0] and $Edits/level_icon.get_item_metadata(i) == temp[\"level_icon\"][1]:
 				$Edits/level_icon.select(i)

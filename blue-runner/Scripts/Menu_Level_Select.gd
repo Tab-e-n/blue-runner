@@ -47,10 +47,7 @@ func _ready():
 				start = false
 				break
 	
-	$CHARACTER.unlocked_characters
-	for place in Global.loaded_characters.keys():
-		for character in Global.loaded_characters[place].keys():
-			$CHARACTER.unlocked_characters.append([character, place, ""])
+	$CHARACTER.check_character_unlocks()
 	
 	$CHARACTER.ready_renders()
 	

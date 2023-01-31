@@ -28,4 +28,4 @@ LOCATION = res://, user://, or a Mods/[MODENAME]/
 AMOUNT = amount of bonuses required
 
 ["custom", NAME, null]
-NAME = unlocks name, can be whatever
+NAME = unlock name, can be whatever

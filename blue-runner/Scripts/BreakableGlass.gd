@@ -4,7 +4,6 @@ var scale_internal : Vector2
 
 var break_active : bool = false
 var break_position : Vector2
-var break_timer : int = -1
 
 var line_offset : float = 2
 

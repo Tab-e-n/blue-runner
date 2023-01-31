@@ -18,8 +18,8 @@ var dead : bool = false
 var death_wait : int = 0
 
 var timer : float = 0
-var collectible : String = ""
-var unlock : String = ""
+var collectible : Array = []
+var unlock : Array = []
 export var ghost : bool = false
 
 var replay : bool = false
@@ -142,9 +142,10 @@ func collision_default_effects(collider_type : int, collider):
 	
 	# other layers are for specifications on what thing the collider is
 	
-	if Layers[0] and Layers[4] and break_breakables:
-		instance_from_id(get_slide_collision(collider).collider_id).break_active = true
-		instance_from_id(get_slide_collision(collider).collider_id).break_position = position
+	if Layers[0] and Layers[1] and break_breakables:
+		var object = instance_from_id(get_slide_collision(collider).collider_id)
+		object.break_active = true
+		object.break_position = position
 		break_just_happened = true
 	
 	if Layers[2]:
@@ -208,4 +209,4 @@ func finish(collision):
 	#global.current_recording = recording.duplicate()
 	deny_input = true
 	end = true
-	get_slide_collision(collision).collider.teleport(float(int(timer * 100)) / 100, collectible, unlock)
+	get_slide_collision(collision).collider.teleport(float(int(timer * 100)) / 100, collectible, unlock, recording.duplicate())

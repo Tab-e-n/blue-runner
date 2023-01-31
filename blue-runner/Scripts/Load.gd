@@ -13,7 +13,7 @@ var text = [
 	" VVIDYA Jetstream Nano\n",
 	"Memory:",
 	" SD/CCMN 4096MB\n",
-	"WARNING: System has been tampered with\n\n",
+	"WARNING: Machine has been tampered with\n\n",
 	
 	"Checking motor settings",
 	".",
@@ -179,6 +179,8 @@ func _input(event):
 				sentence += 1
 				#$t/anim.play("out")
 					#$t/anim.play("prompt")
+		else:
+			LINE_DELAY = 2
 
 func bind_skip():
 	$t/boot.text += "Y\n\n"
