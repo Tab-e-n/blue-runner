@@ -7,61 +7,67 @@
 
 ### VISUAL
 
- - The recoloring continues
- - Also 2 pixels on the user universe logo weren't color in
+ - The recoloring continues.
+ - Also 2 pixels on the user universe logo weren't color in.
 
 ## SONIC RUNNER
 
 ### NEW ADDITIONS
 
- - New loading sequence for SR
+ - New loading sequence for SR.
 	 - If you can't bind your keys through the options, (because you did a funny and bound everything to the same key)
-	   you can now interupt this new sequence by pressing F12, which will allow you to rebind your keys
+	   you can now interupt this new sequence by pressing F12, which will allow you to rebind your keys.
  - You can now see exact stats for what levels you beaten, unlocked etc.
  - New character select menu! It is active when you have more than one character unlocked.
  - You can now unlock XT9 by collecting all 6 bonuses in waterway.
- - When beating a level, it now shows you the levels par time
+ - When beating a level, it now shows you the levels par time.
 
 ### VISUAL
 
- - Fixed the white pixel on the completion bar in the select menu
- - When transitioning from level to level, the screen didn't go completely black
+ - Fixed the white pixel on the completion bar in the select menu.
+ - When transitioning from level to level, the screen didn't go completely black.
 
 ### FIXES & CHANGES
 
- - Fixed a game breaking bug where the game would crash upon deleting a save, and the wasn't able to load
- - The game now properly loads saves from version 0.X
- - When you rebound keys, the select menu didn't show the newly rebound key
+ - Fixed a game breaking bug where the game would crash upon deleting a save, and the wasn't able to load.
+ - The game now properly loads saves from version 0.X.
+ - When you rebound keys, the select menu didn't show the newly rebound key.
  - Fixed the User Universe page system just not working. Like, at all.
 
- - Level_1-12 (Sunset Hopper) no longer goes to itself when you want to go the next level
+ - Level_1-12 (Sunset Hopper) no longer goes to itself when you want to go the next level.
 
 ## SONIC RUNNER EDITOR
 
 ### NEW ADDITIONS
 
- - Portals now aren't the only objects that can unlock things, collectibles now share this ability as well
- - You can now set unlock requirements for characters
+ - By pressing alt + the key you bound to transform, you can randomize an objects scale and rotation
+	 - The range in which the object will be scaled to can be set in the options. If both options are the same,
+	   it won't scale
+ - You can now have shortcuts for changing layers
+ - Portals now aren't the only objects that can unlock things, collectibles now share this ability as well.
+ - You can now set unlock requirements for characters.
 
 ### VISUAL
 
  - In the edit menu, when editing an objects unique properties, the text is now smaller, so it can fit more text.
- - If a objects unique property is uneditable with the edit panel, it now says so (SpinningArm and Track)
- - More objects now show their hitboxes
- - HoverText's point no longer scales up when scaling up the HoverText
- - HoverText text offset now appears correctly
+ - If a objects unique property is uneditable with the edit panel, it now says so (SpinningArm and Track).
+ - More objects now show their hitboxes.
+ - HoverText's point no longer scales up when scaling up the HoverText.
+ - HoverText text offset now appears correctly.
 
 ### FIXES & CHANGES
 
- - In the options, setting the default level name would set the default author name and vice versa
+ - In the options, setting the default level name would set the default author name and vice versa.
+ - While you edit text, keyboard shortcuts won't do anything until you stop editing text.
+ - Objects placed outside the center layer had collision, which wasn't intended.
+ - Using transform mode to rotate an object is now more reliable.
+ - Fixed the ability to erase the background with the erase tool.
 
- - While you edit text, keyboard shortcuts won't do anything until you stop editing text
- - Objects placed outside the center layer had collision, which wasn't intended
- - Fixed the ability to erase the background with the erase tool
- - Ghost now always appears behind player
- - You are now able to collect more than just one collectible per level playthrough
- - HoverText no longer triggers if its touching something that isn't the player
- - Fixed HoverText text offset not working if follow_player wasn't turned on
- - Placing down a portal no longer crashes the editor
+ - Ghost now always appears behind player.
+ - You are now able to collect more than just one collectible per level playthrough.
+ - HoverText no longer triggers if its touching something that isn't the player.
+ - Fixed HoverText text offset not working if follow_player wasn't turned on.
+ - Placing down a portal no longer crashes the editor.
+ - You can also edit and remove a portal after you place it. This isn't related to it crashing the editor.
 
  - Changing the bg of a level group now actually does something in SR
