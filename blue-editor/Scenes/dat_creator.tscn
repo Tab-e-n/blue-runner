@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Text/Text_Editor.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=2]
@@ -10,11 +10,13 @@
 [ext_resource path="res://Visual/Editor/editor_save_enabled.png" type="Texture" id=8]
 [ext_resource path="res://Visual/Editor/editor_exit_enabled.png" type="Texture" id=9]
 [ext_resource path="res://Visual/Editor/editor_exit.png" type="Texture" id=10]
+[ext_resource path="res://Visual/Editor/editor_load_enabled.png" type="Texture" id=11]
+[ext_resource path="res://Visual/Editor/editor_load.png" type="Texture" id=12]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
-const options_span : int = 1408
+const options_span : int = 1600
 
 func _ready():
 	ready_optionbutton_setup($GUI/base/base_normal, data.level_icon)
@@ -97,7 +99,7 @@ func base_remove():
 
 enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
 
-func character_changed_unlock_type(index):
+func character_changed_unlock_type(index : int):
 	$\"GUI/character/1_text\".text = \"\"
 	$\"GUI/character/2_text\".text = \"\"
 	$\"GUI/character/2_number\".value = 0
@@ -169,6 +171,46 @@ func character_save():
 	savefile.open(\"characters.dat\", File.WRITE)
 	savefile.store_line(to_json(temp))
 	savefile.close()
+
+func character_load():
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(\"characters.dat\"): # does file exist
+		loadfile.open(\"characters.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		loadfile.close()
+	
+	if !temp.has(\"*characters\"): return
+	if !temp[\"*characters\"].has($GUI/character/file.text): return
+	
+	var char_data : Array = temp[\"*characters\"][$GUI/character/file.text]
+	
+	if char_data.size() < 5:
+		char_data.resize(5)
+		if char_data[3] == null:
+			char_data[3] = \"\"
+		if char_data[4] == null:
+			char_data[4] = \"\"
+	
+	$GUI/character/type.selected = char_data[0]
+	$\"GUI/character/1_text\".text = char_data[1]
+	
+	if char_data[0] == UNLOCK_COMPLETION or char_data[0] == UNLOCK_BONUS:
+		$\"GUI/character/2_number\".value = char_data[2]
+	else:
+		$\"GUI/character/2_text\".text = char_data[2]
+	
+	$GUI/character/name.text = char_data[3]
+	$GUI/character/description.text = char_data[4]
+	
+	
+	
+	character_changed_unlock_type(char_data[0])
 
 func character_remove():
 	var loadfile = File.new()
@@ -440,6 +482,17 @@ margin_bottom = -181.0
 rect_scale = Vector2( 0.75, 0.75 )
 text = "CHARACTERS.DAT"
 
+[node name="load" type="TextureButton" parent="GUI/character"]
+margin_left = 520.0
+margin_top = 8.0
+margin_right = 584.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 11 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="save" type="TextureButton" parent="GUI/character"]
 margin_left = 616.0
 margin_top = 8.0
@@ -554,9 +607,9 @@ margin_bottom = 424.0
 
 [node name="mod" type="Panel" parent="GUI"]
 margin_left = 152.0
-margin_top = 1160.0
+margin_top = 1144.0
 margin_right = 944.0
-margin_bottom = 1624.0
+margin_bottom = 1608.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -681,6 +734,7 @@ texture_normal = ExtResource( 10 )
 texture_pressed = ExtResource( 9 )
 [connection signal="pressed" from="GUI/base/base_save" to="." method="base_save"]
 [connection signal="pressed" from="GUI/base/base_remove" to="." method="base_remove"]
+[connection signal="pressed" from="GUI/character/load" to="." method="character_load"]
 [connection signal="pressed" from="GUI/character/save" to="." method="character_save"]
 [connection signal="pressed" from="GUI/character/remove" to="." method="character_remove"]
 [connection signal="item_selected" from="GUI/character/type" to="." method="character_changed_unlock_type"]

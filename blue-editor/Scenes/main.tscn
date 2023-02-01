@@ -387,6 +387,20 @@ func _process(_delta):
 		$GUI/Edit_Items/Panel/other/scale_y.value = 1
 		$GUI/Edit_Items/Panel/other/scale_x.value = 1
 		$GUI/Edit_Items/Panel/other/rotation.value = 0
+	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"1\") and shortcuts:
+		var random_range : Array = [0,0]
+		for i in range(2):
+			random_range[i] = data.settings[\"editor_random_scale_range\"][i] / 0.05
+		var rand : RandomNumberGenerator = RandomNumberGenerator.new()
+		rand.randomize()
+		
+		if random_range[0] != random_range[1]:
+			var rand_scale = rand.randi_range(random_range[0], random_range[1]) * 0.05
+			
+			$GUI/Edit_Items/Panel/other/scale_y.value = rand_scale
+			$GUI/Edit_Items/Panel/other/scale_x.value = rand_scale
+		$GUI/Edit_Items/Panel/other/rotation.value = rand.randi_range(0, 360)
+		
 	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"2\") and shortcuts:
 		place_grid_snap = !place_grid_snap
 	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"3\") and shortcuts:
@@ -399,11 +413,19 @@ func _process(_delta):
 			level.scale.y = 0.5
 		level.scale.x = level.scale.y
 		level.position = temp_level_position_hinge * (level.scale / temp_level_scale_hinge)
-		
 	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"4\") and shortcuts:
 		place_attach_mode = !place_attach_mode
 	
 	var edit_mode : bool = Input.is_action_pressed(\"15\") and shortcuts and place_current_tab == PLACE_OBJECTS
+	
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"21\") and shortcuts:
+		get_node(\"GUI/Place/Panel/layer_0\").pressed = true
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"22\") and shortcuts:
+		get_node(\"GUI/Place/Panel/layer_1\").pressed = true
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"23\") and shortcuts:
+		get_node(\"GUI/Place/Panel/layer_2\").pressed = true
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"24\") and shortcuts:
+		get_node(\"GUI/Place/Panel/layer_3\").pressed = true
 	
 	# Tab / Mode Hotkeys
 	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"5\") and shortcuts:
@@ -506,15 +528,17 @@ func _process(_delta):
 			
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_right\") and $GUI/Edit_Items/Panel/other/rotation.editable:
 			var rotation
+			if Input.is_action_just_pressed(\"mouse_right\"):
+				mouse_hinge = mouse_pos
 			if place_current_tab == PLACE_DECOR:
-				place_selected_decor.look_at(mouse_pos)
+				place_selected_decor.rotation = object_face_point($GUI/cursor.position, mouse_pos)
 				rotation = place_selected_decor.rotation_degrees
 			if place_current_tab == PLACE_OBJECTS:
-				place_selected_object.look_at(mouse_pos)
+				place_selected_object.rotation = object_face_point($GUI/cursor.position, mouse_pos)
 				rotation = place_selected_object.rotation_degrees
 			
-			if abs(rotation) > 360:
-				rotation -= 360 * sign(rotation)
+			#if abs(rotation) > 360:
+			#	rotation -= 360 * sign(rotation)
 			$GUI/Edit_Items/Panel/other/rotation.value = stepify(rotation, 1)
 	elif place_current_mode == PLACEMODE_MOVE or Input.is_action_pressed(\"3\"):
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
@@ -678,6 +702,24 @@ func _process(_delta):
 	
 	if level_objects[\"bg\"] != null: 
 		level_objects[\"bg\"].update_self(-level.position / level.scale)
+
+func object_face_point(object_pos : Vector2, point : Vector2):
+	var distance = point - object_pos
+	var hypotenuse = sqrt(pow(distance.x, 2) + pow(distance.y, 2))
+	var adjacent = abs(distance.x)
+	var angle = 0
+	var distance_sign = 1
+	if hypotenuse != 0:
+		angle = acos(adjacent / hypotenuse)
+		distance_sign = sign(distance.x) * sign(distance.y)
+	
+	angle *= distance_sign
+	
+	angle += 1.6
+	if distance.x < 0:
+		angle += 3.2
+	
+	return angle
 
 func create_new_level(remove_old : bool = true):
 	if remove_old:
@@ -3724,10 +3766,10 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]

@@ -19,7 +19,7 @@ var user_directory : String = \"user://sonicRunnerEditor\"
 var mods_installed : Array
 var mods_enabled : Dictionary
 
-const INPUT_AMOUNT : int = 21
+const INPUT_AMOUNT : int = 25
 var last_input_events : Array = range(INPUT_AMOUNT)
 
 var settings : Dictionary = {
@@ -84,7 +84,13 @@ var settings : Dictionary = {
 		KEY_I, #focus items panel
 		KEY_E, #focus edit panel
 		KEY_P, #focus place panel
+		KEY_1,
+		KEY_2,
+		KEY_3,
+		KEY_4,
 	],
+	
+	\"editor_random_scale_range\" : [0.5, 3],
 }
 # Max 8 faves per category
 # Each tileset has its own 8 faves under its name
@@ -202,9 +208,16 @@ func load_game(fail = false):
 		#print(\"load: \", temp)
 		temp = update_old_version(version, temp.duplicate())
 		
+		if temp[\"settings\"][\"editor_keys\"].size() < INPUT_AMOUNT:
+			temp[\"settings\"][\"editor_keys\"].resize(INPUT_AMOUNT)
+			for i in range(INPUT_AMOUNT):
+				if temp[\"settings\"][\"editor_keys\"][i] == null:
+					temp[\"settings\"][\"editor_keys\"][i] = settings[\"editor_keys\"][i]
+		
 		favorite = load_transfer(favorite,\"favorite\",temp)
 		recent = load_transfer(recent,\"recent\",temp)
 		settings = load_transfer(settings,\"settings\",temp)
+		
 		
 	
 	# First it uses the default bindings

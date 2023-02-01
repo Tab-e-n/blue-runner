@@ -6,16 +6,13 @@ EDITOR
 
 dependency stripper
 f1 for help
-change look_at() to a custom equation
-random scale
-do you wanna do scrollers?
-layer switching shortcut
 default-mod
-z_index has some buggy behavior
+z_index has some buggy behavior probably
 exit editor shortcut
 mod version compatability
 that shader thing
 
+do you wanna do scrollers?
 undo system (i dont really wanna)
 rebind move to something if undo system
 
@@ -27,8 +24,8 @@ pixelate bricks
 tutorial level
 touchup replay menu
 character greenbox
-
 character missing
+
 level group unlocks
 changing prebuilt level groups
 Cheat code menu
