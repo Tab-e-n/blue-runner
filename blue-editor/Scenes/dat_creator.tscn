@@ -16,7 +16,7 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
-const options_span : int = 1600
+const options_span : int = 1664
 
 func _ready():
 	ready_optionbutton_setup($GUI/base/base_normal, data.level_icon)
@@ -27,6 +27,8 @@ func _ready():
 	$VScrollBar.max_value = options_span / 64
 	
 	character_changed_unlock_type(0)
+	
+	$GUI/mod/version.text = data.VERSION
 
 func ready_optionbutton_setup(option_button : OptionButton, data_array : Array):
 	var last_directory : String = \"res:/\"
@@ -47,6 +49,26 @@ func _process(_delta):
 func _on_VScrollBar_scrolling():
 	$GUI.rect_position.y = -$VScrollBar.value * 64
 
+func base_load():
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(\"base.dat\"): # does file exist
+		loadfile.open(\"base.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		loadfile.close()
+	
+	if !temp.has(\"*base\"): temp[\"*base\"] = []
+	if temp[\"*base\"].has($GUI/base/base_name.text):
+		data.select_option_button($GUI/base/base_normal, temp[$GUI/base/base_name.text][0][0], temp[$GUI/base/base_name.text][0][1])
+		data.select_option_button($GUI/base/base_locked, temp[$GUI/base/base_name.text][1][0], temp[$GUI/base/base_name.text][1][1])
+		data.select_option_button($GUI/base/base_done, temp[$GUI/base/base_name.text][2][0], temp[$GUI/base/base_name.text][2][1])
+		data.select_option_button($GUI/base/base_perfect, temp[$GUI/base/base_name.text][3][0], temp[$GUI/base/base_name.text][3][1])
+
 func base_save():
 	var loadfile = File.new()
 	var temp = {}
@@ -63,10 +85,10 @@ func base_save():
 	var savefile = File.new()
 	
 	temp[$GUI/base/base_name.text] = [
-		$GUI/base/base_normal.get_item_text($GUI/base/base_normal.selected),
-		$GUI/base/base_locked.get_item_text($GUI/base/base_locked.selected),
-		$GUI/base/base_done.get_item_text($GUI/base/base_done.selected),
-		$GUI/base/base_perfect.get_item_text($GUI/base/base_perfect.selected)
+		[$GUI/base/base_normal.get_item_text($GUI/base/base_normal.selected),$GUI/base/base_normal.get_item_metadata($GUI/base/base_normal.selected)],
+		[$GUI/base/base_locked.get_item_text($GUI/base/base_locked.selected),$GUI/base/base_locked.get_item_metadata($GUI/base/base_locked.selected)],
+		[$GUI/base/base_done.get_item_text($GUI/base/base_done.selected),$GUI/base/base_done.get_item_metadata($GUI/base/base_done.selected)],
+		[$GUI/base/base_perfect.get_item_text($GUI/base/base_perfect.selected),$GUI/base/base_perfect.get_item_metadata($GUI/base/base_perfect.selected)],
 	]
 	if !temp.has(\"*base\"): temp[\"*base\"] = []
 	if !temp[\"*base\"].has($GUI/base/base_name.text): temp[\"*base\"].append($GUI/base/base_name.text)
@@ -208,8 +230,6 @@ func character_load():
 	$GUI/character/name.text = char_data[3]
 	$GUI/character/description.text = char_data[4]
 	
-	
-	
 	character_changed_unlock_type(char_data[0])
 
 func character_remove():
@@ -232,6 +252,24 @@ func character_remove():
 		savefile.open(\"characters.dat\", File.WRITE)
 		savefile.store_line(to_json(temp))
 		savefile.close()
+
+func mod_load():
+	var savefile = File.new()
+	var temp = {}
+	
+	if savefile.file_exists(\"mod.dat\"): # does file exist
+		savefile.open(\"mod.dat\", File.READ)
+		
+		while savefile.get_position() < savefile.get_len():
+			var parsedData = parse_json(savefile.get_line())
+			
+			temp = parsedData
+		savefile.close()
+	
+	$GUI/mod/name.text = temp[\"mod_name\"]
+	$GUI/mod/author.text = temp[\"creator\"]
+	$GUI/mod/description.text = temp[\"description\"]
+	if temp.has(\"version\"): $GUI/mod/version.text = temp[\"version\"]
 
 func mod_modify():
 	var savefile = File.new()
@@ -364,6 +402,17 @@ margin_right = -309.0
 margin_bottom = -256.0
 rect_scale = Vector2( 0.75, 0.75 )
 text = "BASE.DAT"
+
+[node name="load" type="TextureButton" parent="GUI/base"]
+margin_left = 520.0
+margin_top = 8.0
+margin_right = 584.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 11 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="base_save" type="TextureButton" parent="GUI/base"]
 margin_left = 616.0
@@ -609,7 +658,7 @@ margin_bottom = 424.0
 margin_left = 152.0
 margin_top = 1144.0
 margin_right = 944.0
-margin_bottom = 1608.0
+margin_bottom = 1672.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -621,6 +670,17 @@ margin_right = 149.0
 margin_bottom = -304.0
 rect_scale = Vector2( 0.75, 0.75 )
 text = "MOD.DAT"
+
+[node name="load" type="TextureButton" parent="GUI/mod"]
+margin_left = 616.0
+margin_top = 8.0
+margin_right = 680.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 11 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="modify" type="TextureButton" parent="GUI/mod"]
 margin_left = 712.0
@@ -681,11 +741,27 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="text5" parent="GUI/mod" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 328.0
+margin_right = -208.0
+margin_bottom = -136.0
+text = "Version"
+
+[node name="version" type="LineEdit" parent="GUI/mod"]
+margin_left = 328.0
+margin_top = 328.0
+margin_right = 712.0
+margin_bottom = 360.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="save" type="TextureButton" parent="GUI/mod"]
 margin_left = 616.0
-margin_top = 328.0
+margin_top = 392.0
 margin_right = 680.0
-margin_bottom = 392.0
+margin_bottom = 456.0
 texture_normal = ExtResource( 7 )
 texture_pressed = ExtResource( 3 )
 __meta__ = {
@@ -694,9 +770,9 @@ __meta__ = {
 
 [node name="remove" type="TextureButton" parent="GUI/mod"]
 margin_left = 712.0
-margin_top = 328.0
+margin_top = 392.0
 margin_right = 776.0
-margin_bottom = 392.0
+margin_bottom = 456.0
 texture_normal = ExtResource( 6 )
 texture_pressed = ExtResource( 5 )
 __meta__ = {
@@ -705,16 +781,16 @@ __meta__ = {
 
 [node name="text4" parent="GUI/mod" instance=ExtResource( 1 )]
 margin_left = 72.0
-margin_top = 408.0
+margin_top = 472.0
 margin_right = -208.0
-margin_bottom = 88.0
+margin_bottom = 152.0
 text = "Dependecies"
 
 [node name="dependecies" type="LineEdit" parent="GUI/mod"]
 margin_left = 328.0
-margin_top = 408.0
+margin_top = 472.0
 margin_right = 712.0
-margin_bottom = 440.0
+margin_bottom = 504.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -732,12 +808,14 @@ margin_right = 64.0
 margin_bottom = 64.0
 texture_normal = ExtResource( 10 )
 texture_pressed = ExtResource( 9 )
+[connection signal="pressed" from="GUI/base/load" to="." method="base_load"]
 [connection signal="pressed" from="GUI/base/base_save" to="." method="base_save"]
 [connection signal="pressed" from="GUI/base/base_remove" to="." method="base_remove"]
 [connection signal="pressed" from="GUI/character/load" to="." method="character_load"]
 [connection signal="pressed" from="GUI/character/save" to="." method="character_save"]
 [connection signal="pressed" from="GUI/character/remove" to="." method="character_remove"]
 [connection signal="item_selected" from="GUI/character/type" to="." method="character_changed_unlock_type"]
+[connection signal="pressed" from="GUI/mod/load" to="." method="mod_load"]
 [connection signal="pressed" from="GUI/mod/modify" to="." method="mod_modify"]
 [connection signal="pressed" from="GUI/mod/save" to="." method="dependecies_save"]
 [connection signal="pressed" from="GUI/mod/remove" to="." method="dependecies_remove"]

@@ -8,17 +8,15 @@ dependency stripper
 f1 for help
 default-mod
 z_index has some buggy behavior probably
-exit editor shortcut
-mod version compatability
 that shader thing
+visuals for track
 
+exit level editor shortcut
 do you wanna do scrollers?
 undo system (i dont really wanna)
 rebind move to something if undo system
 
 RUNNER
-
-test if you are able to pickup multiple collectibles
 
 pixelate bricks
 tutorial level

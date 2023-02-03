@@ -35,6 +35,8 @@ func mod_selected(index):
 	$mod_filename.bbcode_text = mod_name
 	
 	if mod_name == \"*Vanilla\":
+		$mod_version.bbcode_text = data.VERSION
+		$mod_version.modulate = Color(0, 1, 0, 1)
 		$mod_status.bbcode_text = \"    always on\"
 		$mod_status.modulate = Color(0, 1, 0, 1)
 		$mod_name.bbcode_text = \"Vanilla Sonic Runner\"
@@ -79,6 +81,16 @@ func mod_selected(index):
 	if temp.has(\"dependencies\"): pass
 	if temp.has(\"active\"): $mod_active.pressed = temp[\"active\"]
 	else: $mod_active.pressed = false
+	if temp.has(\"version\"):
+		$mod_version.bbcode_text = temp[\"version\"]
+		if temp[\"version\"] != data.VERSION:
+			$mod_version.modulate = Color(1, 0, 0, 1)
+		else:
+			$mod_version.modulate = Color(0, 1, 0, 1)
+	else:
+		$mod_version.bbcode_text = \"Unknown\"
+		$mod_version.modulate = Color(0.5, 0.5, 0.5, 1)
+	
 	
 	if loadfile.file_exists(\"Mods/\" + mod_name + \"/logo.png\"):
 		$logo.texture = load(\"Mods/\" + mod_name + \"/logo.png\")
@@ -219,19 +231,30 @@ position = Vector2( 512, 384 )
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 32.0
-margin_top = 40.0
+margin_top = 32.0
 margin_right = 1376.0
-margin_bottom = 104.0
+margin_bottom = 96.0
 bbcode_enabled = true
 bbcode_text = "FILENAME"
 text = "FILENAME"
 
+[node name="mod_version" parent="." instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 32.0
+margin_top = 64.0
+margin_right = 1376.0
+margin_bottom = 128.0
+custom_colors/default_color = Color( 1, 1, 1, 1 )
+bbcode_enabled = true
+bbcode_text = "FILENAME"
+text = "VERSION"
+
 [node name="mod_status" parent="." instance=ExtResource( 2 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 8.0
 margin_right = 1408.0
-margin_bottom = 72.0
+margin_bottom = 64.0
 custom_colors/default_color = Color( 1, 1, 1, 1 )
 bbcode_enabled = true
 bbcode_text = "STATUS"
@@ -243,7 +266,7 @@ scale = Vector2( 0.375, 0.375 )
 texture = ExtResource( 3 )
 
 [node name="logo" type="Sprite" parent="."]
-position = Vector2( 96, 144 )
+position = Vector2( 96, 160 )
 texture = ExtResource( 3 )
 
 [node name="mod_name" parent="." instance=ExtResource( 2 )]

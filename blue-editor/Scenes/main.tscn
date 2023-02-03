@@ -1,4 +1,4 @@
-[gd_scene load_steps=73 format=2]
+[gd_scene load_steps=74 format=2]
 
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=1]
 [ext_resource path="res://Visual/Editor/editor_paintbrush.png" type="Texture" id=2]
@@ -51,6 +51,7 @@
 [ext_resource path="res://Visual/Editor/editor_exit.png" type="Texture" id=49]
 [ext_resource path="res://Visual/Editor/editor_new_hover.png" type="Texture" id=50]
 [ext_resource path="res://Text/Lacrimae_Small_Spaced.tres" type="DynamicFont" id=51]
+[ext_resource path="res://Visual/Editor/editor_vector.png" type="Texture" id=52]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
@@ -660,6 +661,7 @@ func _process(_delta):
 		place_selected_decor.flip_h = $GUI/Edit_Items/Panel/decor/flip_h.pressed
 		place_selected_decor.flip_v = $GUI/Edit_Items/Panel/decor/flip_v.pressed
 		place_selected_decor.modulate = $GUI/Edit_Items/Panel/other/color.color
+		$GUI/cursor/editor_vector.rotation_degrees = place_selected_decor.rotation_degrees
 	
 	$GUI/Place/Panel/mode.bbcode_text = \"[center]\"
 	
@@ -802,6 +804,7 @@ func create_new_level_objects(object_type : String):
 				node.position.x = data.settings[\"editor_create_\" + object_type + \"_position\"][0]
 				node.position.y = data.settings[\"editor_create_\" + object_type + \"_position\"][1]
 			node.set_owner(level)
+			if node.has_method(\"editor_ready\"): node.editor_ready()
 			level_objects[object_type] = node
 
 func create_new_level_option_select(option_button, setting : String):
@@ -933,6 +936,8 @@ func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
 		change_tilemap()
 		if level_objects[\"bg\"] != null: level_objects[\"bg\"].ready_up(level_objects[\"camera\"])
 		
+		ready_loaded_level(level.get_children())
+		
 		for i in range(level_layers.size()):
 			level_layer_data[level_layers[i]][0] = get_node(\"Game/Level/decor_\" + level_layers[i]).modulate
 			level_layer_data[level_layers[i]][1] = get_node(\"Game/Level/decor_\" + level_layers[i]).scale
@@ -943,6 +948,11 @@ func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
 	else:
 		done_action(\"failed to load level (other)\", \"#5d1f31\")
 		print(level_filename)
+
+func ready_loaded_level(group : Array):
+	for node in group:
+		if node.has_method(\"editor_ready\"): node.editor_ready()
+		ready_loaded_level(node.get_children())
 
 func tileset_changed(index):
 	var tileset : String = tilesets.get_item_text(index)
@@ -1064,6 +1074,7 @@ func object_select(object_file : String, _object : Node = null, no_selected_obje
 		for i in _object.editor_properties[\"editable_properties\"].keys():
 			place_selected_object.set(i, _object.get(i))
 		add_subjects(_object, place_selected_object, false)
+		if place_selected_object.has_method(\"editor_ready\"): place_selected_object.editor_ready()
 	
 	if !no_selected_object:
 		editor_properties_node = place_selected_object
@@ -1245,8 +1256,12 @@ func level_add_objects():
 				new_object.collision_mask = 0
 	new_object.set_owner(level)
 	for i in place_selected_object.editor_properties[\"editable_properties\"].keys():
-		new_object.set(i, place_selected_object.get(i))
+		#if i == \"points\":
+		#	new_object.set_points(place_selected_object.get_points())
+		#else:
+			new_object.set(i, place_selected_object.get(i))
 	add_subjects(place_selected_object, new_object)
+	if new_object.has_method(\"editor_ready\"): new_object.editor_ready()
 	
 	if object_type != \"normal\":
 		if level_objects[object_type] != null: level_objects[object_type].queue_free()
@@ -1282,6 +1297,7 @@ func add_subjects(source, reciever, set_owner : bool = true):
 		
 		if set_owner: new_item.set_owner(level)
 		add_subjects(obj, new_item, set_owner)
+		if new_item.has_method(\"editor_ready\"): new_item.editor_ready()
 		l += 1
 
 func level_closest_item(specific_node : Node2D = null, must_be_attachable : bool = false):
@@ -1969,7 +1985,25 @@ var editor_properties : Dictionary = {
 	\"attachable\" : false,
 }
 
-func _ready():
+func editor_ready():
+	pass
+
+func edit_left_just_pressed(_mouse_pos, _cursor_position, _level_scale):
+	pass
+
+func edit_left_released(_mouse_pos, _cursor_position, _level_scale):
+	pass
+
+func edit_left_pressed(_mouse_pos, _mouse_hinge):
+	pass
+
+func edit_right_just_pressed(_mouse_pos, _cursor_position, _level_scale):
+	pass
+
+func edit_right_released(_mouse_pos, _cursor_position, _level_scale):
+	pass
+
+func edit_right_pressed(_mouse_pos, _mouse_hinge):
 	pass
 "
 
@@ -2416,6 +2450,13 @@ visible = false
 
 [node name="object" type="Node2D" parent="GUI/cursor"]
 script = SubResource( 2 )
+
+[node name="editor_vector" type="Sprite" parent="GUI/cursor"]
+modulate = Color( 0.780392, 0.219608, 0.690196, 0.529412 )
+scale = Vector2( 2, 2 )
+z_as_relative = false
+texture = ExtResource( 52 )
+offset = Vector2( 0, -32 )
 
 [node name="Info" type="Control" parent="GUI"]
 anchor_left = 0.5
@@ -3766,11 +3807,11 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
@@ -3790,8 +3831,8 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_back" to="." method="layer_color_changed" binds= [ 1 ]]
 [connection signal="value_changed" from="GUI/Edit_Layers/Panel/scale_background" to="." method="layer_scale_changed" binds= [ 0 ]]
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_background" to="." method="layer_color_changed" binds= [ 0 ]]
-[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
 [connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
+[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
 [connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
 [connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="items_scroll_scrolling"]
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]

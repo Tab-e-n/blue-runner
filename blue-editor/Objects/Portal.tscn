@@ -44,7 +44,7 @@ editor_properties = {
 "type": [ 2, 0, 1, 1 ],
 "unlock": [ 4, 0, 0, 0 ]
 },
-"layer": "special",
+"layer": "selected",
 "object_path": "res://Objects/Portal.tscn",
 "object_type": "normal",
 "rect": Rect2( 0, -32, 64, 64 ),

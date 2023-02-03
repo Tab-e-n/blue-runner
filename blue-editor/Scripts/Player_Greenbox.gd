@@ -18,6 +18,7 @@ export var editor_properties : Dictionary = {
 	"attachable" : false,
 }
 
+export var character_name : String = "greenbox"
 export var facing : String = "right"
 
 func _process(_delta):
