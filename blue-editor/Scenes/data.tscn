@@ -104,43 +104,6 @@ var recent : Dictionary = {
 	\"Decor\" : [],
 }
 
-# Here lies what will be saved in the .dat file of levels,
-# Delete once you have the .dat save code ready
-var level_data : Dictionary = {
-	\"level_name\" : \"[name]\",
-	\"creator\" : \"Tabin\",
-	\"official\" : true,
-	\"level_icon\" : [\"questionmark\",\"res:/\"],
-	\"level_base\" : [\"base\",\"res:/\"],
-	\"dependencies\" : [],
-}
-
-var mod_data : Dictionary = {
-	\"mod_name\" : \"Default Mod\",
-	\"creator\" : \"Tabin\",
-	\"description\" : \"An example of how a mod should look.\",
-	\"dependencies\" : [],
-	\"active\" : true,
-}
-
-var editor_properties : Dictionary = {
-	\"object_path\" : \"res://Objects/Spike.tscn\",
-	\"object_type\" : \"normal\",
-	\"layer\" : \"selected\",
-	\"rect\" : Rect2(0, 0, 64, 64),
-	\"editable_properties\" : {
-		#\"name\" : [TYPE, min, max, step],
-	},
-	\"unchangeable_properties\" : {
-		\"scale\" : false,
-		\"rotation\" : true,
-		\"z_index\" : false,
-		\"color\" : false,
-		\"order\" : false,
-	},
-	\"attachable\" : false,
-}
-
 func _ready():
 	print(\"data ready\")
 	OS.min_window_size = Vector2(640, 480)
@@ -217,8 +180,6 @@ func load_game(fail = false):
 		favorite = load_transfer(favorite,\"favorite\",temp)
 		recent = load_transfer(recent,\"recent\",temp)
 		settings = load_transfer(settings,\"settings\",temp)
-		
-		
 	
 	# First it uses the default bindings
 	last_input_events = InputMap.get_action_list(\"default\").duplicate()
@@ -498,6 +459,13 @@ func scale_down_sprite(sprite : Sprite, final_scale : Vector2 = Vector2(1, 1), d
 	else:
 		sprite.scale.x = final_scale.y / (sprite_rect.y / desired_rect.y)
 	sprite.scale.y = sprite.scale.x
+
+func select_option_button(button : OptionButton, text : String, meta : String):
+	print(text + meta)
+	for i in range(button.get_item_count()):
+		if button.get_item_text(i) == text and button.get_item_metadata(i) == meta:
+			print(button.get_item_text(i) + button.get_item_metadata(i))
+			button.select(i)
 
 func key_names(key_number : int):
 	if key_number >= 33 and key_number <= 255: return char(key_number)

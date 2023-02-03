@@ -1,4 +1,4 @@
-extends Node2D
+extends Line2D
 
 var editor_properties : Dictionary = {
 	"object_path" : "res://Objects/Track.tscn",
@@ -28,21 +28,20 @@ export var is_a_loop : bool = false
 export var time_internal : int = 0
 export var time_direction : bool = true
 
-var points : PoolVector2Array = [Vector2(0,0)]
 export var auto_pos : bool = true
 export var pre_pos : Dictionary = {}
 
 var pos : Dictionary = {}
 
-var attached_nodes = [null]
+export var attached_nodes = [null]
 
-func _ready():
-	pass
+func editor_ready():
+	reset_points()
+	
 	#calculate_points()
 
 func _process(_delta):
 	if time_internal >= time: time_internal = time - 1
-	$points.points = points
 
 func attached(node : Node2D):
 	attached_nodes.append(node)
@@ -51,17 +50,27 @@ func attached(node : Node2D):
 func detached(node : Node2D):
 	attached_nodes.erase(node)
 
+func reset_points():
+	$points.clear_points()
+	for point in range(get_point_count()):
+		$points.add_point(get_point_position(point))
+
 func edit_left_just_pressed(mouse_pos, cursor_position, level_scale):
-	points.append(Vector2(
+	add_point(Vector2(
 		stepify((mouse_pos.x - cursor_position.x) * 1 / level_scale.x, 16),
 		stepify((mouse_pos.y - cursor_position.y) * 1 / level_scale.y, 16))
 	)
-	calculate_points()
+	$points.add_point(Vector2(
+		stepify((mouse_pos.x - cursor_position.x) * 1 / level_scale.x, 16),
+		stepify((mouse_pos.y - cursor_position.y) * 1 / level_scale.y, 16))
+	)
+	#calculate_points()
 
 func edit_right_just_pressed(_mouse_pos, _cursor_position, _level_scale):
 	if points.size() > 1:
-		points.remove(points.size() - 1)
-	calculate_points()
+		remove_point(points.size() - 1)
+		$points.remove_point(points.size() - 1)
+	#calculate_points()
 
 func calculate_points():
 	# warning-ignore:unassigned_variable
