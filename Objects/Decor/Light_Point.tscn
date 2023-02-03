@@ -1,9 +1,0 @@
-[gd_scene load_steps=2 format=2]
-
-[ext_resource path="res://Visual/light_point.png" type="Texture" id=1]
-
-[node name="Light" type="Light2D"]
-texture = ExtResource( 1 )
-texture_scale = 3.0
-energy = 0.4
-shadow_enabled = true

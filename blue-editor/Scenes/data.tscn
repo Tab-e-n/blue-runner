@@ -1,0 +1,622 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Control
+
+const VERSION : String = \"1.1.0\"
+
+var tilesets : Array
+var bg : Array
+var level_icon :  Array
+var level_base :  Array
+var base_data : Dictionary
+var place_decor : Dictionary
+var place_objects : Dictionary
+var characters : Array
+
+var user_directory : String = \"user://sonicRunnerEditor\"
+
+var mods_installed : Array
+var mods_enabled : Dictionary
+
+const INPUT_AMOUNT : int = 25
+var last_input_events : Array = range(INPUT_AMOUNT)
+
+var settings : Dictionary = {
+	\"*version\" : VERSION,
+	\"sonic_runner_folder\" : \"\",
+	
+	\"editor_gui_additional_info\" : false,
+	
+	\"editor_default_grid_snap\" : false,
+	\"editor_default_tab\" : 0,
+	
+	\"editor_author_name\" : \"Unknown\",
+	\"editor_default_level_name\" : \"Untitled Level\",
+	\"editor_default_official\" : false,
+	\"editor_default_bg\" : [\"none\",\"\"],
+	\"editor_default_tileset\" : [\"WaterWay.tres\",\"res:/\"],
+	\"editor_default_base\" : [\"base\",\"res:/\"],
+	\"editor_default_icon\" : [\"questionmark.png\",\"res:/\"],
+	
+	\"editor_create_player\" : true,
+	\"editor_create_player_path\" : \"res://Objects/Player/Player.tscn\",
+	\"editor_create_player_position\" : [-128, 0],
+	
+	\"editor_create_ghost\" : true,
+	\"editor_create_ghost_path\" : \"res://Objects/Player/Ghost.tscn\",
+	
+	\"editor_create_finish\" : true,
+	\"editor_create_finish_path\" : \"res://Objects/Finish.tscn\",
+	\"editor_create_finish_position\" : [128, 0],
+	
+	\"editor_create_camera\" : true,
+	\"editor_create_camera_path\" : \"res://Objects/Camera.tscn\",
+	
+	\"editor_default_layer\" : 2,
+	\"editor_default_sublayer\" : 1,
+	\"editor_default_layer_data\" : {
+		\"background\" : [[0.376471, 0.376471, 0.376471, 1], [0.75, 0.75]],
+		\"back\" : [[0.6, 0.6, 0.6, 1], [1, 1]],
+		\"center\" : [[1, 1, 1, 1], [1, 1]],
+		\"front\" : [[1, 1, 1, 1], [1, 1]],
+	},
+	
+	\"editor_keys\" : [
+		KEY_H, #hide GUI toggle
+		KEY_R, #scaling/rotating mode
+		KEY_G, #grid snap toggle
+		KEY_Z, #camera mode (camera zoom, game camera snap)
+		KEY_J, #attach
+		KEY_T, #change tab to tiles
+		KEY_D, #change tab to decor
+		KEY_O, #change tab to objects
+		KEY_M, #change mode move
+		KEY_A, #change mode paint
+		KEY_X, #change mode erasor
+		KEY_C, #change mode cog
+		KEY_S, #save level
+		KEY_L, #load level
+		KEY_N, #create new level
+		KEY_E, #edit items
+		KEY_F, #focus file panel
+		KEY_L, #focus layer panel
+		KEY_I, #focus items panel
+		KEY_E, #focus edit panel
+		KEY_P, #focus place panel
+		KEY_1,
+		KEY_2,
+		KEY_3,
+		KEY_4,
+	],
+	
+	\"editor_random_scale_range\" : [0.5, 3],
+}
+# Max 8 faves per category
+# Each tileset has its own 8 faves under its name
+var favorite : Dictionary = {
+	\"Objects\" : [],
+	\"Decor\" : [],
+}
+# Mirror recent in style, however with 16 instead of 8 things
+var recent : Dictionary = {
+	\"Objects\" : [],
+	\"Decor\" : [],
+}
+
+# Here lies what will be saved in the .dat file of levels,
+# Delete once you have the .dat save code ready
+var level_data : Dictionary = {
+	\"level_name\" : \"[name]\",
+	\"creator\" : \"Tabin\",
+	\"official\" : true,
+	\"level_icon\" : [\"questionmark\",\"res:/\"],
+	\"level_base\" : [\"base\",\"res:/\"],
+	\"dependencies\" : [],
+}
+
+var mod_data : Dictionary = {
+	\"mod_name\" : \"Default Mod\",
+	\"creator\" : \"Tabin\",
+	\"description\" : \"An example of how a mod should look.\",
+	\"dependencies\" : [],
+	\"active\" : true,
+}
+
+var editor_properties : Dictionary = {
+	\"object_path\" : \"res://Objects/Spike.tscn\",
+	\"object_type\" : \"normal\",
+	\"layer\" : \"selected\",
+	\"rect\" : Rect2(0, 0, 64, 64),
+	\"editable_properties\" : {
+		#\"name\" : [TYPE, min, max, step],
+	},
+	\"unchangeable_properties\" : {
+		\"scale\" : false,
+		\"rotation\" : true,
+		\"z_index\" : false,
+		\"color\" : false,
+		\"order\" : false,
+	},
+	\"attachable\" : false,
+}
+
+func _ready():
+	print(\"data ready\")
+	OS.min_window_size = Vector2(640, 480)
+	
+	var dir = Directory.new()
+	dir.open(\"user://\")
+	if !dir.dir_exists(\"SRLevels\"): dir.make_dir(\"SRLevels\")
+	
+	load_game()
+	load_editor_vanilla()
+	load_editor_mods()
+
+func _process(_delta):
+	pass
+
+func _exit_tree():
+	save_game()
+
+func save_game():
+	print(\"saving game\")
+	var savefile = File.new()
+	var temp = {}
+	
+	temp[\"favorite\"] = favorite.duplicate()
+	temp[\"recent\"] = recent.duplicate()
+	temp[\"settings\"] = settings.duplicate()
+	
+	check_mods()
+	
+	savefile.open(user_directory, File.WRITE)
+	savefile.store_line(to_json(temp))
+	savefile.close()
+	
+	temp = {}
+	
+	temp[\"*mods\"] = mods_installed.duplicate()
+	
+	savefile.open(\"user://sonicRunnerMods\", File.WRITE)
+	savefile.store_line(to_json(temp))
+	savefile.close()
+
+func load_game(fail = false):
+	print(\"loading game\")
+	var loadfile = File.new()
+	var temp = {}
+	
+	if not loadfile.file_exists(user_directory) or fail: # does file exist
+		save_game()
+	else:
+		loadfile.open(user_directory, File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		
+		loadfile.close()
+		
+		var version : String
+		if typeof(temp[\"settings\"][\"*version\"]) == TYPE_REAL:
+			version = \"1.0.0\"
+		else:
+			version = VERSION
+		
+		#print(\"load: \", temp)
+		temp = update_old_version(version, temp.duplicate())
+		
+		if temp[\"settings\"][\"editor_keys\"].size() < INPUT_AMOUNT:
+			temp[\"settings\"][\"editor_keys\"].resize(INPUT_AMOUNT)
+			for i in range(INPUT_AMOUNT):
+				if temp[\"settings\"][\"editor_keys\"][i] == null:
+					temp[\"settings\"][\"editor_keys\"][i] = settings[\"editor_keys\"][i]
+		
+		favorite = load_transfer(favorite,\"favorite\",temp)
+		recent = load_transfer(recent,\"recent\",temp)
+		settings = load_transfer(settings,\"settings\",temp)
+		
+		
+	
+	# First it uses the default bindings
+	last_input_events = InputMap.get_action_list(\"default\").duplicate()
+	print(last_input_events)
+	# The every binding that has already been bound replaces the defaults
+	for i in range(INPUT_AMOUNT):
+		last_input_events.append(InputEventKey.new())
+		last_input_events[i].scancode = settings[\"editor_keys\"][i]
+		if InputMap.action_has_event(String(i), last_input_events[i]):
+			InputMap.action_erase_event(String(i), last_input_events[i])
+		InputMap.action_add_event(String(i), last_input_events[i])
+		
+		#last_input_events[i] = last_input_events[i]
+		#settings[\"editor_keys\"][i] = last_input_events[i].scancode
+
+func update_old_version(version, save):
+	if version == \"1.0.0\":
+		version = \"1.1.0\"
+	
+	save[\"settings\"][\"*version\"] = VERSION
+	return save
+
+func load_transfer(section : Dictionary, section_name : String, temp : Dictionary):
+	if !temp.has(section_name): temp[section_name] = section.duplicate()
+	else:
+		for i in section.keys():
+			if !temp[section_name].has(i): temp[section_name][i] = section[i]
+	return temp[section_name].duplicate()
+
+func load_editor_vanilla():
+	print(\"scanning vanilla characters\")
+	load_dat_file(\"res:/\", \"/Objects/Player/\", characters, \"characters\")
+	
+	print(\"scanning vanilla tilesets\")
+	scan_single_directory(\"res:/\", \"/Objects/Tilesets/\", tilesets, \".tres\", \"tileset\")
+	
+	# BG
+	print(\"scanning vanilla backgrounds\")
+	scan_single_directory(\"res:/\", \"/Objects/Backgrounds/\", bg, \".tscn\", \"background\")
+	
+	# Other Objects
+	print(\"scanning vanilla objects\")
+	scan_multi_directory(\"res:/\", \"/Objects/\", place_objects, \".tscn\", [\"Tilesets\", \"Backgrounds\"])
+	
+	# Level Icon
+	print(\"scanning vanilla level icons\")
+	scan_single_directory(\"res:/\", \"/Visual/Level/\", level_icon, \".png\", \"icon\")
+	
+	print(\"scanning vanilla level base\")
+	load_dat_file(\"res:/\", \"/Visual/Level/\", level_base, \"base\")
+	
+	load_base(\"res:/\")
+	
+	# Decor
+	print(\"scanning vanilla decor\")
+	scan_multi_directory(\"res:/\", \"/Visual/\", place_decor, \".png\")
+
+func load_editor_mods():
+	var directory : Directory = Directory.new()
+	
+	check_mods()
+	
+	for mod_name in mods_installed:
+		print(\"current mod: \" + mod_name)
+		# warning-ignore:return_value_discarded
+		directory.open(\"Mods/\" + mod_name)
+		
+		# Characters
+		print(\"scanning for characters\")
+		load_dat_file(\"Mods/\" + mod_name, \"/Objects/Player/\", characters, \"characters\")
+		
+		# Tilesets
+		print(\"scanning for tilesets\")
+		scan_single_directory(\"Mods/\" + mod_name, \"/Objects/Tilesets/\", tilesets, \".tres\", \"tileset\")
+		
+		# BG
+		print(\"scanning for backgrounds\")
+		scan_single_directory(\"Mods/\" + mod_name, \"/Objects/Backgrounds/\", bg, \".tscn\", \"background\")
+		
+		# Other Objects
+		print(\"scanning for objects\")
+		scan_multi_directory(\"Mods/\" + mod_name, \"/Objects/\", place_objects, \".tscn\", [\"Tilesets\", \"Backgrounds\", \"Player\"])
+		
+		# Level Icons
+		print(\"scanning for level icons\")
+		scan_single_directory(\"Mods/\" + mod_name, \"/Visual/Level/\", level_icon, \".png\", \"icon\")
+		
+		print(\"scanning for level base\")
+		load_dat_file(\"Mods/\" + mod_name, \"/Visual/Level/\", level_base, \"base\")
+		
+		load_base(\"res:/\")
+		
+		# Visuals
+		print(\"scanning for decor\")
+		scan_multi_directory(\"Mods/\" + mod_name, \"/Visual/\", place_decor, \".png\")
+
+func load_dat_file(main_directory : String, sub_directory : String, storage : Array, file_type : String):
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(main_directory + sub_directory + file_type + \".dat\"): # does file exist
+		print(file_type + \" file was found\")
+		loadfile.open(main_directory + sub_directory + file_type + \".dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		if temp.has(\"*\" + file_type):
+			for i in temp[\"*\" + file_type]: storage.append([i,main_directory])
+		loadfile.close()
+	else:
+		print(\"no \" + file_type + \" file found\")
+
+func scan_single_directory(main_directory : String, sub_directory : String, storage : Array, file_type : String, file_descriptor : String):
+	var directory : Directory = Directory.new()
+	var check_exist = directory.open(main_directory + sub_directory)
+	var current_file
+	
+	if check_exist == OK:
+		# warning-ignore:return_value_discarded
+		directory.list_dir_begin(true)
+		
+		current_file = directory.get_next()
+		while current_file != \"\":
+			if current_file.ends_with(file_type):
+				print(\"found \" + file_descriptor + \": \" + current_file)
+				storage.append([current_file, main_directory])
+			current_file = directory.get_next()
+
+func scan_multi_directory(main_directory : String, start_directory : String, storage : Dictionary, file_type : String, exclude_directories : Array = []):
+	var directory : Directory = Directory.new()
+	var directories_to_visit : Array
+	var check_exist = directory.open(main_directory + start_directory)
+	var current_file
+	
+	if check_exist == OK:
+		storage[main_directory + start_directory] = []
+		directories_to_visit = [main_directory + start_directory]
+	
+	while directories_to_visit.size() > 0:
+		var current_directory : String = directories_to_visit[0]
+		print(\"looking through: \" + current_directory)
+		# warning-ignore:return_value_discarded
+		directory.open(current_directory)
+		# warning-ignore:return_value_discarded
+		directory.list_dir_begin(true)
+		current_file = directory.get_next()
+		while current_file != \"\":
+			if directory.current_is_dir():
+				print(\"found folder: \" + current_file)
+				if !(current_directory == main_directory + start_directory and exclude_directories.has(current_file)): 
+					storage[current_directory + current_file + \"/\"] = []
+					directories_to_visit.append(current_directory + current_file + \"/\")
+			elif current_file.ends_with(file_type):
+				storage[current_directory].append(current_directory + current_file)
+			current_file = directory.get_next()
+		directories_to_visit.pop_front()
+
+func load_base(main_directory : String):
+	var file : File = File.new()
+	var temp = {}
+	# warning-ignore:return_value_discarded
+	file.open(main_directory + \"/Visual/Level/base.dat\", File.READ)
+	
+	while file.get_position() < file.get_len():
+		var parsedData = parse_json(file.get_line())
+		
+		temp = parsedData
+	
+	file.close()
+	base_data[main_directory] = {}
+	for base in level_base:
+		base_data[main_directory][base[0]] = temp[base[0]]
+
+func check_mods():
+	var directory : Directory = Directory.new()
+	var current_file : String
+	print(\"scanning mods\")
+	var check_exist = directory.open(\"res://Mods\")
+	
+	mods_installed = []
+	
+	if check_exist == OK:
+		print(\"user has mods installed\")
+		
+		# warning-ignore:return_value_discarded
+		directory.list_dir_begin(true)
+		current_file = directory.get_next()
+		while current_file != \"\":
+			mods_installed.append(current_file)
+			current_file = directory.get_next()
+	else:
+		print(\"no mods found, or an error occured\")
+	
+	for mod_name in mods_installed.duplicate():
+		mods_enabled[mod_name] = [true, settings[\"sonic_runner_folder\"] == \"\", \"sonic runner not found\"]
+	for mod_name in mods_installed.duplicate():
+		var enabled = load_mods_data_files(mod_name)
+		if typeof(enabled) == TYPE_INT: enabled = false
+		mods_enabled[mod_name][0] = enabled
+	for mod_name in mods_installed.duplicate():
+		if !mods_enabled[mod_name][0]:
+			mods_installed.erase(mod_name)
+
+func load_mods_data_files(mod_name : String):
+	if mods_enabled[mod_name][0] and mods_enabled[mod_name][1]:
+		return true
+	if !mods_enabled[mod_name][0] and mods_enabled[mod_name][1]:
+		return false
+	if mods_enabled[mod_name][0] and !mods_enabled[mod_name][1]:
+		mods_enabled[mod_name][1] = true
+		
+		var loadfile = File.new()
+		var temp = {}
+		if loadfile.file_exists(\"Mods/\" + mod_name + \"/mod.dat\"): # does file exist
+			
+			
+			loadfile.open(\"Mods/\" + mod_name + \"/mod.dat\", File.READ)
+			
+			while loadfile.get_position() < loadfile.get_len():
+				var parsedData = parse_json(loadfile.get_line())
+				
+				temp = parsedData
+			
+			loadfile.close()
+		else:
+			print(mod_name + \" has no data file\")
+			mods_enabled[mod_name][2] = \"no data file\"
+			return false
+		if !temp[\"active\"]:
+			print(mod_name + \" is disabled\")
+			mods_enabled[mod_name][2] = \"disabled\"
+			return false
+		
+		mods_enabled[mod_name][0] = false
+		for i in temp[\"dependencies\"]:
+			if !mods_installed.has(i):
+				print(mod_name + \" is dependent on a mod that isn't installed\")
+				mods_enabled[mod_name][2] = \"dependencies not installed\"
+				return false
+			else:
+				var check = load_mods_data_files(i)
+				if typeof(check) == TYPE_INT:
+					print(mod_name + \" was in a cyclical dependancy\")
+					mods_enabled[mod_name][2] = \"cyclical dependancy\"
+					return 2
+				if check == false:
+					print(mod_name + \" is dependent on a mod that isn't enabled\")
+					mods_enabled[mod_name][2] = \"dependencies not active\"
+					return false
+		
+		var directory = Directory.new()
+		
+		if !directory.dir_exists(settings[\"sonic_runner_folder\"]):
+			print(mod_name + \" is disabled, because there is no sonic runner\")
+			mods_enabled[mod_name][2] = \"sonic runner not found\"
+			return false
+		
+		if !directory.dir_exists(settings[\"sonic_runner_folder\"] + \"/Mods/\" + mod_name):
+			print(mod_name + \" isn't imported in sonic runner\")
+			mods_enabled[mod_name][2] = \"not imported in sonic runner\"
+			return false
+		
+		print(mod_name + \" is enabled\")
+		mods_enabled[mod_name][2] = \"active\"
+		return true
+		
+	if !mods_enabled[mod_name][0] and !mods_enabled[mod_name][1]:
+		return 2
+
+func scale_down_sprite(sprite : Sprite, final_scale : Vector2 = Vector2(1, 1), desired_rect : Vector2 = Vector2(64, 64)):
+	sprite.scale = Vector2(1, 1)
+	var sprite_rect : Vector2 = sprite.get_rect().size
+	if sprite_rect.x > sprite_rect.y:
+		sprite.scale.x = final_scale.x / (sprite_rect.x / desired_rect.x)
+	else:
+		sprite.scale.x = final_scale.y / (sprite_rect.y / desired_rect.y)
+	sprite.scale.y = sprite.scale.x
+
+func key_names(key_number : int):
+	if key_number >= 33 and key_number <= 255: return char(key_number)
+	else: match(key_number):
+		KEY_SPACE: return \"SPACE\"
+		KEY_ESCAPE: return \"ESCAPE\"
+		KEY_TAB: return \"TAB\"
+		KEY_BACKTAB: return \"SPICY TAB\"
+		KEY_BACKSPACE: return \"BACKSPACE\"
+		KEY_ENTER: return \"ENTER\"
+		KEY_KP_ENTER: return \"KEYPAD ENTER\"
+		KEY_INSERT: return \"INSERT\"
+		KEY_DELETE: return \"DELETE\"
+		KEY_PAUSE: return \"PAUSE\"
+		KEY_PRINT: return \"SCREENSHOT\"
+		KEY_SYSREQ: return \"SYSTEM REQUEST\"
+		KEY_CLEAR: return \"CLEAR\"
+		KEY_HOME: return \"SWEET HOME ALABAMA\"
+		KEY_END: return \"THE END\"
+		KEY_LEFT: return \"LEFT ARROW\"
+		KEY_UP: return \"UP ARROW\"
+		KEY_RIGHT: return \"RIGHT ARROW\"
+		KEY_DOWN: return \"DOWN ARROW\"
+		KEY_PAGEUP: return \"PAGE UP\"
+		KEY_PAGEDOWN: return \"PAGE DOWN\"
+		KEY_SHIFT: return \"SHIFT\"
+		KEY_CONTROL: return \"CONTROL\"
+		KEY_META: return \"THIS KEY IS THE META\"
+		KEY_ALT: return \"ALT\"
+		KEY_CAPSLOCK: return \"SCREAM LOCK\"
+		KEY_NUMLOCK: return \"THE LOCK THATS ALWAYS ON\"
+		KEY_SCROLLLOCK: return \"WHO EVEN USES THIS LOCK\"
+		KEY_F1: return \"F1\"
+		KEY_F2: return \"F2\"
+		KEY_F3: return \"F3\"
+		KEY_F4: return \"F4\"
+		KEY_F5: return \"F5\"
+		KEY_F6: return \"F6\"
+		KEY_F7: return \"F7\"
+		KEY_F8: return \"F8\"
+		KEY_F9: return \"F9\"
+		KEY_F10: return \"F10\"
+		KEY_F11: return \"F11\"
+		KEY_F12: return \"F12\"
+		KEY_F13: return \"F13\"
+		KEY_F14: return \"F14\"
+		KEY_F15: return \"F15\"
+		KEY_F16: return \"F16\"
+		KEY_KP_MULTIPLY: return \"KEYPAD *\"
+		KEY_KP_DIVIDE: return \"KEYPAD /\"
+		KEY_KP_SUBTRACT: return \"KEYPAD -\"
+		KEY_KP_PERIOD: return \"KEYPAD .\"
+		KEY_KP_ADD: return \"KEYPAD +\"
+		KEY_KP_0: return \"KEYPAD 0\"
+		KEY_KP_1: return \"KEYPAD 1\"
+		KEY_KP_2: return \"KEYPAD 2\"
+		KEY_KP_3: return \"KEYPAD 3\"
+		KEY_KP_4: return \"KEYPAD 4\"
+		KEY_KP_5: return \"KEYPAD 5\"
+		KEY_KP_6: return \"KEYPAD 6\"
+		KEY_KP_7: return \"KEYPAD 7\"
+		KEY_KP_8: return \"KEYPAD 8\"
+		KEY_KP_9: return \"KEYPAD 9\"
+		KEY_SUPER_L: return \"SUPER LEFT WING\"
+		KEY_SUPER_R: return \"SUPER RIGHT WING\"
+		KEY_MENU: return \"YOU NEED TO GIVE CONTEXT\"
+		KEY_HYPER_L: return \"HYPER LEFT WING\"
+		KEY_HYPER_R: return \"HYPER RIGHT WING\"
+		KEY_HELP: return \"HELP ME GOD\"
+		KEY_DIRECTION_L: return \"DIRECTIONAL LEFT\"
+		KEY_DIRECTION_R: return \"DIRECTIONAL RIGHT\"
+		KEY_BACK: return \"BACK TO THE MARK\"
+		KEY_FORWARD: return \"FOWARD TO THE FUTURE\"
+		KEY_STOP: return \"STOP IT\"
+		KEY_REFRESH: return \"REFRESHING\"
+		KEY_VOLUMEDOWN: return \"TURN IT DOWN\"
+		KEY_VOLUMEMUTE: return \"MUTE IT PLEASE\"
+		KEY_VOLUMEUP: return \"TURN IT UP\"
+		KEY_BASSBOOST: return \"LOUD = FUNNY\"
+		KEY_BASSUP: return \"BASS UP\"
+		KEY_BASSDOWN: return \"BASS DOWN\"
+		KEY_TREBLEUP: return \"TREBLE UP\"
+		KEY_TREBLEDOWN: return \"TREBLE DOWN\"
+		KEY_MEDIAPLAY: return \"PLAY THAT SONG AGAIN\"
+		KEY_MEDIASTOP: return \"STOP THE MUSIC\"
+		KEY_MEDIAPREVIOUS: return \"PAST ART\"
+		KEY_MEDIANEXT: return \"ART OF THE FUTURE\"
+		KEY_MEDIARECORD: return \"CAUGHT ON CAMERA\"
+		KEY_HOMEPAGE: return \"HOME WITH DR. PAGE\"
+		KEY_FAVORITES: return \"MY JAM\"
+		KEY_SEARCH: return \"FIND THEM\"
+		KEY_STANDBY: return \"HALT\"
+		KEY_OPENURL: return \"BROWSER TIME\"
+		KEY_LAUNCHMAIL: return \"MAIL TIME\"
+		KEY_LAUNCHMEDIA: return \"MEDIA TIME\"
+		KEY_LAUNCH0: return \"SHORTCUT 0\"
+		KEY_LAUNCH1: return \"SHORTCUT 1\"
+		KEY_LAUNCH2: return \"SHORTCUT 2\"
+		KEY_LAUNCH3: return \"SHORTCUT 3\"
+		KEY_LAUNCH4: return \"SHORTCUT 4\"
+		KEY_LAUNCH5: return \"SHORTCUT 5\"
+		KEY_LAUNCH6: return \"SHORTCUT 6\"
+		KEY_LAUNCH7: return \"SHORTCUT 7\"
+		KEY_LAUNCH8: return \"SHORTCUT 8\"
+		KEY_LAUNCH9: return \"SHORTCUT 9\"
+		KEY_LAUNCHA: return \"SHORTCUT A\"
+		KEY_LAUNCHB: return \"SHORTCUT B\"
+		KEY_LAUNCHC: return \"SHORTCUT C\"
+		KEY_LAUNCHD: return \"SHORTCUT D\"
+		KEY_LAUNCHE: return \"SHORTCUT E\"
+		KEY_LAUNCHF: return \"SHORTCUT F\"
+		KEY_UNKNOWN: return \"???\"
+	return \"WHAT IS THIS?\"
+"
+
+[node name="data" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}

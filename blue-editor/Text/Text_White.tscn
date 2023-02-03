@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Text/Text_Black.tscn" type="PackedScene" id=1]
+
+[node name="Text" instance=ExtResource( 1 )]
+custom_colors/default_color = Color( 0.917647, 0.933333, 0.952941, 1 )

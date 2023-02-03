@@ -1,0 +1,189 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[  ]
+_global_script_class_icons={
+
+}
+
+[application]
+
+config/name="Sonic Runner Editor"
+run/main_scene="res://Scenes/menu.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="HowDoesOneName"
+config/icon="res://icon.png"
+
+[autoload]
+
+data="*res://Scenes/data.tscn"
+
+[display]
+
+window/size/height=768
+window/size/fullscreen=true
+window/stretch/mode="2d"
+window/stretch/aspect="expand"
+
+[importer_defaults]
+
+texture={
+"compress/bptc_ldr": 0,
+"compress/hdr_mode": 0,
+"compress/lossy_quality": 0.7,
+"compress/mode": 0,
+"compress/normal_map": 0,
+"detect_3d": false,
+"flags/anisotropic": false,
+"flags/filter": false,
+"flags/mipmaps": false,
+"flags/repeat": 0,
+"flags/srgb": 2,
+"process/HDR_as_SRGB": false,
+"process/fix_alpha_border": true,
+"process/invert_color": false,
+"process/premult_alpha": false,
+"size_limit": 0,
+"stream": false,
+"svg/scale": 1.0
+}
+
+[input]
+
+mouse_left={
+"deadzone": 0.5,
+"events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
+ ]
+}
+mouse_right={
+"deadzone": 0.5,
+"events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":2,"pressed":false,"doubleclick":false,"script":null)
+ ]
+}
+shift={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777237,"unicode":0,"echo":false,"script":null)
+ ]
+}
+ctrl={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777238,"unicode":0,"echo":false,"script":null)
+ ]
+}
+alt={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777240,"unicode":0,"echo":false,"script":null)
+ ]
+}
+0={
+"deadzone": 0.5,
+"events": [  ]
+}
+1={
+"deadzone": 0.5,
+"events": [  ]
+}
+2={
+"deadzone": 0.5,
+"events": [  ]
+}
+3={
+"deadzone": 0.5,
+"events": [  ]
+}
+4={
+"deadzone": 0.5,
+"events": [  ]
+}
+5={
+"deadzone": 0.5,
+"events": [  ]
+}
+6={
+"deadzone": 0.5,
+"events": [  ]
+}
+7={
+"deadzone": 0.5,
+"events": [  ]
+}
+8={
+"deadzone": 0.5,
+"events": [  ]
+}
+9={
+"deadzone": 0.5,
+"events": [  ]
+}
+10={
+"deadzone": 0.5,
+"events": [  ]
+}
+11={
+"deadzone": 0.5,
+"events": [  ]
+}
+12={
+"deadzone": 0.5,
+"events": [  ]
+}
+13={
+"deadzone": 0.5,
+"events": [  ]
+}
+14={
+"deadzone": 0.5,
+"events": [  ]
+}
+15={
+"deadzone": 0.5,
+"events": [  ]
+}
+16={
+"deadzone": 0.5,
+"events": [  ]
+}
+17={
+"deadzone": 0.5,
+"events": [  ]
+}
+18={
+"deadzone": 0.5,
+"events": [  ]
+}
+19={
+"deadzone": 0.5,
+"events": [  ]
+}
+20={
+"deadzone": 0.5,
+"events": [  ]
+}
+21={
+"deadzone": 0.5,
+"events": [  ]
+}
+22={
+"deadzone": 0.5,
+"events": [  ]
+}
+23={
+"deadzone": 0.5,
+"events": [  ]
+}
+24={
+"deadzone": 0.5,
+"events": [  ]
+}
+
+[rendering]
+
+environment/default_clear_color=Color( 0.0156863, 0.0235294, 0.133333, 1 )
+environment/default_environment="res://default_env.tres"

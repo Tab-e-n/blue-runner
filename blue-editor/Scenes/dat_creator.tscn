@@ -1,0 +1,745 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://Text/Text_Editor.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=2]
+[ext_resource path="res://Visual/Editor/editor_new_enabled.png" type="Texture" id=3]
+[ext_resource path="res://Visual/Editor/editor_save.png" type="Texture" id=4]
+[ext_resource path="res://Visual/Editor/editor_eraser_enabled.png" type="Texture" id=5]
+[ext_resource path="res://Visual/Editor/editor_eraser.png" type="Texture" id=6]
+[ext_resource path="res://Visual/Editor/editor_new.png" type="Texture" id=7]
+[ext_resource path="res://Visual/Editor/editor_save_enabled.png" type="Texture" id=8]
+[ext_resource path="res://Visual/Editor/editor_exit_enabled.png" type="Texture" id=9]
+[ext_resource path="res://Visual/Editor/editor_exit.png" type="Texture" id=10]
+[ext_resource path="res://Visual/Editor/editor_load_enabled.png" type="Texture" id=11]
+[ext_resource path="res://Visual/Editor/editor_load.png" type="Texture" id=12]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Control
+
+const options_span : int = 1600
+
+func _ready():
+	ready_optionbutton_setup($GUI/base/base_normal, data.level_icon)
+	ready_optionbutton_setup($GUI/base/base_locked, data.level_icon)
+	ready_optionbutton_setup($GUI/base/base_done, data.level_icon)
+	ready_optionbutton_setup($GUI/base/base_perfect, data.level_icon)
+	
+	$VScrollBar.max_value = options_span / 64
+	
+	character_changed_unlock_type(0)
+
+func ready_optionbutton_setup(option_button : OptionButton, data_array : Array):
+	var last_directory : String = \"res:/\"
+	for i in data_array:
+		if last_directory != i[1]:
+			option_button.add_item(\" - \" + i[1] + \" - \")
+			option_button.set_item_disabled(option_button.get_item_count() - 1, true)
+			last_directory = i[1]
+		option_button.add_item(i[0])
+		option_button.set_item_metadata(option_button.get_item_count() - 1, i[1])
+
+func _process(_delta):
+	var window = get_viewport().get_visible_rect().end
+	rect_size = window
+	$VScrollBar.rect_size.y = window.y
+	$VScrollBar.page = window.y / 64
+
+func _on_VScrollBar_scrolling():
+	$GUI.rect_position.y = -$VScrollBar.value * 64
+
+func base_save():
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(\"base.dat\"): # does file exist
+		loadfile.open(\"base.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		loadfile.close()
+	
+	var savefile = File.new()
+	
+	temp[$GUI/base/base_name.text] = [
+		$GUI/base/base_normal.get_item_text($GUI/base/base_normal.selected),
+		$GUI/base/base_locked.get_item_text($GUI/base/base_locked.selected),
+		$GUI/base/base_done.get_item_text($GUI/base/base_done.selected),
+		$GUI/base/base_perfect.get_item_text($GUI/base/base_perfect.selected)
+	]
+	if !temp.has(\"*base\"): temp[\"*base\"] = []
+	if !temp[\"*base\"].has($GUI/base/base_name.text): temp[\"*base\"].append($GUI/base/base_name.text)
+	
+	savefile.open(\"base.dat\", File.WRITE)
+	savefile.store_line(to_json(temp))
+	savefile.close()
+
+func base_remove():
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(\"base.dat\"): # does file exist
+		loadfile.open(\"base.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		loadfile.close()
+		
+		var savefile = File.new()
+		
+		temp.erase($GUI/base/base_name.text)
+		temp[\"*base\"].erase($GUI/base/base_name.text)
+		
+		savefile.open(\"base.dat\", File.WRITE)
+		savefile.store_line(to_json(temp))
+		savefile.close()
+
+enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
+
+func character_changed_unlock_type(index : int):
+	$\"GUI/character/1_text\".text = \"\"
+	$\"GUI/character/2_text\".text = \"\"
+	$\"GUI/character/2_number\".value = 0
+	match(index):
+		UNLOCK_ALWAYS:
+			$\"GUI/character/1_text\".visible = false
+			$\"GUI/character/2_text\".visible = false
+			$\"GUI/character/2_number\".visible = false
+			$GUI/character/text_edit.text = \"Unlock Type\\n\"
+		UNLOCK_BEAT:
+			$\"GUI/character/1_text\".visible = true
+			$\"GUI/character/2_text\".visible = true
+			$\"GUI/character/2_number\".visible = false
+			$GUI/character/text_edit.text = \"Unlock Type\\nLevel Group\\nLevel Name\"
+		UNLOCK_PAR:
+			$\"GUI/character/1_text\".visible = true
+			$\"GUI/character/2_text\".visible = true
+			$\"GUI/character/2_number\".visible = false
+			$GUI/character/text_edit.text = \"Unlock Type\\nLevel Group\\nLevel Name\"
+		UNLOCK_COMPLETION:
+			$\"GUI/character/1_text\".visible = true
+			$\"GUI/character/2_text\".visible = false
+			$\"GUI/character/2_number\".visible = true
+			$\"GUI/character/2_number\".allow_greater = false
+			$GUI/character/text_edit.text = \"Unlock Type\\nLevel Group\\nPercentage\"
+		UNLOCK_BONUS:
+			$\"GUI/character/1_text\".visible = true
+			$\"GUI/character/2_text\".visible = false
+			$\"GUI/character/2_number\".visible = true
+			$\"GUI/character/2_number\".allow_greater = true
+			$GUI/character/text_edit.text = \"Unlock Type\\nBonus Group\\nAmount of Bonus\"
+		UNLOCK_CUSTOM:
+			$\"GUI/character/1_text\".visible = true
+			$\"GUI/character/2_text\".visible = false
+			$\"GUI/character/2_number\".visible = false
+			$GUI/character/text_edit.text = \"Unlock Type\\nUnlock Name\"
+		UNLOCK_NEVER:
+			$\"GUI/character/1_text\".visible = false
+			$\"GUI/character/2_text\".visible = false
+			$\"GUI/character/2_number\".visible = false
+			$GUI/character/text_edit.text = \"Unlock Type\\n\"
+
+func character_save():
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(\"characters.dat\"): # does file exist
+		loadfile.open(\"characters.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		loadfile.close()
+	
+	var savefile = File.new()
+	
+	if !temp.has(\"*characters\"): temp[\"*characters\"] = {}
+	temp[\"*characters\"][$GUI/character/file.text] = [$GUI/character/type.selected, $\"GUI/character/1_text\".text, null, \"\", \"\"]
+	
+	if $GUI/character/type.selected == UNLOCK_COMPLETION or $GUI/character/type.selected == UNLOCK_BONUS:
+		temp[\"*characters\"][$GUI/character/file.text][2] = $\"GUI/character/2_number\".value
+	else:
+		temp[\"*characters\"][$GUI/character/file.text][2] = $\"GUI/character/2_text\".text
+	
+	temp[\"*characters\"][$GUI/character/file.text][3] = $GUI/character/name.text
+	temp[\"*characters\"][$GUI/character/file.text][4] = $GUI/character/description.text
+	
+	savefile.open(\"characters.dat\", File.WRITE)
+	savefile.store_line(to_json(temp))
+	savefile.close()
+
+func character_load():
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(\"characters.dat\"): # does file exist
+		loadfile.open(\"characters.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		loadfile.close()
+	
+	if !temp.has(\"*characters\"): return
+	if !temp[\"*characters\"].has($GUI/character/file.text): return
+	
+	var char_data : Array = temp[\"*characters\"][$GUI/character/file.text]
+	
+	if char_data.size() < 5:
+		char_data.resize(5)
+		if char_data[3] == null:
+			char_data[3] = \"\"
+		if char_data[4] == null:
+			char_data[4] = \"\"
+	
+	$GUI/character/type.selected = char_data[0]
+	$\"GUI/character/1_text\".text = char_data[1]
+	
+	if char_data[0] == UNLOCK_COMPLETION or char_data[0] == UNLOCK_BONUS:
+		$\"GUI/character/2_number\".value = char_data[2]
+	else:
+		$\"GUI/character/2_text\".text = char_data[2]
+	
+	$GUI/character/name.text = char_data[3]
+	$GUI/character/description.text = char_data[4]
+	
+	
+	
+	character_changed_unlock_type(char_data[0])
+
+func character_remove():
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(\"characters.dat\"): # does file exist
+		loadfile.open(\"characters.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		loadfile.close()
+		
+		var savefile = File.new()
+		
+		temp[\"*characters\"].erase($GUI/character/name.text)
+		
+		savefile.open(\"characters.dat\", File.WRITE)
+		savefile.store_line(to_json(temp))
+		savefile.close()
+
+func mod_modify():
+	var savefile = File.new()
+	var temp = {}
+	
+	if savefile.file_exists(\"mod.dat\"): # does file exist
+		savefile.open(\"mod.dat\", File.READ)
+		
+		while savefile.get_position() < savefile.get_len():
+			var parsedData = parse_json(savefile.get_line())
+			
+			temp = parsedData
+		savefile.close()
+	
+	temp[\"mod_name\"] = $GUI/mod/name.text
+	temp[\"creator\"] = $GUI/mod/author.text
+	temp[\"description\"] = $GUI/mod/description.text
+	temp[\"active\"] = false
+	if !temp.has(\"dependencies\"): temp[\"dependencies\"] = []
+	
+	savefile.open(\"mod.dat\", File.WRITE)
+	savefile.store_line(to_json(temp))
+	savefile.close()
+
+func dependecies_save():
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(\"mod.dat\"): # does file exist
+		loadfile.open(\"mod.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		loadfile.close()
+	
+	var savefile = File.new()
+	
+	if !temp.has(\"dependencies\"): temp[\"dependencies\"] = []
+	temp[\"dependencies\"].append($GUI/mod/dependecies.text)
+	
+	savefile.open(\"mod.dat\", File.WRITE)
+	savefile.store_line(to_json(temp))
+	savefile.close()
+
+func dependecies_remove():
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(\"mod.dat\"): # does file exist
+		loadfile.open(\"mod.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		loadfile.close()
+		
+		var savefile = File.new()
+		
+		temp[\"dependencies\"].erase($GUI/mod/dependecies.text)
+		
+		savefile.open(\"mod.dat\", File.WRITE)
+		savefile.store_line(to_json(temp))
+		savefile.close()
+
+func _on_exit_pressed():
+	# warning-ignore:return_value_discarded
+	get_tree().change_scene(\"res://Scenes/menu.tscn\")
+"
+
+[node name="dat_creator" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 2 )
+script = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 512, 384 )
+
+[node name="GUI" type="Control" parent="."]
+margin_right = 1024.0
+margin_bottom = 768.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="instructions" type="Panel" parent="GUI"]
+margin_left = 152.0
+margin_top = -8.0
+margin_right = 944.0
+margin_bottom = 296.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="title2" parent="GUI/instructions" instance=ExtResource( 1 )]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = -296.0
+margin_bottom = -213.0
+rect_scale = Vector2( 0.75, 0.75 )
+text = "INSTRUCTIONS"
+
+[node name="Text" parent="GUI/instructions" instance=ExtResource( 1 )]
+margin_left = 16.0
+margin_top = 72.0
+margin_right = 744.0
+margin_bottom = 88.0
+text = "To edit a dat file, place it next to the SR Editor executable. Then you'll be able to edit it using these tools, without making syntax mistakes. If there aren't any files to edit, the SR Editor will make new ones.
+For further instruction look at the SR manual."
+
+[node name="base" type="Panel" parent="GUI"]
+margin_left = 152.0
+margin_top = 312.0
+margin_right = 944.0
+margin_bottom = 648.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="title" parent="GUI/base" instance=ExtResource( 1 )]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = -309.0
+margin_bottom = -256.0
+rect_scale = Vector2( 0.75, 0.75 )
+text = "BASE.DAT"
+
+[node name="base_save" type="TextureButton" parent="GUI/base"]
+margin_left = 616.0
+margin_top = 8.0
+margin_right = 680.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 4 )
+texture_pressed = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="base_remove" type="TextureButton" parent="GUI/base"]
+margin_left = 712.0
+margin_top = 8.0
+margin_right = 776.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 6 )
+texture_pressed = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="base_text" parent="GUI/base" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 88.0
+margin_right = -224.0
+margin_bottom = -184.0
+text = "Base name"
+
+[node name="base_text_normal" parent="GUI/base" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 136.0
+margin_right = -224.0
+margin_bottom = -136.0
+text = "Normal"
+
+[node name="base_text_locked" parent="GUI/base" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 232.0
+margin_right = -224.0
+margin_bottom = -40.0
+text = "Locked"
+
+[node name="base_text_done" parent="GUI/base" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 184.0
+margin_right = -224.0
+margin_bottom = -88.0
+text = "Done"
+
+[node name="base_text_perfect" parent="GUI/base" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 280.0
+margin_right = -216.0
+margin_bottom = 8.0
+text = "Perfect"
+
+[node name="base_name" type="LineEdit" parent="GUI/base"]
+margin_left = 328.0
+margin_top = 88.0
+margin_right = 712.0
+margin_bottom = 120.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="base_normal" type="OptionButton" parent="GUI/base"]
+margin_left = 328.0
+margin_top = 136.0
+margin_right = 712.0
+margin_bottom = 168.0
+clip_text = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="base_locked" type="OptionButton" parent="GUI/base"]
+margin_left = 328.0
+margin_top = 232.0
+margin_right = 712.0
+margin_bottom = 264.0
+clip_text = true
+
+[node name="base_done" type="OptionButton" parent="GUI/base"]
+margin_left = 328.0
+margin_top = 184.0
+margin_right = 712.0
+margin_bottom = 216.0
+clip_text = true
+
+[node name="base_perfect" type="OptionButton" parent="GUI/base"]
+margin_left = 328.0
+margin_top = 280.0
+margin_right = 712.0
+margin_bottom = 312.0
+clip_text = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="character" type="Panel" parent="GUI"]
+margin_left = 152.0
+margin_top = 664.0
+margin_right = 944.0
+margin_bottom = 1128.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="title2" parent="GUI/character" instance=ExtResource( 1 )]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 149.0
+margin_bottom = -181.0
+rect_scale = Vector2( 0.75, 0.75 )
+text = "CHARACTERS.DAT"
+
+[node name="load" type="TextureButton" parent="GUI/character"]
+margin_left = 520.0
+margin_top = 8.0
+margin_right = 584.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 11 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="save" type="TextureButton" parent="GUI/character"]
+margin_left = 616.0
+margin_top = 8.0
+margin_right = 680.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 4 )
+texture_pressed = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="remove" type="TextureButton" parent="GUI/character"]
+margin_left = 712.0
+margin_top = 8.0
+margin_right = 776.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 6 )
+texture_pressed = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="GUI/character" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 88.0
+margin_right = -208.0
+margin_bottom = -312.0
+text = "Character"
+
+[node name="file" type="LineEdit" parent="GUI/character"]
+margin_left = 328.0
+margin_top = 88.0
+margin_right = 712.0
+margin_bottom = 120.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text2" parent="GUI/character" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 136.0
+margin_right = -208.0
+margin_bottom = -264.0
+text = "Name"
+
+[node name="name" type="LineEdit" parent="GUI/character"]
+margin_left = 328.0
+margin_top = 136.0
+margin_right = 712.0
+margin_bottom = 168.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text3" parent="GUI/character" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 184.0
+margin_right = -208.0
+margin_bottom = -24.0
+tab_size = 0
+text = "Description"
+
+[node name="description" type="TextEdit" parent="GUI/character"]
+margin_left = 328.0
+margin_top = 184.0
+margin_right = 712.0
+margin_bottom = 312.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text_edit" parent="GUI/character" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 328.0
+margin_right = -208.0
+margin_bottom = 56.0
+text = "Unlock Type"
+
+[node name="type" type="OptionButton" parent="GUI/character"]
+margin_left = 328.0
+margin_top = 328.0
+margin_right = 712.0
+margin_bottom = 360.0
+text = "Always Unlocked"
+clip_text = true
+items = [ "Always Unlocked", null, false, 0, null, "Beat Level", null, false, 1, null, "Par Level", null, false, 2, null, "Group Completion", null, false, 3, null, "Bonus Amount", null, false, 4, null, "Custom Unlock", null, false, 5, null, "Never Unlocked", null, false, 6, null ]
+selected = 0
+
+[node name="1_text" type="LineEdit" parent="GUI/character"]
+margin_left = 328.0
+margin_top = 360.0
+margin_right = 712.0
+margin_bottom = 392.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="2_text" type="LineEdit" parent="GUI/character"]
+margin_left = 328.0
+margin_top = 392.0
+margin_right = 712.0
+margin_bottom = 424.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="2_number" type="SpinBox" parent="GUI/character"]
+margin_left = 328.0
+margin_top = 392.0
+margin_right = 712.0
+margin_bottom = 424.0
+
+[node name="mod" type="Panel" parent="GUI"]
+margin_left = 152.0
+margin_top = 1144.0
+margin_right = 944.0
+margin_bottom = 1608.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="title3" parent="GUI/mod" instance=ExtResource( 1 )]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 149.0
+margin_bottom = -304.0
+rect_scale = Vector2( 0.75, 0.75 )
+text = "MOD.DAT"
+
+[node name="modify" type="TextureButton" parent="GUI/mod"]
+margin_left = 712.0
+margin_top = 8.0
+margin_right = 776.0
+margin_bottom = 72.0
+texture_normal = ExtResource( 4 )
+texture_pressed = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="GUI/mod" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 88.0
+margin_right = -208.0
+margin_bottom = -232.0
+text = "Mod name"
+
+[node name="name" type="LineEdit" parent="GUI/mod"]
+margin_left = 328.0
+margin_top = 88.0
+margin_right = 712.0
+margin_bottom = 120.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text2" parent="GUI/mod" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 136.0
+margin_right = -208.0
+margin_bottom = -184.0
+text = "Creator"
+
+[node name="author" type="LineEdit" parent="GUI/mod"]
+margin_left = 328.0
+margin_top = 136.0
+margin_right = 712.0
+margin_bottom = 168.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text3" parent="GUI/mod" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 184.0
+margin_right = -208.0
+margin_bottom = -136.0
+text = "Description"
+
+[node name="description" type="TextEdit" parent="GUI/mod"]
+margin_left = 328.0
+margin_top = 184.0
+margin_right = 712.0
+margin_bottom = 312.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="save" type="TextureButton" parent="GUI/mod"]
+margin_left = 616.0
+margin_top = 328.0
+margin_right = 680.0
+margin_bottom = 392.0
+texture_normal = ExtResource( 7 )
+texture_pressed = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="remove" type="TextureButton" parent="GUI/mod"]
+margin_left = 712.0
+margin_top = 328.0
+margin_right = 776.0
+margin_bottom = 392.0
+texture_normal = ExtResource( 6 )
+texture_pressed = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text4" parent="GUI/mod" instance=ExtResource( 1 )]
+margin_left = 72.0
+margin_top = 408.0
+margin_right = -208.0
+margin_bottom = 88.0
+text = "Dependecies"
+
+[node name="dependecies" type="LineEdit" parent="GUI/mod"]
+margin_left = 328.0
+margin_top = 408.0
+margin_right = 712.0
+margin_bottom = 440.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VScrollBar" type="VScrollBar" parent="."]
+margin_left = 64.0
+margin_right = 80.0
+margin_bottom = 768.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="exit" type="TextureButton" parent="."]
+margin_right = 64.0
+margin_bottom = 64.0
+texture_normal = ExtResource( 10 )
+texture_pressed = ExtResource( 9 )
+[connection signal="pressed" from="GUI/base/base_save" to="." method="base_save"]
+[connection signal="pressed" from="GUI/base/base_remove" to="." method="base_remove"]
+[connection signal="pressed" from="GUI/character/load" to="." method="character_load"]
+[connection signal="pressed" from="GUI/character/save" to="." method="character_save"]
+[connection signal="pressed" from="GUI/character/remove" to="." method="character_remove"]
+[connection signal="item_selected" from="GUI/character/type" to="." method="character_changed_unlock_type"]
+[connection signal="pressed" from="GUI/mod/modify" to="." method="mod_modify"]
+[connection signal="pressed" from="GUI/mod/save" to="." method="dependecies_save"]
+[connection signal="pressed" from="GUI/mod/remove" to="." method="dependecies_remove"]
+[connection signal="scrolling" from="VScrollBar" to="." method="_on_VScrollBar_scrolling"]
+[connection signal="pressed" from="exit" to="." method="_on_exit_pressed"]

@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Scripts/Spike.gd" type="Script" id=1]
+[ext_resource path="res://Visual/saw_1.png" type="Texture" id=2]
+[ext_resource path="res://Visual/saw_2.png" type="Texture" id=4]
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 24.0
+
+[node name="Spike" type="StaticBody2D"]
+collision_layer = 6
+collision_mask = 6
+script = ExtResource( 1 )
+
+[node name="saw_1" type="Sprite" parent="."]
+scale = Vector2( 0.25, 0.25 )
+texture = ExtResource( 2 )
+
+[node name="saw_2" type="Sprite" parent="."]
+scale = Vector2( 0.25, 0.25 )
+texture = ExtResource( 4 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )

@@ -1,0 +1,109 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Scripts/Camera.gd" type="Script" id=1]
+[ext_resource path="res://Visual/camera_black_border_thing.png" type="Texture" id=2]
+[ext_resource path="res://Visual/camera_u_done_it.png" type="Texture" id=3]
+[ext_resource path="res://Visual/camera_inputs.png" type="Texture" id=4]
+[ext_resource path="res://Text/Text_Black.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Text/Text_White.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Visual/camera_square.png" type="Texture" id=7]
+
+[node name="Camera" type="Camera2D"]
+current = true
+zoom = Vector2( 2, 2 )
+script = ExtResource( 1 )
+
+[node name="border_thing" type="Sprite" parent="."]
+visible = false
+z_index = 100
+texture = ExtResource( 2 )
+
+[node name="camera_square" type="Sprite" parent="border_thing"]
+position = Vector2( 256, 288 )
+texture = ExtResource( 7 )
+
+[node name="timer" parent="border_thing/camera_square" instance=ExtResource( 5 )]
+margin_left = -176.0
+margin_top = -56.0
+margin_right = -240.0
+margin_bottom = -128.0
+custom_colors/default_color = Color( 0.917647, 0.933333, 0.952941, 1 )
+text = "00:00.00"
+
+[node name="par" parent="border_thing/camera_square" instance=ExtResource( 5 )]
+margin_left = 64.0
+margin_top = -64.0
+margin_right = -128.0
+margin_bottom = -64.0
+rect_scale = Vector2( 0.5, 0.5 )
+custom_colors/default_color = Color( 0.466667, 0.517647, 0.670588, 1 )
+text = "par
+00:00.00"
+
+[node name="replay" parent="border_thing" instance=ExtResource( 5 )]
+margin_left = -496.0
+margin_top = -360.0
+margin_right = 2464.0
+margin_bottom = -1064.0
+rect_scale = Vector2( 0.5, 0.5 )
+custom_colors/default_color = Color( 0.466667, 0.517647, 0.670588, 1 )
+text = "REPLAY - SPECIAL"
+
+[node name="u_done_it" type="Sprite" parent="border_thing"]
+position = Vector2( 256, -256 )
+texture = ExtResource( 3 )
+
+[node name="camera_inputs" type="Sprite" parent="."]
+visible = false
+z_index = 100
+texture = ExtResource( 4 )
+offset = Vector2( -480, 336 )
+
+[node name="continue" parent="camera_inputs" instance=ExtResource( 6 )]
+margin_left = -448.0
+margin_top = 288.0
+margin_right = 768.0
+margin_bottom = 256.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.466667, 0.517647, 0.670588, 1 )
+
+[node name="reset" parent="camera_inputs" instance=ExtResource( 6 )]
+margin_left = -448.0
+margin_top = 336.0
+margin_right = 768.0
+margin_bottom = 304.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.466667, 0.517647, 0.670588, 1 )
+
+[node name="Fade" type="Polygon2D" parent="."]
+visible = false
+scale = Vector2( 2, 2 )
+z_index = 100
+color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+polygon = PoolVector2Array( -512, 384, 512, 384, 512, -384, -512, -384 )
+
+[node name="border" type="Polygon2D" parent="."]
+visible = false
+position = Vector2( 0, -8 )
+scale = Vector2( 2, 2 )
+z_index = 100
+color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+polygon = PoolVector2Array( -512, -384, 512, -384, 512, 392, 1280, 392, 1280, -412, -1280, -412, -1280, 392, -512, 392 )
+
+[node name="speed" type="Polygon2D" parent="."]
+visible = false
+position = Vector2( 0, 768 )
+color = Color( 0.258824, 0.258824, 0.258824, 1 )
+polygon = PoolVector2Array( 0, 8, 8, 0, 0, -8, -128, -8, -136, 0, -128, 8 )
+
+[node name="info" type="Node2D" parent="."]
+visible = false
+scale = Vector2( 2, 2 )
+z_index = 100
+
+[node name="text" parent="info" instance=ExtResource( 6 )]
+margin_left = -108.0
+margin_top = 320.0
+margin_right = 164.0
+margin_bottom = 384.0
+text = "00:00.00"

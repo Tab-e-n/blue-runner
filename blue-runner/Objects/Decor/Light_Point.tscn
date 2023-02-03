@@ -1,0 +1,36 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Visual/light_point.png" type="Texture" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Sprite
+
+func ready():
+	$anim.play(\"flicker\")
+"
+
+[sub_resource type="Animation" id=2]
+resource_name = "flicker"
+length = 8.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 4, 8 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 0, 0.596078, 0.572549, 0.156863 ), Color( 0, 0.596078, 0.572549, 0.313726 ), Color( 0, 0.596078, 0.572549, 0.156863 ) ]
+}
+
+[node name="light_point" type="Sprite"]
+modulate = Color( 0, 0.596078, 0.572549, 0.156863 )
+position = Vector2( 0, -256 )
+texture = ExtResource( 1 )
+script = SubResource( 1 )
+
+[node name="anim" type="AnimationPlayer" parent="."]
+anims/flicker = SubResource( 2 )

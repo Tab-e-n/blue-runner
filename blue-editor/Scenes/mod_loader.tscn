@@ -1,0 +1,383 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=1]
+[ext_resource path="res://Text/Text_Editor.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Visual/particle_circle.png" type="Texture" id=3]
+[ext_resource path="res://Visual/Editor/editor_new.png" type="Texture" id=4]
+[ext_resource path="res://Visual/Editor/editor_new_enabled.png" type="Texture" id=5]
+[ext_resource path="res://Visual/Editor/editor_exit_enabled.png" type="Texture" id=6]
+[ext_resource path="res://Visual/Editor/editor_exit.png" type="Texture" id=7]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Control
+
+var selected_mod : int = 0
+
+func _ready():
+	for i in data.mods_enabled.keys():
+		$mod_list.add_item(i)
+	$mod_list.select(selected_mod)
+	mod_selected(selected_mod)
+
+func _process(_delta):
+	var window = get_viewport().get_visible_rect().end
+	margin_right = window.x / 2
+	margin_left = window.x / -2
+	margin_bottom = window.y / 2
+	margin_top = window.y / -2
+	
+
+func mod_selected(index):
+	var loadfile = File.new()
+	var temp = {}
+	var mod_name = $mod_list.get_item_text(index)
+	selected_mod = index
+	$mod_filename.bbcode_text = mod_name
+	
+	if mod_name == \"*Vanilla\":
+		$mod_status.bbcode_text = \"    always on\"
+		$mod_status.modulate = Color(0, 1, 0, 1)
+		$mod_name.bbcode_text = \"Vanilla Sonic Runner\"
+		$mod_author.bbcode_text = \"Tabin\"
+		$mod_description.bbcode_text = \"The base for all other additions.\"
+		$mod_active.pressed = true
+		$mod_active.disabled = true
+		$logo.texture = load(\"res://Visual/S1/head.png\")
+		$logo.scale = Vector2(1, 1)
+		
+		var item_rect : Vector2 = $logo.get_rect().size
+		$logo.scale.y = 1 / (item_rect.y / 128)
+		$logo.scale.x = $logo.scale.y
+		return
+	
+	$mod_active.disabled = false
+	$mod_status.bbcode_text = \"    \" + data.mods_enabled[mod_name][2]
+	
+	if data.mods_enabled[mod_name][2] == \"active\":
+		$mod_status.modulate = Color(0, 1, 0, 1)
+	elif data.mods_enabled[mod_name][2] == \"disabled\":
+		$mod_status.modulate = Color(0.5, 0.5, 0.5, 1)
+	else:
+		$mod_status.modulate = Color(1, 0, 0, 1)
+	
+	if data.mods_enabled[mod_name][2] != \"no data file\": # does file exist
+		loadfile.open(\"Mods/\" + mod_name + \"/mod.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		
+		loadfile.close()
+	
+	if temp.has(\"mod_name\"): $mod_name.bbcode_text = temp[\"mod_name\"]
+	else: $mod_name.bbcode_text = \"Unnamed Mod\"
+	if temp.has(\"creator\"): $mod_author.bbcode_text = temp[\"creator\"]
+	else: $mod_author.bbcode_text = \"Unspecified Author\"
+	if temp.has(\"description\"): $mod_description.bbcode_text = temp[\"description\"]
+	else: $mod_description.bbcode_text = \"???\"
+	if temp.has(\"dependencies\"): pass
+	if temp.has(\"active\"): $mod_active.pressed = temp[\"active\"]
+	else: $mod_active.pressed = false
+	
+	if loadfile.file_exists(\"Mods/\" + mod_name + \"/logo.png\"):
+		$logo.texture = load(\"Mods/\" + mod_name + \"/logo.png\")
+	else:
+		$logo.texture = load(\"res://Visual/Editor/editor_missing.png\")
+	$logo.scale = Vector2(1, 1)
+	var item_rect : Vector2 = $logo.get_rect().size
+	$logo.scale.y = 1 / (item_rect.y / 128)
+	$logo.scale.x = $logo.scale.y
+
+
+func mod_activate(button_pressed):
+	var file = File.new()
+	var temp = {}
+	var mod_name = $mod_list.get_item_text(selected_mod)
+	
+	if mod_name == \"*Vanilla\": return
+	
+	if data.mods_enabled[mod_name][2] != \"no data file\": # does file exist
+		file.open(\"Mods/\" + mod_name + \"/mod.dat\", File.READ)
+		
+		while file.get_position() < file.get_len():
+			var parsedData = parse_json(file.get_line())
+			
+			temp = parsedData
+		
+		temp[\"active\"] = button_pressed
+		
+		file.open(\"Mods/\" + mod_name + \"/mod.dat\", File.WRITE)
+		file.store_line(to_json(temp))
+		file.close()
+
+func import_popup():
+	if data.settings[\"sonic_runner_folder\"] == \"\":
+		$import_fail.popup()
+	else:
+		$import_popup.popup()
+
+func import_dir_selected(dir : String):
+	var directory : Directory = Directory.new()
+	
+	#directory.change_dir(dir)
+	#directory.get_current_dir()
+	
+	var file = File.new()
+	var temp = {}
+	
+	if file.file_exists(dir + \"/mod.dat\"): # does file exist
+		file.open(dir + \"/mod.dat\", File.READ)
+		
+		while file.get_position() < file.get_len():
+			var parsedData = parse_json(file.get_line())
+			
+			temp = parsedData
+		
+		file.open(dir + \"/mod.dat\", File.WRITE)
+		file.store_line(to_json(temp))
+		file.close()
+	
+	# warning-ignore:return_value_discarded
+	directory.open(dir)
+	var mod_filepath : String = directory.get_current_dir()
+	var mod_filename : String = mod_filepath.right(mod_filepath.find_last(\"/\")) + \"/\"
+	# warning-ignore:return_value_discarded
+	directory.open(\"res://\")
+	
+	# warning-ignore:return_value_discarded
+	directory.make_dir_recursive(\"Mods/\" + mod_filename)
+	# warning-ignore:return_value_discarded
+	directory.make_dir_recursive(data.settings[\"sonic_runner_folder\"] + \"/Mods/\" + mod_filename)
+	
+	var directories_to_visit : Array
+	var current_file
+	
+	for exe in [\"editor\",\"runner\"]:
+		var filepath
+		if exe == \"editor\": filepath = \"res:/\"
+		if exe == \"runner\": filepath = data.settings[\"sonic_runner_folder\"]
+		
+		directories_to_visit = [dir + \"/\"]
+		
+		while directories_to_visit.size() > 0:
+			var current_directory : String = directories_to_visit[0]
+			# warning-ignore:return_value_discarded
+			directory.open(current_directory)
+			# warning-ignore:return_value_discarded
+			directory.list_dir_begin(true)
+			current_file = directory.get_next()
+			while current_file != \"\":
+				if directory.current_is_dir():
+					if !((exe == \"editor\" and current_file == \"Runner Objects\") or
+						(exe == \"editor\" and current_file == \"Scenes\") or
+						(exe == \"runner\" and current_file == \"Editor Objects\")):
+						directories_to_visit.append(current_directory + current_file + \"/\")
+						var folder = current_directory.right(current_directory.find(mod_filename)) + current_file + \"/\"
+						folder = folder.replace(\"Runner Objects\", \"Objects\")
+						folder = folder.replace(\"Editor Objects\", \"Objects\")
+						# warning-ignore:return_value_discarded
+						directory.make_dir_recursive(filepath + \"/Mods\" + folder)
+				else:
+					var new_folder = current_directory.right(current_directory.find(mod_filename))
+					new_folder = new_folder.replace(\"Runner Objects\", \"Objects\")
+					new_folder = new_folder.replace(\"Editor Objects\", \"Objects\")
+					# warning-ignore:return_value_discarded
+					directory.copy(current_directory + current_file, filepath + \"/Mods\" + new_folder + current_file)
+				current_file = directory.get_next()
+			directories_to_visit.pop_front()
+			
+	data.check_mods()
+	$mod_list.add_item(data.mods_enabled.keys()[data.mods_enabled.size() - 1])
+	$mod_list.select(data.mods_enabled.size() - 1)
+	mod_selected(data.mods_enabled.size() - 1)
+
+func exit_pressed():
+	# warning-ignore:return_value_discarded
+	get_tree().change_scene(\"res://Scenes/menu.tscn\")
+"
+
+[node name="mod_loader" type="Control"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -512.0
+margin_top = -384.0
+margin_right = 512.0
+margin_bottom = 384.0
+theme = ExtResource( 1 )
+script = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 512, 384 )
+
+[node name="mod_filename" parent="." instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 32.0
+margin_top = 40.0
+margin_right = 1376.0
+margin_bottom = 104.0
+bbcode_enabled = true
+bbcode_text = "FILENAME"
+text = "FILENAME"
+
+[node name="mod_status" parent="." instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 8.0
+margin_right = 1408.0
+margin_bottom = 72.0
+custom_colors/default_color = Color( 1, 1, 1, 1 )
+bbcode_enabled = true
+bbcode_text = "STATUS"
+text = "STATUS"
+
+[node name="editor_point" type="Sprite" parent="mod_status"]
+position = Vector2( 40, 24 )
+scale = Vector2( 0.375, 0.375 )
+texture = ExtResource( 3 )
+
+[node name="logo" type="Sprite" parent="."]
+position = Vector2( 96, 144 )
+texture = ExtResource( 3 )
+
+[node name="mod_name" parent="." instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 32.0
+margin_top = 224.0
+margin_right = 704.0
+margin_bottom = 288.0
+rect_scale = Vector2( 1, 1 )
+custom_colors/default_color = Color( 1, 1, 1, 1 )
+bbcode_enabled = true
+bbcode_text = "MOD"
+text = "MOD"
+
+[node name="mod_author" parent="." instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 32.0
+margin_top = 280.0
+margin_right = 1107.0
+margin_bottom = 344.0
+rect_scale = Vector2( 0.625, 0.625 )
+custom_colors/default_color = Color( 1, 1, 1, 1 )
+bbcode_enabled = true
+bbcode_text = "AUTHOR"
+text = "AUTHOR"
+
+[node name="mod_description" parent="." instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 32.0
+margin_top = 320.0
+margin_right = 1312.0
+margin_bottom = 1088.0
+custom_colors/default_color = Color( 1, 1, 1, 1 )
+bbcode_enabled = true
+bbcode_text = "AUTHOR"
+text = "AUTHOR"
+
+[node name="active_alert" parent="." instance=ExtResource( 2 )]
+margin_left = 152.0
+margin_top = 720.0
+margin_right = 216.0
+margin_bottom = 16.0
+text = "Changes will require a reload."
+
+[node name="mod_active" type="Button" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 16.0
+margin_top = -48.0
+margin_right = 144.0
+margin_bottom = -16.0
+toggle_mode = true
+text = "ENABLE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="mod_list" type="ItemList" parent="."]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -328.0
+margin_top = -296.0
+margin_right = -24.0
+margin_bottom = 360.0
+items = [ "*Vanilla", null, false ]
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="import" type="TextureButton" parent="."]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -192.0
+margin_top = -384.0
+margin_right = -128.0
+margin_bottom = -320.0
+texture_normal = ExtResource( 4 )
+texture_pressed = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="import_fail" type="AcceptDialog" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -296.0
+margin_top = -80.0
+margin_right = 298.0
+margin_bottom = 80.0
+window_title = "Oopsie!"
+dialog_text = "SR Editor doesn't know where SR is
+located, so it cannot import mods. You
+can set the SR folder in the settings."
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="import_popup" type="FileDialog" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -384.0
+margin_top = -384.0
+margin_right = 384.0
+margin_bottom = 384.0
+window_title = "Open a Directory"
+mode = 2
+access = 2
+current_dir = "/Project/Godot 3.2/sonic_runner_git/blue-editor"
+current_path = "/Project/Godot 3.2/sonic_runner_git/blue-editor/"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="exit" type="TextureButton" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -96.0
+margin_right = -32.0
+margin_bottom = 64.0
+texture_normal = ExtResource( 7 )
+texture_pressed = ExtResource( 6 )
+[connection signal="toggled" from="mod_active" to="." method="mod_activate"]
+[connection signal="item_selected" from="mod_list" to="." method="mod_selected"]
+[connection signal="pressed" from="import" to="." method="import_popup"]
+[connection signal="dir_selected" from="import_popup" to="." method="import_dir_selected"]
+[connection signal="pressed" from="exit" to="." method="exit_pressed"]

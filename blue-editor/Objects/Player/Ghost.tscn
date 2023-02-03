@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Visual/Objects/Ghost.tscn.png" type="Texture" id=2]
+
+[node name="Ghost" instance=ExtResource( 1 )]
+z_index = -1
+editor_properties = {
+"attachable": false,
+"editable_properties": {
+
+},
+"layer": "special",
+"object_path": "res://Objects/Player/Ghost.tscn",
+"object_type": "ghost",
+"rect": Rect2( 0, -32, 64, 64 ),
+"unchangeable_properties": {
+"color": true,
+"order": true,
+"rotation": true,
+"scale": true,
+"z_index": true
+}
+}
+ghost = true
+
+[node name="Ghosttscn" type="Sprite" parent="." index="0"]
+position = Vector2( 0, -32 )
+texture = ExtResource( 2 )

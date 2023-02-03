@@ -1,0 +1,209 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Scripts/BreakableGlass.gd" type="Script" id=2]
+[ext_resource path="res://Visual/stained_glass.png" type="Texture" id=3]
+[ext_resource path="res://Visual/stained_glass_white.png" type="Texture" id=4]
+[ext_resource path="res://Visual/particle_circle.png" type="Texture" id=5]
+
+[sub_resource type="Animation" id=1]
+resource_name = "Break"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("glass:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1.15, 1.15 ), Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("glass:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("glass/stained_glass:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("glass/blight:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("particle_circle:scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 2, 2 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("particle_circle:modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("line1:scale")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 2, 0 ), Vector2( 0, 3 ) ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("line2:scale")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 2, 1e-05 ), Vector2( 0, 3 ) ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("line3:scale")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 2, 1e-05 ), Vector2( 0, 3 ) ]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath(".:visible")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 64, 64 )
+
+[node name="BreakableGlass" type="StaticBody2D"]
+collision_layer = 3
+collision_mask = 3
+script = ExtResource( 2 )
+
+[node name="anim" type="AnimationPlayer" parent="."]
+anims/Break = SubResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 64, 64 )
+shape = SubResource( 2 )
+
+[node name="glass" type="Node2D" parent="."]
+
+[node name="stained_glass" type="Sprite" parent="glass"]
+scale = Vector2( 2, 2 )
+texture = ExtResource( 3 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 0, 0, 64, 64 )
+
+[node name="Outline" type="Line2D" parent="glass/stained_glass"]
+scale = Vector2( 0.5, 0.5 )
+points = PoolVector2Array( 0, 0, 128, 0, 128, 128, 0, 128, 0, 0 )
+width = 4.0
+default_color = Color( 0.145098, 0.12549, 0.0588235, 1 )
+end_cap_mode = 1
+
+[node name="blight" type="Sprite" parent="glass"]
+modulate = Color( 1, 1, 1, 0 )
+self_modulate = Color( 0.972549, 0.941176, 0.792157, 1 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 4 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 0, 0, 64, 64 )
+
+[node name="particle_circle" type="Sprite" parent="."]
+visible = false
+self_modulate = Color( 0.972549, 0.941176, 0.792157, 1 )
+scale = Vector2( 1e-05, 1e-05 )
+texture = ExtResource( 5 )
+
+[node name="line1" type="Line2D" parent="."]
+visible = false
+scale = Vector2( 2, 1e-05 )
+points = PoolVector2Array( 0, 0, 0, 64 )
+default_color = Color( 0.972549, 0.941176, 0.792157, 1 )
+
+[node name="line4" type="Line2D" parent="line1"]
+rotation = 0.523598
+points = PoolVector2Array( 0, 0, 0, 64 )
+default_color = Color( 0.972549, 0.941176, 0.792157, 1 )
+
+[node name="line2" type="Line2D" parent="."]
+visible = false
+scale = Vector2( 2, 1e-05 )
+points = PoolVector2Array( 0, 0, 0, 64 )
+default_color = Color( 0.972549, 0.941176, 0.792157, 1 )
+
+[node name="line5" type="Line2D" parent="line2"]
+rotation = 2.87979
+points = PoolVector2Array( 0, 0, 0, 64 )
+default_color = Color( 0.972549, 0.941176, 0.792157, 1 )
+
+[node name="line3" type="Line2D" parent="."]
+visible = false
+scale = Vector2( 2, 1e-05 )
+points = PoolVector2Array( 0, 0, 0, 64 )
+default_color = Color( 0.972549, 0.941176, 0.792157, 1 )
+
+[node name="line6" type="Line2D" parent="line3"]
+rotation = -1.83259
+points = PoolVector2Array( 0, 0, 0, 64 )
+default_color = Color( 0.972549, 0.941176, 0.792157, 1 )
