@@ -25,10 +25,13 @@ var level_group_dat : Dictionary = {
 	\"levels\" : range(20),
 	\"dependencies\" : [],
 	\"bg\" : \"*none\",
+	\"unlock\" : [0, \"\", \"\"],
 }
 
+enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
+
 func _ready():
-	for i in range(20): level_group_dat[\"levels\"][i] = [\"*Level_Missing\", true, 0]
+	for i in range(20): level_group_dat[\"levels\"][i] = [\"*Level_Missing\", true, [0, \"\", \"\"]]
 	
 	ready_optionbutton_setup($Edits/level_icon, data.level_icon)
 	ready_optionbutton_setup($Edits/level_base, data.level_base)
@@ -54,7 +57,9 @@ func _ready():
 	$\"levels/0\".pressed = true
 	
 	load_level_visuals()
-	load_group_popup()
+	
+	data.changed_unlock_type(0, $Edits/text_edit, $Edits/unlock_type, $\"Edits/1_text\", $\"Edits/2_text\", $\"Edits/2_number\", \"\\n\")
+	data.changed_unlock_type(-1, $Edits/text_level_unlocks, $Edits/level_unlock_type, $\"Edits/level_1_text\", $\"Edits/level_2_text\", $\"Edits/level_2_number\", \"\")
 
 func load_level_visuals():
 	for i in range(20):
@@ -63,7 +68,7 @@ func load_level_visuals():
 			change_level_texture(dat[\"level_icon\"][1] + \"/Visual/Level/\" + dat[\"level_icon\"][0], \"icon\", i)
 			var variant = 0
 			if level_group_dat[\"levels\"][i][1]: variant = 1
-			change_level_texture(dat[\"level_base\"][1] + \"/Visual/Level/\" + data.base_data[dat[\"level_base\"][1]][dat[\"level_base\"][0]][variant], \"base\", i)
+			change_level_texture(data.base_data[dat[\"level_base\"][1]][dat[\"level_base\"][0]][variant][1] + \"/Visual/Level/\" + data.base_data[dat[\"level_base\"][1]][dat[\"level_base\"][0]][variant][0], \"base\", i)
 		else:
 			change_level_texture(\"res://Visual/Level/questionmark.png\", \"icon\", i)
 			if level_group_dat[\"levels\"][i][1]: change_level_texture(\"res://Visual/Level/base_locked.png\", \"base\", i)
@@ -75,8 +80,7 @@ func change_level_visual(index, type : String):
 		if type == \"icon\":
 			text_path = \"res://Visual/Level/questionmark.png\"
 		else:
-			if level_group_dat[\"levels\"][current_level][1]: text_path = \"res://Visual/Level/base_locked.png\"
-			else: text_path = \"res://Visual/Level/base_neutral.png\"
+			text_path = \"res://Visual/Level/base_locked.png\"
 	else:
 		var info : OptionButton = get_node(\"Edits/level_\" + type)
 		if type == \"icon\":
@@ -84,7 +88,7 @@ func change_level_visual(index, type : String):
 		else:
 			var variant = 0
 			if level_group_dat[\"levels\"][current_level][1]: variant = 1
-			text_path = info.get_item_metadata(index) + \"/Visual/Level/\" + data.base_data[info.get_item_metadata(index)][info.get_item_text(index)][variant]
+			text_path = data.base_data[info.get_item_metadata(index)][info.get_item_text(index)][variant][1] + \"/Visual/Level/\" + data.base_data[info.get_item_metadata(index)][info.get_item_text(index)][variant][0]
 	change_level_texture(text_path, type, current_level)
 
 func change_level_texture(change_to : String, type : String, level : int):
@@ -92,9 +96,10 @@ func change_level_texture(change_to : String, type : String, level : int):
 	current_level_visual.texture = load(change_to)
 
 func picture_changed():
-	print(current_group_path)
+	#print(current_group_path)
 	var file : File = File.new()
 	if file.file_exists(current_group_path + \"/title.png\"):
+		
 		$title/picture.texture = load(current_group_path + \"/title.png\")
 	else:
 		$title/picture.texture = load(\"res://Visual/Title/title_custom.png\")
@@ -124,14 +129,25 @@ func save_current_group(dir, defaults : bool = false):
 	var file = File.new()
 	var temp = {}
 	
+	save_level_dat()
+	
 	if defaults:
 		temp = {}
 		temp[\"levels\"] = []
 		for _i in range(20):
-			temp[\"levels\"].append([\"*Level_Missing\", true, 0])
-		temp[\"dependencies\"] = data.mods_installed.duplicate()
+			temp[\"levels\"].append([\"*Level_Missing\", true, [0, \"\", \"\"]])
+		temp[\"dependencies\"] = []
+		temp[\"unlock\"] = [0, \"\", \"\"]
 	else:
 		level_group_dat[\"dependencies\"] = data.mods_installed.duplicate()
+		
+		level_group_dat[\"unlock\"][0] = $Edits/unlock_type.selected
+		level_group_dat[\"unlock\"][1] = $\"Edits/1_text\".text
+		if level_group_dat[\"unlock\"][0] == UNLOCK_COMPLETION or level_group_dat[\"unlock\"][0] == UNLOCK_BONUS:
+			level_group_dat[\"unlock\"][2] = $\"Edits/2_number\".value
+		else:
+			level_group_dat[\"unlock\"][2] = $\"Edits/2_text\".text
+		
 		temp = level_group_dat.duplicate()
 	
 	file.open(dir + \"/level_group.dat\", File.WRITE)
@@ -166,17 +182,30 @@ func load_group(dir):
 		
 		if !temp.has(\"levels\"):
 			temp[\"levels\"] = []
-			for _i in range(20): temp[\"levels\"].append([\"*Level_Missing\", true, 0])
+			for _i in range(20): temp[\"levels\"].append([\"*Level_Missing\", true, [0, \"\", \"\"]])
 		else:
 			for i in range(20):
 				if temp[\"levels\"][i].size() == 2:
-					temp[\"levels\"][i].append(0)
+					temp[\"levels\"][i].append([0, \"\", \"\"])
+				if typeof(temp[\"levels\"][i][2]) != TYPE_ARRAY:
+					temp[\"levels\"][i][2] = [0, \"\", \"\"]
 		if !temp.has(\"dependencies\"): temp[\"dependencies\"] = []
 		for i in temp[\"dependencies\"]:
 			if !data.mods_installed.has(i):
 				$dependendy_fail.popup()
 				return
 		if !temp.has(\"bg\"): temp[\"bg\"] = \"*none\"
+		
+		if temp.has(\"unlock\"):
+			data.changed_unlock_type(temp[\"unlock\"][0], $Edits/text_edit, $Edits/unlock_type, $\"Edits/1_text\", $\"Edits/2_text\", $\"Edits/2_number\", \"\\n\")
+			$\"Edits/1_text\".text = temp[\"unlock\"][1]
+			if temp[\"unlock\"][0] == UNLOCK_COMPLETION or temp[\"unlock\"][0] == UNLOCK_BONUS:
+				$\"Edits/2_number\".value = temp[\"unlock\"][2]
+			else:
+				$\"Edits/2_text\".text = temp[\"unlock\"][2]
+		else:
+			data.changed_unlock_type(0, $Edits/text_edit, $Edits/unlock_type, $\"Edits/1_text\", $\"Edits/2_text\", $\"Edits/2_number\", \"\\n\")
+			temp[\"unlock\"] = [0, \"\", \"\"]
 		
 		level_group_dat = temp.duplicate()
 		
@@ -187,6 +216,10 @@ func load_group(dir):
 			$Edits/refresh.disabled = false
 			$Edits/bg.disabled = false
 			$Edits/import.disabled = false
+			$Edits/unlock_type.disabled = false
+			$\"Edits/1_text\".editable = true
+			$\"Edits/2_text\".editable = true
+			$\"Edits/2_number\".editable = true
 		
 		for i in range($Edits/bg.get_item_count()):
 			if $Edits/bg.get_item_metadata(i) + \"/Objects/Backgrounds/\" + $Edits/bg.get_item_text(i) == temp[\"bg\"]:
@@ -294,19 +327,26 @@ func save_level_dat():
 		
 		temp[\"level_name\"] = $Edits/level_name.text
 		temp[\"creator\"] = $Edits/level_author.text
+		if !temp.has(\"tags\"):
+			temp[\"tags\"] = []
+			temp.erase(\"official\")
 		if temp.has(\"tags\") and $Edits/level_official.pressed:
 			temp[\"tags\"].append(\"official\")
-		elif temp.has(\"tags\"):
-			temp[\"tags\"].erase(\"official\")
 		else:
-			temp[\"official\"] = $Edits/level_official.pressed
+			temp[\"tags\"].erase(\"official\")
 		temp[\"level_icon\"] = [$Edits/level_icon.get_item_text($Edits/level_icon.selected),$Edits/level_icon.get_selected_metadata()]
 		temp[\"level_base\"] = [$Edits/level_base.get_item_text($Edits/level_base.selected),$Edits/level_base.get_selected_metadata()]
 		
 		#level_group_dat[\"levels\"][current_level][0] = $Edits/filename.get_item_text($Edits/filename.get_selected_id())
 		#level_group_dat[\"levels\"][current_level][1] = $Edits/locked.pressed
 		
-		print(current_group_path + \"/\" + level_group_dat[\"levels\"][current_level][0] + \".dat\")
+		level_group_dat[\"levels\"][current_level][2] = [$Edits/level_unlock_type.selected, $\"Edits/level_1_text\".text, \"\"]
+		if $Edits/level_unlock_type.selected == UNLOCK_COMPLETION or $Edits/level_unlock_type.selected == UNLOCK_BONUS:
+			level_group_dat[\"levels\"][current_level][2][2] = $\"Edits/level_2_number\".value
+		else:
+			level_group_dat[\"levels\"][current_level][2][2] = $\"Edits/level_2_text\".text
+		
+		#print(current_group_path + \"/\" + level_group_dat[\"levels\"][current_level][0] + \".dat\")
 		file.open(current_group_path + \"/\" + level_group_dat[\"levels\"][current_level][0] + \".dat\", File.WRITE)
 		file.store_line(to_json(temp))
 		file.close()
@@ -328,6 +368,7 @@ func load_level_dat(level : int, values_only : bool = false):
 		$Edits/level_official.disabled = false
 		$Edits/level_icon.disabled = false
 		$Edits/level_base.disabled = false
+		$Edits/locked.disabled = false
 		
 		$Edits/level_name.text = temp[\"level_name\"]
 		$Edits/level_author.text = temp[\"creator\"]
@@ -348,6 +389,16 @@ func load_level_dat(level : int, values_only : bool = false):
 				$Edits/filename.select(i)
 				break
 		
+		$Edits/level_unlock_type.select(level_group_dat[\"levels\"][current_level][2][0])
+		
+		locked_toggled(level_group_dat[\"levels\"][level][1], true)
+		
+		$\"Edits/level_1_text\".text = level_group_dat[\"levels\"][current_level][2][1]
+		if $Edits/level_unlock_type.selected == UNLOCK_COMPLETION or $Edits/level_unlock_type.selected == UNLOCK_BONUS:
+			$\"Edits/level_2_number\".value = level_group_dat[\"levels\"][current_level][2][2] 
+		else:
+			$\"Edits/level_2_text\".text = level_group_dat[\"levels\"][current_level][2][2] 
+		
 		file.close()
 	elif !values_only:
 		$Edits/level_name.editable = false
@@ -362,9 +413,11 @@ func load_level_dat(level : int, values_only : bool = false):
 		$Edits/level_icon.select(0)
 		$Edits/level_base.select(0)
 		$Edits/filename.select(0)
+		
+		$Edits/locked.disabled = true
+		locked_toggled(true, true)
 	else:
 		return null
-	$Edits/locked.pressed = level_group_dat[\"levels\"][level][1]
 
 func on_exit():
 	# warning-ignore:return_value_discarded
@@ -380,12 +433,18 @@ func filename_selected(index):
 	change_level_visual($Edits/level_icon.selected, \"icon\")
 	#change_level_visual($Edits/level_base.selected, \"base\")
 
-func locked_toggled(button_pressed):
+func locked_toggled(button_pressed, scripted : bool = false):
+	if scripted: $Edits/locked.pressed = button_pressed
 	level_group_dat[\"levels\"][current_level][1] = button_pressed
 	change_level_visual($Edits/level_base.selected, \"base\")
+	if button_pressed and !$Edits/locked.disabled:
+		data.changed_unlock_type($Edits/level_unlock_type.selected, $Edits/text_level_unlocks, $Edits/level_unlock_type, $\"Edits/level_1_text\", $\"Edits/level_2_text\", $\"Edits/level_2_number\", \"\")
+	else:
+		data.changed_unlock_type(-1, $Edits/text_level_unlocks, $Edits/level_unlock_type, $\"Edits/level_1_text\", $\"Edits/level_2_text\", $\"Edits/level_2_number\", \"\")
 
 func completion_changed(value):
-	print(value)
+	return
+	#print(value)
 	level_group_dat[\"levels\"][current_level][2] = value
 
 func bg_changed(index):
@@ -393,6 +452,12 @@ func bg_changed(index):
 		level_group_dat[\"bg\"] = \"*none\"
 	else:
 		level_group_dat[\"bg\"] = $Edits/bg.get_item_metadata(index) + \"/Objects/Backgrounds/\" + $Edits/bg.get_item_text(index)
+
+func changed_unlock_type(index, connecting_from : String):
+	if connecting_from == \"group_unlock\":
+		data.changed_unlock_type(index, $Edits/text_edit, $Edits/unlock_type, $\"Edits/1_text\", $\"Edits/2_text\", $\"Edits/2_number\", \"\\n\")
+	if connecting_from == \"level_unlock\":
+		data.changed_unlock_type(index, $Edits/text_level_unlocks, $Edits/level_unlock_type, $\"Edits/level_1_text\", $\"Edits/level_2_text\", $\"Edits/level_2_number\", \"\")
 "
 
 [sub_resource type="GDScript" id=2]
@@ -417,19 +482,19 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -392.0
+margin_left = -520.0
 margin_top = -392.0
-margin_right = 392.0
+margin_right = 520.0
 margin_bottom = -56.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="picture" type="Sprite" parent="title"]
-position = Vector2( 392, 168 )
+position = Vector2( 520, 168 )
 
 [node name="logo" type="Sprite" parent="title"]
-position = Vector2( 744, 296 )
+position = Vector2( 168, 40 )
 
 [node name="levels" type="Panel" parent="."]
 anchor_left = 0.5
@@ -483,10 +548,13 @@ __meta__ = {
 margin_left = 488.0
 margin_top = 384.0
 margin_right = -216.0
-margin_bottom = 128.0
+margin_bottom = 384.0
 bbcode_enabled = true
 bbcode_text = "[right]File
 Locked
+
+
+
 
 Name
 Creator
@@ -495,6 +563,9 @@ Icon
 Base[/right]"
 text = "File
 Locked
+
+
+
 
 Name
 Creator
@@ -523,7 +594,56 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="text_level_unlocks" parent="Edits" instance=ExtResource( 5 )]
+margin_left = 536.0
+margin_top = 448.0
+margin_right = -88.0
+margin_bottom = -64.0
+text = ""
+
+[node name="level_unlock_type" type="OptionButton" parent="Edits"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 224.0
+margin_top = 64.0
+margin_right = 480.0
+margin_bottom = 96.0
+text = "Always Unlocked"
+clip_text = true
+items = [ "Always Unlocked", null, true, 1, null, "Beat Level", null, false, 2, null, "Par Level", null, false, 3, null, "Group Completion", null, false, 4, null, "Bonus Amount", null, false, 5, null, "Custom Unlock", null, false, 6, null, "Level Unlock", null, false, 6, null ]
+selected = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="level_1_text" type="LineEdit" parent="Edits"]
+margin_left = 736.0
+margin_top = 480.0
+margin_right = 992.0
+margin_bottom = 512.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="level_2_text" type="LineEdit" parent="Edits"]
+margin_left = 736.0
+margin_top = 512.0
+margin_right = 992.0
+margin_bottom = 544.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="level_2_number" type="SpinBox" parent="Edits"]
+margin_left = 736.0
+margin_top = 512.0
+margin_right = 992.0
+margin_bottom = 544.0
+
 [node name="completion" type="SpinBox" parent="Edits"]
+visible = false
 margin_left = 696.0
 margin_top = 416.0
 margin_right = 920.0
@@ -535,9 +655,9 @@ __meta__ = {
 
 [node name="level_name" type="LineEdit" parent="Edits"]
 margin_left = 656.0
-margin_top = 480.0
+margin_top = 576.0
 margin_right = 992.0
-margin_bottom = 512.0
+margin_bottom = 608.0
 editable = false
 __meta__ = {
 "_edit_use_anchors_": false
@@ -545,9 +665,9 @@ __meta__ = {
 
 [node name="level_author" type="LineEdit" parent="Edits"]
 margin_left = 656.0
-margin_top = 512.0
+margin_top = 608.0
 margin_right = 992.0
-margin_bottom = 544.0
+margin_bottom = 640.0
 editable = false
 __meta__ = {
 "_edit_use_anchors_": false
@@ -555,9 +675,9 @@ __meta__ = {
 
 [node name="level_official" type="CheckBox" parent="Edits"]
 margin_left = 648.0
-margin_top = 536.0
+margin_top = 632.0
 margin_right = 696.0
-margin_bottom = 584.0
+margin_bottom = 680.0
 disabled = true
 __meta__ = {
 "_edit_use_anchors_": false
@@ -565,9 +685,9 @@ __meta__ = {
 
 [node name="level_icon" type="OptionButton" parent="Edits"]
 margin_left = 656.0
-margin_top = 576.0
+margin_top = 672.0
 margin_right = 992.0
-margin_bottom = 608.0
+margin_bottom = 704.0
 disabled = true
 clip_text = true
 __meta__ = {
@@ -576,9 +696,9 @@ __meta__ = {
 
 [node name="level_base" type="OptionButton" parent="Edits"]
 margin_left = 656.0
-margin_top = 608.0
+margin_top = 704.0
 margin_right = 992.0
-margin_bottom = 640.0
+margin_bottom = 736.0
 disabled = true
 clip_text = true
 
@@ -603,9 +723,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = 320.0
+margin_left = -384.0
 margin_top = -256.0
-margin_right = 384.0
+margin_right = -320.0
 margin_bottom = -192.0
 disabled = true
 texture_normal = ExtResource( 14 )
@@ -620,10 +740,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -384.0
-margin_top = -96.0
-margin_right = -128.0
-margin_bottom = -64.0
+margin_left = 320.0
+margin_top = -384.0
+margin_right = 512.0
+margin_bottom = -352.0
 disabled = true
 text = "none"
 clip_text = true
@@ -632,6 +752,58 @@ selected = 0
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="text_edit" parent="Edits" instance=ExtResource( 5 )]
+margin_left = 832.0
+margin_top = 128.0
+margin_right = 192.0
+margin_bottom = -256.0
+text = "Unlock Type"
+
+[node name="unlock_type" type="OptionButton" parent="Edits"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 320.0
+margin_top = -224.0
+margin_right = 512.0
+margin_bottom = -192.0
+disabled = true
+text = "Always Unlocked"
+clip_text = true
+items = [ "Always Unlocked", null, false, 0, null, "Beat Level", null, false, 1, null, "Par Level", null, false, 2, null, "Group Completion", null, false, 3, null, "Bonus Amount", null, false, 4, null, "Custom Unlock", null, false, 5, null, "Never Unlocked", null, false, 6, null ]
+selected = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="1_text" type="LineEdit" parent="Edits"]
+margin_left = 832.0
+margin_top = 224.0
+margin_right = 1024.0
+margin_bottom = 256.0
+editable = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="2_text" type="LineEdit" parent="Edits"]
+margin_left = 832.0
+margin_top = 288.0
+margin_right = 1024.0
+margin_bottom = 320.0
+editable = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="2_number" type="SpinBox" parent="Edits"]
+margin_left = 832.0
+margin_top = 288.0
+margin_right = 1024.0
+margin_bottom = 320.0
+editable = false
 
 [node name="exit" type="TextureButton" parent="Edits"]
 margin_left = 32.0
@@ -756,12 +928,14 @@ __meta__ = {
 [connection signal="toggled" from="levels/0" to="." method="level_toggled" binds= [ 0 ]]
 [connection signal="item_selected" from="Edits/filename" to="." method="filename_selected"]
 [connection signal="toggled" from="Edits/locked" to="." method="locked_toggled"]
+[connection signal="item_selected" from="Edits/level_unlock_type" to="." method="changed_unlock_type" binds= [ "level_unlock" ]]
 [connection signal="value_changed" from="Edits/completion" to="." method="completion_changed"]
 [connection signal="item_selected" from="Edits/level_icon" to="." method="change_level_visual" binds= [ "icon" ]]
 [connection signal="item_selected" from="Edits/level_base" to="." method="change_level_visual" binds= [ "base" ]]
 [connection signal="pressed" from="Edits/import" to="." method="import_popup"]
 [connection signal="pressed" from="Edits/refresh" to="." method="picture_changed"]
 [connection signal="item_selected" from="Edits/bg" to="." method="bg_changed"]
+[connection signal="item_selected" from="Edits/unlock_type" to="." method="changed_unlock_type" binds= [ "group_unlock" ]]
 [connection signal="pressed" from="Edits/exit" to="." method="on_exit"]
 [connection signal="pressed" from="Edits/new" to="." method="new_group_popup"]
 [connection signal="pressed" from="Edits/load" to="." method="load_group_popup"]

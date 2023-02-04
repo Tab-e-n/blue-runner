@@ -2,28 +2,34 @@ GENERAL
 
 documentation
 
-EDITOR
+ - EDITOR - 
+
+SHOULD DO SOON
 
 dependency stripper
 f1 for help
 default-mod
 z_index has some buggy behavior probably
-that shader thing
-visuals for track
 
+CAN DO LATER
+
+that shader thing
 exit level editor shortcut
 do you wanna do scrollers?
 undo system (i dont really wanna)
 rebind move to something if undo system
 
-RUNNER
+ - RUNNER - 
+
+SHOULD DO SOON
 
 pixelate bricks
-tutorial level
 touchup replay menu
-character greenbox
 character missing
 
-level group unlocks
+CAN DO LATER
+
+character greenbox
+tutorial level
 changing prebuilt level groups
 Cheat code menu

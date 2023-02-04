@@ -467,6 +467,60 @@ func select_option_button(button : OptionButton, text : String, meta : String):
 			print(button.get_item_text(i) + button.get_item_metadata(i))
 			button.select(i)
 
+
+enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
+func changed_unlock_type(index : int, unlock_text : RichTextLabel, type_button : OptionButton, text_1 : LineEdit, text_2 : LineEdit, number_2 : SpinBox, extra_text : String = \"\"):
+	if index != -1:
+		type_button.select(index)
+		type_button.visible = true
+	text_1.text = \"\"
+	text_2.text = \"\"
+	number_2.value = 0
+	match(index):
+		-1:
+			text_1.visible = false
+			text_2.visible = false
+			number_2.visible = false
+			type_button.visible = false
+			unlock_text.text = \"\"
+		UNLOCK_ALWAYS:
+			text_1.visible = false
+			text_2.visible = false
+			number_2.visible = false
+			unlock_text.text = \"Unlock Type\" + extra_text
+		UNLOCK_BEAT:
+			text_1.visible = true
+			text_2.visible = true
+			number_2.visible = false
+			unlock_text.text = \"Unlock Type\" + extra_text + \"\\nLevel Group\" + extra_text + \"\\nLevel Name\" + extra_text
+		UNLOCK_PAR:
+			text_1.visible = true
+			text_2.visible = true
+			number_2.visible = false
+			unlock_text.text = \"Unlock Type\" + extra_text + \"\\nLevel Group\" + extra_text + \"\\nLevel Name\" + extra_text
+		UNLOCK_COMPLETION:
+			text_1.visible = true
+			text_2.visible = false
+			number_2.visible = true
+			number_2.allow_greater = false
+			unlock_text.text = \"Unlock Type\" + extra_text + \"\\nLevel Group\" + extra_text + \"\\nPercentage\" + extra_text
+		UNLOCK_BONUS:
+			text_1.visible = true
+			text_2.visible = false
+			number_2.visible = true
+			number_2.allow_greater = true
+			unlock_text.text = \"Unlock Type\" + extra_text + \"\\nBonus Group\" + extra_text + \"\\nBonus Amount\" + extra_text
+		UNLOCK_CUSTOM:
+			text_1.visible = true
+			text_2.visible = false
+			number_2.visible = false
+			unlock_text.text = \"Unlock Type\" + extra_text + \"\\nUnlock Name\" + extra_text
+		UNLOCK_NEVER:
+			text_1.visible = false
+			text_2.visible = false
+			number_2.visible = false
+			unlock_text.text = \"Unlock Type\" + extra_text
+
 func key_names(key_number : int):
 	if key_number >= 33 and key_number <= 255: return char(key_number)
 	else: match(key_number):

@@ -321,6 +321,10 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
 	if unlock_type == UNLOCK_NEVER:
 		return false
 	
+	if unlock_type == UNLOCK_BEAT or unlock_type == UNLOCK_PAR or unlock_type == UNLOCK_COMPLETION:
+		if !level_completion.has(parameter_1):
+			return false
+	
 	if unlock_type == UNLOCK_BEAT or unlock_type == UNLOCK_PAR:
 		if !level_completion[parameter_1].has(parameter_2):
 			return false
@@ -333,7 +337,14 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
 			return false
 	
 	if unlock_type == UNLOCK_COMPLETION:
-		if parameter_2 > loaded_level_groups[parameter_1][4]:
+		var group = -1
+		for i in range(loaded_level_groups.size()):
+			if parameter_1 == loaded_level_groups[i][1] + loaded_level_groups[i][0] + "/":
+				group = i
+				break
+		if group == -1:
+			return false
+		if float(parameter_2) > loaded_level_groups[group][4]:
 			return false
 	
 	if unlock_type == UNLOCK_BONUS:
@@ -718,20 +729,30 @@ func load_data():
 	scan_for_directories("user://SRLevels/", loaded_level_groups, "group")
 	
 	var temp_level_groups = loaded_level_groups.duplicate()
+	var group_unlocks : Array = []
 	for group in range(loaded_level_groups.size()):
 		var level_dat = load_dat_file(loaded_level_groups[group][1] + loaded_level_groups[group][0] + "/level_group")
+		var depend_test = true
 		for i in level_dat["dependencies"]:
 			if !mods_installed.has(i):
 				temp_level_groups.remove(group)
+				depend_test = false
+		if depend_test:
+			if level_dat.has("unlock"):
+				group_unlocks.append(level_dat["unlock"])
+			else:
+				group_unlocks.append([0, "", ""])
 	loaded_level_groups = temp_level_groups.duplicate()
 	
 	loaded_level_groups.append(["SRLevels","user://"])
+	group_unlocks.append([0, "", ""])
 	
 	for i in range(loaded_level_groups.size()):
 		loaded_level_groups[i].resize(6)
 		loaded_level_groups[i][2] = ""
 		loaded_level_groups[i][3] = ""
 		loaded_level_groups[i][4] = 0
+		loaded_level_groups[i][5] = group_unlocks[i]
 	
 	# CHARACTERS.DAT
 	
