@@ -1,21 +1,21 @@
 GENERAL
 
-documentation
+documentation (im working on it)
 
  - EDITOR - 
 
 SHOULD DO SOON
 
-dependency stripper
+dependency fixer for level groups
 f1 for help
-default-mod
 z_index has some buggy behavior probably
 
 CAN DO LATER
 
+default-mod
 that shader thing
-exit level editor shortcut
 do you wanna do scrollers?
+
 undo system (i dont really wanna)
 rebind move to something if undo system
 
@@ -23,12 +23,11 @@ rebind move to something if undo system
 
 SHOULD DO SOON
 
-pixelate bricks
-touchup replay menu
 character missing
 
 CAN DO LATER
 
+redo replay menu
 character greenbox
 tutorial level
 changing prebuilt level groups

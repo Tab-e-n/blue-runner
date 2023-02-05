@@ -19,7 +19,7 @@ var user_directory : String = \"user://sonicRunnerEditor\"
 var mods_installed : Array
 var mods_enabled : Dictionary
 
-const INPUT_AMOUNT : int = 25
+const INPUT_AMOUNT : int = 26
 var last_input_events : Array = range(INPUT_AMOUNT)
 
 var settings : Dictionary = {
@@ -88,6 +88,7 @@ var settings : Dictionary = {
 		KEY_2,
 		KEY_3,
 		KEY_4,
+		KEY_ESCAPE, # RETURN
 	],
 	
 	\"editor_random_scale_range\" : [0.5, 3],

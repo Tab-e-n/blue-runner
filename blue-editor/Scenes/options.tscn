@@ -20,7 +20,7 @@ const options_span : int = 3136
 var current_keybind : Button
 var current_key : int
 
-const KEYBIND_AMOUNT : int = 21
+const KEYBIND_AMOUNT : int = 26
 var last_input_events : Array = range(KEYBIND_AMOUNT)
 
 func _ready():
@@ -127,6 +127,9 @@ func _process(_delta):
 	rect_size = window
 	$HScrollBar.rect_size.x = window.x
 	$HScrollBar.page = window.x / 64
+	
+	if Input.is_action_just_pressed(\"25\"):
+		_on_exit_pressed()
 
 func settings_change(value, setting, setting_type):
 	if setting_type == \"default\":
@@ -709,7 +712,9 @@ Focus place panel
 Layer background
 Layer back
 Layer center
-Layer front"
+Layer front
+
+Return (General)"
 
 [node name="guideline2" parent="GUI/keysbinds" instance=ExtResource( 2 )]
 margin_left = 952.0
@@ -727,7 +732,9 @@ Alt +
 Ctrl +
 Ctrl +
 Ctrl +
-Ctrl +"
+Ctrl +
+
+Press"
 
 [node name="buttons" type="Control" parent="GUI/keysbinds"]
 margin_left = -1752.0
@@ -1038,6 +1045,18 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="return" type="Button" parent="GUI/keysbinds/buttons"]
+margin_left = 2792.0
+margin_top = 512.0
+margin_right = 3064.0
+margin_bottom = 544.0
+toggle_mode = true
+clip_text = true
+align = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="reset_transform" type="Button" parent="GUI/keysbinds/buttons"]
 margin_left = 2152.0
 margin_top = 416.0
@@ -1169,6 +1188,7 @@ __meta__ = {
 [connection signal="toggled" from="GUI/keysbinds/buttons/layer_1" to="." method="start_keybind_check" binds= [ 20 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/layer_2" to="." method="start_keybind_check" binds= [ 20 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/layer_3" to="." method="start_keybind_check" binds= [ 20 ]]
+[connection signal="toggled" from="GUI/keysbinds/buttons/return" to="." method="start_keybind_check" binds= [ 20 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/reset_transform" to="." method="start_keybind_check" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/random_transform" to="." method="start_keybind_check" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/game_camera" to="." method="start_keybind_check" binds= [ 3 ]]

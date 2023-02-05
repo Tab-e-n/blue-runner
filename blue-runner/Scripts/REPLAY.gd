@@ -26,7 +26,7 @@ func menu_update():
 	if Input.is_action_just_pressed("jump"):
 		global.replay_save[0] = selected_replay
 		global.replay_save[1] = replay_menu_mode
-		if $replay_list.get_item_count() > 0:
+		if $replay_list.get_item_count() > 0 and $replay_list.get_item_metadata(selected_replay) != "*":
 			if replay_menu_mode == 0 or replay_menu_mode == 1:
 				var selected_list_replay = $replay_list.get_selected_items()[0]
 				
@@ -60,11 +60,15 @@ func menu_update():
 					delete_confirmation = true
 	if Input.is_action_pressed("up") and parent.move and selected_replay > 0:
 		selected_replay -= 1
+		if $replay_list.get_item_metadata(selected_replay) == "*" and selected_replay > 0:
+			selected_replay -= 1
 		$replay_list.select(selected_replay)
 		$replay_list.ensure_current_is_visible()
 		delete_confirmation = false
 	if Input.is_action_pressed("down") and parent.move and selected_replay < $replay_list.get_item_count() - 1:
 		selected_replay += 1
+		if $replay_list.get_item_metadata(selected_replay) == "*" and selected_replay < $replay_list.get_item_count() - 1:
+			selected_replay += 1
 		$replay_list.select(selected_replay)
 		$replay_list.ensure_current_is_visible()
 		delete_confirmation = false
@@ -90,6 +94,9 @@ func reset_replays():
 	var directories_to_visit = ["user://SRReplays/"]
 	while directories_to_visit.size() > 0:
 		dir.open(directories_to_visit[0])
+		$replay_list.add_item(directories_to_visit[0])
+		$replay_list.set_item_disabled($replay_list.get_item_count() - 1, true)
+		$replay_list.set_item_metadata($replay_list.get_item_count() - 1, "*")
 		
 		dir.list_dir_begin(true, false)
 		var last_replay : String = "*"

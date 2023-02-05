@@ -4026,6 +4026,7 @@ texture = ExtResource( 35 )
 visible = false
 scale = Vector2( 1e-05, 1e-05 )
 script = ExtResource( 50 )
+reset = false
 
 [node name="menu_circle_2" type="Sprite" parent="REPLAY"]
 modulate = Color( 0.12549, 0.0823529, 0.2, 1 )

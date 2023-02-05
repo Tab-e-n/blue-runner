@@ -61,6 +61,10 @@ func _ready():
 	data.changed_unlock_type(0, $Edits/text_edit, $Edits/unlock_type, $\"Edits/1_text\", $\"Edits/2_text\", $\"Edits/2_number\", \"\\n\")
 	data.changed_unlock_type(-1, $Edits/text_level_unlocks, $Edits/level_unlock_type, $\"Edits/level_1_text\", $\"Edits/level_2_text\", $\"Edits/level_2_number\", \"\")
 
+func _process(_delta):
+	if Input.is_action_just_pressed(\"25\"):
+		on_exit()
+
 func load_level_visuals():
 	for i in range(20):
 		var dat = load_level_dat(i, true)

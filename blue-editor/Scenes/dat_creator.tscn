@@ -46,6 +46,9 @@ func _process(_delta):
 	rect_size = window
 	$VScrollBar.rect_size.y = window.y
 	$VScrollBar.page = window.y / 64
+	
+	if Input.is_action_just_pressed(\"25\"):
+		_on_exit_pressed()
 
 func _on_VScrollBar_scrolling():
 	$GUI.rect_position.y = -$VScrollBar.value * 64
@@ -772,6 +775,9 @@ margin_right = 64.0
 margin_bottom = 64.0
 texture_normal = ExtResource( 10 )
 texture_pressed = ExtResource( 9 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="pressed" from="GUI/base/load" to="." method="base_load"]
 [connection signal="pressed" from="GUI/base/base_save" to="." method="base_save"]
 [connection signal="pressed" from="GUI/base/base_remove" to="." method="base_remove"]

@@ -226,7 +226,7 @@ func _physics_process(_delta):
 				jump_amount -= 1
 				jump(jump_power)
 				#jump_buffer = 0
-		if Input.is_action_just_released("jump") and !gravity_switch and !player.punted and sliding == 0:
+		if !Input.is_action_pressed("jump") and !gravity_switch and !player.punted and sliding == 0:
 			gravity_switch = true
 			if player.momentum.y < -200: player.momentum.y = -200
 		

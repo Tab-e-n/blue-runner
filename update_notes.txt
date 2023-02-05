@@ -21,6 +21,7 @@
  - New character select menu! It is active when you have more than one character unlocked.
  - You can now unlock XT9 by collecting all 6 bonuses in waterway. (Not final)
  - When beating a level, it now shows you the levels par time.
+ - The replay menu will now show where replays are located.
 
 ### VISUAL
 
@@ -34,6 +35,8 @@
  - When you rebound keys, the select menu didn't show the newly rebound key.
  - Fixed the User Universe page system just not working. Like, at all.
  - Fixed collectibles with id 3 not showing up as collected in the level select menu.
+ - You can now collect more than one collectible at a time.
+ - Fixed a few edge case scenarios where you would be forced to do a full jump as S1 or its derivatives.
 
  - Level_1-12 (Sunset Hopper) no longer goes to itself when you want to go the next level.
  - Level_1--1 (float rock;) unlocks when you are 50% done with waterway. (Not final)
@@ -46,11 +49,12 @@
 	 - The range in which the object will be scaled to can be set in the options. If both options are the same,
 	   it won't scale
  - There are now shortcuts for changing layers.
+ - You can now bind press a key to exit the current screen and go back to the main menu.
  - Portals now aren't the only objects that can unlock things, collectibles now share this ability as well.
  - You can now load .dat files in the .dat editor.
  - You can now set unlock requirements for characters.
  - You can now set unlock requirements for level groups.
- - Unlock requirements for levels have now been expanded.
+ - Unlock requirements for levels have been expanded.
 
 ### VISUAL
 
@@ -75,6 +79,6 @@
  - Fixed HoverText text offset not working if follow_player wasn't turned on.
  - Placing down a portal no longer crashes the editor.
  - You can also edit and remove a portal after you place it. This isn't related to it crashing the editor.
- - Fixed Track.tscn crashing SR
+ - Fixed Track.tscn crashing SR and also not really working properly.
 
  - Changing the bg of a level group now actually does something in SR

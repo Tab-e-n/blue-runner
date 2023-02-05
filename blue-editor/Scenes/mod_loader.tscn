@@ -26,6 +26,9 @@ func _process(_delta):
 	margin_bottom = window.y / 2
 	margin_top = window.y / -2
 	
+	
+	if Input.is_action_just_pressed(\"25\"):
+		exit_pressed()
 
 func mod_selected(index):
 	var loadfile = File.new()
@@ -248,7 +251,7 @@ margin_bottom = 128.0
 custom_colors/default_color = Color( 1, 1, 1, 1 )
 bbcode_enabled = true
 bbcode_text = "FILENAME"
-text = "VERSION"
+text = "FILENAME"
 
 [node name="mod_status" parent="." instance=ExtResource( 2 )]
 anchor_right = 0.0
@@ -399,6 +402,9 @@ margin_right = -32.0
 margin_bottom = 64.0
 texture_normal = ExtResource( 7 )
 texture_pressed = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="toggled" from="mod_active" to="." method="mod_activate"]
 [connection signal="item_selected" from="mod_list" to="." method="mod_selected"]
 [connection signal="pressed" from="import" to="." method="import_popup"]

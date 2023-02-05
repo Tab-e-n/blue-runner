@@ -7,8 +7,9 @@
 script/source = "extends Control
 
 
-func _ready():
-	pass
+func _process(_delta):
+	if Input.is_action_just_pressed(\"25\"):
+		_on_exit_pressed()
 
 func _on_exit_pressed():
 	get_tree().quit()
@@ -84,13 +85,25 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="options" type="Button" parent="."]
+[node name="dependency" type="Button" parent="."]
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -192.0
 margin_top = 392.0
 margin_right = 192.0
 margin_bottom = 440.0
+text = "DEPENDENCY FIXER"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="options" type="Button" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -192.0
+margin_top = 456.0
+margin_right = 192.0
+margin_bottom = 504.0
 text = "OPTIONS"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -100,9 +113,9 @@ __meta__ = {
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -192.0
-margin_top = 456.0
+margin_top = 520.0
 margin_right = 192.0
-margin_bottom = 504.0
+margin_bottom = 568.0
 text = "EXIT"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -111,5 +124,6 @@ __meta__ = {
 [connection signal="pressed" from="level_group_editors" to="." method="change_scene_to" binds= [ "res://Scenes/level_group.tscn" ]]
 [connection signal="pressed" from="mod_loader" to="." method="change_scene_to" binds= [ "res://Scenes/mod_loader.tscn" ]]
 [connection signal="pressed" from="dat_editor" to="." method="change_scene_to" binds= [ "res://Scenes/dat_creator.tscn" ]]
+[connection signal="pressed" from="dependency" to="." method="change_scene_to" binds= [ "res://Scenes/dependency.tscn" ]]
 [connection signal="pressed" from="options" to="." method="change_scene_to" binds= [ "res://Scenes/options.tscn" ]]
 [connection signal="pressed" from="exit" to="." method="_on_exit_pressed"]
