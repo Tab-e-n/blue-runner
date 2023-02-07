@@ -17,6 +17,7 @@ Hra a její Level Editor mají oba vlastní "project.godot", takže tento proces
 Abyste mohli modifikovat tento projekt, nejdříve si musíte stáhnout projekt stejnou cestou, jako je popsaná v předchozí sekci.
 
 V budoucnu planuji udělat manuál, ve kterém bude popsáno, jak udělat módy pro SR, ale ten zatím neexistuje.
+A navíc k tomu módy vůbec ještě nefungují.
 
 ## Mohu nějak pomoci s vývojem hry?
 
