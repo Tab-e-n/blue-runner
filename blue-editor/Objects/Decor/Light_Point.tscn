@@ -20,6 +20,7 @@ var editor_properties : Dictionary = {
 		\"color\" : true,
 		\"order\" : false,
 	},
+	\"attachable\" : false,
 }
 
 func _ready():

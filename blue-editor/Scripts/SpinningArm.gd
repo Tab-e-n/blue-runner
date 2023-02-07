@@ -68,13 +68,13 @@ func attached(node : Node2D):
 func detached(_node : Node2D):
 	attached_nodes[0] = null
 
-func edit_left_just_pressed(_level_mouse_position):
+func edit_left_just_pressed(_mouse_pos, _cursor_pos, _level_scale):
 	scale_hinge = lenght
 
 func edit_left_pressed(mouse_pos, mouse_hinge):
 	lenght = stepify(scale_hinge + (mouse_hinge.y - mouse_pos.y) / 512, 0.05)
 
-func edit_right_just_pressed(_level_mouse_position):
+func edit_right_just_pressed(_mouse_pos, _cursor_pos, _level_scale):
 	timer_hinge = timer
 
 func edit_right_pressed(mouse_pos, mouse_hinge):

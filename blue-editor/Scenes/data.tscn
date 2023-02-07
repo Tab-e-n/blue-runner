@@ -22,6 +22,7 @@ var mods_enabled : Dictionary
 const INPUT_AMOUNT : int = 26
 var last_input_events : Array = range(INPUT_AMOUNT)
 
+var default_settings : Dictionary = {}
 var settings : Dictionary = {
 	\"*version\" : VERSION,
 	\"sonic_runner_folder\" : \"\",
@@ -113,9 +114,12 @@ func _ready():
 	dir.open(\"user://\")
 	if !dir.dir_exists(\"SRLevels\"): dir.make_dir(\"SRLevels\")
 	
+	default_settings = settings.duplicate()
+	
 	load_game()
 	load_editor_vanilla()
-	load_editor_mods()
+	# MOD LOADING IS DISABLED FOR NOW
+	#load_editor_mods()
 
 func _process(_delta):
 	pass
@@ -634,6 +638,38 @@ func key_names(key_number : int):
 		KEY_LAUNCHF: return \"SHORTCUT F\"
 		KEY_UNKNOWN: return \"???\"
 	return \"WHAT IS THIS?\"
+
+# I know what this does i have no idea how it does
+# And i also probs wont use it so cool
+# Here is where i stole it from
+# https://github.com/lifelike/godot-animator-import/blob/master/addons/aaimport/aa_import_plugin.gd
+func save_stex(image, save_path, filter=false):
+	var tmppng = \"%s-tmp.png\" % [save_path]
+	image.save_png(tmppng)
+	var pngf = File.new()
+	pngf.open(tmppng, File.READ)
+	var pnglen = pngf.get_len()
+	var pngdata = pngf.get_buffer(pnglen)
+	pngf.close()
+	Directory.new().remove(tmppng)
+	var stexf = File.new()
+	stexf.open(\"%s.stex\" % [save_path], File.WRITE)
+	stexf.store_8(0x47) # G
+	stexf.store_8(0x44) # D
+	stexf.store_8(0x53) # S
+	stexf.store_8(0x54) # T
+	stexf.store_32(image.get_width())
+	stexf.store_32(image.get_height())
+	stexf.store_32(4 if filter else 0)
+	stexf.store_32(0x07100000) # data format
+	stexf.store_32(1) # nr mipmaps
+	stexf.store_32(pnglen + 6)
+	stexf.store_8(0x50) # P
+	stexf.store_8(0x4e) # N
+	stexf.store_8(0x47) # G
+	stexf.store_8(0x20) # space
+	stexf.store_buffer(pngdata)
+	stexf.close()
 "
 
 [node name="data" type="Control"]

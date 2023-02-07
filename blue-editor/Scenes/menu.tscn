@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Text/Text_Editor.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=2]
@@ -6,6 +6,8 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
+func _ready():
+	pass
 
 func _process(_delta):
 	if Input.is_action_just_pressed(\"25\"):
@@ -17,7 +19,59 @@ func _on_exit_pressed():
 func change_scene_to(scene_path):
 	# warning-ignore:return_value_discarded
 	get_tree().change_scene(scene_path)
+
+func open_developmental(toggled):
+	if toggled:
+		$developmental/anim.play(\"extend\")
+	else:
+		$developmental/anim.play(\"retract\")
+
+func load_texture_from_png(path : String = \"res://test.png\"):
+	var file : File = File.new()
+	var image : Image = Image.new()
+	var texture : ImageTexture = ImageTexture.new()
+	
+	if file.file_exists(path):
+		file.open(path, File.READ)
+		var buffer = file.get_buffer(file.get_len())
+		image.load_png_from_buffer(buffer)
+		texture.create_from_image(image, texture.STORAGE_COMPRESS_LOSSLESS)
+		print(ResourceSaver.get_recognized_extensions(texture))
+		$Sprite.texture = texture
+	
 "
+
+[sub_resource type="Animation" id=2]
+resource_name = "extend"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:rect_size")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 208 ), Vector2( 400, 208 ) ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "retract"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:rect_size")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 400, 208 ), Vector2( 0, 208 ) ]
+}
 
 [node name="menu" type="Control"]
 anchor_right = 1.0
@@ -61,49 +115,13 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="mod_loader" type="Button" parent="."]
+[node name="options" type="Button" parent="."]
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -192.0
 margin_top = 264.0
 margin_right = 192.0
 margin_bottom = 312.0
-text = "MOD LOADER"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="dat_editor" type="Button" parent="."]
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -192.0
-margin_top = 328.0
-margin_right = 192.0
-margin_bottom = 376.0
-text = ".DAT EDITOR"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="dependency" type="Button" parent="."]
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -192.0
-margin_top = 392.0
-margin_right = 192.0
-margin_bottom = 440.0
-text = "DEPENDENCY FIXER"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="options" type="Button" parent="."]
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -192.0
-margin_top = 456.0
-margin_right = 192.0
-margin_bottom = 504.0
 text = "OPTIONS"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -113,17 +131,83 @@ __meta__ = {
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -192.0
-margin_top = 520.0
+margin_top = 328.0
 margin_right = 192.0
-margin_bottom = 568.0
+margin_bottom = 376.0
 text = "EXIT"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="other" type="Button" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = 128.0
+margin_top = 712.0
+margin_right = 512.0
+margin_bottom = 760.0
+toggle_mode = true
+text = "DEVELOPER"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="developmental" type="Panel" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = 120.0
+margin_top = 504.0
+margin_right = 120.0
+margin_bottom = 712.0
+rect_clip_content = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="mod_loader" type="Button" parent="developmental"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -192.0
+margin_top = 16.0
+margin_right = 192.0
+margin_bottom = 64.0
+text = "MOD LOADER"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="dat_editor" type="Button" parent="developmental"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -192.0
+margin_top = 80.0
+margin_right = 192.0
+margin_bottom = 128.0
+text = ".DAT EDITOR"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="dependency" type="Button" parent="developmental"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -192.0
+margin_top = 144.0
+margin_right = 192.0
+margin_bottom = 192.0
+text = "DEPENDENCY FIXER"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="anim" type="AnimationPlayer" parent="developmental"]
+anims/extend = SubResource( 2 )
+anims/retract = SubResource( 3 )
 [connection signal="pressed" from="level_editor" to="." method="change_scene_to" binds= [ "res://Scenes/main.tscn" ]]
 [connection signal="pressed" from="level_group_editors" to="." method="change_scene_to" binds= [ "res://Scenes/level_group.tscn" ]]
-[connection signal="pressed" from="mod_loader" to="." method="change_scene_to" binds= [ "res://Scenes/mod_loader.tscn" ]]
-[connection signal="pressed" from="dat_editor" to="." method="change_scene_to" binds= [ "res://Scenes/dat_creator.tscn" ]]
-[connection signal="pressed" from="dependency" to="." method="change_scene_to" binds= [ "res://Scenes/dependency.tscn" ]]
 [connection signal="pressed" from="options" to="." method="change_scene_to" binds= [ "res://Scenes/options.tscn" ]]
 [connection signal="pressed" from="exit" to="." method="_on_exit_pressed"]
+[connection signal="toggled" from="other" to="." method="open_developmental"]
+[connection signal="pressed" from="developmental/mod_loader" to="." method="change_scene_to" binds= [ "res://Scenes/mod_loader.tscn" ]]
+[connection signal="pressed" from="developmental/dat_editor" to="." method="change_scene_to" binds= [ "res://Scenes/dat_creator.tscn" ]]
+[connection signal="pressed" from="developmental/dependency" to="." method="change_scene_to" binds= [ "res://Scenes/dependency.tscn" ]]

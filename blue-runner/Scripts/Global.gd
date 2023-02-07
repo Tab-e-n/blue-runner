@@ -380,6 +380,28 @@ func scale_down_sprite(sprite : Sprite, final_scale : Vector2 = Vector2(1, 1), d
 		sprite.scale.x = final_scale.y / (sprite_rect.y / desired_rect.y)
 	sprite.scale.y = sprite.scale.x
 
+func load_texture_from_png(path : String = ""):
+	if path == "": return null
+	
+	if path.begins_with("res://"):
+		var stream_texture : StreamTexture = load(path)
+		if stream_texture != null:
+			return stream_texture
+		return null
+	
+	var file : File = File.new()
+	var image : Image = Image.new()
+	var texture : ImageTexture = ImageTexture.new()
+	
+	if file.file_exists(path):
+		file.open(path, File.READ)
+		var buffer = file.get_buffer(file.get_len())
+		image.load_png_from_buffer(buffer)
+		texture.create_from_image(image, texture.STORAGE_COMPRESS_LOSSLESS)
+		#print(ResourceSaver.get_recognized_extensions(texture))
+		return texture
+	return null
+
 func save_game(timer : float = 0, par : float = 0, collectible : Array = [], level = null, recording : Dictionary = {}):
 	var savefile = File.new()
 	var temp = {}
@@ -464,7 +486,8 @@ func load_game():
 	
 	temp = {"*mods" : []}
 	
-	if loadfile.file_exists(mod_user_directory): # does file exist
+	# MOD LOADING IS DISABLED FOR NOW
+	if false: #loadfile.file_exists(mod_user_directory): # does file exist
 		loadfile.open(mod_user_directory, File.READ)
 		
 		while loadfile.get_position() < loadfile.get_len():
@@ -749,8 +772,8 @@ func load_data():
 	
 	for i in range(loaded_level_groups.size()):
 		loaded_level_groups[i].resize(6)
-		loaded_level_groups[i][2] = ""
-		loaded_level_groups[i][3] = ""
+		loaded_level_groups[i][2] = null
+		loaded_level_groups[i][3] = null
 		loaded_level_groups[i][4] = 0
 		loaded_level_groups[i][5] = group_unlocks[i]
 	

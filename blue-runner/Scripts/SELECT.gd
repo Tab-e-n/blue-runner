@@ -252,14 +252,14 @@ func group_visuals():
 		var file : String = unlocked_level_group[i + group_shift][1] + unlocked_level_group[i + group_shift][0] + "/logo.png"
 		if unlocked_level_group[i + group_shift][1] == "user://":
 			get_node("group_select/" + String(i)).texture = preload("res://Visual/Title/logo_user.png")
-		elif unlocked_level_group[i + group_shift][3] != "":
-			get_node("group_select/" + String(i)).texture = load(unlocked_level_group[i + group_shift][3])
+		elif unlocked_level_group[i + group_shift][3] != null:
+			get_node("group_select/" + String(i)).texture = unlocked_level_group[i + group_shift][3]
 		else:
-			get_node("group_select/" + String(i)).texture = load(file)
-			unlocked_level_group[i + group_shift][3] = file
+			get_node("group_select/" + String(i)).texture = Global.load_texture_from_png(file)
+			unlocked_level_group[i + group_shift][3] = get_node("group_select/" + String(i)).texture
 			if get_node("group_select/" + String(i)).texture == null:
 				get_node("group_select/" + String(i)).texture = preload("res://Visual/Title/logo_custom.png")
-				unlocked_level_group[i + group_shift][3] = "res://Visual/Title/logo_custom.png"
+				unlocked_level_group[i + group_shift][3] = get_node("group_select/" + String(i)).texture
 		
 		Global.scale_down_sprite(get_node("group_select/" + String(i)), Vector2(2, 2))
 
@@ -288,13 +288,14 @@ func reload_all_levels(start : bool = false):
 	if user_group:
 		$title.texture = preload("res://Visual/Title/title_user.png")
 	else:
-		if unlocked_level_group[selected_group][2] != "":
-			$title.texture = load(unlocked_level_group[selected_group][2])
-		$title.texture = load(Global.current_level_location + "title.png")
-		unlocked_level_group[selected_group][2] = Global.current_level_location + "title.png"
+		if unlocked_level_group[selected_group][2] != null:
+			$title.texture = unlocked_level_group[selected_group][2]
+		else:
+			$title.texture = Global.load_texture_from_png(Global.current_level_location + "title.png")
+			unlocked_level_group[selected_group][2] = $title.texture
 		if $title.texture == null:
 			$title.texture = preload("res://Visual/Title/title_custom.png")
-			unlocked_level_group[selected_group][2] = "res://Visual/Title/title_custom.png"
+			unlocked_level_group[selected_group][2] = $title.texture 
 	
 	var comp_list : Array = []
 	for i in range(20):

@@ -41,7 +41,7 @@ func _process(_delta):
 	$play_area.points[4] = Vector2(limit_x.x, limit_y.x) + Vector2(-512, -384) * zoom - position
 
 
-func edit_left_just_pressed(_level_mouse_position):
+func edit_left_just_pressed(_mouse_pos, _cursor_pos, _level_scale):
 	zoom_hinge = zoom
 
 func edit_left_pressed(mouse_pos, mouse_hinge):

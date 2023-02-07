@@ -1,6 +1,13 @@
+ON HOLD
+
+mods redo
+default-mod
+if mod doesn't work it should tell you what dependencies are missing somewhere
+sonic runner self checking if loaded mods exist
+
 GENERAL
 
-documentation (im working on it)
+documentation (useless since mods are not existant rn but im still gonna do it for future sake)
 
  - EDITOR - 
 
@@ -12,7 +19,6 @@ z_index has some buggy behavior probably
 
 CAN DO LATER
 
-default-mod
 that shader thing
 do you wanna do scrollers?
 
@@ -29,6 +35,7 @@ CAN DO LATER
 
 redo replay menu
 character greenbox
+level missing
 tutorial level
 changing prebuilt level groups
 Cheat code menu

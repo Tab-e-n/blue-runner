@@ -39,6 +39,6 @@ func _process(_delta):
 		elif id == 3:
 			$hitbox.color = Color(0, 0, 1, 0.25)
 
-func edit_left_just_pressed(_level_mouse_position : Vector2):
+func edit_left_just_pressed(_mouse_pos, _cursor_pos, _level_scale):
 	id += 1
 	if id > 3: id = 1

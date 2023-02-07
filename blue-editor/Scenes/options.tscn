@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=1]
 [ext_resource path="res://Text/Text_Editor.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Visual/Editor/editor_exit.png" type="Texture" id=3]
 [ext_resource path="res://Visual/Editor/editor_exit_enabled.png" type="Texture" id=4]
-[ext_resource path="res://Visual/Editor/editor_exit_hover.png" type="Texture" id=5]
+[ext_resource path="res://Visual/Editor/editor_refresh_enabled.png" type="Texture" id=5]
+[ext_resource path="res://Visual/Editor/editor_refresh.png" type="Texture" id=6]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
@@ -30,6 +31,9 @@ func _ready():
 	# warning-ignore:integer_division
 	$HScrollBar.max_value = options_span / 64
 	
+	set_buttons()
+
+func set_buttons():
 	$GUI/editor_defaults/addition_info.pressed = data.settings[\"editor_gui_additional_info\"]
 	$GUI/editor_defaults/grid_snap.pressed = data.settings[\"editor_default_grid_snap\"]
 	$GUI/editor_defaults/default_tab.select(data.settings[\"editor_default_tab\"])
@@ -72,8 +76,8 @@ func _ready():
 	ready_optionbutton_setup($GUI/editor_defaults/icon, data.level_icon)
 	ready_optionbutton_setup($GUI/editor_defaults/base, data.level_base)
 	ready_optionbutton_setup($GUI/editor_defaults/tileset, data.tilesets)
-	ready_optionbutton_setup($GUI/editor_defaults/bg, data.bg)
-	$GUI/editor_defaults/bg.set_item_metadata(0, \"\")
+	ready_optionbutton_setup($GUI/editor_defaults/bg, data.bg, true)
+	
 	
 	optionbutton_select($GUI/editor_defaults/icon, \"editor_default_icon\")
 	optionbutton_select($GUI/editor_defaults/base, \"editor_default_base\")
@@ -107,7 +111,11 @@ func _ready():
 	
 	$GUI/editor_defaults/sonic_runner.text = data.settings[\"sonic_runner_folder\"]
 
-func ready_optionbutton_setup(option_button : OptionButton, data_array : Array):
+func ready_optionbutton_setup(option_button : OptionButton, data_array : Array, none_option : bool = false):
+	option_button.clear()
+	if none_option:
+		option_button.add_item(\"none\")
+		option_button.set_item_metadata(0, \"\")
 	var last_directory : String = \"res:/\"
 	for i in data_array:
 		if last_directory != i[1]:
@@ -183,6 +191,14 @@ func start_keybind_check(button_pressed, keybind):
 		current_key = keybind
 	else:
 		current_keybind = null
+
+func reset_settings_popup():
+	$do_reset.popup()
+
+func reset_settings_to_default():
+	data.settings = data.default_settings.duplicate()
+	
+	set_buttons()
 
 func _on_exit_pressed():
 	# warning-ignore:return_value_discarded
@@ -1124,7 +1140,29 @@ margin_right = 64.0
 margin_bottom = 768.0
 texture_normal = ExtResource( 3 )
 texture_pressed = ExtResource( 4 )
-texture_focused = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="reset" type="TextureButton" parent="."]
+margin_left = 96.0
+margin_top = 704.0
+margin_right = 160.0
+margin_bottom = 768.0
+texture_normal = ExtResource( 6 )
+texture_pressed = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="do_reset" type="ConfirmationDialog" parent="."]
+margin_left = 352.0
+margin_top = 304.0
+margin_right = 672.0
+margin_bottom = 464.0
+dialog_text = "Do you want to
+reset every setting
+to the default?"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -1195,3 +1233,5 @@ __meta__ = {
 [connection signal="dir_selected" from="sonic_runner_file" to="." method="sonic_runner_folder_selected"]
 [connection signal="scrolling" from="HScrollBar" to="." method="_on_HScrollBar_scrolling"]
 [connection signal="pressed" from="exit" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="reset" to="." method="reset_settings_popup"]
+[connection signal="confirmed" from="do_reset" to="." method="reset_settings_to_default"]

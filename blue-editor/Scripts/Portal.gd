@@ -28,11 +28,11 @@ export(int, "XT9", "S1") var type = 0
 export var unlock : String = ""
 
 func _ready():
-	if name == "Portal":
+	if editor_properties["object_type"] == "normal":
 		$AnimationPlayer.current_animation = "Speen"
 
 func _process(_delta):
-	if name == "Finish":
+	if editor_properties["object_type"] == "finish":
 		if type == 0:
 			$finish_XT9.visible = true
 			$finish_S1.visible = false

@@ -8,11 +8,10 @@ export var unlock : String = ""
 
 func _ready():
 	var player_character : String
-	if name == "Finish":
-		player_character = get_parent().get_node("Player").character_name
 	if name == "Portal":
 		$AnimationPlayer.current_animation = "Speen"
 	if name == "Finish":
+		player_character = get_parent().get_node("Player").character_name
 		if type == 0 or player_character == "S1":
 			$Visual_XT9.visible = true
 			$Visual_XT9/AnimationPlayer.current_animation = "Call"

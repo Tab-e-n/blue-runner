@@ -40,9 +40,9 @@ func _process(_delta):
 		if !get_child(0).name == tcl + character_name:
 			new_texture()
 		if facing == "right":
-			scale.x = 1
+			get_child(0).flip_h = false
 		else:
-			scale.x = -1
+			get_child(0).flip_h = true
 
 func new_texture():
 	var tcl = character_location
@@ -55,7 +55,7 @@ func new_texture():
 	else:
 		get_child(0).texture = load("res://Visual/Objects/character_missing.png")
 
-func edit_left_just_pressed(_level_mouse_position : Vector2):
+func edit_left_just_pressed(_mouse_pos, _cursor_pos, _level_scale):
 	if facing == "left":
 		facing = "right"
 	elif facing == "right":

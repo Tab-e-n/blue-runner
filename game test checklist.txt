@@ -1,0 +1,44 @@
+LEVELS
+
+test if every shortcut, button and such is working as intended
+X change everything in the options and see if it saves correctly (and works)
+X test rotating objects
+test if all objects load properly in sr
+make a level, like, actually do it
+
+Track.tscn
+test a track with time = 0
+test a track with time_internal > time and the other similar state
+test multiple objects on a track
+
+SpinningArm.tscn
+test an arm with spin_time_frames = 0
+test an arm with timer > spin_time_frames and the other similar state
+test an arm with lenght 0
+
+Portal.tscn
+do unlocks work
+
+Mushroom.tscn
+Is the visual currect
+
+Collectible.tscn
+2 collectibles with the same ID
+
+Check if unlocks work
+Make a group for every unlock type
+Make a level with every unlock type
+Make a "character" for every unlock type
+
+MAKE DEFAULT MOD TO TEST IF MODS WORK
+can you make an modded object inherit a vanilla object? (S1 clones)
+make an object for default-mod and see if it loads
+make a character(s) an see if it loads
+make a bg and see if it loads
+make a tileset and see if it loads
+make a base and see if it loads
+make a level icon and see if it loads
+level group in mod
+levels in mod
+test if mods work when SR is exported
+test mod replays

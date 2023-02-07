@@ -37,22 +37,30 @@
  - Fixed collectibles with id 3 not showing up as collected in the level select menu.
  - You can now collect more than one collectible at a time.
  - Fixed a few edge case scenarios where you would be forced to do a full jump as S1 or its derivatives.
+ - Level Groups now load their custom logos and titles properly.
 
  - Level_1-12 (Sunset Hopper) no longer goes to itself when you want to go the next level.
  - Level_1--1 (float rock;) unlocks when you are 50% done with waterway. (Not final)
 
 ## SONIC RUNNER EDITOR
 
-### NEW ADDITIONS
+### MODS
 
- - By pressing alt + the key you bound to transform, you can randomize an objects scale and rotation
-	 - The range in which the object will be scaled to can be set in the options. If both options are the same,
-	   it won't scale
- - There are now shortcuts for changing layers.
- - You can now bind press a key to exit the current screen and go back to the main menu.
- - Portals now aren't the only objects that can unlock things, collectibles now share this ability as well.
+ - **SAD NEWS**: In 1.1.0 mods are disabled. They didn't really work before anyway, but now they officialy don't work.
+   I hope to make them work in a future update, but currently they are on hold.
+ - All the things related to mods have now been put away into the corner ("developer" button), since they are kinda useless now.
  - You can now load .dat files in the .dat editor.
  - You can now set unlock requirements for characters.
+
+### NEW ADDITIONS
+
+ - You can now reset settings to default
+ - By pressing alt + the key you bound to transform, you can randomize an objects scale and rotation
+	 - The range in which the object will be scaled to can be set in the options. If both options are the same,
+	   it will only randomize rotation.
+ - There are now shortcuts for changing layers.
+ - You can now bind a key to exit the current screen and go back to the main menu.
+ - Portals now aren't the only objects that can unlock things, collectibles now share this ability as well.
  - You can now set unlock requirements for level groups.
  - Unlock requirements for levels have been expanded.
 
@@ -64,6 +72,7 @@
  - There is new arrow attached to the cursor that shows the selected items rotation.
  - HoverText's point no longer scales up when scaling up the HoverText.
  - HoverText text offset now appears correctly.
+ - Fixed finish not displaying the correct runner
 
 ### FIXES & CHANGES
 
@@ -74,10 +83,11 @@
  - Fixed the ability to erase the background with the erase tool.
 
  - Ghost now always appears behind player.
+ - The player visual will no longer be flipped when you change the the way it's facing.
  - You are now able to collect more than just one collectible per level playthrough.
  - HoverText no longer triggers if its touching something that isn't the player.
  - Fixed HoverText text offset not working if follow_player wasn't turned on.
- - Placing down a portal no longer crashes the editor.
+ - Placing down a portal or light_point no longer crashes the editor.
  - You can also edit and remove a portal after you place it. This isn't related to it crashing the editor.
  - Fixed Track.tscn crashing SR and also not really working properly.
 

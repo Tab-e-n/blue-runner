@@ -375,7 +375,10 @@ func _process(_delta):
 	$GUI/border.points[2].x = window.x
 	$GUI/border.points[2].y = window.y
 	$GUI/border.points[3].y = window.y
-
+	$GUI/tint.scale.x = window.x / 1024 + 1
+	$GUI/tint.scale.y = window.y / 768 + 1
+	
+	
 	var mouse_pos : Vector2 = get_viewport().get_mouse_position()
 	level_mouse_position.x = stepify((-level.position.x + mouse_pos.x - window.x / 2) / level.scale.x, 1)
 	level_mouse_position.y = stepify((-level.position.y + mouse_pos.y - window.y / 2) / level.scale.y, 1)
@@ -656,6 +659,7 @@ func _process(_delta):
 				property[0][2].set(property[1], variant.z)
 			else:
 				property[0][0].set(property[1], property[2].get(property[3]))
+		$GUI/cursor/editor_vector.rotation_degrees = place_selected_object.rotation_degrees
 	if $GUI/cursor.visible and place_selected_decor.visible:
 		place_selected_decor.scale.x = $GUI/Edit_Items/Panel/other/scale_x.value
 		place_selected_decor.scale.y = $GUI/Edit_Items/Panel/other/scale_y.value
@@ -704,6 +708,8 @@ func _process(_delta):
 		$GUI/Info/mouse.text = \"mouse x \" + String(stepify(mouse_pos.x, 1)) + \" y \" + String(stepify(mouse_pos.y, 1))
 		$GUI/Info/window.text = \"window size x \" + String(stepify(window.x, 1)) + \" y \" + String(stepify(window.y, 1))
 		$GUI/Info/actual.text = \"cam pos x \" + String(stepify(-level.position.x / level.scale.y, 1)) + \" y \" + String(stepify(-level.position.y / level.scale.y, 1))
+	
+	$GUI/tint.visible = pause_level_input
 	
 	if level_objects[\"bg\"] != null: 
 		level_objects[\"bg\"].update_self(-level.position / level.scale)
@@ -2461,6 +2467,12 @@ z_as_relative = false
 texture = ExtResource( 52 )
 offset = Vector2( 0, -32 )
 
+[node name="tint" type="Polygon2D" parent="GUI"]
+visible = false
+position = Vector2( 512, 384 )
+color = Color( 0, 0, 0, 0.501961 )
+polygon = PoolVector2Array( -512, -384, 512, -384, 512, 384, -512, 384 )
+
 [node name="Info" type="Control" parent="GUI"]
 anchor_left = 0.5
 anchor_top = 1.0
@@ -3810,10 +3822,10 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
@@ -3834,8 +3846,8 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_back" to="." method="layer_color_changed" binds= [ 1 ]]
 [connection signal="value_changed" from="GUI/Edit_Layers/Panel/scale_background" to="." method="layer_scale_changed" binds= [ 0 ]]
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_background" to="." method="layer_color_changed" binds= [ 0 ]]
-[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
 [connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
+[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
 [connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
 [connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="items_scroll_scrolling"]
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]
