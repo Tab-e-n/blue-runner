@@ -1,6 +1,16 @@
 ON HOLD
 
 mods redo
+mod loader -> mod manager
+you should props import mods manualy
+
+how to get modded textures working ideas
+somehow make godot think .import is in a different spot or something
+aka frantically scourer google
+or
+custom sprite node or function that basically loads png images as textures (ImageTexture)
+aka rewrite lot of code in main, and have the possibility of the solution being obtuse.
+
 default-mod
 if mod doesn't work it should tell you what dependencies are missing somewhere
 sonic runner self checking if loaded mods exist
@@ -15,9 +25,8 @@ SHOULD DO SOON
 
 dependency fixer for level groups
 f1 for help
-z_index has some buggy behavior probably
 
-CAN DO LATER
+FUTURE
 
 that shader thing
 do you wanna do scrollers?
@@ -29,13 +38,12 @@ rebind move to something if undo system
 
 SHOULD DO SOON
 
-character missing
-
-CAN DO LATER
-
 redo replay menu
+
+FUTURE
+
 character greenbox
-level missing
+redo level missing
 tutorial level
 changing prebuilt level groups
 Cheat code menu

@@ -14,6 +14,8 @@
 
 ### NEW ADDITIONS
 
+ - When you launch SR from a console, you can now set the parameter --level with a path to a level and the game will start in that level instead of the loading sequence.
+   Yes no one is gonna use this i know.
  - New loading sequence for SR.
 	 - If you can't bind your keys through the options, (because you did a funny and bound everything to the same key)
 	   you can now interupt this new sequence by pressing F12, which will allow you to rebind your keys.
@@ -54,8 +56,9 @@
 
 ### NEW ADDITIONS
 
- - You can now reset settings to default
- - By pressing alt + the key you bound to transform, you can randomize an objects scale and rotation
+ - You can now reset settings to default.
+ - You can now press a button to start playtesting the level you are working on.
+ - By pressing alt + the key you bound to transform, you can randomize an objects scale and rotation.
 	 - The range in which the object will be scaled to can be set in the options. If both options are the same,
 	   it will only randomize rotation.
  - There are now shortcuts for changing layers.
@@ -78,6 +81,7 @@
 
  - In the options, setting the default level name would set the default author name and vice versa.
  - While you edit text, keyboard shortcuts won't do anything until you stop editing text.
+ - When you select a new object or decor, it resets scale, rotation, z_index and color, instead of keeping them.
  - Objects placed outside the center layer had collision, which wasn't intended.
  - Using transform mode to rotate an object is now more reliable.
  - Fixed the ability to erase the background with the erase tool.

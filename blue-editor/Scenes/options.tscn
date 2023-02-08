@@ -1118,8 +1118,8 @@ anchor_right = 0.498
 margin_left = -381.952
 margin_right = 386.048
 margin_bottom = 768.0
-window_title = "Open a Directory"
-mode = 2
+window_title = "Open a File"
+mode = 0
 access = 2
 current_dir = "/Project/Godot 3.2/sonic_runner_git/blue-editor"
 current_path = "/Project/Godot 3.2/sonic_runner_git/blue-editor/"
@@ -1231,6 +1231,7 @@ __meta__ = {
 [connection signal="toggled" from="GUI/keysbinds/buttons/random_transform" to="." method="start_keybind_check" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/game_camera" to="." method="start_keybind_check" binds= [ 3 ]]
 [connection signal="dir_selected" from="sonic_runner_file" to="." method="sonic_runner_folder_selected"]
+[connection signal="file_selected" from="sonic_runner_file" to="." method="sonic_runner_folder_selected"]
 [connection signal="scrolling" from="HScrollBar" to="." method="_on_HScrollBar_scrolling"]
 [connection signal="pressed" from="exit" to="." method="_on_exit_pressed"]
 [connection signal="pressed" from="reset" to="." method="reset_settings_popup"]

@@ -64,6 +64,8 @@ var loaded_characters = {}
 var last_input_events : Array = range(8)
 
 func _ready():
+	console_arguments()
+	
 	rand.randomize()
 	var scaling = OS.window_size.x / OS.window_size.y
 	var height = get_tree().get_root().size.y
@@ -401,6 +403,20 @@ func load_texture_from_png(path : String = ""):
 		#print(ResourceSaver.get_recognized_extensions(texture))
 		return texture
 	return null
+
+func console_arguments():
+	var arguments = {}
+	for arg in OS.get_cmdline_args():
+		var key_value = ["",""]
+		if arg.find("=") > -1:
+			key_value = arg.split("=")
+		if arg.find(" ") > -1:
+			key_value = arg.split(" ")
+		arguments[key_value[0].lstrip("--")] = key_value[1]
+	
+	#--level=res://Scenes/waterway/Level_1-0.tscn
+	if arguments.has("level"):
+		change_level("*" + arguments["level"])
 
 func save_game(timer : float = 0, par : float = 0, collectible : Array = [], level = null, recording : Dictionary = {}):
 	var savefile = File.new()

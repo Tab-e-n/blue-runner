@@ -1,4 +1,4 @@
-[gd_scene load_steps=74 format=2]
+[gd_scene load_steps=76 format=2]
 
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=1]
 [ext_resource path="res://Visual/Editor/editor_paintbrush.png" type="Texture" id=2]
@@ -52,6 +52,8 @@
 [ext_resource path="res://Visual/Editor/editor_new_hover.png" type="Texture" id=50]
 [ext_resource path="res://Text/Lacrimae_Small_Spaced.tres" type="DynamicFont" id=51]
 [ext_resource path="res://Visual/Editor/editor_vector.png" type="Texture" id=52]
+[ext_resource path="res://Visual/Editor/editor_play.png" type="Texture" id=53]
+[ext_resource path="res://Visual/Editor/editor_play_enabled.png" type="Texture" id=54]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
@@ -824,7 +826,7 @@ func create_new_level_option_select(option_button, setting : String):
 func save_popup():
 	$GUI/File/File_Save.popup()
 
-func save_level(level_filename : String = \"Level\"):
+func save_level(level_filename : String = \"Level\", playtest : bool = false):
 	level_position_hinge = level.position
 	level_scale_hinge = level.scale
 	level.name = level_filename.substr(level_filename.find_last(\"/\") + 1, level_filename.find_last(\".\") - level_filename.find_last(\"/\"))
@@ -852,20 +854,25 @@ func save_level(level_filename : String = \"Level\"):
 	level.position = level_position_hinge
 	level.scale = level_scale_hinge
 	
-	var savefile = File.new()
+	var savefile : File = File.new()
 	var temp = {}
-
-	temp[\"level_name\"] = level_name.text
+	
 	temp[\"creator\"] = creator.text
-	temp[\"level_icon\"] = [level_icon.get_item_text(level_icon.selected),level_icon.get_selected_metadata()]
-	temp[\"level_base\"] = [level_base.get_item_text(level_base.selected),level_base.get_selected_metadata()]
 	temp[\"dependencies\"] = data.mods_installed.duplicate()
 	temp[\"tags\"] = []
 	if level_objects[\"player\"] != null:
 		if level_objects[\"player\"].character_name != \"\":
 			temp[\"tags\"].append(\"character_preselected\")
-	if official.pressed:
-		temp[\"tags\"].append(\"official\")
+	if !playtest:
+		temp[\"level_name\"] = level_name.text
+		temp[\"level_icon\"] = [level_icon.get_item_text(level_icon.selected),level_icon.get_selected_metadata()]
+		temp[\"level_base\"] = [level_base.get_item_text(level_base.selected),level_base.get_selected_metadata()]
+		if official.pressed:
+			temp[\"tags\"].append(\"official\")
+	else:
+		temp[\"level_name\"] = \"Playtest Level\"
+		temp[\"level_icon\"] = [\"questionmark.png\",\"res:/\"]
+		temp[\"level_base\"] = [\"base\",\"res:/\"]
 	
 	var dat_filename : String = level_filename.left(level_filename.find_last(\".\")) + \".dat\"
 	
@@ -874,6 +881,15 @@ func save_level(level_filename : String = \"Level\"):
 	savefile.close()
 	
 	done_action(\"save level\", \"#0ce6f2\")
+
+func playtest():
+	if data.settings[\"sonic_runner_folder\"] == \"\":
+		$GUI/File/Launch_Fail.popup()
+	else:
+		save_level(\"user://SRLevels/_playtest_level.tscn\", true)
+		OS.set_window_minimized(true)
+		OS.execute(data.settings[\"sonic_runner_folder\"], [\"--level=\\\"user://SRLevels/_playtest_level.tscn\\\"\",], true)
+		OS.set_window_minimized(false)
 
 func load_popup():
 	$GUI/File/File_Load.popup()
@@ -1049,6 +1065,12 @@ func decor_select(texture_filename : String, _texture : Texture = null):
 	place_selected_decor.texture = texture
 	edit_item_change(\"\", texture)
 	
+	$GUI/Edit_Items/Panel/other/scale_y.value = place_selected_decor.scale.y
+	$GUI/Edit_Items/Panel/other/scale_x.value = place_selected_decor.scale.x
+	$GUI/Edit_Items/Panel/other/rotation.value = place_selected_decor.rotation_degrees
+	$GUI/Edit_Items/Panel/other/z_index.value = place_selected_decor.z_index
+	$GUI/Edit_Items/Panel/other/color.color = place_selected_decor.modulate
+	
 	$GUI/Edit_Items/Panel/other/scale_x.editable = true
 	$GUI/Edit_Items/Panel/other/scale_y.editable = true
 	$GUI/Edit_Items/Panel/other/rotation.editable = true
@@ -1091,6 +1113,12 @@ func object_select(object_file : String, _object : Node = null, no_selected_obje
 		editor_properties_node = _object
 	
 	edit_item_change(editor_properties_node.editor_properties[\"object_path\"], null)
+	
+	$GUI/Edit_Items/Panel/other/scale_y.value = place_selected_object.scale.y
+	$GUI/Edit_Items/Panel/other/scale_x.value = place_selected_object.scale.x
+	$GUI/Edit_Items/Panel/other/rotation.value = place_selected_object.rotation_degrees
+	$GUI/Edit_Items/Panel/other/z_index.value = place_selected_object.z_index
+	$GUI/Edit_Items/Panel/other/color.color = place_selected_object.modulate
 	
 	$GUI/Edit_Items/Panel/other/scale_x.editable = !editor_properties_node.editor_properties[\"unchangeable_properties\"][\"scale\"]
 	$GUI/Edit_Items/Panel/other/scale_y.editable = !editor_properties_node.editor_properties[\"unchangeable_properties\"][\"scale\"]
@@ -1254,7 +1282,7 @@ func level_add_objects():
 	new_object.rotation_degrees = place_selected_object.rotation_degrees
 	new_object.modulate = place_selected_object.modulate
 	if object_type != \"camera\": new_object.use_parent_material = true
-	new_object.z_index += z_add
+	new_object.z_index = place_selected_object.z_index + z_add
 	if place_current_layer != LAYER_CENTER and new_object.editor_properties[\"layer\"] != \"special\":
 		for i in new_object.get_property_list():
 			if i[\"name\"] == \"collision_layer\":
@@ -3526,9 +3554,9 @@ __meta__ = {
 }
 
 [node name="new" type="TextureButton" parent="GUI/File/Panel"]
-margin_left = 192.0
+margin_left = 136.0
 margin_top = 8.0
-margin_right = 256.0
+margin_right = 200.0
 margin_bottom = 72.0
 focus_neighbour_left = NodePath("../exit")
 focus_neighbour_top = NodePath(".")
@@ -3544,9 +3572,9 @@ __meta__ = {
 }
 
 [node name="load" type="TextureButton" parent="GUI/File/Panel"]
-margin_left = 288.0
+margin_left = 232.0
 margin_top = 8.0
-margin_right = 352.0
+margin_right = 296.0
 margin_bottom = 72.0
 focus_neighbour_left = NodePath("../new")
 focus_neighbour_top = NodePath(".")
@@ -3562,9 +3590,9 @@ __meta__ = {
 }
 
 [node name="save" type="TextureButton" parent="GUI/File/Panel"]
-margin_left = 384.0
+margin_left = 328.0
 margin_top = 8.0
-margin_right = 448.0
+margin_right = 392.0
 margin_bottom = 72.0
 focus_neighbour_left = NodePath("../load")
 focus_neighbour_top = NodePath(".")
@@ -3575,6 +3603,23 @@ focus_previous = NodePath("../load")
 texture_normal = ExtResource( 21 )
 texture_pressed = ExtResource( 18 )
 texture_focused = ExtResource( 44 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="playtest" type="TextureButton" parent="GUI/File/Panel"]
+margin_left = 424.0
+margin_top = 8.0
+margin_right = 488.0
+margin_bottom = 72.0
+focus_neighbour_left = NodePath("../load")
+focus_neighbour_top = NodePath(".")
+focus_neighbour_right = NodePath(".")
+focus_neighbour_bottom = NodePath("../name_edit")
+focus_next = NodePath("../name_edit")
+focus_previous = NodePath("../load")
+texture_normal = ExtResource( 53 )
+texture_pressed = ExtResource( 54 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3814,6 +3859,16 @@ margin_bottom = 72.0
 dialog_text = "You are exiting the level editor.
 All unsaved progress will be lost. "
 
+[node name="Launch_Fail" type="ConfirmationDialog" parent="GUI/File"]
+margin_left = 176.0
+margin_top = -80.0
+margin_right = 782.0
+margin_bottom = 78.0
+window_title = "Oops!"
+dialog_text = "SR Editor doesn't know where SR is
+located, so it cannot launch it. You
+can set the where SR is in the settings."
+
 [node name="Animation" type="AnimationPlayer" parent="GUI/File"]
 anims/Focus = SubResource( 20 )
 anims/Unfocus = SubResource( 21 )
@@ -3822,10 +3877,10 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
@@ -3846,8 +3901,8 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_back" to="." method="layer_color_changed" binds= [ 1 ]]
 [connection signal="value_changed" from="GUI/Edit_Layers/Panel/scale_background" to="." method="layer_scale_changed" binds= [ 0 ]]
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_background" to="." method="layer_color_changed" binds= [ 0 ]]
-[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
 [connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
+[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
 [connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
 [connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="items_scroll_scrolling"]
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]
@@ -3856,9 +3911,11 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="pressed" from="GUI/File/Panel/new" to="." method="create_new_level"]
 [connection signal="pressed" from="GUI/File/Panel/load" to="." method="load_popup"]
 [connection signal="pressed" from="GUI/File/Panel/save" to="." method="save_popup"]
+[connection signal="pressed" from="GUI/File/Panel/playtest" to="." method="playtest"]
 [connection signal="pressed" from="GUI/File/Panel/exit" to="." method="file_exit_pressed"]
 [connection signal="item_selected" from="GUI/File/Panel/tileset_edit" to="." method="tileset_changed"]
 [connection signal="item_selected" from="GUI/File/Panel/bg_edit" to="." method="background_changed"]
 [connection signal="file_selected" from="GUI/File/File_Save" to="." method="save_level"]
 [connection signal="file_selected" from="GUI/File/File_Load" to="." method="load_level"]
 [connection signal="confirmed" from="GUI/File/Exit" to="." method="file_exit_confirmed"]
+[connection signal="confirmed" from="GUI/File/Launch_Fail" to="." method="file_exit_confirmed"]
