@@ -685,6 +685,7 @@ Transform
 Reset transform
 Rng transform
 Edit
+Quick save level
 Save level
 Load level
 Create new level"
@@ -708,6 +709,7 @@ Ctrl +
 Alt + 
 Hold
 Ctrl +
+Ctrl + Shift +
 Ctrl +
 Ctrl +
 "
@@ -919,9 +921,9 @@ __meta__ = {
 
 [node name="load_level" type="Button" parent="GUI/keysbinds/buttons"]
 margin_left = 2152.0
-margin_top = 544.0
+margin_top = 576.0
 margin_right = 2424.0
-margin_bottom = 576.0
+margin_bottom = 608.0
 toggle_mode = true
 clip_text = true
 align = 0
@@ -931,9 +933,9 @@ __meta__ = {
 
 [node name="new_level" type="Button" parent="GUI/keysbinds/buttons"]
 margin_left = 2152.0
-margin_top = 576.0
+margin_top = 608.0
 margin_right = 2424.0
-margin_bottom = 608.0
+margin_bottom = 640.0
 toggle_mode = true
 clip_text = true
 align = 0
@@ -1112,6 +1114,19 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="save_level2" type="Button" parent="GUI/keysbinds/buttons"]
+margin_left = 2272.0
+margin_top = 544.0
+margin_right = 2424.0
+margin_bottom = 576.0
+disabled = true
+toggle_mode = true
+clip_text = true
+align = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="sonic_runner_file" type="FileDialog" parent="."]
 anchor_left = 0.498
 anchor_right = 0.498
@@ -1230,6 +1245,7 @@ __meta__ = {
 [connection signal="toggled" from="GUI/keysbinds/buttons/reset_transform" to="." method="start_keybind_check" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/random_transform" to="." method="start_keybind_check" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/game_camera" to="." method="start_keybind_check" binds= [ 3 ]]
+[connection signal="toggled" from="GUI/keysbinds/buttons/save_level2" to="." method="start_keybind_check" binds= [ 12 ]]
 [connection signal="dir_selected" from="sonic_runner_file" to="." method="sonic_runner_folder_selected"]
 [connection signal="file_selected" from="sonic_runner_file" to="." method="sonic_runner_folder_selected"]
 [connection signal="scrolling" from="HScrollBar" to="." method="_on_HScrollBar_scrolling"]

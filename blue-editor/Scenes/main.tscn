@@ -58,6 +58,8 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
+var level_path : String = \"\"
+
 onready var texture_empty : Texture = load(\"res://Visual/Editor/editor_empty.png\")
 onready var texture_missing : Texture = load(\"res://Visual/Editor/editor_missing.png\")
 onready var style_none : StyleBox = load(\"res://Control/style_none.tres\")
@@ -450,8 +452,13 @@ func _process(_delta):
 		place_mode_toggled(true, PLACEMODE_COG, true)
 	
 	# File Hotkeys
-	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"12\") and shortcuts:
+	if Input.is_action_pressed(\"ctrl\") and Input.is_action_pressed(\"shift\") and Input.is_action_just_pressed(\"12\") and shortcuts:
 		save_popup()
+	elif Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"12\") and shortcuts:
+		if level_path == \"\":
+			save_popup()
+		else:
+			save_level(level_path)
 	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"13\") and shortcuts:
 		load_popup()
 	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"14\") and shortcuts:
@@ -804,6 +811,7 @@ func create_new_level(remove_old : bool = true):
 	change_tilemap()
 	
 	done_action(\"create level\", \"#0ce6f2\")
+	level_path = \"\"
 
 func create_new_level_objects(object_type : String):
 	if data.settings[\"editor_create_\" + object_type]:
@@ -881,6 +889,7 @@ func save_level(level_filename : String = \"Level\", playtest : bool = false):
 	savefile.close()
 	
 	done_action(\"save level\", \"#0ce6f2\")
+	level_path = level_filename
 
 func playtest():
 	if data.settings[\"sonic_runner_folder\"] == \"\":
@@ -970,6 +979,7 @@ func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
 			get_node(\"GUI/Edit_Layers/Panel/scale_\" + level_layers[i]).value = get_node(\"Game/Level/decor_\" + level_layers[i]).scale.x
 		
 		done_action(\"load level\", \"#0ce6f2\")
+		level_path = level_filename
 	else:
 		done_action(\"failed to load level (other)\", \"#5d1f31\")
 		print(level_filename)
@@ -3877,8 +3887,8 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]

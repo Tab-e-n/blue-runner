@@ -58,6 +58,8 @@
 
  - You can now reset settings to default.
  - You can now press a button to start playtesting the level you are working on.
+ - Pressing ctrl + the key you bound to save will now save the level without a popup if it was saved already.
+   You can press shift + ctrl + save key if you want the popup.
  - By pressing alt + the key you bound to transform, you can randomize an objects scale and rotation.
 	 - The range in which the object will be scaled to can be set in the options. If both options are the same,
 	   it will only randomize rotation.
