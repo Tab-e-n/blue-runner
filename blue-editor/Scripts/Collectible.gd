@@ -1,6 +1,7 @@
 extends Area2D
 
 var editor_properties : Dictionary = {
+	"description" : "A collectible.\nIf the player collides with it an beats the level, they will have 1 more bonus to their name. If you have multiple bonuses in one level, they should each have their own id. Alternatively it can unlock something instead of being a bonus.",
 	"object_path" : "res://Objects/Collectible.tscn",
 	"object_type" : "normal",
 	"layer" : "selected",

@@ -101,16 +101,12 @@ func change_level_texture(change_to : String, type : String, level : int):
 
 func picture_changed():
 	#print(current_group_path)
-	var file : File = File.new()
-	if file.file_exists(current_group_path + \"/title.png\"):
-		
-		$title/picture.texture = load(current_group_path + \"/title.png\")
-	else:
-		$title/picture.texture = load(\"res://Visual/Title/title_custom.png\")
-	if file.file_exists(current_group_path + \"/logo.png\"):
-		$title/logo.texture = load(current_group_path + \"/logo.png\")
-	else:
-		$title/logo.texture = load(\"res://Visual/Title/logo_custom.png\")
+	$title/picture.texture = data.load_texture_from_png(current_group_path + \"/title.png\")
+	if $title/picture.texture == null:
+		$title/picture.texture = preload(\"res://Visual/Title/title_custom.png\")
+	$title/logo.texture = data.load_texture_from_png(current_group_path + \"/logo.png\")
+	if $title/logo.texture == null:
+		$title/logo.texture = preload(\"res://Visual/Title/logo_custom.png\")
 	#var text_path = $Edits/picture.get_item_metadata(index) + \"/Visual/Level/\" + $Edits/picture.get_item_text(index)
 	#level_group_dat[\"picture\"] = text_path
 	#$title/menu_waterway.texture = load(text_path)

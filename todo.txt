@@ -2,7 +2,7 @@ ON HOLD
 
 mods redo
 mod loader -> mod manager
-you should props import mods manualy
+you should probs import mods manualy
 
 how to get modded textures working ideas
 somehow make godot think .import is in a different spot or something
@@ -15,21 +15,24 @@ default-mod
 if mod doesn't work it should tell you what dependencies are missing somewhere
 sonic runner self checking if loaded mods exist
 
+dependency fixer for level groups
+
 GENERAL
 
-documentation (useless since mods are not existant rn but im still gonna do it for future sake)
+documentation (useless since mods are non existant rn but im still gonna do it for future sake)
 
  - EDITOR - 
 
 SHOULD DO SOON
 
-dependency fixer for level groups
 f1 for help
 
 FUTURE
 
+more help buttons
 that shader thing
 do you wanna do scrollers?
+track visual
 
 undo system (i dont really wanna)
 rebind move to something if undo system
@@ -38,12 +41,12 @@ rebind move to something if undo system
 
 SHOULD DO SOON
 
-redo replay menu
 
 FUTURE
 
 character greenbox
 redo level missing
 tutorial level
-changing prebuilt level groups
+changing between "linked" level groups or something
 Cheat code menu
+Touchup help menu

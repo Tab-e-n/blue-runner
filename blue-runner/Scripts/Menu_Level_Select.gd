@@ -62,10 +62,6 @@ func _ready():
 		
 		if global.replay_menu:
 			global.replay_menu = false
-			$REPLAY.selected_replay = global.replay_save[0]
-			$REPLAY.replay_menu_mode = global.replay_save[1]
-			$REPLAY.reset_replays()
-			$REPLAY/replay_list.ensure_current_is_visible()
 			menu = "REPLAY"
 			$AnimationPlayer.play("SET_TO_REPLAY")
 		else:

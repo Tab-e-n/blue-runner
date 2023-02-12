@@ -1,14 +1,15 @@
 extends Node2D
 
 var editor_properties : Dictionary = {
+	"description" : "A spinning arm.\nAnother object can be attached to this, and the arm will spin it around. Spin_time_frames is how long the arm will take in frames to make one revolution. You can also change the spin direction and the lenght of the arm.",
 	"object_path" : "res://Objects/SpinningArm.tscn",
 	"object_type" : "normal",
 	"layer" : "selected",
 	"rect" : Rect2(0, -128, 24, 288),
 	"editable_properties" : {
 		"spin_time_frames" : [TYPE_INT, 0, 0, 1],
-		"direction" : [TYPE_BOOL, 0, 0, 0],
 		"timer" : [TYPE_INT, 0, 0, 1],
+		"direction" : [TYPE_BOOL, 0, 0, 0],
 		"lenght" : [TYPE_REAL, 0, 0, 0.05],
 		"attached_nodes" : [TYPE_NIL, 0, 0, 0],
 	},
@@ -37,6 +38,7 @@ func _ready():
 	pass
 
 func _process(_delta):
+	if spin_time_frames < 2: spin_time_frames = 2
 	rotations.resize(spin_time_frames)
 	var step : float = 360 / float(spin_time_frames)
 	var current : float = 0
@@ -45,7 +47,7 @@ func _process(_delta):
 		else: rotations[spin_time_frames - i - 1] = current
 		current += step
 	
-	if timer >= spin_time_frames: timer = spin_time_frames - 1
+	if abs(timer) >= spin_time_frames: timer = (spin_time_frames - 1) * sign(timer)
 	
 	$decor_steel_pipe.rotation_degrees = rotations[timer]
 	$editor_pointer.rotation_degrees = rotations[timer]

@@ -231,7 +231,7 @@ func load_editor_vanilla():
 	
 	# Level Icon
 	print(\"scanning vanilla level icons\")
-	scan_single_directory(\"res:/\", \"/Visual/Level/\", level_icon, \".png\", \"icon\")
+	scan_single_directory(\"res:/\", \"/Visual/Level/\", level_icon, \".png.import\", \"icon\")
 	
 	print(\"scanning vanilla level base\")
 	load_dat_file(\"res:/\", \"/Visual/Level/\", level_base, \"base\")
@@ -240,7 +240,7 @@ func load_editor_vanilla():
 	
 	# Decor
 	print(\"scanning vanilla decor\")
-	scan_multi_directory(\"res:/\", \"/Visual/\", place_decor, \".png\")
+	scan_multi_directory(\"res:/\", \"/Visual/\", place_decor, \".png.import\")
 
 func load_editor_mods():
 	var directory : Directory = Directory.new()
@@ -270,7 +270,7 @@ func load_editor_mods():
 		
 		# Level Icons
 		print(\"scanning for level icons\")
-		scan_single_directory(\"Mods/\" + mod_name, \"/Visual/Level/\", level_icon, \".png\", \"icon\")
+		scan_single_directory(\"Mods/\" + mod_name, \"/Visual/Level/\", level_icon, \".png.import\", \"icon\")
 		
 		print(\"scanning for level base\")
 		load_dat_file(\"Mods/\" + mod_name, \"/Visual/Level/\", level_base, \"base\")
@@ -279,7 +279,7 @@ func load_editor_mods():
 		
 		# Visuals
 		print(\"scanning for decor\")
-		scan_multi_directory(\"Mods/\" + mod_name, \"/Visual/\", place_decor, \".png\")
+		scan_multi_directory(\"Mods/\" + mod_name, \"/Visual/\", place_decor, \".png.import\")
 
 func load_dat_file(main_directory : String, sub_directory : String, storage : Array, file_type : String):
 	var loadfile = File.new()
@@ -311,6 +311,8 @@ func scan_single_directory(main_directory : String, sub_directory : String, stor
 		current_file = directory.get_next()
 		while current_file != \"\":
 			if current_file.ends_with(file_type):
+				if current_file.ends_with(\".import\"):
+					current_file = current_file.substr(0,current_file.find(\".import\"))
 				print(\"found \" + file_descriptor + \": \" + current_file)
 				storage.append([current_file, main_directory])
 			current_file = directory.get_next()
@@ -340,6 +342,8 @@ func scan_multi_directory(main_directory : String, start_directory : String, sto
 					storage[current_directory + current_file + \"/\"] = []
 					directories_to_visit.append(current_directory + current_file + \"/\")
 			elif current_file.ends_with(file_type):
+				if current_file.ends_with(\".import\"):
+					current_file = current_file.substr(0,current_file.find(\".import\"))
 				storage[current_directory].append(current_directory + current_file)
 			current_file = directory.get_next()
 		directories_to_visit.pop_front()
@@ -455,6 +459,28 @@ func load_mods_data_files(mod_name : String):
 		
 	if !mods_enabled[mod_name][0] and !mods_enabled[mod_name][1]:
 		return 2
+
+func load_texture_from_png(path : String = \"\"):
+	if path == \"\": return null
+	
+	if path.begins_with(\"res://\"):
+		var stream_texture : StreamTexture = load(path)
+		if stream_texture != null:
+			return stream_texture
+		return null
+	
+	var file : File = File.new()
+	var image : Image = Image.new()
+	var texture : ImageTexture = ImageTexture.new()
+	
+	if file.file_exists(path):
+		file.open(path, File.READ)
+		var buffer = file.get_buffer(file.get_len())
+		image.load_png_from_buffer(buffer)
+		texture.create_from_image(image, texture.STORAGE_COMPRESS_LOSSLESS)
+		#print(ResourceSaver.get_recognized_extensions(texture))
+		return texture
+	return null
 
 func scale_down_sprite(sprite : Sprite, final_scale : Vector2 = Vector2(1, 1), desired_rect : Vector2 = Vector2(64, 64)):
 	sprite.scale = Vector2(1, 1)
@@ -651,6 +677,7 @@ func save_stex(image, save_path, filter=false):
 	var pnglen = pngf.get_len()
 	var pngdata = pngf.get_buffer(pnglen)
 	pngf.close()
+	# warning-ignore:return_value_discarded
 	Directory.new().remove(tmppng)
 	var stexf = File.new()
 	stexf.open(\"%s.stex\" % [save_path], File.WRITE)

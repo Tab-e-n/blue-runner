@@ -1,6 +1,7 @@
 extends Node2D
 
 export var editor_properties : Dictionary = {
+	"description" : "The player.\nThis objects position is where the player starts. With the character properties you can specify which character the player plays as. if character_name is left blank, the player will choose the character they want for the level.",
 	"object_path" : "res://Objects/Player/Player.tscn",
 	"object_type" : "player", # some object types have a limited amount of the times they can appear
 	"layer" : "special", # selected or special

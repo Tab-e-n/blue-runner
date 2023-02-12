@@ -1,6 +1,7 @@
 extends Area2D
 
 var editor_properties : Dictionary = {
+	"description" : "A trampoline mushroom.\nWhenever the player touches it, it launches the player into the direction its facing. The launches strenght is either determined by the size of the mushroom, or you can set it to a specific amount with boost strenght. The mushroom will add to the players current momentum, unless overwrite_momentum is toggled on.",
 	"object_path" : "res://Objects/Mushroom.tscn",
 	"object_type" : "normal",
 	"layer" : "selected",

@@ -1,4 +1,4 @@
-[gd_scene load_steps=76 format=2]
+[gd_scene load_steps=79 format=2]
 
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=1]
 [ext_resource path="res://Visual/Editor/editor_paintbrush.png" type="Texture" id=2]
@@ -54,6 +54,8 @@
 [ext_resource path="res://Visual/Editor/editor_vector.png" type="Texture" id=52]
 [ext_resource path="res://Visual/Editor/editor_play.png" type="Texture" id=53]
 [ext_resource path="res://Visual/Editor/editor_play_enabled.png" type="Texture" id=54]
+[ext_resource path="res://Visual/Editor/editor_hint_enabled.png" type="Texture" id=55]
+[ext_resource path="res://Visual/Editor/editor_hint.png" type="Texture" id=56]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
@@ -341,8 +343,9 @@ func _ready():
 	
 	place_grid_snap = data.settings[\"editor_default_grid_snap\"]
 	
-	done_action(\"start level editor\", \"#0ce6f2\")
+	done_action(\"start level editor\", \"#0ce6f2\", true)
 	
+# warning-ignore:return_value_discarded
 	get_viewport().connect(\"gui_focus_changed\", self, \"_on_focus_changed\")
 
 func ready_optionbutton_setup(option_button : OptionButton, data_array : Array):
@@ -375,6 +378,8 @@ func _process(_delta):
 	level_input.margin_top = $GUI.margin_top
 	$GUI/Info.margin_right = $GUI.margin_right
 	$GUI/Info.margin_left = $GUI.margin_left
+	$GUI/Hint.margin_right = $GUI.margin_right
+	$GUI/Hint.margin_left = $GUI.margin_left
 	$GUI/border.points[1].x = window.x
 	$GUI/border.points[2].x = window.x
 	$GUI/border.points[2].y = window.y
@@ -505,6 +510,7 @@ func _process(_delta):
 		if level_input.pressed:
 			pause_level_input = false
 			level_input.pressed = false
+			$GUI/Hint/hint.pressed = false
 	elif edit_mode:
 		var edit_node
 		if place_selected_object.editor_properties[\"object_type\"] != \"bg\":
@@ -722,6 +728,16 @@ func _process(_delta):
 	
 	if level_objects[\"bg\"] != null: 
 		level_objects[\"bg\"].update_self(-level.position / level.scale)
+	
+	$GUI/Hint.visible = place_current_tab == PLACE_OBJECTS
+	$GUI/File/Panel/hint_buttons.visible = $GUI/File/Panel/hint.pressed
+	$GUI/Place/Panel/hint_modes.visible = $GUI/Place/Panel/hint.pressed
+	$GUI/Place/Panel/hint_other.visible = $GUI/Place/Panel/hint.pressed
+	$GUI/Hint/hint_obj.visible = $GUI/Hint/hint.pressed
+
+func _exit_tree():
+	if level_path != \"\":
+		save_level(level_path)
 
 func object_face_point(object_pos : Vector2, point : Vector2):
 	var distance = point - object_pos
@@ -810,7 +826,7 @@ func create_new_level(remove_old : bool = true):
 	
 	change_tilemap()
 	
-	done_action(\"create level\", \"#0ce6f2\")
+	done_action(\"create level\", \"#0ce6f2\", true)
 	level_path = \"\"
 
 func create_new_level_objects(object_type : String):
@@ -884,11 +900,12 @@ func save_level(level_filename : String = \"Level\", playtest : bool = false):
 	
 	var dat_filename : String = level_filename.left(level_filename.find_last(\".\")) + \".dat\"
 	
+# warning-ignore:return_value_discarded
 	savefile.open(dat_filename, File.WRITE)
 	savefile.store_line(to_json(temp))
 	savefile.close()
 	
-	done_action(\"save level\", \"#0ce6f2\")
+	done_action(\"save level\", \"#0ce6f2\", true)
 	level_path = level_filename
 
 func playtest():
@@ -897,10 +914,18 @@ func playtest():
 	else:
 		save_level(\"user://SRLevels/_playtest_level.tscn\", true)
 		OS.set_window_minimized(true)
+# warning-ignore:return_value_discarded
 		OS.execute(data.settings[\"sonic_runner_folder\"], [\"--level=\\\"user://SRLevels/_playtest_level.tscn\\\"\",], true)
 		OS.set_window_minimized(false)
 
+
 func load_popup():
+	if level_path == \"\":
+		$GUI/File/File_Load.popup()
+	else:
+		$GUI/File/Load.popup()
+
+func file_load_confirmed():
 	$GUI/File/File_Load.popup()
 
 func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
@@ -920,13 +945,13 @@ func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
 		# CHECKS
 		for i in temp[\"dependencies\"]:
 			if !data.mods_installed.has(i):
-				done_action(\"failed to load level (dependencies)\", \"#5d1f31\")
+				done_action(\"failed to load level (dependencies)\", \"#5d1f31\", true)
 				print(level_filename + String(temp[\"dependencies\"]))
 				return
 		
 		var packed_scene = load(level_filename)
 		if packed_scene == null:
-			done_action(\"failed to load level (corrupted)\", \"#5d1f31\")
+			done_action(\"failed to load level (corrupted)\", \"#5d1f31\", true)
 			print(level_filename)
 			return
 		
@@ -978,10 +1003,10 @@ func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
 			get_node(\"GUI/Edit_Layers/Panel/color_\" + level_layers[i]).color = get_node(\"Game/Level/decor_\" + level_layers[i]).modulate
 			get_node(\"GUI/Edit_Layers/Panel/scale_\" + level_layers[i]).value = get_node(\"Game/Level/decor_\" + level_layers[i]).scale.x
 		
-		done_action(\"load level\", \"#0ce6f2\")
+		done_action(\"load level\", \"#0ce6f2\", true)
 		level_path = level_filename
 	else:
-		done_action(\"failed to load level (other)\", \"#5d1f31\")
+		done_action(\"failed to load level (other)\", \"#5d1f31\", true)
 		print(level_filename)
 
 func ready_loaded_level(group : Array):
@@ -1045,10 +1070,13 @@ func convert_object_into_sprite(path : String):
 func change_filepath_text(text : String):
 	$GUI/Info/filepath.bbcode_text = \"[right]\" + text + \"[/right]\"
 
-func done_action(action : String, color : String, action_variants : Array = []):
+func done_action(action : String, color : String, highlight : bool = false, action_variants : Array = []):
 	# Undo functionally will be coded here if i decide to do it
 	
 	$GUI/Info/action.bbcode_text = \"[right][color=\" + color + \"]\" + action + \"[/color][/right]\"
+	if highlight:
+		$GUI/Info/action/highlight.color = Color(color)
+		$GUI/Info/action/anim.play(\"highlight\")
 
 func tile_select(tile_num : int):
 	place_mode_toggled(true, PLACEMODE_PAINT, true)
@@ -1070,6 +1098,12 @@ func decor_select(texture_filename : String, _texture : Texture = null):
 	var texture
 	if _texture == null:
 		texture = load(texture_filename)
+		place_selected_decor.scale = Vector2(1, 1)
+		place_selected_decor.rotation_degrees = 0
+		place_selected_decor.z_index = 0
+		place_selected_decor.modulate = Color(1, 1, 1, 1)
+		place_selected_decor.flip_h = false
+		place_selected_decor.flip_v = false
 	else:
 		texture = _texture
 	place_selected_decor.texture = texture
@@ -1080,6 +1114,8 @@ func decor_select(texture_filename : String, _texture : Texture = null):
 	$GUI/Edit_Items/Panel/other/rotation.value = place_selected_decor.rotation_degrees
 	$GUI/Edit_Items/Panel/other/z_index.value = place_selected_decor.z_index
 	$GUI/Edit_Items/Panel/other/color.color = place_selected_decor.modulate
+	$GUI/Edit_Items/Panel/decor/flip_h.pressed = place_selected_decor.flip_h
+	$GUI/Edit_Items/Panel/decor/flip_v.pressed = place_selected_decor.flip_v
 	
 	$GUI/Edit_Items/Panel/other/scale_x.editable = true
 	$GUI/Edit_Items/Panel/other/scale_y.editable = true
@@ -1112,6 +1148,7 @@ func object_select(object_file : String, _object : Node = null, no_selected_obje
 		place_selected_object.scale = _object.scale
 		place_selected_object.rotation_degrees = _object.rotation_degrees
 		place_selected_object.modulate = _object.modulate
+		place_selected_object.z_index = _object.z_index
 		for i in _object.editor_properties[\"editable_properties\"].keys():
 			place_selected_object.set(i, _object.get(i))
 		add_subjects(_object, place_selected_object, false)
@@ -1123,6 +1160,7 @@ func object_select(object_file : String, _object : Node = null, no_selected_obje
 		editor_properties_node = _object
 	
 	edit_item_change(editor_properties_node.editor_properties[\"object_path\"], null)
+	hint_object_change(editor_properties_node.editor_properties)
 	
 	$GUI/Edit_Items/Panel/other/scale_y.value = place_selected_object.scale.y
 	$GUI/Edit_Items/Panel/other/scale_x.value = place_selected_object.scale.x
@@ -1229,7 +1267,7 @@ func level_add_decor():
 			attachable.add_child(new_decor)
 			done_action(\"attach decor\", \"#d07925\")
 		else:
-			done_action(\"failed to attach decor\", \"#5d1f31\")
+			done_action(\"failed to attach decor\", \"#5d1f31\", true)
 			return
 	
 	var step = 0
@@ -1261,13 +1299,13 @@ func level_add_objects():
 	if place_attach_mode:
 		attachable = level_closest_item(null, true)
 		if new_object.editor_properties[\"object_type\"] != \"normal\":
-			done_action(\"can't attach special objects\", \"#5d1f31\")
+			done_action(\"can't attach special objects\", \"#5d1f31\", true)
 			return
 		elif attachable != null:
 			attachable.add_child(new_object)
 			done_action(\"attach object\", \"#d07925\")
 		else:
-			done_action(\"failed to attach object\", \"#5d1f31\")
+			done_action(\"failed to attach object\", \"#5d1f31\", true)
 			return
 	else:
 		if new_object.editor_properties[\"layer\"] != \"selected\":
@@ -1611,6 +1649,7 @@ func place_tab_move(direction : int = 0, tab : int = -1):
 			$GUI/Edit_Items/Panel/objects.visible = $GUI/Edit_Items/Panel/properties.pressed
 			$GUI/Edit_Items/Panel/other.visible = !$GUI/Edit_Items/Panel/properties.pressed
 			edit_item_change(place_selected_object.editor_properties[\"object_path\"], null)
+			hint_object_change(place_selected_object.editor_properties)
 			
 			$GUI/Edit_Items/Panel/other/scale_x.editable = !place_selected_object.editor_properties[\"unchangeable_properties\"][\"scale\"]
 			$GUI/Edit_Items/Panel/other/scale_y.editable = !place_selected_object.editor_properties[\"unchangeable_properties\"][\"scale\"]
@@ -1700,6 +1739,7 @@ func place_item_selected(index):
 func prepare_item_for_placing():
 	pass
 	#TBA
+	# I forgor
 
 # ITEMS FUNC
 func items_update_panel(index : int, tab : int, change_items : bool = true):
@@ -1836,11 +1876,11 @@ func items_focus_toggled(button_pressed):
 # EDIT FUNC
 func edit_item_change(path : String, texture : Texture = null):
 	if path != \"\":
-		path = convert_object_into_sprite(place_selected_object.editor_properties[\"object_path\"])
+		change_filepath_text(path)
+		path = convert_object_into_sprite(path)
 		var texture_load = load(path)
 		if texture_load == null: texture_load = texture_missing
 		$GUI/Edit_Items/Panel/item.texture = texture_load
-		change_filepath_text(place_selected_object.editor_properties[\"object_path\"])
 	elif texture != null:
 		$GUI/Edit_Items/Panel/item.texture = texture
 		change_filepath_text(texture.resource_path)
@@ -2007,15 +2047,44 @@ func file_exit_pressed():
 	$GUI/File/Exit.popup_centered()
 
 func file_exit_confirmed():
+	level_path = \"\"
 	# warning-ignore:return_value_discarded
 	get_tree().change_scene(\"res://Scenes/menu.tscn\")
+
+func hint_object_change(edit_props : Dictionary):
+	var texture_load : Texture
+	if edit_props[\"object_path\"] != \"\":
+		var path = convert_object_into_sprite(edit_props[\"object_path\"])
+		texture_load = load(path)
+		if texture_load == null: texture_load = texture_missing
+	else:
+		texture_load = texture_missing
+	$GUI/Hint/hint_obj/sprite.texture = texture_load
+	
+	data.scale_down_sprite($GUI/Hint/hint_obj/sprite, Vector2(1, 1))
+	
+	$GUI/Hint/hint_obj/name.text = edit_props[\"object_path\"]
+	
+	var missing_text = \"This object has no description.\"
+	if edit_props.has(\"description\"):
+		if edit_props[\"description\"] == \"\":
+			$GUI/Hint/hint_obj/description.text = missing_text
+		else:
+			$GUI/Hint/hint_obj/description.text = edit_props[\"description\"]
+	else:
+		$GUI/Hint/hint_obj/description.text = missing_text
+
+func object_hint_toggled(button_pressed):
+	pause_level_input = button_pressed
+
 "
 
 [sub_resource type="GDScript" id=2]
 script/source = "extends Node2D
 
 var editor_properties : Dictionary = {
-	\"object_path\" : \"res://Objects/Backgrounds/BG_WaterWay.tscn\",
+	\"description\" : \"\",
+	\"object_path\" : \"\",
 	\"object_type\" : \"bg\", # some object types have a limited amount of the times they can appear
 	\"layer\" : \"bg\", # selected or special
 	\"rect\" : Rect2(0, 0, 0, 0),
@@ -2054,7 +2123,46 @@ func edit_right_pressed(_mouse_pos, _mouse_hinge):
 	pass
 "
 
-[sub_resource type="GDScript" id=3]
+[sub_resource type="Animation" id=3]
+resource_name = "highlight"
+tracks/0/type = "value"
+tracks/0/path = NodePath("highlight:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 1 ), Vector2( 6, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("highlight:modulate")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("highlight:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+
+[sub_resource type="GDScript" id=4]
 script/source = "extends Control
 
 func _on_slider_toggled(button_pressed):
@@ -2064,7 +2172,7 @@ func _on_slider_toggled(button_pressed):
 		$Animation.play(\"Unfocus\")
 "
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=5]
 length = 0.2
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2079,7 +2187,7 @@ tracks/0/keys = {
 "values": [ Vector2( -456, -72 ), Vector2( -456, -8 ) ]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=6]
 length = 0.2
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2094,7 +2202,7 @@ tracks/0/keys = {
 "values": [ Vector2( -456, -8 ), Vector2( -456, -72 ) ]
 }
 
-[sub_resource type="GDScript" id=6]
+[sub_resource type="GDScript" id=7]
 script/source = "extends Control
 
 var focused : bool = false
@@ -2115,7 +2223,7 @@ func focus_toggle(toggle):
 		focused = false
 "
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=8]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2142,7 +2250,7 @@ tracks/1/keys = {
 "values": [ true, true ]
 }
 
-[sub_resource type="Animation" id=8]
+[sub_resource type="Animation" id=9]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2169,7 +2277,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[sub_resource type="GDScript" id=9]
+[sub_resource type="GDScript" id=10]
 script/source = "extends Control
 
 var focused : bool = false
@@ -2190,38 +2298,11 @@ func focus_toggle(toggle):
 		focused = false
 "
 
-[sub_resource type="GDScript" id=10]
+[sub_resource type="GDScript" id=11]
 script/source = "extends Control
 
 var storage = null
 "
-
-[sub_resource type="Animation" id=11]
-length = 0.4
-tracks/0/type = "value"
-tracks/0/path = NodePath("Panel:rect_position")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.4 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ Vector2( 0, -200 ), Vector2( -296, -200 ) ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath(".:visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0, 0.4 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, true ]
-}
 
 [sub_resource type="Animation" id=12]
 length = 0.4
@@ -2235,6 +2316,33 @@ tracks/0/keys = {
 "times": PoolRealArray( 0, 0.4 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
+"values": [ Vector2( 0, -200 ), Vector2( -296, -200 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, true ]
+}
+
+[sub_resource type="Animation" id=13]
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:rect_position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
 "values": [ Vector2( -296, -200 ), Vector2( 0, -200 ) ]
 }
 tracks/1/type = "value"
@@ -2250,7 +2358,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[sub_resource type="GDScript" id=13]
+[sub_resource type="GDScript" id=14]
 script/source = "extends Control
 
 var focused : bool = false
@@ -2271,7 +2379,7 @@ func focus_toggle(toggle):
 		focused = false
 "
 
-[sub_resource type="Animation" id=14]
+[sub_resource type="Animation" id=15]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2298,7 +2406,7 @@ tracks/1/keys = {
 "values": [ true, true ]
 }
 
-[sub_resource type="Animation" id=15]
+[sub_resource type="Animation" id=16]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2325,7 +2433,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[sub_resource type="GDScript" id=16]
+[sub_resource type="GDScript" id=17]
 script/source = "extends Control
 
 onready var more : TextureButton = get_parent().get_node(\"Place/Panel/more\")
@@ -2341,7 +2449,7 @@ func _on_more_toggled(button_pressed):
 		$Animation.play(\"Unfocus\")
 "
 
-[sub_resource type="Animation" id=17]
+[sub_resource type="Animation" id=18]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2368,7 +2476,7 @@ tracks/1/keys = {
 "values": [ true, true ]
 }
 
-[sub_resource type="Animation" id=18]
+[sub_resource type="Animation" id=19]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2395,7 +2503,7 @@ tracks/1/keys = {
 "values": [ true, false ]
 }
 
-[sub_resource type="GDScript" id=19]
+[sub_resource type="GDScript" id=20]
 script/source = "extends Control
 
 func _on_slider_toggled(button_pressed):
@@ -2405,7 +2513,7 @@ func _on_slider_toggled(button_pressed):
 		$Animation.play(\"Unfocus\")
 "
 
-[sub_resource type="Animation" id=20]
+[sub_resource type="Animation" id=21]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2420,7 +2528,7 @@ tracks/0/keys = {
 "values": [ Vector2( -528, -200 ), Vector2( -8, -200 ) ]
 }
 
-[sub_resource type="Animation" id=21]
+[sub_resource type="Animation" id=22]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("Panel:rect_position")
@@ -2583,12 +2691,23 @@ custom_colors/default_color = Color( 1, 1, 1, 1 )
 bbcode_enabled = true
 text = ""
 
+[node name="anim" type="AnimationPlayer" parent="GUI/Info/action"]
+anims/highlight = SubResource( 3 )
+
+[node name="highlight" type="Polygon2D" parent="GUI/Info/action"]
+visible = false
+modulate = Color( 1, 1, 1, 0 )
+show_behind_parent = true
+position = Vector2( 2048, 32 )
+scale = Vector2( 6, 1 )
+polygon = PoolVector2Array( 0, -32, 0, 32, -128, 32, -128, -32 )
+
 [node name="filepath" parent="GUI/Info" instance=ExtResource( 10 )]
 anchor_left = 1.0
 anchor_top = 1.0
 margin_left = -1024.0
 margin_top = -32.0
-margin_right = 1024.0
+margin_right = 960.0
 margin_bottom = 32.0
 mouse_filter = 0
 bbcode_enabled = true
@@ -2600,9 +2719,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -512.0
-margin_top = -384.0
+margin_top = -392.0
 margin_right = 512.0
-margin_bottom = 384.0
+margin_bottom = 376.0
 focus_neighbour_left = NodePath(".")
 focus_neighbour_top = NodePath(".")
 focus_neighbour_right = NodePath(".")
@@ -2627,7 +2746,7 @@ __meta__ = {
 [node name="Place" type="Control" parent="GUI"]
 anchor_left = 0.5
 anchor_right = 0.5
-script = SubResource( 3 )
+script = SubResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -2653,6 +2772,7 @@ bbcode_enabled = true
 text = ""
 
 [node name="slider" type="TextureButton" parent="GUI/Place/Panel"]
+show_behind_parent = true
 margin_left = 40.0
 margin_top = 144.0
 margin_right = 168.0
@@ -2925,9 +3045,70 @@ texture = ExtResource( 30 )
 position = Vector2( 456, 120 )
 texture = ExtResource( 30 )
 
+[node name="Panel" type="Panel" parent="GUI/Place/Panel"]
+show_behind_parent = true
+margin_left = -40.0
+margin_right = 8.0
+margin_bottom = 48.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="hint" type="TextureButton" parent="GUI/Place/Panel"]
+margin_left = -32.0
+margin_top = 8.0
+margin_bottom = 40.0
+texture_normal = ExtResource( 56 )
+texture_pressed = ExtResource( 55 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="hint_modes" type="Panel" parent="GUI/Place/Panel"]
+visible = false
+show_behind_parent = true
+margin_top = 136.0
+margin_right = 336.0
+margin_bottom = 208.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Text" parent="GUI/Place/Panel/hint_modes" instance=ExtResource( 10 )]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 312.0
+margin_bottom = 64.0
+text = "PAINT   PICK  LAYERS
+      ERASE"
+
+[node name="hint_other" type="Panel" parent="GUI/Place/Panel"]
+visible = false
+show_behind_parent = true
+margin_left = 832.0
+margin_right = 960.0
+margin_bottom = 176.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Text" parent="GUI/Place/Panel/hint_other" instance=ExtResource( 10 )]
+margin_left = 80.0
+margin_top = 8.0
+margin_right = 40.0
+margin_bottom = 88.0
+text = "FAVORITE"
+
+[node name="Text2" parent="GUI/Place/Panel/hint_other" instance=ExtResource( 10 )]
+margin_left = 8.0
+margin_top = 144.0
+margin_right = 120.0
+margin_bottom = 32.0
+text = "ITEMS"
+
 [node name="Animation" type="AnimationPlayer" parent="GUI/Place"]
-anims/Focus = SubResource( 4 )
-anims/Unfocus = SubResource( 5 )
+anims/Focus = SubResource( 5 )
+anims/Unfocus = SubResource( 6 )
 
 [node name="Edit_Tiles" type="Control" parent="GUI"]
 visible = false
@@ -2935,7 +3116,7 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-script = SubResource( 6 )
+script = SubResource( 7 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3027,15 +3208,16 @@ __meta__ = {
 }
 
 [node name="Animation" type="AnimationPlayer" parent="GUI/Edit_Tiles"]
-anims/Focus = SubResource( 7 )
-anims/Unfocus = SubResource( 8 )
+anims/Focus = SubResource( 8 )
+anims/Unfocus = SubResource( 9 )
 
 [node name="Edit_Items" type="Control" parent="GUI"]
+visible = false
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-script = SubResource( 9 )
+script = SubResource( 10 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3126,7 +3308,7 @@ __meta__ = {
 [node name="var_storage" type="Control" parent="GUI/Edit_Items/Panel/objects/buttons"]
 margin_right = 40.0
 margin_bottom = 40.0
-script = SubResource( 10 )
+script = SubResource( 11 )
 
 [node name="scroll" type="VScrollBar" parent="GUI/Edit_Items/Panel/objects"]
 margin_right = 16.0
@@ -3245,8 +3427,8 @@ scale = Vector2( 2, 2 )
 texture = ExtResource( 33 )
 
 [node name="Animation" type="AnimationPlayer" parent="GUI/Edit_Items"]
-anims/Focus = SubResource( 11 )
-anims/Unfocus = SubResource( 12 )
+anims/Focus = SubResource( 12 )
+anims/Unfocus = SubResource( 13 )
 
 [node name="Edit_Layers" type="Control" parent="GUI"]
 visible = false
@@ -3254,7 +3436,7 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-script = SubResource( 13 )
+script = SubResource( 14 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3416,8 +3598,8 @@ __meta__ = {
 }
 
 [node name="Animation" type="AnimationPlayer" parent="GUI/Edit_Layers"]
-anims/Focus = SubResource( 14 )
-anims/Unfocus = SubResource( 15 )
+anims/Focus = SubResource( 15 )
+anims/Unfocus = SubResource( 16 )
 
 [node name="Items" type="Control" parent="GUI"]
 visible = false
@@ -3425,7 +3607,7 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-script = SubResource( 16 )
+script = SubResource( 17 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3530,13 +3712,13 @@ __meta__ = {
 }
 
 [node name="Animation" type="AnimationPlayer" parent="GUI/Items"]
-anims/Focus = SubResource( 17 )
-anims/Unfocus = SubResource( 18 )
+anims/Focus = SubResource( 18 )
+anims/Unfocus = SubResource( 19 )
 
 [node name="File" type="Control" parent="GUI"]
 anchor_top = 0.5
 anchor_bottom = 0.5
-script = SubResource( 19 )
+script = SubResource( 20 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3564,9 +3746,9 @@ __meta__ = {
 }
 
 [node name="new" type="TextureButton" parent="GUI/File/Panel"]
-margin_left = 136.0
+margin_left = 120.0
 margin_top = 8.0
-margin_right = 200.0
+margin_right = 184.0
 margin_bottom = 72.0
 focus_neighbour_left = NodePath("../exit")
 focus_neighbour_top = NodePath(".")
@@ -3582,9 +3764,9 @@ __meta__ = {
 }
 
 [node name="load" type="TextureButton" parent="GUI/File/Panel"]
-margin_left = 232.0
+margin_left = 208.0
 margin_top = 8.0
-margin_right = 296.0
+margin_right = 272.0
 margin_bottom = 72.0
 focus_neighbour_left = NodePath("../new")
 focus_neighbour_top = NodePath(".")
@@ -3600,9 +3782,9 @@ __meta__ = {
 }
 
 [node name="save" type="TextureButton" parent="GUI/File/Panel"]
-margin_left = 328.0
+margin_left = 296.0
 margin_top = 8.0
-margin_right = 392.0
+margin_right = 360.0
 margin_bottom = 72.0
 focus_neighbour_left = NodePath("../load")
 focus_neighbour_top = NodePath(".")
@@ -3618,9 +3800,9 @@ __meta__ = {
 }
 
 [node name="playtest" type="TextureButton" parent="GUI/File/Panel"]
-margin_left = 424.0
+margin_left = 384.0
 margin_top = 8.0
-margin_right = 488.0
+margin_right = 448.0
 margin_bottom = 72.0
 focus_neighbour_left = NodePath("../load")
 focus_neighbour_top = NodePath(".")
@@ -3635,9 +3817,9 @@ __meta__ = {
 }
 
 [node name="exit" type="TextureButton" parent="GUI/File/Panel"]
-margin_left = 40.0
+margin_left = 32.0
 margin_top = 8.0
-margin_right = 104.0
+margin_right = 96.0
 margin_bottom = 72.0
 focus_neighbour_left = NodePath(".")
 focus_neighbour_top = NodePath(".")
@@ -3827,6 +4009,35 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="hint" type="TextureButton" parent="GUI/File/Panel"]
+margin_left = 472.0
+margin_top = 8.0
+margin_right = 504.0
+margin_bottom = 40.0
+action_mode = 0
+texture_normal = ExtResource( 56 )
+texture_pressed = ExtResource( 55 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="hint_buttons" type="Panel" parent="GUI/File/Panel"]
+visible = false
+show_behind_parent = true
+margin_top = -40.0
+margin_right = 528.0
+margin_bottom = 8.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Text" parent="GUI/File/Panel/hint_buttons" instance=ExtResource( 10 )]
+margin_left = 16.0
+margin_top = 8.0
+margin_right = 512.0
+margin_bottom = 112.0
+text = " EXIT  NEW  LOAD SAVE PLAYTEST"
+
 [node name="File_Save" type="FileDialog" parent="GUI/File"]
 margin_left = 128.0
 margin_top = -384.0
@@ -3869,6 +4080,14 @@ margin_bottom = 72.0
 dialog_text = "You are exiting the level editor.
 All unsaved progress will be lost. "
 
+[node name="Load" type="ConfirmationDialog" parent="GUI/File"]
+margin_left = 280.0
+margin_top = -72.0
+margin_right = 744.0
+margin_bottom = 72.0
+dialog_text = "You are loading a new level.
+All unsaved progress will be lost. "
+
 [node name="Launch_Fail" type="ConfirmationDialog" parent="GUI/File"]
 margin_left = 176.0
 margin_top = -80.0
@@ -3880,18 +4099,73 @@ located, so it cannot launch it. You
 can set the where SR is in the settings."
 
 [node name="Animation" type="AnimationPlayer" parent="GUI/File"]
-anims/Focus = SubResource( 20 )
-anims/Unfocus = SubResource( 21 )
+anims/Focus = SubResource( 21 )
+anims/Unfocus = SubResource( 22 )
+
+[node name="Hint" type="Control" parent="GUI"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -512.0
+margin_top = -768.0
+margin_right = 512.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="hint" type="TextureButton" parent="GUI/Hint"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -32.0
+margin_top = -32.0
+toggle_mode = true
+texture_normal = ExtResource( 56 )
+texture_pressed = ExtResource( 55 )
+
+[node name="hint_obj" type="Panel" parent="GUI/Hint"]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -328.0
+margin_top = -200.0
+margin_right = 328.0
+margin_bottom = 200.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="sprite" type="Sprite" parent="GUI/Hint/hint_obj"]
+position = Vector2( 40, 40 )
+
+[node name="description" parent="GUI/Hint/hint_obj" instance=ExtResource( 10 )]
+margin_left = 8.0
+margin_top = 72.0
+margin_right = 632.0
+margin_bottom = 312.0
+text = ""
+
+[node name="name" parent="GUI/Hint/hint_obj" instance=ExtResource( 10 )]
+margin_left = 72.0
+margin_top = 8.0
+margin_right = 568.0
+margin_bottom = -264.0
+text = "???"
 [connection signal="toggled" from="GUI/Level" to="." method="level_recieved_input"]
 [connection signal="toggled" from="GUI/Place/Panel/slider" to="GUI/Place" method="_on_slider_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
@@ -3911,8 +4185,8 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_back" to="." method="layer_color_changed" binds= [ 1 ]]
 [connection signal="value_changed" from="GUI/Edit_Layers/Panel/scale_background" to="." method="layer_scale_changed" binds= [ 0 ]]
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_background" to="." method="layer_color_changed" binds= [ 0 ]]
-[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
 [connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
+[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
 [connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
 [connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="items_scroll_scrolling"]
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]
@@ -3928,4 +4202,6 @@ anims/Unfocus = SubResource( 21 )
 [connection signal="file_selected" from="GUI/File/File_Save" to="." method="save_level"]
 [connection signal="file_selected" from="GUI/File/File_Load" to="." method="load_level"]
 [connection signal="confirmed" from="GUI/File/Exit" to="." method="file_exit_confirmed"]
+[connection signal="confirmed" from="GUI/File/Load" to="." method="file_load_confirmed"]
 [connection signal="confirmed" from="GUI/File/Launch_Fail" to="." method="file_exit_confirmed"]
+[connection signal="toggled" from="GUI/Hint/hint" to="." method="object_hint_toggled"]

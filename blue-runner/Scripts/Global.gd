@@ -49,7 +49,7 @@ var current_character_location : String = "res:/"
 var replay : bool = false
 var current_recording = {}
 var replay_menu : bool = false
-var replay_save : Array = [0, 0]
+var replay_save : Array = [0, 0, ""]
 var race_mode : bool = false
 
 var current_page : int = 0
@@ -274,7 +274,7 @@ func key_names(key : int):
 		KEY_UNKNOWN: return "???"
 	return "WHAT IS THIS?"
 
-func change_level(destination : String, return_value : bool = false):
+func change_level(destination : String, return_value : bool = false, check_dependencies : bool = true):
 	var destination_new : String
 	
 	if destination == "":
@@ -288,7 +288,18 @@ func change_level(destination : String, return_value : bool = false):
 	else:
 		destination_new = current_level_location + destination + ".tscn"
 	
-	var error = get_tree().change_scene(destination_new)
+	var error = OK
+	if check_dependencies:
+		var level_dat = load_dat_file(destination_new.left(destination_new.find_last(".")))
+		if !level_dat.has("dependencies"):
+			error = ERR_FILE_MISSING_DEPENDENCIES
+		else:
+			for i in level_dat["dependencies"]:
+				if !mods_installed.has(i):
+					error = ERR_FILE_MISSING_DEPENDENCIES
+	
+	if error == OK:
+		error = get_tree().change_scene(destination_new)
 	if return_value:
 		return error
 	elif error != OK:
@@ -314,7 +325,7 @@ func check_unlock(unlock):
 			if !unlocked.has(current_level_location):
 				unlocked[current_level_location] = []
 			if !unlocked[current_level_location].has(unlock):
-				unlocked[unlock] = false
+				unlocked[current_level_location][unlock] = false
 			return unlocked[current_level_location][unlock]
 
 enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
@@ -358,7 +369,7 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
 			return false
 	
 	if unlock_type == UNLOCK_CUSTOM:
-		return check_unlock("*" + parameter_2 + "*" + parameter_1)
+		return check_unlock(parameter_1)
 	
 	return true
 
@@ -503,7 +514,7 @@ func load_game():
 	temp = {"*mods" : []}
 	
 	# MOD LOADING IS DISABLED FOR NOW
-	if false: #loadfile.file_exists(mod_user_directory): # does file exist
+	if false: #loadfile.file_exists(mod_user_directory): # does file exist 
 		loadfile.open(mod_user_directory, File.READ)
 		
 		while loadfile.get_position() < loadfile.get_len():
@@ -514,6 +525,7 @@ func load_game():
 		loadfile.close()
 	
 	mods_installed = temp["*mods"].duplicate()
+	#print(mods_installed)
 
 func update_old_save(version : String, save : Dictionary):
 	var settings : Dictionary = {}
@@ -582,6 +594,8 @@ func update_old_save(version : String, save : Dictionary):
 				save["level_completion"][level_location] = {}
 			save["level_completion"][level_location][level_name] = levels[i]
 		
+		version = "1.1.0"
+	if version == "1.1.0-dev":
 		version = "1.1.0"
 	
 	if !save["unlocked"].has("*char_select_active"): save["unlocked"]["*char_select_active"] = false

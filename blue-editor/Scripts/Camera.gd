@@ -1,6 +1,7 @@
 extends Node2D
 
 var editor_properties : Dictionary = {
+	"description" : "The camera.\nTo see more of the level at once, increase zoom. The zoom is represented by the blue rectangle. The boundaries in which the camera can scroll are represented with the green rectangle. You can change these boundaries with the limit variables.",
 	"object_path" : "res://Objects/Camera.tscn",
 	"object_type" : "camera",
 	"layer" : "camera",

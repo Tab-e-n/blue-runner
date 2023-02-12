@@ -1,6 +1,7 @@
 extends Line2D
 
 var editor_properties : Dictionary = {
+	"description" : "A track.\nOther objects can be attached to this one. They will move on path that the creator specifies. You can edit the path only through the edit mode.",
 	"object_path" : "res://Objects/Track.tscn",
 	"object_type" : "normal",
 	"layer" : "selected",
@@ -69,37 +70,45 @@ func edit_left_just_pressed(mouse_pos, cursor_position, level_scale):
 func edit_right_just_pressed(_mouse_pos, _cursor_position, _level_scale):
 	if points.size() > 1:
 		remove_point(points.size() - 1)
-		$points.remove_point(points.size() - 1)
+		$points.remove_point($points.points.size() - 1)
 	#calculate_points()
 
 func calculate_points():
-	# warning-ignore:unassigned_variable
-	var time_chunks : PoolIntArray
-	time_chunks.resize(points.size()-1)
-	# warning-ignore:unassigned_variable
-	var individual_lenght : PoolRealArray
-	individual_lenght.resize(points.size()-1)
+	if time_internal > time:
+		time_internal = time
+	if time_internal < 0:
+		time_internal = 0
+	
+	var positions = points
+	for i in range(positions.size()):
+		positions[i] += position
+	
+	var time_chunks : PoolIntArray = []
+	time_chunks.resize(positions.size()-1)
+	var individual_lenght : PoolRealArray = []
+	individual_lenght.resize(positions.size()-1)
 	var total_lenght : float = 0
 	
 	# First, we calculate the distances between points
 	for i in range(time_chunks.size()):
-		var a : float = abs(points[i].x - points[i+1].x)
-		var b : float = abs(points[i].y - points[i+1].y)
+		var a : float = abs(positions[i].x - positions[i+1].x)
+		var b : float = abs(positions[i].y - positions[i+1].y)
 		individual_lenght[i] = sqrt(a*a + b*b)
 		total_lenght += individual_lenght[i]
 	# We calculate the amount of time the lenghts should be moved in 
 	for i in range(time_chunks.size()):
 		time_chunks[i] = int(float(time) * (individual_lenght[i] / total_lenght))
-	# We reconstruck time, just so there aren't any discrepancies
+	# We reconstuck time, just so there aren't any discrepancies
 	time = 0
 	for i in range(time_chunks.size()):
 		time += time_chunks[i]
 	
 	var shift : int = 0
-	for j in range(points.size()-1):
+	for j in range(positions.size()-1):
 		if time_chunks[j] == 0: continue
-		var pos_fraction : Vector2 = Vector2((points[j].x - points[j+1].x) / time_chunks[j], (points[j].y - points[j+1].y) / time_chunks[j])
+		var pos_fraction : Vector2 = Vector2((positions[j].x - positions[j+1].x) / time_chunks[j], (positions[j].y - positions[j+1].y) / time_chunks[j])
 		for i in range(time_chunks[j]):
-			pos[i+shift] = Vector2(points[j].x - pos_fraction.x*i, points[j].y - pos_fraction.y*i)
+			pos[i+shift] = Vector2(positions[j].x - pos_fraction.x*i, positions[j].y - pos_fraction.y*i)
 		shift += time_chunks[j]
-		pos[shift] = points[j+1]
+		pos[shift] = positions[j+1]
+		

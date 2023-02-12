@@ -1,6 +1,7 @@
 extends Node2D
 
 var editor_properties : Dictionary = {
+	"description" : "The Waterway background. You can specify its color, the offset of the hills and the offset of the sun.",
 	"object_path" : "res://Objects/Backgrounds/BG_WaterWay.tscn",
 	"object_type" : "bg", # some object types have a limited amount of the times they can appear
 	"layer" : "bg", # selected or special

@@ -174,7 +174,9 @@ func menu_update():
 			reload_all_levels()
 			update_level_text = true
 	
+	$pages.visible = user_group
 	if user_group:
+		$pages.text = String(user_levels_page) + "/" + String(user_pages)
 		level_selected_convert = user_selected_level - user_levels_page * 20
 	else:
 		level_selected_convert = selected_level
@@ -399,7 +401,7 @@ func character_select():
 		#parent.get_node("CHARACTER").selected_level = selected_level_name
 		#parent.get_node("CHARACTER").selected_location = selected_level_location
 	else:
-		if Global.change_level("", true) != OK:
+		if Global.change_level("", true, false) != OK:
 			$Cursor/AnimationPlayer.play("Refuse")
 			$fail.visible = true
 			selected = false
@@ -434,7 +436,7 @@ func completion_percentage():
 				unlock += 1
 				#print("unlocked " + String(i))
 		for c in range(3):
-			if Global.level_completion["*collectibles"][Global.current_level_location].has(level_string + "*" + String(c)):
+			if Global.level_completion["*collectibles"][Global.current_level_location].has(level_string + "*" + String(c + 1)):
 				bonus += 1
 	#print(String(completion) + " / " + String(full))
 	

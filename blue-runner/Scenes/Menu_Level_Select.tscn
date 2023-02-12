@@ -3613,7 +3613,6 @@ limit_x = Vector2( -2048, 0 )
 limit_y = Vector2( 0, 2048 )
 
 [node name="SELECT" type="Node2D" parent="."]
-visible = false
 script = ExtResource( 25 )
 
 [node name="Cursor" type="Node2D" parent="SELECT"]
@@ -3825,6 +3824,13 @@ RETURN - CHANGE ZONE[/right]"
 text = "EXIT - GO BACK
 RETURN - CHANGE ZONE"
 
+[node name="pages" parent="SELECT" instance=ExtResource( 57 )]
+margin_left = -992.0
+margin_top = -728.0
+margin_right = -352.0
+margin_bottom = -653.0
+text = "0/0"
+
 [node name="completion_filling" type="Sprite" parent="SELECT"]
 self_modulate = Color( 0.313726, 0.282353, 0.560784, 1 )
 position = Vector2( -832, -704 )
@@ -4026,7 +4032,6 @@ texture = ExtResource( 35 )
 visible = false
 scale = Vector2( 1e-05, 1e-05 )
 script = ExtResource( 50 )
-reset = false
 
 [node name="menu_circle_2" type="Sprite" parent="REPLAY"]
 modulate = Color( 0.12549, 0.0823529, 0.2, 1 )
@@ -4035,8 +4040,9 @@ scale = Vector2( 1.3, 1.3 )
 texture = ExtResource( 35 )
 
 [node name="replay_list" type="ItemList" parent="REPLAY"]
-margin_left = -832.0
-margin_top = -576.0
+margin_left = -848.0
+margin_top = -528.0
+margin_bottom = 32.0
 rect_scale = Vector2( 2, 2 )
 theme = ExtResource( 56 )
 __meta__ = {
@@ -4044,20 +4050,27 @@ __meta__ = {
 }
 
 [node name="replay_text" parent="REPLAY" instance=ExtResource( 40 )]
-margin_left = -816.0
-margin_top = -688.0
-margin_right = 0.0
-margin_bottom = -624.0
+margin_left = -832.0
+margin_top = -704.0
+margin_right = -16.0
+margin_bottom = -640.0
 rect_scale = Vector2( 2, 2 )
 text = "VIEW"
 scroll_active = true
 
 [node name="hint" parent="REPLAY" instance=ExtResource( 40 )]
-margin_left = -824.0
-margin_top = -760.0
-margin_right = 824.0
-margin_bottom = -696.0
+margin_left = -832.0
+margin_top = -768.0
+margin_right = 816.0
 text = "Switch mode with "
+scroll_active = true
+
+[node name="dir" parent="REPLAY" instance=ExtResource( 40 )]
+margin_left = -832.0
+margin_top = -584.0
+margin_right = 816.0
+margin_bottom = -520.0
+text = "DIRECTORY"
 scroll_active = true
 
 [node name="HELP" type="Node2D" parent="."]

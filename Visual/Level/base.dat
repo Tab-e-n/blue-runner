@@ -1,1 +1,1 @@
-{"*base":["base","waterway"],"base":["base_neutral.png","base_locked.png","base_done.png","base_perfect.png"],"waterway":["waterway_neutral.png","waterway_locked.png","waterway_done.png","waterway_perfect.png"]}
+{"*base":["base","waterway"],"base":[["base_neutral.png","res:/"],["base_locked.png","res:/"],["base_done.png","res:/"],["base_perfect.png","res:/"]],"waterway":[["waterway_neutral.png","res:/"],["waterway_locked.png","res:/"],["waterway_done.png","res:/"],["waterway_perfect.png","res:/"]]}

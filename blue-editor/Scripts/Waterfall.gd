@@ -1,6 +1,7 @@
 extends Sprite
 
 var editor_properties : Dictionary = {
+	"description" : "A waterfall decoration.",
 	"object_path" : "res://Objects/Decor/Waterfall.tscn",
 	"object_type" : "normal", # some object types have a limited amount of the times they can appear
 	"layer" : "selected", # selected or special

@@ -7,6 +7,7 @@
 z_index = -1
 editor_properties = {
 "attachable": false,
+"description": "The ghost that you race against.",
 "editable_properties": {
 
 },

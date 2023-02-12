@@ -8,36 +8,36 @@
 ### VISUAL
 
  - The recoloring continues.
+ - Level bases are now centered
  - Also 2 pixels on the user universe logo weren't color in.
 
 ## SONIC RUNNER
 
 ### NEW ADDITIONS
 
- - When you launch SR from a console, you can now set the parameter --level with a path to a level and the game will start in that level instead of the loading sequence.
-   Yes no one is gonna use this i know.
+ - New level: Level_1-C "Remedy".
  - New loading sequence for SR.
 	 - If you can't bind your keys through the options, (because you did a funny and bound everything to the same key)
 	   you can now interupt this new sequence by pressing F12, which will allow you to rebind your keys.
  - You can now see exact stats for what levels you beaten, unlocked etc.
  - New character select menu! It is active when you have more than one character unlocked.
- - You can now unlock XT9 by collecting all 6 bonuses in waterway. (Not final)
+ - You can now unlock XT9 by collecting 6 bonuses in waterway. (Not final)
  - When beating a level, it now shows you the levels par time.
- - The replay menu will now show where replays are located.
+ - The replay menu isn't just one list of replays, there are now several! You can switch between them with your left and right keys.
 
 ### VISUAL
 
- - Fixed the white pixel on the completion bar in the select menu.
+ - Fixed a wrong white pixel on the completion bar in the select menu.
  - When transitioning from level to level, the screen didn't go completely black.
 
 ### FIXES & CHANGES
 
  - Fixed a game breaking bug where the game would crash upon deleting a save, and the wasn't able to load.
  - The game now properly loads saves from version 0.X.
- - When you rebound keys, the select menu didn't show the newly rebound key.
- - Fixed the User Universe page system just not working. Like, at all.
+ - When you rebound keys, the level select menu didn't show the newly rebound key.
+ - Fixed the User Universe's page system just not working. Like, at all.
  - Fixed collectibles with id 3 not showing up as collected in the level select menu.
- - You can now collect more than one collectible at a time.
+ - You can now collect more than one collectible id at a time.
  - Fixed a few edge case scenarios where you would be forced to do a full jump as S1 or its derivatives.
  - Level Groups now load their custom logos and titles properly.
 
@@ -58,12 +58,14 @@
 
  - You can now reset settings to default.
  - You can now press a button to start playtesting the level you are working on.
- - Pressing ctrl + the key you bound to save will now save the level without a popup if it was saved already.
+ - Pressing ctrl + the key you bound to save will now save the level without a popup, if it exist in the filesystem.
    You can press shift + ctrl + save key if you want the popup.
  - By pressing alt + the key you bound to transform, you can randomize an objects scale and rotation.
-	 - The range in which the object will be scaled to can be set in the options. If both options are the same,
-	   it will only randomize rotation.
+   The range in which the object will be scaled to can be set in the options. If both options are the same,
+   it will only randomize rotation.
  - There are now shortcuts for changing layers.
+ - There are now new buttons that hint to the functions of the editor.
+ - In the objects tab a new hint button in the bottom right will be visible. Toggling this will show info about the currently selected object.
  - You can now bind a key to exit the current screen and go back to the main menu.
  - Portals now aren't the only objects that can unlock things, collectibles now share this ability as well.
  - You can now set unlock requirements for level groups.
@@ -71,30 +73,38 @@
 
 ### VISUAL
 
+ - The text that states the action that most recently happened now gets highlighted with certain actions.
+ - There are now more level icons to choose from.
  - In the edit menu, when editing an objects unique properties, the text is now smaller, so it can fit more text.
  - If a objects unique property is uneditable with the edit panel, it now says so (SpinningArm and Track).
  - More objects now show their hitboxes.
  - There is new arrow attached to the cursor that shows the selected items rotation.
  - HoverText's point no longer scales up when scaling up the HoverText.
  - HoverText text offset now appears correctly.
- - Fixed finish not displaying the correct runner
+ - Fixed finish not displaying the correct runner.
+ - You can now change the color of Light_Point.
 
 ### FIXES & CHANGES
 
+ - Level icons now load properly.
+ - Decor now loads properly.
  - In the options, setting the default level name would set the default author name and vice versa.
+ - Levels now automaticaly save when you exit the editor through Alt+F4. They don't save if you load another level or exit through the exit button.
  - While you edit text, keyboard shortcuts won't do anything until you stop editing text.
  - When you select a new object or decor, it resets scale, rotation, z_index and color, instead of keeping them.
+ - Fixed z_index resetting to 0 when you picked an object.
  - Objects placed outside the center layer had collision, which wasn't intended.
- - Using transform mode to rotate an object is now more reliable.
+ - Using transform mode to rotate an object is less clunky.
  - Fixed the ability to erase the background with the erase tool.
 
  - Ghost now always appears behind player.
  - The player visual will no longer be flipped when you change the the way it's facing.
- - You are now able to collect more than just one collectible per level playthrough.
  - HoverText no longer triggers if its touching something that isn't the player.
  - Fixed HoverText text offset not working if follow_player wasn't turned on.
  - Placing down a portal or light_point no longer crashes the editor.
  - You can also edit and remove a portal after you place it. This isn't related to it crashing the editor.
+ - Fixed SpinningArm crashing the editor if spin_time_frames was set to 0
+ - Fixed SpinningArm crashing the editor if timer was too far in the negative.
  - Fixed Track.tscn crashing SR and also not really working properly.
 
  - Changing the bg of a level group now actually does something in SR

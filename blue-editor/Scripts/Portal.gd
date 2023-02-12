@@ -1,6 +1,7 @@
 extends StaticBody2D
 
 export var editor_properties : Dictionary = {
+	"description" : "The levels finish.\nThe player wins if they touch this object. You can change which level the player goes to after their done with this one with tele_destination. You can also set the par time (in seconds), what unlocks after you beat the level and if XT9 or S1 appears as the damsel.",
 	"object_path" : "res://Objects/Finish.tscn",
 	"object_type" : "finish", # some object types have a limited amount of the times they can appear
 	"layer" : "special", # selected or special

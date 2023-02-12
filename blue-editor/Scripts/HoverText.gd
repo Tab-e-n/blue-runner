@@ -1,6 +1,7 @@
 extends Node2D
 
 var editor_properties : Dictionary = {
+	"description" : "A text object that appears when the player is in it's area.",
 	"object_path" : "res://Objects/Decor/HoverText.tscn",
 	"object_type" : "normal",
 	"layer" : "selected",

@@ -1,14 +1,15 @@
-15 regular levels	- 2 - beat, par				- 30 -
-4 special levels	- 3 - unlock, beat, par			- 12 -
-1 boss			- 2 - unlock, beat			- 2 -
-6 collectibles		- 1 - collect				- 6 -
-1 world			- x - all of the above combined		- 50 -
-10 worlds		- x - collectible amount		- 60 -
+
+15 regular levels
+4 special levels
+1 boss
+8 bonuses
+
+10 worlds 80
 
 glitch gallery
-20 levels		- 4 - unlock (worth 2), normal, par	- 80 -
-20 collectibles		- 1 - collect				- 20 -
-
+10 levels through very hidden portals
+10 levels through level group completion
+20 bonuses
 
 
 [UNLOCK_TYPE, ...]
