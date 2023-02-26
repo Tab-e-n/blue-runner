@@ -891,7 +891,7 @@ func save_level(level_filename : String = \"Level\", playtest : bool = false):
 		temp[\"level_name\"] = level_name.text
 		temp[\"level_icon\"] = [level_icon.get_item_text(level_icon.selected),level_icon.get_selected_metadata()]
 		temp[\"level_base\"] = [level_base.get_item_text(level_base.selected),level_base.get_selected_metadata()]
-		if official.pressed:
+		if official.pressed and !temp[\"tags\"].has(\"official\"):
 			temp[\"tags\"].append(\"official\")
 	else:
 		temp[\"level_name\"] = \"Playtest Level\"
@@ -1803,10 +1803,12 @@ func items_update_items(current_row, directory, tab):
 func items_update_tiles(current_row : int):
 	var tile_ids : Array = items_tiles.tile_set.get_tiles_ids()
 	for i in range(ITEMS_ITEM_AMOUNT):
-		var tile_exists = tile_ids.find(i + current_row)
+		var tile_exists = tile_ids.find(i + current_row * 7)
 		if tile_exists != -1:
 			# warning-ignore:integer_division
 			items_tiles.set_cell(i % 7, int(i) / 7, items_tiles.tile_set.get_tiles_ids()[tile_exists], place_tile_mods[0], place_tile_mods[1], place_tile_mods[2])
+		else:
+			items_tiles.set_cell(i % 7, int(i) / 7, -1, place_tile_mods[0], place_tile_mods[1], place_tile_mods[2])
 		get_node(\"GUI/Items/Panel/buttons/\" + String(i)).disabled = tile_exists == -1
 
 func items_button_pressed(index):
@@ -3631,14 +3633,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="tiles" type="TileMap" parent="GUI/Items/Panel"]
-position = Vector2( 8, 72 )
-centered_textures = true
-collision_layer = 0
-collision_mask = 0
-occluder_light_mask = 0
-format = 1
-
 [node name="items" type="Node2D" parent="GUI/Items/Panel"]
 position = Vector2( 8, 72 )
 
@@ -3654,6 +3648,14 @@ margin_bottom = 448.192
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="tiles" type="TileMap" parent="GUI/Items/Panel"]
+position = Vector2( 8, 72 )
+centered_textures = true
+collision_layer = 0
+collision_mask = 0
+occluder_light_mask = 0
+format = 1
 
 [node name="exit" type="TextureButton" parent="GUI/Items/Panel"]
 margin_left = 392.0
@@ -4161,11 +4163,11 @@ text = "???"
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
@@ -4185,8 +4187,8 @@ text = "???"
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_back" to="." method="layer_color_changed" binds= [ 1 ]]
 [connection signal="value_changed" from="GUI/Edit_Layers/Panel/scale_background" to="." method="layer_scale_changed" binds= [ 0 ]]
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_background" to="." method="layer_color_changed" binds= [ 0 ]]
-[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
 [connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
+[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
 [connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
 [connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="items_scroll_scrolling"]
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]

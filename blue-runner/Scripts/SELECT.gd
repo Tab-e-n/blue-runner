@@ -361,7 +361,7 @@ func reload_all_levels(start : bool = false):
 		get_node("L/Level_" + String(i)).reload()
 	
 	if user_group:
-		bg_start_changing("res://Objects/Backgrounds/BG_WaterWay.tscn", start)
+		bg_start_changing("res://Objects/Backgrounds/BG_UserUniverse.tscn", start)
 	elif Global.level_group.has("bg"):
 		bg_start_changing(Global.level_group["bg"], start)
 	else:

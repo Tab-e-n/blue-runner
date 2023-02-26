@@ -232,12 +232,7 @@ func _physics_process(_delta):
 		
 		# COLLISION / MOVING
 		# warning-ignore:return_value_discarded
-		player.collision_mask = 1048575
-		player.move_and_slide(player.momentum, Vector2(0, -1))
-		player.collision_mask = 1
-		
-		player.break_just_happened = false
-		for i in player.get_slide_count(): player.collision_default_effects(player.get_slide_collision(i).collider.collision_layer, i)
+		player.move_player_character()
 		
 		if player.is_on_floor() or player.move_and_collide(Vector2(0,1), false, true, true): player.state = "ground"
 		
@@ -254,10 +249,14 @@ func _physics_process(_delta):
 				if (player.facing == "left" and on_wall_left) or (player.facing == "right" and on_wall_right):
 					wall_anim = -1
 				$Anim.current_animation = "On_Wall"
+			elif player.momentum.y < -1500 or (last_anim == "Jump_Spin" and player.momentum.y < 0):
+				$Anim.current_animation = "Jump_Spin"
+			elif last_anim == "Jump_Spin" and $Anim.current_animation == "":#last_anim == "Jump_Up" or last_anim == "On_Wall" or ground_buffer > 0:
+				$Anim.play("Jump_Transition")
 			elif Input.is_action_pressed("jump") and !gravity_switch:
 				$Anim.current_animation = "Jump_Up"
-			elif last_anim != "Jump_Transition" and last_anim != "":#last_anim == "Jump_Up" or last_anim == "On_Wall" or ground_buffer > 0:
-				$Anim.current_animation = "Jump_Transition"
+			elif last_anim != "Jump_Transition" and last_anim != "" and last_anim != "Jump_Spin":
+				$Anim.play("Jump_Transition")
 			
 			if last_anim != "On_Wall" and $Anim.current_animation == "On_Wall":
 				if particle_disable == 0:

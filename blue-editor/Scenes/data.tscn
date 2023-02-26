@@ -155,7 +155,9 @@ func load_game(fail = false):
 	var loadfile = File.new()
 	var temp = {}
 	
-	if not loadfile.file_exists(user_directory) or fail: # does file exist
+	if fail:
+		pass
+	elif !loadfile.file_exists(user_directory): # does file exist
 		save_game()
 	else:
 		loadfile.open(user_directory, File.READ)
@@ -474,8 +476,10 @@ func load_texture_from_png(path : String = \"\"):
 	var texture : ImageTexture = ImageTexture.new()
 	
 	if file.file_exists(path):
+		# warning-ignore:return_value_discarded
 		file.open(path, File.READ)
 		var buffer = file.get_buffer(file.get_len())
+		# warning-ignore:return_value_discarded
 		image.load_png_from_buffer(buffer)
 		texture.create_from_image(image, texture.STORAGE_COMPRESS_LOSSLESS)
 		#print(ResourceSaver.get_recognized_extensions(texture))

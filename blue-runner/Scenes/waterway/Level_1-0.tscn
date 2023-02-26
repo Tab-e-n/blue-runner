@@ -251,7 +251,7 @@ ghost = true
 position = Vector2( -672, 576 )
 
 [node name="Finish" parent="." instance=ExtResource( 15 )]
-tele_destination = "Level_1-1"
+tele_destination = "*Level_Next"
 par = 2.3
 
 [node name="DECOR_GROUND" type="Node2D" parent="."]

@@ -12,6 +12,10 @@ export var facing : String = "right"
 
 var momentum : Vector2 = Vector2(0, 0)
 
+var _last_on_moving_ground : bool = false
+var on_moving_ground : bool = false
+var extra_momentum : Vector2 = Vector2(0, 0)
+
 export var deny_input : bool = true
 var end : bool = false
 var dead : bool = false
@@ -116,6 +120,19 @@ func _physics_process(delta):
 			else:
 				global.level_completion[_name] = [null, null, 1]
 
+func move_player_character():
+	collision_mask = 1048575
+	move_and_slide(momentum + extra_momentum, Vector2(0, -1))
+	collision_mask = 1
+	
+	break_just_happened = false
+	on_moving_ground = false
+	for i in get_slide_count(): collision_default_effects(get_slide_collision(i).collider.collision_layer, i)
+	if on_moving_ground != _last_on_moving_ground and on_moving_ground == false:
+		momentum += extra_momentum
+		extra_momentum = Vector2(0, 0)
+	_last_on_moving_ground = on_moving_ground
+
 func collision_default_effects(collider_type : int, collider):
 	punted = false
 	
@@ -147,6 +164,10 @@ func collision_default_effects(collider_type : int, collider):
 		object.break_active = true
 		object.break_position = position
 		break_just_happened = true
+	
+	if Layers[0] and Layers[3]:
+		on_moving_ground = true
+		extra_momentum = get_slide_collision(collider).collider.momentum
 	
 	if Layers[2]:
 		dead = true

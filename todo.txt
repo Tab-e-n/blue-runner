@@ -20,33 +20,31 @@ dependency fixer for level groups
 GENERAL
 
 documentation (useless since mods are non existant rn but im still gonna do it for future sake)
+organize the fucking brancehs
 
  - EDITOR - 
 
-SHOULD DO SOON
+more help buttons
+track visual
 
 f1 for help
-
-FUTURE
-
-more help buttons
 that shader thing
 do you wanna do scrollers?
-track visual
 
 undo system (i dont really wanna)
 rebind move to something if undo system
 
  - RUNNER - 
 
-SHOULD DO SOON
-
-
-FUTURE
+booster is underwhelming visualy
+make MovingPlatform scaleable
+XT9 idle animations
+missing idle anims
+Hover Text changing fonts
 
 character greenbox
-redo level missing
 tutorial level
 changing between "linked" level groups or something
 Cheat code menu
 Touchup help menu
+Touchup spin maybe

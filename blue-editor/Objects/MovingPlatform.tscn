@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Visual/moving_platform.png" type="Texture" id=1]
+[ext_resource path="res://Scripts/MovingPlatform.gd" type="Script" id=2]
+
+[node name="MovingPlatform" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="moving_platform" type="Sprite" parent="."]
+texture = ExtResource( 1 )

@@ -3,8 +3,11 @@ extends Control
 #game Stuff
 const VERSION : String = "1.1.0-dev"
 var new_version_alert : bool = false
+var savefile_interaction : int = 3
+
 var user_directory : String = "user://sonicRunner"
 var mod_user_directory : String = "user://sonicRunnerMods"
+
 var level_completion = {
 	"*collectibles" : {},
 }
@@ -277,12 +280,31 @@ func key_names(key : int):
 func change_level(destination : String, return_value : bool = false, check_dependencies : bool = true):
 	var destination_new : String
 	
+	#print(current_level_location)
+	
 	if destination == "":
 		destination_new = current_level_location + current_level + ".tscn"
 	elif destination == "*Menu_Level_Select":
 		destination_new = "res://Scenes/Menu_Level_Select.tscn"
 	elif destination == "*Level_Missing":
 		destination_new = "res://Scenes/Level_Missing.tscn"
+	elif destination == "*Level_Next" and current_level_location == "user://SRLevels/":
+		destination_new = "res://Scenes/Menu_Level_Select.tscn"
+	elif destination == "*Level_Next":
+		var level : int = 0
+		for i in range(19):
+			if level_group["levels"][i][0] == current_level:
+				if level_group["levels"][i + 1][1]:
+					if !check_unlock_requirements(level_group["levels"][i + 1][2][0], level_group["levels"][i + 1][2][1],level_group["levels"][i + 1][2][2]):
+						break
+				if level_group["levels"][i + 1][0] == "*Level_Missing":
+					break
+				level = i + 1
+				break
+		if level == 0:
+			destination_new = "res://Scenes/Menu_Level_Select.tscn"
+		else:
+			destination_new = current_level_location + level_group["levels"][level][0] + ".tscn"
 	elif destination.begins_with("*"):
 		destination_new = destination.trim_prefix("*")
 	else:
@@ -421,16 +443,31 @@ func console_arguments():
 		var key_value = ["",""]
 		if arg.find("=") > -1:
 			key_value = arg.split("=")
-		if arg.find(" ") > -1:
+		elif arg.find(" ") > -1:
 			key_value = arg.split(" ")
+		else:
+			key_value[0] = arg
 		arguments[key_value[0].lstrip("--")] = key_value[1]
 	
 	#--level=res://Scenes/waterway/Level_1-0.tscn
 	if arguments.has("level"):
 		change_level("*" + arguments["level"])
+	if arguments.has("save_interaction"):
+		match(arguments["save_interaction"]):
+			"x":
+				savefile_interaction = 0
+			"r":
+				savefile_interaction = 1
+			"w":
+				savefile_interaction = 2
+			"rw":
+				savefile_interaction = 3
+			"wr":
+				savefile_interaction = 3
+	if savefile_interaction % 2: print("read allowed")
+	if savefile_interaction / 2: print("write allowed")
 
 func save_game(timer : float = 0, par : float = 0, collectible : Array = [], level = null, recording : Dictionary = {}):
-	var savefile = File.new()
 	var temp = {}
 	
 	temp = level_completion.duplicate()
@@ -453,63 +490,66 @@ func save_game(timer : float = 0, par : float = 0, collectible : Array = [], lev
 		if collect != "" and !temp["*collectibles"][current_level_location].has(collect):
 			temp["*collectibles"][current_level_location].append(collect)
 	
-	var temp_full = {
-		"level_completion" : {},
-		"options" : {},
-		"unlocked" : {},
-	}
 	level_completion = temp.duplicate()
-	temp_full["level_completion"] = temp.duplicate()
-	temp_full["options"] = options.duplicate()
-	temp_full["unlocked"] = unlocked.duplicate()
 	
-	temp_full = update_old_save(VERSION, temp_full.duplicate())
-	
-	#print("save: ", temp_full)
-	
-	savefile.open(user_directory, File.WRITE)
-	savefile.store_line(to_json(temp_full))
-	savefile.close()
-	
-	if level != null: condicional_save_replay(current_level_location + level + "_Best", recording)
+	if savefile_interaction / 2:
+		var temp_full = {
+			"level_completion" : {},
+			"options" : {},
+			"unlocked" : {},
+		}
+		temp_full["level_completion"] = temp.duplicate()
+		temp_full["options"] = options.duplicate()
+		temp_full["unlocked"] = unlocked.duplicate()
+		
+		temp_full = update_old_save(VERSION, temp_full.duplicate())
+		
+		#print("save: ", temp_full)
+		var savefile = File.new()
+		savefile.open(user_directory, File.WRITE)
+		savefile.store_line(to_json(temp_full))
+		savefile.close()
+		
+		if level != null: condicional_save_replay(current_level_location + level + "_Best", recording)
 
 func load_game():
 	
 	var loadfile = File.new()
 	var temp = {}
 	
-	if not loadfile.file_exists(user_directory): # does file exist
+	if !savefile_interaction % 2:
+		pass
+	elif !loadfile.file_exists(user_directory): # does file exist
 		save_game()
-		return
-	
-	loadfile.open(user_directory, File.READ)
-	
-	while loadfile.get_position() < loadfile.get_len():
-		var parsedData = parse_json(loadfile.get_line())
-		
-		temp = parsedData
-	
-	loadfile.close()
-	
-	#print("load: ", temp)
-	var version : String
-	if !temp.has("options"):
-		version = "0.X"
-	elif !temp["options"].has("*version"):
-		version = "1.0.0-dev"
-	elif typeof(temp["options"]["*version"]) == TYPE_REAL:
-		version = "1.0.0"
 	else:
-		version = temp["options"]["*version"]
-	
-	if version != VERSION:
-		new_version_alert = true
-	
-	temp = update_old_save(version, temp.duplicate())
-	
-	level_completion = temp["level_completion"].duplicate()
-	options = temp["options"].duplicate()
-	unlocked = temp["unlocked"].duplicate()
+		loadfile.open(user_directory, File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		
+		loadfile.close()
+		
+		#print("load: ", temp)
+		var version : String
+		if !temp.has("options"):
+			version = "0.X"
+		elif !temp["options"].has("*version"):
+			version = "1.0.0-dev"
+		elif typeof(temp["options"]["*version"]) == TYPE_REAL:
+			version = "1.0.0"
+		else:
+			version = temp["options"]["*version"]
+		
+		if version != VERSION:
+			new_version_alert = true
+		
+		temp = update_old_save(version, temp.duplicate())
+		
+		level_completion = temp["level_completion"].duplicate()
+		options = temp["options"].duplicate()
+		unlocked = temp["unlocked"].duplicate()
 	
 	temp = {"*mods" : []}
 	
@@ -706,26 +746,8 @@ func replay_filename(new_name : String, create_dir : bool):
 	
 	return replay_name
 
-func save_level_dat_file(data : Dictionary, filename_ : String, official : bool = true):
-	var file_prefix : String
-	if official:
-		file_prefix = "Scenes/"
-	else:
-		file_prefix = "Mods/Scenes/"
-	
-	var savefile = File.new()
-	var temp = {}
-	
-	temp = data.duplicate()
-	
-	#print("save: ", temp)
-	
-	savefile.open(file_prefix + filename_ + ".dat", File.WRITE)
-	savefile.store_line(to_json(temp))
-	savefile.close()
-
 func load_level_dat_file(filename_ : String, _official : bool = true):
-	print(filename_)
+	print(get_stack())
 	return load_dat_file(filename_)
 
 func load_dat_file(filename_ : String):
