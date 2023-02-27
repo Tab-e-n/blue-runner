@@ -1,35 +1,3 @@
-LEVELS
-
-test if every shortcut, button and such is working as intended
-X change everything in the options and see if it saves correctly (and works)
-X test rotating objects
-X test if all objects load properly in sr
-make a level, like, actually do it
-
-Track.tscn
-X test a track with time = 0
-X test a track with time_internal > time and the other similar state
-X test multiple objects on a track
-
-SpinningArm.tscn
-X test an arm with spin_time_frames = 0
-X test an arm with timer > spin_time_frames and the other similar state
-X test an arm with lenght 0
-
-Portal.tscn
-X do unlocks work
-
-Mushroom.tscn
-X Is the visual currect
-
-Collectible.tscn
-X 2 collectibles with the same ID
-
-Check if unlocks work
-Make a group for every unlock type
-Make a level with every unlock type
-Make a "character" for every unlock type
-
 MODS DONT WORK HAHA
 can you make an modded object inherit a vanilla object? (S1 clones)
 make an object for default-mod and see if it loads
