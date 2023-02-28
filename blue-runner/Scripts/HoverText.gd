@@ -8,6 +8,7 @@ export var text_color : Color = Color(1, 1, 1, 1)
 export var follow_player : bool = false
 export var delay_until_appearing : int = 0
 export var appear_time : int = 60
+export var font_path : String = "res://Text/Lacrimae.tres"
 
 var delay_timer : int = 0
 var visibility_timer : int = 0
@@ -24,6 +25,9 @@ func _ready():
 	$Text.text = text
 	if !follow_player:
 		$Text.rect_position = offset
+	var font = load(font_path)
+	if font != null:
+		$Text.add_font_override("normal_font", font)
 
 func _physics_process(_delta):
 	if appearing:

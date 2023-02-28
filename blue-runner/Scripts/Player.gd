@@ -122,6 +122,7 @@ func _physics_process(delta):
 
 func move_player_character():
 	collision_mask = 1048575
+	# warning-ignore:return_value_discarded
 	move_and_slide(momentum + extra_momentum, Vector2(0, -1))
 	collision_mask = 1
 	

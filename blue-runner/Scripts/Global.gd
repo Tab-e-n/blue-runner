@@ -429,8 +429,10 @@ func load_texture_from_png(path : String = ""):
 	var texture : ImageTexture = ImageTexture.new()
 	
 	if file.file_exists(path):
+# warning-ignore:return_value_discarded
 		file.open(path, File.READ)
 		var buffer = file.get_buffer(file.get_len())
+# warning-ignore:return_value_discarded
 		image.load_png_from_buffer(buffer)
 		texture.create_from_image(image, texture.STORAGE_COMPRESS_LOSSLESS)
 		#print(ResourceSaver.get_recognized_extensions(texture))
@@ -465,6 +467,7 @@ func console_arguments():
 			"wr":
 				savefile_interaction = 3
 	if savefile_interaction % 2: print("read allowed")
+# warning-ignore:integer_division
 	if savefile_interaction / 2: print("write allowed")
 
 func save_game(timer : float = 0, par : float = 0, collectible : Array = [], level = null, recording : Dictionary = {}):
@@ -492,6 +495,7 @@ func save_game(timer : float = 0, par : float = 0, collectible : Array = [], lev
 	
 	level_completion = temp.duplicate()
 	
+# warning-ignore:integer_division
 	if savefile_interaction / 2:
 		var temp_full = {
 			"level_completion" : {},

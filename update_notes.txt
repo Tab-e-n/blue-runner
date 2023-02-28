@@ -25,6 +25,7 @@
 
  - Added a new object: Boosters! The act similarly to mushrooms, but just with different theming.
  - Added a new object: Platforms! The moving platforms are real!
+ - You can now change the font of HoverText.
  - You can now set `tele_destination` of the portal and finish to `*Level_Next`, which will change the level to the next level in the level group.
 
 ### VISUAL

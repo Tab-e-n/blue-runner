@@ -17,6 +17,7 @@ func _ready():
 		else: rotations[spin_time_frames - i - 1] = current
 		current += step
 	
+# warning-ignore:narrowing_conversion
 	if abs(timer) >= spin_time_frames: timer = (spin_time_frames - 1) * sign(timer)
 	$decor_steel_pipe.scale.y = lenght + 0.125
 

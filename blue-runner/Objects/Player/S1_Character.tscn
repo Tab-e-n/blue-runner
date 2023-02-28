@@ -28,7 +28,7 @@
 [ext_resource path="res://Visual/S1/arm2.png" type="Texture" id=26]
 [ext_resource path="res://Visual/S1/leg1.png" type="Texture" id=27]
 
-[sub_resource type="Animation" id=9]
+[sub_resource type="Animation" id=1]
 resource_name = "Death"
 length = 0.4
 step = 0.05
@@ -609,7 +609,7 @@ tracks/47/keys = {
 "values": [ false, true, false, true ]
 }
 
-[sub_resource type="Animation" id=10]
+[sub_resource type="Animation" id=2]
 length = 2.0
 loop = true
 tracks/0/type = "value"
@@ -1153,7 +1153,7 @@ tracks/44/keys = {
 "values": [ ExtResource( 9 ) ]
 }
 
-[sub_resource type="Animation" id=11]
+[sub_resource type="Animation" id=3]
 length = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("arm2B:position")
@@ -1672,7 +1672,7 @@ tracks/42/keys = {
 "values": [ ExtResource( 9 ) ]
 }
 
-[sub_resource type="Animation" id=12]
+[sub_resource type="Animation" id=4]
 length = 0.4
 step = 0.06
 tracks/0/type = "value"
@@ -2245,7 +2245,7 @@ tracks/46/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=13]
+[sub_resource type="Animation" id=5]
 length = 1.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("arm2B:position")
@@ -2788,8 +2788,8 @@ tracks/44/keys = {
 "values": [ ExtResource( 9 ) ]
 }
 
-[sub_resource type="Animation" id=14]
-length = 4.0
+[sub_resource type="Animation" id=6]
+length = 2.8
 tracks/0/type = "value"
 tracks/0/path = NodePath("arm2B:position")
 tracks/0/interp = 1
@@ -3331,7 +3331,7 @@ tracks/44/keys = {
 "values": [ ExtResource( 9 ) ]
 }
 
-[sub_resource type="Animation" id=8]
+[sub_resource type="Animation" id=7]
 resource_name = "Jump_Spin"
 length = 1.2
 tracks/0/type = "value"
@@ -3875,7 +3875,7 @@ tracks/44/keys = {
 "values": [ ExtResource( 9 ) ]
 }
 
-[sub_resource type="Animation" id=15]
+[sub_resource type="Animation" id=8]
 length = 0.3
 tracks/0/type = "value"
 tracks/0/path = NodePath("arm2B:position")
@@ -4394,7 +4394,7 @@ tracks/42/keys = {
 "values": [ ExtResource( 9 ) ]
 }
 
-[sub_resource type="Animation" id=16]
+[sub_resource type="Animation" id=9]
 length = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("arm2B:position")
@@ -4913,7 +4913,7 @@ tracks/42/keys = {
 "values": [ ExtResource( 9 ) ]
 }
 
-[sub_resource type="Animation" id=17]
+[sub_resource type="Animation" id=10]
 length = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("arm2B:position")
@@ -5432,7 +5432,7 @@ tracks/42/keys = {
 "values": [ ExtResource( 9 ) ]
 }
 
-[sub_resource type="Animation" id=18]
+[sub_resource type="Animation" id=11]
 length = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("arm2B:position")
@@ -5951,7 +5951,7 @@ tracks/42/keys = {
 "values": [ ExtResource( 9 ) ]
 }
 
-[sub_resource type="Animation" id=19]
+[sub_resource type="Animation" id=12]
 length = 1.6
 loop = true
 step = 0.05
@@ -6472,7 +6472,7 @@ tracks/42/keys = {
 "values": [ ExtResource( 9 ) ]
 }
 
-[sub_resource type="Animation" id=20]
+[sub_resource type="Animation" id=13]
 length = 0.1
 loop = true
 tracks/0/type = "value"
@@ -7044,19 +7044,19 @@ stream = ExtResource( 13 )
 
 [node name="Anim" type="AnimationPlayer" parent="."]
 playback_process_mode = 0
-anims/Death = SubResource( 9 )
-anims/Default = SubResource( 10 )
-anims/Drop = SubResource( 11 )
-anims/Enter = SubResource( 12 )
-anims/Idle_1 = SubResource( 13 )
-anims/Idle_2 = SubResource( 14 )
-anims/Jump_Spin = SubResource( 8 )
-anims/Jump_Transition = SubResource( 15 )
-anims/Jump_Up = SubResource( 16 )
-anims/On_Wall = SubResource( 17 )
-anims/Slide = SubResource( 18 )
-anims/Walk = SubResource( 19 )
-anims/_RESET = SubResource( 20 )
+anims/Death = SubResource( 1 )
+anims/Default = SubResource( 2 )
+anims/Drop = SubResource( 3 )
+anims/Enter = SubResource( 4 )
+anims/Idle_1 = SubResource( 5 )
+anims/Idle_2 = SubResource( 6 )
+anims/Jump_Spin = SubResource( 7 )
+anims/Jump_Transition = SubResource( 8 )
+anims/Jump_Up = SubResource( 9 )
+anims/On_Wall = SubResource( 10 )
+anims/Slide = SubResource( 11 )
+anims/Walk = SubResource( 12 )
+anims/_RESET = SubResource( 13 )
 
 [node name="shock" type="Sprite" parent="."]
 visible = false

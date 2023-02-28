@@ -8,6 +8,7 @@ var editor_properties : Dictionary = {
 	"rect" : Rect2(0, 0, 64, 64),
 	"editable_properties" : {
 		"text" : [TYPE_STRING, 0, 0, 0],
+		"font_path" : [TYPE_STRING, 0, 0, 0],
 		"offset" : [TYPE_VECTOR2, 0, 0, 1],
 		"text_size" : [TYPE_VECTOR2, 0, 0, 1],
 		"text_scale" : [TYPE_VECTOR2, 0, 0, 0.05],
@@ -35,6 +36,8 @@ export var text_color : Color = Color(1, 1, 1, 1)
 export var follow_player : bool = false
 export var delay_until_appearing : int = 0
 export var appear_time : int = 60
+export var font_path : String = "res://Text/Lacrimae.tres"
+var last_font_path : String = "res://Text/Lacrimae.tres"
 
 func _process(_delta):
 	$Text.rect_scale = text_scale / scale
@@ -44,3 +47,10 @@ func _process(_delta):
 	$Text.modulate = Color(text_color.r, text_color.g, text_color.b, 1)
 	$editor_point.modulate = Color(text_color.r, text_color.g, text_color.b, 1)
 	$Text.rect_position = offset / scale
+	if last_font_path != font_path:
+		var font = load(font_path)
+		if font != null:
+			$Text.add_font_override("normal_font", font)
+		else:
+			$Text.add_font_override("normal_font", preload("res://Text/Lacrimae.tres"))
+		last_font_path = font_path

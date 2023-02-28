@@ -40,8 +40,8 @@ booster is underwhelming visualy
 make MovingPlatform scaleable
 XT9 idle animations
 missing idle anims
-Hover Text changing fonts
 
+official text depends on the level group (level group author)
 character greenbox
 tutorial level
 changing between "linked" level groups or something
