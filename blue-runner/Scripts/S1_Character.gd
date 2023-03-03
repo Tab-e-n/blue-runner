@@ -47,6 +47,7 @@ var last_facing : String
 export var trail_color : Color = Color(1, 1, 1, 1)
 var trail : PoolVector2Array = []
 var trail_converted : PoolVector2Array = []
+export var unicolor_color : Color = Color(1, 1, 1, 1)
 
 export var idle_anim_timer : int = -1
 
@@ -60,6 +61,8 @@ func _ready():
 	trail.resize(40)
 	for i in range(trail.size()):
 		trail[i] = player.position
+	
+	player.unicolor_color = unicolor_color
 
 func _physics_process(_delta):
 	col_1.position = $col_1.position
@@ -249,7 +252,7 @@ func _physics_process(_delta):
 				if (player.facing == "left" and on_wall_left) or (player.facing == "right" and on_wall_right):
 					wall_anim = -1
 				$Anim.current_animation = "On_Wall"
-			elif player.momentum.y < -1500 or (last_anim == "Jump_Spin" and player.momentum.y < 0):
+			elif player.launched or $Anim.current_animation == "Jump_Spin":# or (last_anim == "Jump_Spin" and player.momentum.y < 0):
 				$Anim.current_animation = "Jump_Spin"
 			elif last_anim == "Jump_Spin" and $Anim.current_animation == "":#last_anim == "Jump_Up" or last_anim == "On_Wall" or ground_buffer > 0:
 				$Anim.play("Jump_Transition")

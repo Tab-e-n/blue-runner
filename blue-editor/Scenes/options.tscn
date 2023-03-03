@@ -277,8 +277,8 @@ margin_left = 552.0
 margin_top = 80.0
 margin_right = 472.0
 margin_bottom = 576.0
-text = "New level name
-Creator name
+text = "Creator name
+New level name
 Default official
 Default icon
 Default base
@@ -404,7 +404,7 @@ margin_bottom = 592.0
 step = 0.05
 value = 1.0
 
-[node name="level_name" type="LineEdit" parent="GUI/editor_defaults"]
+[node name="author" type="LineEdit" parent="GUI/editor_defaults"]
 margin_left = 808.0
 margin_top = 80.0
 margin_right = 1064.0
@@ -413,7 +413,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="author" type="LineEdit" parent="GUI/editor_defaults"]
+[node name="level_name" type="LineEdit" parent="GUI/editor_defaults"]
 margin_left = 808.0
 margin_top = 112.0
 margin_right = 1064.0
@@ -1195,8 +1195,8 @@ __meta__ = {
 [connection signal="value_changed" from="GUI/editor_defaults/back_scale" to="." method="layer_change" binds= [ "back", "scale" ]]
 [connection signal="value_changed" from="GUI/editor_defaults/center_scale" to="." method="layer_change" binds= [ "center", "scale" ]]
 [connection signal="value_changed" from="GUI/editor_defaults/front_scale" to="." method="layer_change" binds= [ "front", "scale" ]]
-[connection signal="text_changed" from="GUI/editor_defaults/level_name" to="." method="settings_change" binds= [ "editor_default_level_name", "default" ]]
 [connection signal="text_changed" from="GUI/editor_defaults/author" to="." method="settings_change" binds= [ "editor_author_name", "default" ]]
+[connection signal="text_changed" from="GUI/editor_defaults/level_name" to="." method="settings_change" binds= [ "editor_default_level_name", "default" ]]
 [connection signal="toggled" from="GUI/editor_defaults/official" to="." method="settings_change" binds= [ "editor_default_official", "default" ]]
 [connection signal="item_selected" from="GUI/editor_defaults/icon" to="." method="resource_change" binds= [ "editor_default_icon", "GUI/editor_defaults/icon" ]]
 [connection signal="item_selected" from="GUI/editor_defaults/base" to="." method="resource_change" binds= [ "editor_default_base", "GUI/editor_defaults/base" ]]

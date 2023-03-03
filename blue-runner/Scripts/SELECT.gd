@@ -203,17 +203,21 @@ func menu_update():
 				$Level_Descriptor/best_time.text = ""
 		elif level_dat != null:
 			$Level_Descriptor/level_name.text = level_dat["level_name"]
-			if !level_dat.has("tags"):
-				if level_dat["official"]: 
-					$Level_Descriptor/creator.text = "This level was made by " + level_dat["creator"] + " in an older version."
-				else:
-					$Level_Descriptor/creator.text = "  Creator:" + level_dat["creator"]
-			elif level_dat["tags"].has("official"):
-				if level_dat["creator"] != "Tabin": 
-					$Level_Descriptor/creator.text = "My thanks goes to " + level_dat["creator"] + " for making this!"
+			var official = false
+			if level_dat.has("tags"):
+				official = level_dat["tags"].has("official")
 			else:
+				official = level_dat["official"]
+			
+			if user_group or !official:
 				$Level_Descriptor/creator.text = "  Creator:" + level_dat["creator"]
-		
+			else: 
+				if Global.level_group.has("author"):
+					if level_dat["creator"] != Global.level_group["author"]:
+						$Level_Descriptor/creator.text = "My thanks goes to " + level_dat["creator"] + " for making this!"
+				elif level_dat["creator"] != "Tabin": 
+					$Level_Descriptor/creator.text = "My thanks goes to " + level_dat["creator"] + " for making this!"
+
 		if Global.level_completion.has(selected_level_location): if Global.level_completion[selected_level_location].has(selected_level_name):
 			if Global.level_completion[selected_level_location][selected_level_name][0] != null:
 				var timer : float = Global.level_completion[selected_level_location][selected_level_name][0]

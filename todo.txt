@@ -36,15 +36,15 @@ rebind move to something if undo system
 
  - RUNNER - 
 
+Put level group author somewhere
 booster is underwhelming visualy
 make MovingPlatform scaleable
-XT9 idle animations
 missing idle anims
 
-official text depends on the level group (level group author)
 character greenbox
 tutorial level
 changing between "linked" level groups or something
 Cheat code menu
 Touchup help menu
 Touchup spin maybe
+Touchup XT9 idle animations

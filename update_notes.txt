@@ -9,6 +9,7 @@
 
 ### VISUAL
 
+ - XT9 has new idle animations.
  - When launched very high with a mushroom, you now spin.
  - User Universe now has a unique BG.
  - Bootup sequence has a new font.
@@ -27,10 +28,18 @@
  - Added a new object: Platforms! The moving platforms are real!
  - You can now change the font of HoverText.
  - You can now set `tele_destination` of the portal and finish to `*Level_Next`, which will change the level to the next level in the level group.
+ - You can now attach your name to a level group.
 
 ### VISUAL
 
- - There are now more variations of dirt tiles
+ - There are now more variations of dirt tiles.
  - The .dat creator has been centralized.
+
+### FIXES & CHANGES
+
+ - The official tag has been altered. Now when a level has the official tag:
+	 - If the levels author matches the level groups author, the level won't have the "Creator:" line, similary to how WaterWay doesn't have it.
+	 - If the levels author is different to the level groups author, it will show a thank you message.
+ - The official tag now does nothing in UserUniverse.
 
 </p></details>

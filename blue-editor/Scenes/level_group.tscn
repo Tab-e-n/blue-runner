@@ -26,6 +26,7 @@ var level_group_dat : Dictionary = {
 	\"dependencies\" : [],
 	\"bg\" : \"*none\",
 	\"unlock\" : [0, \"\", \"\"],
+	\"author\" : \"Unknown\",
 }
 
 enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
@@ -138,6 +139,7 @@ func save_current_group(dir, defaults : bool = false):
 			temp[\"levels\"].append([\"*Level_Missing\", true, [0, \"\", \"\"]])
 		temp[\"dependencies\"] = []
 		temp[\"unlock\"] = [0, \"\", \"\"]
+		temp[\"author\"] = data.settings[\"editor_author_name\"]
 	else:
 		level_group_dat[\"dependencies\"] = data.mods_installed.duplicate()
 		
@@ -147,6 +149,7 @@ func save_current_group(dir, defaults : bool = false):
 			level_group_dat[\"unlock\"][2] = $\"Edits/2_number\".value
 		else:
 			level_group_dat[\"unlock\"][2] = $\"Edits/2_text\".text
+		temp[\"author\"] = $Edits/author.text
 		
 		temp = level_group_dat.duplicate()
 	
@@ -195,6 +198,7 @@ func load_group(dir):
 				$dependendy_fail.popup()
 				return
 		if !temp.has(\"bg\"): temp[\"bg\"] = \"*none\"
+		if !temp.has(\"author\"): temp[\"author\"] = \"Unknown\"
 		
 		if temp.has(\"unlock\"):
 			data.changed_unlock_type(temp[\"unlock\"][0], $Edits/text_edit, $Edits/unlock_type, $\"Edits/1_text\", $\"Edits/2_text\", $\"Edits/2_number\", \"\\n\")
@@ -215,6 +219,7 @@ func load_group(dir):
 			$Edits/completion.editable = true
 			$Edits/refresh.disabled = false
 			$Edits/bg.disabled = false
+			$Edits/author.editable = true
 			$Edits/import.disabled = false
 			$Edits/unlock_type.disabled = false
 			$\"Edits/1_text\".editable = true
@@ -225,6 +230,8 @@ func load_group(dir):
 			if $Edits/bg.get_item_metadata(i) + \"/Objects/Backgrounds/\" + $Edits/bg.get_item_text(i) == temp[\"bg\"]:
 				$Edits/bg.select(i)
 				break
+		
+		$Edits/author.text = temp[\"author\"]
 		
 		current_group_path = dir
 		current_level = 0
@@ -749,6 +756,16 @@ text = "none"
 clip_text = true
 items = [ "none", null, false, 0, null ]
 selected = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="author" type="LineEdit" parent="Edits"]
+margin_left = 832.0
+margin_top = 32.0
+margin_right = 1024.0
+margin_bottom = 64.0
+editable = false
 __meta__ = {
 "_edit_use_anchors_": false
 }

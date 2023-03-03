@@ -1,6 +1,13 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
+[ext_resource path="res://Scripts/single_color.shader" type="Shader" id=1]
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=18]
+
+[sub_resource type="ShaderMaterial" id=4]
+shader = ExtResource( 1 )
+shader_param/color = Color( 0, 0, 0, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
 
 [sub_resource type="Curve" id=1]
 _data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
@@ -12,10 +19,12 @@ extents = Vector2( 8, 8 )
 extents = Vector2( 8, 8 )
 
 [node name="Player" type="KinematicBody2D"]
+material = SubResource( 4 )
 script = ExtResource( 18 )
 
 [node name="trail" type="Line2D" parent="."]
 visible = false
+use_parent_material = true
 position = Vector2( 0, -88 )
 points = PoolVector2Array( -216, -96 )
 width = 15.0
@@ -42,7 +51,3 @@ disabled = true
 position = Vector2( 0, -4.76837e-07 )
 color = Color( 1, 0, 0, 0.486275 )
 polygon = PoolVector2Array( -8, -8, 8, -8, 8, 8, -8, 8 )
-
-[node name="pointer" type="Polygon2D" parent="."]
-color = Color( 0, 0.415686, 1, 1 )
-polygon = PoolVector2Array( 0, 0, -32, -64, 32, -64 )

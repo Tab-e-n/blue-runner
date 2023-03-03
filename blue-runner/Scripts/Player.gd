@@ -34,9 +34,13 @@ var current_sound : String = ""
 var break_breakables : bool = false
 var break_just_happened : bool = false
 var punted : bool = false
+var launched : bool = false
+var speeding : bool = false
+
+export var unicolor_active : bool = false
+var unicolor_color : Color = Color(1, 1, 1, 1)
 
 func _ready():
-	$pointer.visible = false
 	visible = true
 	global.current_level = get_parent().name
 	
@@ -83,6 +87,10 @@ func _ready():
 	add_child(char_node)
 	character = char_node
 	character.get_node("Anim").current_animation = "Enter"
+	
+	if unicolor_active and !ghost:
+		material.set_shader_param("active", true)
+	material.set_shader_param("color", unicolor_color)
 	#if get_parent().name == "Main": position = $"/root/Global".tele_pos # HUB WORLD CODE
 
 func _physics_process(delta):
@@ -92,7 +100,13 @@ func _physics_process(delta):
 	timer += delta
 	
 	if !deny_input:
-		pass
+		if !unicolor_active and false:
+			var speed : float = sqrt(pow(momentum.x, 2) + pow(momentum.y, 2))
+			material.set_shader_param("active", speed > 1500)
+			if speed > 1500:
+				var blend : float = (speed - 1500) / 1000
+				if blend > 1: blend = 1
+				material.set_shader_param("blend", blend)
 	# - - - REPLAY STATE - - -
 	elif replay:
 		var timer_converted : int = int(timer * 1000)
@@ -128,6 +142,7 @@ func move_player_character():
 	
 	break_just_happened = false
 	on_moving_ground = false
+	set_deferred("launched", false)
 	for i in get_slide_count(): collision_default_effects(get_slide_collision(i).collider.collision_layer, i)
 	if on_moving_ground != _last_on_moving_ground and on_moving_ground == false:
 		momentum += extra_momentum
@@ -213,6 +228,8 @@ func punt(boost : Vector2, overwrite_momentum : bool):
 	
 	state = "air"
 	punted = true
+	if momentum.y < -1500:
+		launched = true
 
 func play_sound(sound_name : String):
 	if sound_name != "" and !ghost:

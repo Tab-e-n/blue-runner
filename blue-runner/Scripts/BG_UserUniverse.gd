@@ -17,6 +17,7 @@ func update_self(cam_target : Vector2):
 	
 	for line in range(13):
 		for i in range(2):
+			# warning-ignore:integer_division
 			get_node("vis/line_" + String(line)).points[i + 1].x = (int(start_position.x - position.x) % 384) / 4 + 512
 		for i in range(2):
 			get_node("vis/line_" + String(line)).points[i * 3].x = (int(start_position.x - position.x) % 384) / 2.5 + 128 + 64 * line
