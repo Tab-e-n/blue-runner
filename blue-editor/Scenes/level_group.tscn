@@ -246,7 +246,7 @@ func new_group_popup():
 	$new.popup()
 
 func new_group():
-	var user_path : String = \"user://SRlevels/\" + $new/name.text
+	var user_path : String = \"user://SRLevels/\" + $new/name.text
 	var directory = Directory.new()
 	
 	directory.make_dir_recursive(user_path)

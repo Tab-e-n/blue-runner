@@ -1,5 +1,6 @@
 extends KinematicBody2D
 
+onready var level : Node2D = get_tree().current_scene
 onready var global : Control = $"/root/Global"
 onready var character : Node2D
 
@@ -16,11 +17,13 @@ var _last_on_moving_ground : bool = false
 var on_moving_ground : bool = false
 var extra_momentum : Vector2 = Vector2(0, 0)
 
-export var deny_input : bool = true
+var deny_input : bool = true
+var start : bool = true
 var end : bool = false
 var dead : bool = false
 var death_wait : int = 0
 
+var start_timer : bool = false
 var timer : float = 0
 var collectible : Array = []
 var unlock : Array = []
@@ -36,9 +39,6 @@ var break_just_happened : bool = false
 var punted : bool = false
 var launched : bool = false
 var speeding : bool = false
-
-export var unicolor_active : bool = false
-var unicolor_color : Color = Color(1, 1, 1, 1)
 
 func _ready():
 	visible = true
@@ -56,6 +56,7 @@ func _ready():
 				queue_free()
 				return
 		replay = true
+		deny_input = true
 		
 		modulate = Color(0, 0, 0, 0.5)
 		#$trail.visible = false
@@ -88,19 +89,37 @@ func _ready():
 	character = char_node
 	character.get_node("Anim").current_animation = "Enter"
 	
-	if unicolor_active and !ghost:
-		material.set_shader_param("active", true)
-	material.set_shader_param("color", unicolor_color)
-	#if get_parent().name == "Main": position = $"/root/Global".tele_pos # HUB WORLD CODE
+	if level.get_script() != null:
+		if level.unicolor_active and !ghost:
+			material.set_shader_param("active", true)
+
+func shader_color():
+	material.set_shader_param("color", character.unicolor_color)
+
+func _input(event):
+	if event is InputEventKey and event.pressed:
+		if !start:
+			level.timers_active = true
+		else:
+			start_timer = true
 
 func _physics_process(delta):
-	if get_parent().get_node("Player").replay and ghost:
+	if level.get_node("Player").replay and ghost:
 		queue_free()
 	
-	timer += delta
+	if !start and start_timer:
+		level.timers_active = true
+		start_timer = false
+	
+	if level.timers_active:
+		timer += delta
+		if !replay and !end:
+			call_deferred("record")
+	
+	#print(deny_input, replay, dead, end, level.timer_active)
 	
 	if !deny_input:
-		if !unicolor_active and false:
+		if !level.unicolor_active and false:
 			var speed : float = sqrt(pow(momentum.x, 2) + pow(momentum.y, 2))
 			material.set_shader_param("active", speed > 1500)
 			if speed > 1500:
@@ -123,7 +142,7 @@ func _physics_process(delta):
 	elif dead:
 		death_wait += 1
 		if death_wait >= 20:
-			Global.change_level("")
+			get_tree().reload_current_scene()
 			var _name : String = global.current_level_location + get_parent().name
 			if global.level_completion.has(_name):
 				if global.level_completion[_name].size() > 2:

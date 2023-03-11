@@ -248,6 +248,7 @@ tracks/0/keys = {
 }
 
 [node name="Mushroom" type="Area2D"]
+monitoring = false
 script = ExtResource( 1 )
 
 [node name="mushroom" type="Sprite" parent="."]

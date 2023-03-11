@@ -731,6 +731,7 @@ Layer background
 Layer back
 Layer center
 Layer front
+Hide layers by pressing Alt instead of Ctrl
 
 Return (General)"
 
@@ -751,6 +752,7 @@ Ctrl +
 Ctrl +
 Ctrl +
 Ctrl +
+
 
 Press"
 
@@ -1065,9 +1067,9 @@ __meta__ = {
 
 [node name="return" type="Button" parent="GUI/keysbinds/buttons"]
 margin_left = 2792.0
-margin_top = 512.0
+margin_top = 544.0
 margin_right = 3064.0
-margin_bottom = 544.0
+margin_bottom = 576.0
 toggle_mode = true
 clip_text = true
 align = 0
@@ -1136,8 +1138,8 @@ margin_bottom = 768.0
 window_title = "Open a File"
 mode = 0
 access = 2
-current_dir = "/Project/Godot 3.2/sonic_runner_git/blue-editor"
-current_path = "/Project/Godot 3.2/sonic_runner_git/blue-editor/"
+current_dir = "/home/tabin/godot-projects/blue-runner-vanilla/blue-editor"
+current_path = "/home/tabin/godot-projects/blue-runner-vanilla/blue-editor/"
 
 [node name="HScrollBar" type="HScrollBar" parent="."]
 margin_top = 688.0

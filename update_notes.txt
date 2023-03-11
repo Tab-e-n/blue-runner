@@ -11,11 +11,14 @@
 
  - XT9 has new idle animations.
  - When launched very high with a mushroom, you now spin.
+ - The timer is now outlined.
  - User Universe now has a unique BG.
  - Bootup sequence has a new font.
 
 ### FIXES & CHANGES
 
+ - You can select the group with both jump and reset.
+ - The level timer doesn't start until you start moving.
  - XT9 is unlocked when you have 7 bonuses now. If you already have it unlocked,
    this update wont take it away.
 
@@ -24,11 +27,32 @@
 
 ### NEW ADDITIONS
 
- - Added a new object: Boosters! The act similarly to mushrooms, but just with different theming.
+ - Added new shortcuts to temporarely hide layers.
+ - In the edit layers panel, there is now a new option: Unicolor! Turning this
+   on will make every layer only one color.
+ - Added a new object: Boosters! The act similarly to mushrooms, but just with
+   different theming.
  - Added a new object: Platforms! The moving platforms are real!
  - You can now change the font of HoverText.
+ - New text interpreter!
+	 - When typing text into HoverText, you can type some commands
+	   inbetween %% and they will be replaced by game info.
+	 - `%left%`, `%right%`, `%up%`, `%down%`, `%jump%`, `%special%`,
+	   `%reset%`, `%return%` will be replaced by the users keybinds for
+	   those actions.
+	 - `%unlock [unlock]%` will be replaced by a YES or NO depending on if
+	   `[unlock]` is unlocked.
+	 - `%level [level_data]%` will be replaced by info from the level .dat file.
+	   possible options for [level_data]:
+		 - creator - Who made the level.
+		 - level_name - Name of the level.
+		 - level_icon - What icon the level has.
+		 - level_base - What base the level has.
+	 - If you wanna type % or any of the commands without them being replaced, put them between \`\`,
+	   and the interpreter will ignore them.
+	 - %\`% will put a \`, since otherwise it will be removed.
  - You can now set `tele_destination` of the portal and finish to `*Level_Next`, which will change the level to the next level in the level group.
- - You can now attach your name to a level group.
+ - You can now add the name of the author to a level group.
 
 ### VISUAL
 
@@ -37,6 +61,9 @@
 
 ### FIXES & CHANGES
 
+ - Fixed a bug where you could have multiple of the same tile in the place panel.
+ - Fixed playtested levels not reloading when you die or press reset.
+ - Playtested levels no longer save as seperate levels.
  - The official tag has been altered. Now when a level has the official tag:
 	 - If the levels author matches the level groups author, the level won't have the "Creator:" line, similary to how WaterWay doesn't have it.
 	 - If the levels author is different to the level groups author, it will show a thank you message.

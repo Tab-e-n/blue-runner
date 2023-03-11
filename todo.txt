@@ -1,4 +1,4 @@
-ON HOLD
+ - ON HOLD - 
 
 mods redo
 mod loader -> mod manager
@@ -17,34 +17,62 @@ sonic runner self checking if loaded mods exist
 
 dependency fixer for level groups
 
-GENERAL
+ - GENERAL - 
 
 documentation (useless since mods are non existant rn but im still gonna do it for future sake)
+level guide lines in documentation
+	Dont put gameplay too close to camera borders
+	Alternate paths
+	secrets
 organize the fucking brancehs
 
  - EDITOR - 
 
+Selecting Favorite Items Shortcut
+Playtest shortcut
 more help buttons
 track visual
 
 f1 for help
-that shader thing
-do you wanna do scrollers?
 
 undo system (i dont really wanna)
 rebind move to something if undo system
 
  - RUNNER - 
 
-Put level group author somewhere
+3 timer option: Timer only active when you beat the level.
+key that shows level info when in a level
+More Gray Rocks
+Move Platform a bit down
 booster is underwhelming visualy
 make MovingPlatform scaleable
-missing idle anims
+
+seperate keys for menu and game
+redo every menu and add new ones
+main menu options
+	Options - Yellow
+	Credits - Orange
+	Exit - Red
+	
+	Level Select - Cyan
+	VS Race - Blue
+	Replays - Purple
+
+	Help - Teal
+	Achievements - Lime
+	Cheat Codes - Green
+make options very easy to expand
+make everything very clear so the player know what they are looking at
+Put level group author and description somewhere
+
+level group description
+level group as level
+changing between "linked" level groups or something
+
+new waterway levels
+tutorial level
 
 character greenbox
-tutorial level
-changing between "linked" level groups or something
-Cheat code menu
-Touchup help menu
+missing idle anims
 Touchup spin maybe
 Touchup XT9 idle animations

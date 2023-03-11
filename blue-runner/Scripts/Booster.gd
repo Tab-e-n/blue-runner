@@ -1,5 +1,7 @@
 extends Area2D
 
+onready var level : Node2D = get_tree().current_scene
+
 export var boost_strenght : int = 0
 export var flip_direction : bool = false
 var flip : float = 1
@@ -21,6 +23,7 @@ func _ready():
 	$booster_effect.position.x = 80 * flip
 
 func _physics_process(_delta):
+	monitoring = level.timers_active
 	$CollisionShape2D.disabled = disabled_timer > 0
 	if disabled_timer > 0:
 		disabled_timer -= 1

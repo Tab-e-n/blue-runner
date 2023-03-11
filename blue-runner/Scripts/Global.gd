@@ -66,6 +66,8 @@ var loaded_characters = {}
 
 var last_input_events : Array = range(8)
 
+var level_control : bool = false
+
 func _ready():
 	console_arguments()
 	
@@ -125,7 +127,10 @@ func _ready():
 	for i in range(8):
 		change_input(i, last_input_events[i])
 
-func _process(_delta):
+func _physics_process(_delta):
+	if level_control:
+		add_level_control()
+		level_control = false
 	var curr_scene = get_tree().current_scene.name
 	if Input.is_action_just_pressed("return") and !(curr_scene == "Menu_Level_Select" or curr_scene == "Load"):
 		change_level("*Menu_Level_Select")
@@ -277,6 +282,73 @@ func key_names(key : int):
 		KEY_UNKNOWN: return "???"
 	return "WHAT IS THIS?"
 
+func text_interpretor(text : String):
+	var next_text : String = text
+	var new_text : String
+	
+	#print("starting :",text)
+	while next_text != "":
+		var interpret : String
+		if next_text.find("%") == -1 and next_text.find("`") == -1:
+			new_text += next_text
+			break
+		elif next_text.find("%") == -1:
+			interpret = "`"
+		elif next_text.find("`") == -1:
+			interpret = "%"
+		elif next_text.find("`") < next_text.find("%"):
+			interpret = "`"
+		elif next_text.find("%") < next_text.find("`"):
+			interpret = "%"
+		
+		new_text += next_text.substr(0, next_text.find(interpret))
+		var op_text = next_text.substr(next_text.find(interpret) + 1, next_text.length() - next_text.find(interpret))
+		next_text = op_text.substr(op_text.find(interpret) + 1, op_text.length() - op_text.find(interpret) - 1)
+		
+		op_text = op_text.substr(0, op_text.find(interpret))
+		#print("op_text  :",op_text)
+		if interpret == "`":
+			new_text += op_text
+		if interpret == "%": match op_text:
+			"left":
+				new_text += key_names(0)
+			"right":
+				new_text += key_names(1)
+			"up":
+				new_text += key_names(2)
+			"down":
+				new_text += key_names(3)
+			"jump":
+				new_text += key_names(4)
+			"special":
+				new_text += key_names(5)
+			"reset":
+				new_text += key_names(6)
+			"return":
+				new_text += key_names(7)
+			"`":
+				new_text += "`"
+			_: # bruh
+				if op_text.begins_with("unlock"):
+					if check_unlock(op_text.substr(7, op_text.length() - 7)):
+						new_text += "YES"
+					else:
+						new_text += "NO"
+				if op_text.begins_with("level"):
+					var level : Node2D = get_tree().current_scene
+					var data : String = op_text.substr(6, op_text.length() - 6)
+					if !level.dat.has(data): continue
+					if data == "dependencies" or data == "tags": continue
+					if data == "level_base" or data == "level_icon":
+						new_text += level.dat[data][0] + " from " + level.dat[data][1]
+						continue
+					new_text += level.dat[data]
+		#print("next     :",next_text)
+	#print("return   :",new_text)
+	#breakpoint
+	
+	return new_text
+
 func change_level(destination : String, return_value : bool = false, check_dependencies : bool = true):
 	var destination_new : String
 	
@@ -320,13 +392,27 @@ func change_level(destination : String, return_value : bool = false, check_depen
 				if !mods_installed.has(i):
 					error = ERR_FILE_MISSING_DEPENDENCIES
 	
+	if destination_new != "res://Scenes/Menu_Level_Select.tscn":
+		current_level_location = destination_new.substr(0, destination_new.find_last("/") + 1)
+		current_level = destination_new.substr(destination_new.find_last("/") + 1, destination_new.find_last(".tscn") - destination_new.find_last("/") - 1)
+		#print(current_level)
+		#print(current_level_location)
 	if error == OK:
+		level_control = true
+		#connect("scene_changed", self, "add_level_control")
 		error = get_tree().change_scene(destination_new)
 	if return_value:
 		return error
 	elif error != OK:
 		# warning-ignore:return_value_discarded
 		get_tree().change_scene("res://Scenes/Menu_Level_Select.tscn")
+
+func add_level_control():
+	#print(get_tree().current_scene.name)
+	#print(get_tree().current_scene.get_script())
+	if get_tree().current_scene.get_script() == null:
+		get_tree().current_scene.set_script(load("res://Scripts/Level_Control.gd"))
+		#print(get_tree().current_scene.get_script())
 
 func unlock(unlock):
 	if unlock != "":

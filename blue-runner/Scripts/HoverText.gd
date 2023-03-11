@@ -22,7 +22,7 @@ func _ready():
 	$Collision.scale = temp_scale
 	$Text.rect_size = text_size
 	$Text.rect_scale = text_scale
-	$Text.text = text
+	$Text.text = Global.text_interpretor(text)
 	if !follow_player:
 		$Text.rect_position = offset
 	var font = load(font_path)

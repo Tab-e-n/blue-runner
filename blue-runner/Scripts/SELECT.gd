@@ -66,10 +66,15 @@ func menu_update():
 	var user_group = unlocked_level_group[selected_group][1] == "user://"
 	
 	if Input.is_action_just_pressed("reset"):
+		if group_select:
+			Global.current_level_location = unlocked_level_group[selected_group][1] + unlocked_level_group[selected_group][0] + "/"
+			reload_all_levels()
+			update_level_text = true
+		else:
+			update_group_text = true
+			group_visuals()
 		group_select = !group_select
 		$group_select.visible = group_select
-		update_group_text = true
-		group_visuals()
 	# - - - LEVEL SELECT - - -
 	if !group_select:
 		if Input.is_action_just_pressed("jump"):

@@ -1,5 +1,7 @@
 extends Area2D
 
+onready var level : Node2D = get_tree().current_scene
+
 export var boost_strenght : int = 0
 export var overwrite_momentum : bool = false
 
@@ -17,6 +19,7 @@ func _ready():
 	$anim.playback_speed += cos(position.x + position.y)
 
 func _physics_process(_delta):
+	monitoring = level.timers_active
 	if pause_timer_ticking == pause_timer:
 		if $anim.current_animation != "Bounce": $anim.play("Glow")
 		pause_timer_ticking += 1

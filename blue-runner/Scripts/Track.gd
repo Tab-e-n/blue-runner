@@ -1,5 +1,7 @@
 extends Line2D
 
+onready var level : Node2D = get_tree().current_scene
+
 export var time : int = 1 # How long should it take to go from point to point
 export var is_a_loop : bool = false
 export var time_internal : int = 0
@@ -58,14 +60,15 @@ func _ready():
 func _physics_process(_delta):
 	if pos.size() > 0:
 		position = pos[time_internal]
-		if time_direction:
-			time_internal += 1
-		else:
-			time_internal -= 1
-		if time_internal >= time or time_internal <= 0:
-			if !is_a_loop:
-				time_direction = !time_direction
+		if level.timers_active:
 			if time_direction:
-				time_internal = 0
+				time_internal += 1
 			else:
-				time_internal = time
+				time_internal -= 1
+			if time_internal >= time or time_internal <= 0:
+				if !is_a_loop:
+					time_direction = !time_direction
+				if time_direction:
+					time_internal = 0
+				else:
+					time_internal = time

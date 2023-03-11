@@ -1,5 +1,7 @@
 extends Node2D
 
+onready var level : Node2D = get_tree().current_scene
+
 export var spin_time_frames : int = 120
 export var direction : bool = true
 export var timer : int = 0
@@ -23,6 +25,7 @@ func _ready():
 
 func _physics_process(_delta):
 	rotation_degrees = rotations[timer]
-	timer += 1
-	if timer == rotations.size():
-		timer = 0
+	if level.timers_active:
+		timer += 1
+		if timer == rotations.size():
+			timer = 0

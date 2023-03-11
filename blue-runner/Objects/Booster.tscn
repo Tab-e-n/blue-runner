@@ -8,6 +8,7 @@
 extents = Vector2( 24, 12 )
 
 [node name="Booster" type="Area2D"]
+monitoring = false
 script = ExtResource( 2 )
 
 [node name="booster" type="Sprite" parent="."]
