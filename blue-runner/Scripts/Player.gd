@@ -142,7 +142,7 @@ func _physics_process(delta):
 	elif dead:
 		death_wait += 1
 		if death_wait >= 20:
-			get_tree().reload_current_scene()
+			Global.change_level("")
 			var _name : String = global.current_level_location + get_parent().name
 			if global.level_completion.has(_name):
 				if global.level_completion[_name].size() > 2:

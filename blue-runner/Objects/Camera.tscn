@@ -81,7 +81,7 @@ visible = false
 scale = Vector2( 2, 2 )
 z_index = 100
 color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
-polygon = PoolVector2Array( -512, 384, 512, 384, 512, -384, -512, -384 )
+polygon = PoolVector2Array( -640, 384, 640, 384, 640, -384, -640, -384 )
 
 [node name="border" type="Polygon2D" parent="."]
 visible = false
@@ -89,7 +89,7 @@ position = Vector2( 0, -8 )
 scale = Vector2( 2, 2 )
 z_index = 100
 color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
-polygon = PoolVector2Array( -512, -384, 512, -384, 512, 392, 1280, 392, 1280, -412, -1280, -412, -1280, 392, -512, 392 )
+polygon = PoolVector2Array( -640, -384, 640, -384, 640, 392, 1280, 392, 1280, -412, -1280, -412, -1280, 392, -640, 392 )
 
 [node name="speed" type="Polygon2D" parent="."]
 visible = false

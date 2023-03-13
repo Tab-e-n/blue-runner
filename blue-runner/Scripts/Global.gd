@@ -4,6 +4,7 @@ extends Control
 const VERSION : String = "1.1.0-dev"
 var new_version_alert : bool = false
 var savefile_interaction : int = 3
+var compatibility_mode : bool = false
 
 var user_directory : String = "user://sonicRunner"
 var mod_user_directory : String = "user://sonicRunnerMods"
@@ -350,6 +351,8 @@ func text_interpretor(text : String):
 	return new_text
 
 func change_level(destination : String, return_value : bool = false, check_dependencies : bool = true):
+	compatibility_mode = false
+	
 	var destination_new : String
 	
 	#print(current_level_location)
@@ -399,6 +402,7 @@ func change_level(destination : String, return_value : bool = false, check_depen
 		#print(current_level_location)
 	if error == OK:
 		level_control = true
+		compatibility_mode = true
 		#connect("scene_changed", self, "add_level_control")
 		error = get_tree().change_scene(destination_new)
 	if return_value:

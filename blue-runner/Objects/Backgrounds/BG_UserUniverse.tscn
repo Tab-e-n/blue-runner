@@ -11,76 +11,87 @@ modulate = Color( 0, 0.596078, 0.572549, 1 )
 scale = Vector2( 2, 2 )
 
 [node name="back" type="Polygon2D" parent="vis"]
-position = Vector2( -510, -382 )
+position = Vector2( -640, -384 )
+scale = Vector2( 1.25, 1.0026 )
 color = Color( 0.12549, 0.12549, 0.12549, 1 )
 polygon = PoolVector2Array( 1024, 0, 0, 0, 0, 768, 1024, 768 )
 
 [node name="line" type="Line2D" parent="vis"]
 position = Vector2( -512, -384 )
-points = PoolVector2Array( 1024, 64, -64, 64, -64, 120, 1088, 120, 1088, 168, -64, 168, -64, 600, 1088, 600, 1088, 648, -64, 648, -64, 704, 1024, 704 )
+points = PoolVector2Array( 1216, 64, -160, 60, -160, 120, 1216, 120, 1216, 168, -160, 168, -160, 600, 1216, 600, 1216, 648, -160, 648, -160, 704, 1216, 704 )
 default_color = Color( 0.501961, 0.501961, 0.501961, 1 )
 
 [node name="line_0" type="Line2D" parent="vis"]
+position = Vector2( -1184, -384 )
+points = PoolVector2Array( 64, -64, 512, 168, 512, 600, 64, 832 )
+default_color = Color( 0.501961, 0.501961, 0.501961, 1 )
+
+[node name="line_1" type="Line2D" parent="vis"]
 position = Vector2( -1088, -384 )
 points = PoolVector2Array( 128, -64, 512, 168, 512, 600, 128, 832 )
 default_color = Color( 0.501961, 0.501961, 0.501961, 1 )
 
-[node name="line_1" type="Line2D" parent="vis"]
+[node name="line_2" type="Line2D" parent="vis"]
 position = Vector2( -992, -384 )
 points = PoolVector2Array( 192, -64, 512, 168, 512, 600, 192, 832 )
 default_color = Color( 0.501961, 0.501961, 0.501961, 1 )
 
-[node name="line_2" type="Line2D" parent="vis"]
+[node name="line_3" type="Line2D" parent="vis"]
 position = Vector2( -896, -384 )
 points = PoolVector2Array( 256, -64, 512, 168, 512, 600, 256, 832 )
 default_color = Color( 0.501961, 0.501961, 0.501961, 1 )
 
-[node name="line_3" type="Line2D" parent="vis"]
+[node name="line_4" type="Line2D" parent="vis"]
 position = Vector2( -800, -384 )
 points = PoolVector2Array( 320, -64, 512, 168, 512, 600, 320, 832 )
 default_color = Color( 0.501961, 0.501961, 0.501961, 1 )
 
-[node name="line_4" type="Line2D" parent="vis"]
+[node name="line_5" type="Line2D" parent="vis"]
 position = Vector2( -704, -384 )
 points = PoolVector2Array( 384, -64, 512, 168, 512, 600, 384, 832 )
 default_color = Color( 0.501961, 0.501961, 0.501961, 1 )
 
-[node name="line_5" type="Line2D" parent="vis"]
+[node name="line_6" type="Line2D" parent="vis"]
 position = Vector2( -608, -384 )
 points = PoolVector2Array( 448, -64, 512, 168, 512, 600, 448, 832 )
 default_color = Color( 0.501961, 0.501961, 0.501961, 1 )
 
-[node name="line_6" type="Line2D" parent="vis"]
+[node name="line_7" type="Line2D" parent="vis"]
 position = Vector2( -512, -384 )
 points = PoolVector2Array( 512, -64, 512, 168, 512, 600, 512, 832 )
 default_color = Color( 0.501961, 0.501961, 0.501961, 1 )
 
-[node name="line_7" type="Line2D" parent="vis"]
+[node name="line_8" type="Line2D" parent="vis"]
 position = Vector2( -416, -384 )
 points = PoolVector2Array( 576, -64, 512, 164, 512, 600, 576, 832 )
 default_color = Color( 0.501961, 0.501961, 0.501961, 1 )
 
-[node name="line_8" type="Line2D" parent="vis"]
+[node name="line_9" type="Line2D" parent="vis"]
 position = Vector2( -320, -384 )
 points = PoolVector2Array( 640, -64, 512, 168, 512, 600, 640, 832 )
 default_color = Color( 0.501961, 0.501961, 0.501961, 1 )
 
-[node name="line_9" type="Line2D" parent="vis"]
+[node name="line_10" type="Line2D" parent="vis"]
 position = Vector2( -224, -384 )
 points = PoolVector2Array( 704, -64, 512, 168, 512, 600, 704, 832 )
 default_color = Color( 0.501961, 0.501961, 0.501961, 1 )
 
-[node name="line_10" type="Line2D" parent="vis"]
+[node name="line_11" type="Line2D" parent="vis"]
 position = Vector2( -128, -384 )
 points = PoolVector2Array( 768, -64, 512, 168, 512, 600, 768, 832 )
 default_color = Color( 0.501961, 0.501961, 0.501961, 1 )
 
-[node name="line_11" type="Line2D" parent="vis"]
+[node name="line_12" type="Line2D" parent="vis"]
 position = Vector2( -32, -384 )
 points = PoolVector2Array( 832, -64, 512, 168, 512, 600, 832, 832 )
 default_color = Color( 0.501961, 0.501961, 0.501961, 1 )
 
-[node name="line_12" type="Line2D" parent="vis"]
+[node name="line_13" type="Line2D" parent="vis"]
 position = Vector2( 64, -384 )
 points = PoolVector2Array( 896, -64, 512, 168, 512, 600, 896, 832 )
+default_color = Color( 0.501961, 0.501961, 0.501961, 1 )
+
+[node name="line_14" type="Line2D" parent="vis"]
+position = Vector2( 160, -384 )
+points = PoolVector2Array( 960, -64, 512, 168, 512, 600, 960, 832 )
 default_color = Color( 0.501961, 0.501961, 0.501961, 1 )

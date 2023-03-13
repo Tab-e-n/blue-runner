@@ -2,6 +2,7 @@ extends Camera2D
 
 var color_timer : float = 0
 
+export var compatibility_mode : bool = false
 export var limit_x : Vector2 = Vector2(0,0)
 export var limit_y : Vector2 = Vector2(0,0)
 
@@ -44,6 +45,14 @@ func _ready():
 	
 	$camera_inputs/continue.text = $"/root/Global".key_names(4)
 	$camera_inputs/reset.text = $"/root/Global".key_names(6)
+	
+	if Global.compatibility_mode: compatibility_mode = true
+	
+	if compatibility_mode:
+		$border.polygon[0].x = -512
+		$border.polygon[1].x = 512
+		$border.polygon[2].x = 512
+		$border.polygon[7].x = -512
 
 func _physics_process(_delta):
 	if color_timer < 12:
