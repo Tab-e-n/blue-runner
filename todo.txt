@@ -40,12 +40,16 @@ rebind move to something if undo system
 
  - RUNNER - 
 
-3 timer option: Timer only active when you beat the level.
-key that shows level info when in a level
 More Gray Rocks
 Move Platform a bit down
 booster is underwhelming visualy
 make MovingPlatform scaleable
+
+options
+3 timer option: Timer only active when you beat the level.
+Outline the character
+Up key for jump
+key that shows level info when in a level
 
 seperate keys for menu and game
 redo every menu and add new ones
@@ -76,3 +80,4 @@ character greenbox
 missing idle anims
 Touchup spin maybe
 Touchup XT9 idle animations
+just redesign S1 and XT9 heads
