@@ -51,7 +51,7 @@ Outline the character
 Up key for jump
 key that shows level info when in a level
 
-new checkboxes
+seperate keys for menu and game
 redo every menu and add new ones
 main menu options
 	Options - Yellow
@@ -65,6 +65,7 @@ main menu options
 	Help - Teal
 	Achievements - Lime
 	Cheat Codes - Green
+make options very easy to expand
 make everything very clear so the player know what they are looking at
 Put level group author and description somewhere
 
