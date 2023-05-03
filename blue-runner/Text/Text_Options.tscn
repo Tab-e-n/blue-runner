@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Text/Text_Editor.tscn" type="PackedScene" id=1]
+
+[node name="Text" instance=ExtResource( 1 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 640.0
+margin_bottom = 64.0
+custom_colors/default_color = Color( 0.235294, 0.576471, 0.576471, 1 )
+text = ""

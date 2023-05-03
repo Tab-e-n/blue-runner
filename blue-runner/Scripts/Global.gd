@@ -3,8 +3,12 @@ extends Control
 #game Stuff
 const VERSION : String = "1.1.0-dev"
 var new_version_alert : bool = false
+var savefile_interaction : int = 3
+var compatibility_mode : bool = false
+
 var user_directory : String = "user://sonicRunner"
 var mod_user_directory : String = "user://sonicRunnerMods"
+
 var level_completion = {
 	"*collectibles" : {},
 }
@@ -21,11 +25,18 @@ var options = {
 	"*special" : KEY_CONTROL,
 	"*reset" : KEY_ENTER,
 	"*return" : KEY_ESCAPE,
+	"*menu_left" : KEY_LEFT,
+	"*menu_right" : KEY_RIGHT,
+	"*menu_up" : KEY_UP,
+	"*menu_down" : KEY_DOWN,
+	"*accept" : KEY_SPACE,
+	"*deny" : KEY_BACKSPACE,
+	"*outlines_on" : false,
 	"*ghosts_on" : false,
-	"*timer_on" : false,
+	"*timer_on" : 0,
 	"*first_time_load" : true,
 }
-var mods_installed = []
+
 var default_options = {
 	"*version" : VERSION,
 	"*left" : KEY_LEFT,
@@ -36,10 +47,19 @@ var default_options = {
 	"*special" : KEY_CONTROL,
 	"*reset" : KEY_ENTER,
 	"*return" : KEY_ESCAPE,
+	"*menu_left" : KEY_LEFT,
+	"*menu_right" : KEY_RIGHT,
+	"*menu_up" : KEY_UP,
+	"*menu_down" : KEY_DOWN,
+	"*accept" : KEY_SPACE,
+	"*deny" : KEY_BACKSPACE,
+	"*outlines_on" : false,
 	"*ghosts_on" : false,
-	"*timer_on" : false,
+	"*timer_on" : 0,
 	"*first_time_load" : true,
 }
+var keybind_names : Array = ["*left", "*right", "*up", "*down", "*jump", "*special", "*reset", "*return", "*menu_left", "*menu_right", "*menu_up", "*menu_down", "*accept", "*deny"]
+var mods_installed = []
 
 var rand : RandomNumberGenerator = RandomNumberGenerator.new()
 
@@ -49,7 +69,7 @@ var current_character_location : String = "res:/"
 var replay : bool = false
 var current_recording = {}
 var replay_menu : bool = false
-var replay_save : Array = [0, 0]
+var replay_save : Array = [0, 0, ""]
 var race_mode : bool = false
 
 var current_page : int = 0
@@ -57,13 +77,19 @@ var current_level : String = ""
 var current_level_location : String = "res://Scenes/waterway/"
 
 var loaded_level_groups = []
+var user_levels : Array
+var user_pages : int
 var level_group = {}
 
 var loaded_characters = {}
 
-var last_input_events : Array = range(8)
+var last_input_events : Array = []
+
+var level_control : bool = false
 
 func _ready():
+	console_arguments()
+	
 	rand.randomize()
 	var scaling = OS.window_size.x / OS.window_size.y
 	var height = get_tree().get_root().size.y
@@ -87,60 +113,51 @@ func _ready():
 	
 	load_data()
 	
-	# First it uses the default bindings
-	last_input_events = InputMap.get_action_list("default").duplicate()
+	# Bindings
+	for inputs in keybind_names:
+		var new_key = InputEventKey.new()
+		if options[inputs] != null:
+			new_key.scancode = options[inputs]
+		else:
+			new_key.scancode = default_options[inputs]
+		last_input_events.append(new_key)
 	
-	# The every binding that has already been bound replaces the defaults
-	if options["*left"] != null:
-		last_input_events[0] = InputEventKey.new()
-		last_input_events[0].scancode = options["*left"]
-	if options["*right"] != null:
-		last_input_events[1] = InputEventKey.new()
-		last_input_events[1].scancode = options["*right"]
-	if options["*up"] != null:
-		last_input_events[2] = InputEventKey.new()
-		last_input_events[2].scancode = options["*up"]
-	if options["*down"] != null:
-		last_input_events[3] = InputEventKey.new()
-		last_input_events[3].scancode = options["*down"]
-	if options["*jump"] != null:
-		last_input_events[4] = InputEventKey.new()
-		last_input_events[4].scancode = options["*jump"]
-	if options["*special"] != null:
-		last_input_events[5] = InputEventKey.new()
-		last_input_events[5].scancode = options["*special"]
-	if options["*reset"] != null:
-		last_input_events[6] = InputEventKey.new()
-		last_input_events[6].scancode = options["*reset"]
-	if options["*return"] != null:
-		last_input_events[7] = InputEventKey.new()
-		last_input_events[7].scancode = options["*return"]
-	
-	# Then it actualy binds the shit
-	for i in range(8):
+	for i in range(last_input_events.size()):
 		change_input(i, last_input_events[i])
+	# Load user levels
+	
+	var directory : Directory = Directory.new()
+	var check_exist = directory.open("user://SRLevels/")
+	var current_file
+	
+	if check_exist == OK:
+		# warning-ignore:return_value_discarded
+		directory.list_dir_begin(true)
+		
+		current_file = directory.get_next()
+		while current_file != "":
+			if current_file.ends_with(".tscn"):
+				user_levels.append(current_file.trim_suffix(".tscn"))
+			current_file = directory.get_next()
+		# warning-ignore:integer_division
+		user_pages = user_levels.size() / 20
 
-func _process(_delta):
+func _physics_process(_delta):
+	if level_control:
+		add_level_control()
+		level_control = false
 	var curr_scene = get_tree().current_scene.name
-	if Input.is_action_just_pressed("return") and !(curr_scene == "Menu_Level_Select" or curr_scene == "Load"):
-		change_level("*Menu_Level_Select")
-	if Input.is_action_just_pressed("reset") and !(curr_scene == "Menu_Level_Select" or curr_scene == "Load"):
+	if Input.is_action_just_pressed("return") and !(curr_scene == "MENU" or curr_scene == "Load"):
+		change_level("*MENU") 
+	if Input.is_action_just_pressed("reset") and !(curr_scene == "MENU" or curr_scene == "Load"):
 		change_level("")
 
 func _exit_tree():
 	save_game()
 
 func change_input(input_id : int, new_input):
-	var input_string : String
-	match input_id:
-		0: input_string = "left"
-		1: input_string = "right"
-		2: input_string = "up"
-		3: input_string = "down"
-		4: input_string = "jump"
-		5: input_string = "special"
-		6: input_string = "reset"
-		7: input_string = "return"
+	var input_string : String = keybind_names[input_id].trim_prefix("*")
+	#print(input_string)
 	if InputMap.action_has_event(input_string, last_input_events[input_id]):
 		InputMap.action_erase_event(input_string, last_input_events[input_id])
 	InputMap.action_add_event(input_string, new_input)
@@ -149,16 +166,16 @@ func change_input(input_id : int, new_input):
 	options["*" + input_string] = new_input.scancode
 
 func key_names(key : int):
-	var key_number
-	match key:
-		0: key_number = options["*left"]
-		1: key_number = options["*right"]
-		2: key_number = options["*up"]
-		3: key_number = options["*down"]
-		4: key_number = options["*jump"]
-		5: key_number = options["*special"]
-		6: key_number = options["*reset"]
-		7: key_number = options["*return"]
+	var key_number = options[keybind_names[key]]
+	#match key:
+	#	0: key_number = options["*left"]
+	#	1: key_number = options["*right"]
+	#	2: key_number = options["*up"]
+	#	3: key_number = options["*down"]
+	#	4: key_number = options["*jump"]
+	#	5: key_number = options["*special"]
+	#	6: key_number = options["*reset"]
+	#	7: key_number = options["*return"]
 	
 	if key_number >= 33 and key_number <= 255: return char(key_number)
 	else: match(key_number):
@@ -272,26 +289,140 @@ func key_names(key : int):
 		KEY_UNKNOWN: return "???"
 	return "WHAT IS THIS?"
 
-func change_level(destination : String, return_value : bool = false):
+func text_interpretor(text : String):
+	var next_text : String = text
+	var new_text : String = ""
+	
+	#print("starting :",text)
+	while next_text != "":
+		var interpret : String
+		if next_text.find("%") == -1 and next_text.find("`") == -1:
+			new_text += next_text
+			break
+		elif next_text.find("%") == -1:
+			interpret = "`"
+		elif next_text.find("`") == -1:
+			interpret = "%"
+		elif next_text.find("`") < next_text.find("%"):
+			interpret = "`"
+		elif next_text.find("%") < next_text.find("`"):
+			interpret = "%"
+		
+		new_text += next_text.substr(0, next_text.find(interpret))
+		var op_text = next_text.substr(next_text.find(interpret) + 1, next_text.length() - next_text.find(interpret))
+		next_text = op_text.substr(op_text.find(interpret) + 1, op_text.length() - op_text.find(interpret) - 1)
+		
+		op_text = op_text.substr(0, op_text.find(interpret))
+		#print("op_text  :",op_text)
+		if interpret == "`":
+			new_text += op_text
+		if interpret == "%": match op_text:
+			"left":
+				new_text += key_names(0)
+			"right":
+				new_text += key_names(1)
+			"up":
+				new_text += key_names(2)
+			"down":
+				new_text += key_names(3)
+			"jump":
+				new_text += key_names(4)
+			"special":
+				new_text += key_names(5)
+			"reset":
+				new_text += key_names(6)
+			"return":
+				new_text += key_names(7)
+			"`":
+				new_text += "`"
+			_: # bruh
+				if op_text.begins_with("unlock"):
+					if check_unlock(op_text.substr(7, op_text.length() - 7)):
+						new_text += "YES"
+					else:
+						new_text += "NO"
+				if op_text.begins_with("level"):
+					var level : Node2D = get_tree().current_scene
+					var data : String = op_text.substr(6, op_text.length() - 6)
+					if !level.dat.has(data): continue
+					if data == "dependencies" or data == "tags": continue
+					if data == "level_base" or data == "level_icon":
+						new_text += level.dat[data][0] + " from " + level.dat[data][1]
+						continue
+					new_text += level.dat[data]
+		#print("next     :",next_text)
+	#print("return   :",new_text)
+	#breakpoint
+	
+	return new_text
+
+func change_level(destination : String, return_value : bool = false, check_dependencies : bool = true):
+	compatibility_mode = false
+	
 	var destination_new : String
+	
+	#print(current_level_location)
 	
 	if destination == "":
 		destination_new = current_level_location + current_level + ".tscn"
-	elif destination == "*Menu_Level_Select":
-		destination_new = "res://Scenes/Menu_Level_Select.tscn"
+	elif destination == "*MENU" or destination == "*Menu_Level_Select":
+		destination_new = "res://Scenes/MENU.tscn"
 	elif destination == "*Level_Missing":
 		destination_new = "res://Scenes/Level_Missing.tscn"
+	elif destination == "*Level_Next" and current_level_location == "user://SRLevels/":
+		destination_new = "res://Scenes/MENU.tscn"
+	elif destination == "*Level_Next":
+		var level : int = 0
+		for i in range(19):
+			if level_group["levels"][i][0] == current_level:
+				if level_group["levels"][i + 1][1]:
+					if !check_unlock_requirements(level_group["levels"][i + 1][2][0], level_group["levels"][i + 1][2][1],level_group["levels"][i + 1][2][2]):
+						break
+				if level_group["levels"][i + 1][0] == "*Level_Missing":
+					break
+				level = i + 1
+				break
+		if level == 0:
+			destination_new = "res://Scenes/MENU.tscn"
+		else:
+			destination_new = current_level_location + level_group["levels"][level][0] + ".tscn"
 	elif destination.begins_with("*"):
 		destination_new = destination.trim_prefix("*")
 	else:
 		destination_new = current_level_location + destination + ".tscn"
 	
-	var error = get_tree().change_scene(destination_new)
+	var error = OK
+	if check_dependencies:
+		var level_dat = load_dat_file(destination_new.left(destination_new.find_last(".")))
+		if !level_dat.has("dependencies"):
+			error = ERR_FILE_MISSING_DEPENDENCIES
+		else:
+			for i in level_dat["dependencies"]:
+				if !mods_installed.has(i):
+					error = ERR_FILE_MISSING_DEPENDENCIES
+	
+	if destination_new != "res://Scenes/MENU.tscn":
+		current_level_location = destination_new.substr(0, destination_new.find_last("/") + 1)
+		current_level = destination_new.substr(destination_new.find_last("/") + 1, destination_new.find_last(".tscn") - destination_new.find_last("/") - 1)
+		#print(current_level)
+		#print(current_level_location)
+	if error == OK:
+		level_control = true
+		compatibility_mode = true
+		#connect("scene_changed", self, "add_level_control")
+		error = get_tree().change_scene(destination_new)
 	if return_value:
 		return error
 	elif error != OK:
 		# warning-ignore:return_value_discarded
-		get_tree().change_scene("res://Scenes/Menu_Level_Select.tscn")
+		get_tree().change_scene("res://Scenes/MENU.tscn")
+
+func add_level_control():
+	#print(get_tree().current_scene.name)
+	#print(get_tree().current_scene.get_script())
+	if get_tree().current_scene.get_script() == null:
+		get_tree().current_scene.set_script(load("res://Scripts/Level_Control.gd"))
+		#print(get_tree().current_scene.get_script())
 
 func unlock(unlock):
 	if unlock != "":
@@ -312,7 +443,7 @@ func check_unlock(unlock):
 			if !unlocked.has(current_level_location):
 				unlocked[current_level_location] = []
 			if !unlocked[current_level_location].has(unlock):
-				unlocked[unlock] = false
+				unlocked[current_level_location][unlock] = false
 			return unlocked[current_level_location][unlock]
 
 enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
@@ -320,6 +451,10 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
 	
 	if unlock_type == UNLOCK_NEVER:
 		return false
+	
+	if unlock_type == UNLOCK_BEAT or unlock_type == UNLOCK_PAR or unlock_type == UNLOCK_COMPLETION:
+		if !level_completion.has(parameter_1):
+			return false
 	
 	if unlock_type == UNLOCK_BEAT or unlock_type == UNLOCK_PAR:
 		if !level_completion[parameter_1].has(parameter_2):
@@ -333,7 +468,14 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
 			return false
 	
 	if unlock_type == UNLOCK_COMPLETION:
-		if parameter_2 > loaded_level_groups[parameter_1][4]:
+		var group = -1
+		for i in range(loaded_level_groups.size()):
+			if parameter_1 == loaded_level_groups[i][1] + loaded_level_groups[i][0] + "/":
+				group = i
+				break
+		if group == -1:
+			return false
+		if float(parameter_2) > loaded_level_groups[group][4]:
 			return false
 	
 	if unlock_type == UNLOCK_BONUS:
@@ -345,7 +487,7 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
 			return false
 	
 	if unlock_type == UNLOCK_CUSTOM:
-		return check_unlock("*" + parameter_2 + "*" + parameter_1)
+		return check_unlock(parameter_1)
 	
 	return true
 
@@ -369,8 +511,65 @@ func scale_down_sprite(sprite : Sprite, final_scale : Vector2 = Vector2(1, 1), d
 		sprite.scale.x = final_scale.y / (sprite_rect.y / desired_rect.y)
 	sprite.scale.y = sprite.scale.x
 
+func load_texture_from_png(path : String = ""):
+	if path == "": return null
+	
+	if path.begins_with("res://"):
+		var stream_texture : StreamTexture = load(path)
+		if stream_texture != null:
+			return stream_texture
+		return null
+	
+	var file : File = File.new()
+	var image : Image = Image.new()
+	var texture : ImageTexture = ImageTexture.new()
+	
+	if file.file_exists(path):
+# warning-ignore:return_value_discarded
+		file.open(path, File.READ)
+		var buffer = file.get_buffer(file.get_len())
+# warning-ignore:return_value_discarded
+		image.load_png_from_buffer(buffer)
+		texture.create_from_image(image, texture.STORAGE_COMPRESS_LOSSLESS)
+		#print(ResourceSaver.get_recognized_extensions(texture))
+		return texture
+	return null
+
+func console_arguments():
+	var arguments = {}
+	for arg in OS.get_cmdline_args():
+		var key_value = ["",""]
+		if arg.find("=") > -1:
+			key_value = arg.split("=")
+		elif arg.find(" ") > -1:
+			key_value = arg.split(" ")
+		else:
+			key_value[0] = arg
+		arguments[key_value[0].lstrip("--")] = key_value[1]
+	
+	#--level=res://Scenes/waterway/Level_1-0.tscn
+	if arguments.has("level"):
+		change_level("*" + arguments["level"])
+	if arguments.has("save_interaction"):
+		match(arguments["save_interaction"]):
+			"x":
+				savefile_interaction = 0
+			"r":
+				savefile_interaction = 1
+			"w":
+				savefile_interaction = 2
+			"rw":
+				savefile_interaction = 3
+			"wr":
+				savefile_interaction = 3
+	if savefile_interaction % 2: print("read allowed")
+# warning-ignore:integer_division
+	if savefile_interaction / 2: print("write allowed")
+
 func save_game(timer : float = 0, par : float = 0, collectible : Array = [], level = null, recording : Dictionary = {}):
-	var savefile = File.new()
+	
+	print("saving game")
+	
 	var temp = {}
 	
 	temp = level_completion.duplicate()
@@ -393,67 +592,72 @@ func save_game(timer : float = 0, par : float = 0, collectible : Array = [], lev
 		if collect != "" and !temp["*collectibles"][current_level_location].has(collect):
 			temp["*collectibles"][current_level_location].append(collect)
 	
-	var temp_full = {
-		"level_completion" : {},
-		"options" : {},
-		"unlocked" : {},
-	}
 	level_completion = temp.duplicate()
-	temp_full["level_completion"] = temp.duplicate()
-	temp_full["options"] = options.duplicate()
-	temp_full["unlocked"] = unlocked.duplicate()
 	
-	temp_full = update_old_save(VERSION, temp_full.duplicate())
-	
-	#print("save: ", temp_full)
-	
-	savefile.open(user_directory, File.WRITE)
-	savefile.store_line(to_json(temp_full))
-	savefile.close()
-	
-	if level != null: condicional_save_replay(current_level_location + level + "_Best", recording)
+# warning-ignore:integer_division
+	if savefile_interaction / 2:
+		var temp_full = {
+			"level_completion" : {},
+			"options" : {},
+			"unlocked" : {},
+		}
+		temp_full["level_completion"] = temp.duplicate()
+		temp_full["options"] = options.duplicate()
+		temp_full["unlocked"] = unlocked.duplicate()
+		
+		temp_full = update_old_save(VERSION, temp_full.duplicate())
+		
+		#print("save: ", temp_full)
+		var savefile = File.new()
+		savefile.open(user_directory, File.WRITE)
+		savefile.store_line(to_json(temp_full))
+		savefile.close()
+		
+		if level != null: condicional_save_replay(current_level_location + level + "_Best", recording)
 
 func load_game():
 	
 	var loadfile = File.new()
 	var temp = {}
 	
-	if not loadfile.file_exists(user_directory): # does file exist
+	if !savefile_interaction % 2:
+		pass
+	elif !loadfile.file_exists(user_directory): # does file exist
 		save_game()
-		return
-	
-	loadfile.open(user_directory, File.READ)
-	
-	while loadfile.get_position() < loadfile.get_len():
-		var parsedData = parse_json(loadfile.get_line())
-		
-		temp = parsedData
-	
-	loadfile.close()
-	
-	#print("load: ", temp)
-	var version : String
-	if !temp.has("options"):
-		version = "0.X"
-	elif !temp["options"].has("*version"):
-		version = "1.0.0-dev"
-	elif typeof(temp["options"]["*version"]) == TYPE_REAL:
-		version = "1.0.0"
 	else:
-		version = temp["options"]["*version"]
-	
-	if version != VERSION:
-		new_version_alert = true
-	
-	temp = update_old_save(version, temp.duplicate())
-	
-	level_completion = temp["level_completion"].duplicate()
-	options = temp["options"].duplicate()
-	unlocked = temp["unlocked"].duplicate()
+		loadfile.open(user_directory, File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		
+		loadfile.close()
+		
+		#print("load: ", temp)
+		var version : String
+		if !temp.has("options"):
+			version = "0.X"
+		elif !temp["options"].has("*version"):
+			version = "1.0.0-dev"
+		elif typeof(temp["options"]["*version"]) == TYPE_REAL:
+			version = "1.0.0"
+		else:
+			version = temp["options"]["*version"]
+		
+		if version != VERSION:
+			new_version_alert = true
+		
+		temp = update_old_save(version, temp.duplicate())
+		
+		level_completion = temp["level_completion"].duplicate()
+		options = temp["options"].duplicate()
+		unlocked = temp["unlocked"].duplicate()
 	
 	temp = {"*mods" : []}
 	
-	if loadfile.file_exists(mod_user_directory): # does file exist
+	# MOD LOADING IS DISABLED FOR NOW
+	if false: #loadfile.file_exists(mod_user_directory): # does file exist 
 		loadfile.open(mod_user_directory, File.READ)
 		
 		while loadfile.get_position() < loadfile.get_len():
@@ -464,11 +668,16 @@ func load_game():
 		loadfile.close()
 	
 	mods_installed = temp["*mods"].duplicate()
+	#print(mods_installed)
+
+func delete_save():
+	pass
 
 func update_old_save(version : String, save : Dictionary):
 	var settings : Dictionary = {}
 	var unlocks : Dictionary = {}
 	var levels : Dictionary = {}
+	
 	#print(version)
 	if version == "0.X":
 		
@@ -532,6 +741,8 @@ func update_old_save(version : String, save : Dictionary):
 				save["level_completion"][level_location] = {}
 			save["level_completion"][level_location][level_name] = levels[i]
 		
+		version = "1.1.0"
+	if version == "1.1.0-dev":
 		version = "1.1.0"
 	
 	if !save["unlocked"].has("*char_select_active"): save["unlocked"]["*char_select_active"] = false
@@ -642,26 +853,8 @@ func replay_filename(new_name : String, create_dir : bool):
 	
 	return replay_name
 
-func save_level_dat_file(data : Dictionary, filename_ : String, official : bool = true):
-	var file_prefix : String
-	if official:
-		file_prefix = "Scenes/"
-	else:
-		file_prefix = "Mods/Scenes/"
-	
-	var savefile = File.new()
-	var temp = {}
-	
-	temp = data.duplicate()
-	
-	#print("save: ", temp)
-	
-	savefile.open(file_prefix + filename_ + ".dat", File.WRITE)
-	savefile.store_line(to_json(temp))
-	savefile.close()
-
 func load_level_dat_file(filename_ : String, _official : bool = true):
-	print(filename_)
+	print(get_stack())
 	return load_dat_file(filename_)
 
 func load_dat_file(filename_ : String):
@@ -718,20 +911,30 @@ func load_data():
 	scan_for_directories("user://SRLevels/", loaded_level_groups, "group")
 	
 	var temp_level_groups = loaded_level_groups.duplicate()
+	var group_unlocks : Array = []
 	for group in range(loaded_level_groups.size()):
 		var level_dat = load_dat_file(loaded_level_groups[group][1] + loaded_level_groups[group][0] + "/level_group")
+		var depend_test = true
 		for i in level_dat["dependencies"]:
 			if !mods_installed.has(i):
 				temp_level_groups.remove(group)
+				depend_test = false
+		if depend_test:
+			if level_dat.has("unlock"):
+				group_unlocks.append(level_dat["unlock"])
+			else:
+				group_unlocks.append([0, "", ""])
 	loaded_level_groups = temp_level_groups.duplicate()
 	
 	loaded_level_groups.append(["SRLevels","user://"])
+	group_unlocks.append([0, "", ""])
 	
 	for i in range(loaded_level_groups.size()):
 		loaded_level_groups[i].resize(6)
-		loaded_level_groups[i][2] = ""
-		loaded_level_groups[i][3] = ""
+		loaded_level_groups[i][2] = null
+		loaded_level_groups[i][3] = null
 		loaded_level_groups[i][4] = 0
+		loaded_level_groups[i][5] = group_unlocks[i]
 	
 	# CHARACTERS.DAT
 	

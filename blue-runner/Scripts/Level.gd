@@ -54,7 +54,6 @@ func reload():
 	if level_symbol == null: 
 		level_symbol = load("res://Visual/Level/questionmark.png")
 	$symbol.texture = level_symbol
-	
 	$boltcollect.visible = false
 	if locked:
 		$icon.texture = load(base[level_dat["level_base"][0]][1][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][1][0])

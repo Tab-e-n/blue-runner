@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Text/Text_Black.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Text/Lacrimae_Outlined.tres" type="DynamicFont" id=2]
+
+[node name="Text" instance=ExtResource( 1 )]
+custom_fonts/mono_font = ExtResource( 2 )
+custom_fonts/bold_italics_font = ExtResource( 2 )
+custom_fonts/italics_font = ExtResource( 2 )
+custom_fonts/bold_font = ExtResource( 2 )
+custom_fonts/normal_font = ExtResource( 2 )

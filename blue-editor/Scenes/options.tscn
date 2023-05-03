@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=1]
 [ext_resource path="res://Text/Text_Editor.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Visual/Editor/editor_exit.png" type="Texture" id=3]
 [ext_resource path="res://Visual/Editor/editor_exit_enabled.png" type="Texture" id=4]
-[ext_resource path="res://Visual/Editor/editor_exit_hover.png" type="Texture" id=5]
+[ext_resource path="res://Visual/Editor/editor_refresh_enabled.png" type="Texture" id=5]
+[ext_resource path="res://Visual/Editor/editor_refresh.png" type="Texture" id=6]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
@@ -20,7 +21,7 @@ const options_span : int = 3136
 var current_keybind : Button
 var current_key : int
 
-const KEYBIND_AMOUNT : int = 21
+const KEYBIND_AMOUNT : int = 26
 var last_input_events : Array = range(KEYBIND_AMOUNT)
 
 func _ready():
@@ -30,6 +31,9 @@ func _ready():
 	# warning-ignore:integer_division
 	$HScrollBar.max_value = options_span / 64
 	
+	set_buttons()
+
+func set_buttons():
 	$GUI/editor_defaults/addition_info.pressed = data.settings[\"editor_gui_additional_info\"]
 	$GUI/editor_defaults/grid_snap.pressed = data.settings[\"editor_default_grid_snap\"]
 	$GUI/editor_defaults/default_tab.select(data.settings[\"editor_default_tab\"])
@@ -72,8 +76,8 @@ func _ready():
 	ready_optionbutton_setup($GUI/editor_defaults/icon, data.level_icon)
 	ready_optionbutton_setup($GUI/editor_defaults/base, data.level_base)
 	ready_optionbutton_setup($GUI/editor_defaults/tileset, data.tilesets)
-	ready_optionbutton_setup($GUI/editor_defaults/bg, data.bg)
-	$GUI/editor_defaults/bg.set_item_metadata(0, \"\")
+	ready_optionbutton_setup($GUI/editor_defaults/bg, data.bg, true)
+	
 	
 	optionbutton_select($GUI/editor_defaults/icon, \"editor_default_icon\")
 	optionbutton_select($GUI/editor_defaults/base, \"editor_default_base\")
@@ -107,7 +111,11 @@ func _ready():
 	
 	$GUI/editor_defaults/sonic_runner.text = data.settings[\"sonic_runner_folder\"]
 
-func ready_optionbutton_setup(option_button : OptionButton, data_array : Array):
+func ready_optionbutton_setup(option_button : OptionButton, data_array : Array, none_option : bool = false):
+	option_button.clear()
+	if none_option:
+		option_button.add_item(\"none\")
+		option_button.set_item_metadata(0, \"\")
 	var last_directory : String = \"res:/\"
 	for i in data_array:
 		if last_directory != i[1]:
@@ -127,6 +135,9 @@ func _process(_delta):
 	rect_size = window
 	$HScrollBar.rect_size.x = window.x
 	$HScrollBar.page = window.x / 64
+	
+	if Input.is_action_just_pressed(\"25\"):
+		_on_exit_pressed()
 
 func settings_change(value, setting, setting_type):
 	if setting_type == \"default\":
@@ -180,6 +191,14 @@ func start_keybind_check(button_pressed, keybind):
 		current_key = keybind
 	else:
 		current_keybind = null
+
+func reset_settings_popup():
+	$do_reset.popup()
+
+func reset_settings_to_default():
+	data.settings = data.default_settings.duplicate()
+	
+	set_buttons()
 
 func _on_exit_pressed():
 	# warning-ignore:return_value_discarded
@@ -258,8 +277,8 @@ margin_left = 552.0
 margin_top = 80.0
 margin_right = 472.0
 margin_bottom = 576.0
-text = "New level name
-Creator name
+text = "Creator name
+New level name
 Default official
 Default icon
 Default base
@@ -385,7 +404,7 @@ margin_bottom = 592.0
 step = 0.05
 value = 1.0
 
-[node name="level_name" type="LineEdit" parent="GUI/editor_defaults"]
+[node name="author" type="LineEdit" parent="GUI/editor_defaults"]
 margin_left = 808.0
 margin_top = 80.0
 margin_right = 1064.0
@@ -394,7 +413,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="author" type="LineEdit" parent="GUI/editor_defaults"]
+[node name="level_name" type="LineEdit" parent="GUI/editor_defaults"]
 margin_left = 808.0
 margin_top = 112.0
 margin_right = 1064.0
@@ -666,6 +685,7 @@ Transform
 Reset transform
 Rng transform
 Edit
+Quick save level
 Save level
 Load level
 Create new level"
@@ -689,6 +709,7 @@ Ctrl +
 Alt + 
 Hold
 Ctrl +
+Ctrl + Shift +
 Ctrl +
 Ctrl +
 "
@@ -709,7 +730,10 @@ Focus place panel
 Layer background
 Layer back
 Layer center
-Layer front"
+Layer front
+Hide layers by pressing Alt instead of Ctrl
+
+Return (General)"
 
 [node name="guideline2" parent="GUI/keysbinds" instance=ExtResource( 2 )]
 margin_left = 952.0
@@ -727,7 +751,10 @@ Alt +
 Ctrl +
 Ctrl +
 Ctrl +
-Ctrl +"
+Ctrl +
+
+
+Press"
 
 [node name="buttons" type="Control" parent="GUI/keysbinds"]
 margin_left = -1752.0
@@ -896,9 +923,9 @@ __meta__ = {
 
 [node name="load_level" type="Button" parent="GUI/keysbinds/buttons"]
 margin_left = 2152.0
-margin_top = 544.0
+margin_top = 576.0
 margin_right = 2424.0
-margin_bottom = 576.0
+margin_bottom = 608.0
 toggle_mode = true
 clip_text = true
 align = 0
@@ -908,9 +935,9 @@ __meta__ = {
 
 [node name="new_level" type="Button" parent="GUI/keysbinds/buttons"]
 margin_left = 2152.0
-margin_top = 576.0
+margin_top = 608.0
 margin_right = 2424.0
-margin_bottom = 608.0
+margin_bottom = 640.0
 toggle_mode = true
 clip_text = true
 align = 0
@@ -1038,6 +1065,18 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="return" type="Button" parent="GUI/keysbinds/buttons"]
+margin_left = 2792.0
+margin_top = 544.0
+margin_right = 3064.0
+margin_bottom = 576.0
+toggle_mode = true
+clip_text = true
+align = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="reset_transform" type="Button" parent="GUI/keysbinds/buttons"]
 margin_left = 2152.0
 margin_top = 416.0
@@ -1077,17 +1116,30 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="save_level2" type="Button" parent="GUI/keysbinds/buttons"]
+margin_left = 2272.0
+margin_top = 544.0
+margin_right = 2424.0
+margin_bottom = 576.0
+disabled = true
+toggle_mode = true
+clip_text = true
+align = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="sonic_runner_file" type="FileDialog" parent="."]
 anchor_left = 0.498
 anchor_right = 0.498
 margin_left = -381.952
 margin_right = 386.048
 margin_bottom = 768.0
-window_title = "Open a Directory"
-mode = 2
+window_title = "Open a File"
+mode = 0
 access = 2
-current_dir = "/Project/Godot 3.2/sonic_runner_git/blue-editor"
-current_path = "/Project/Godot 3.2/sonic_runner_git/blue-editor/"
+current_dir = "/home/tabin/godot-projects/blue-runner-vanilla/blue-editor"
+current_path = "/home/tabin/godot-projects/blue-runner-vanilla/blue-editor/"
 
 [node name="HScrollBar" type="HScrollBar" parent="."]
 margin_top = 688.0
@@ -1105,7 +1157,29 @@ margin_right = 64.0
 margin_bottom = 768.0
 texture_normal = ExtResource( 3 )
 texture_pressed = ExtResource( 4 )
-texture_focused = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="reset" type="TextureButton" parent="."]
+margin_left = 96.0
+margin_top = 704.0
+margin_right = 160.0
+margin_bottom = 768.0
+texture_normal = ExtResource( 6 )
+texture_pressed = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="do_reset" type="ConfirmationDialog" parent="."]
+margin_left = 352.0
+margin_top = 304.0
+margin_right = 672.0
+margin_bottom = 464.0
+dialog_text = "Do you want to
+reset every setting
+to the default?"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -1123,8 +1197,8 @@ __meta__ = {
 [connection signal="value_changed" from="GUI/editor_defaults/back_scale" to="." method="layer_change" binds= [ "back", "scale" ]]
 [connection signal="value_changed" from="GUI/editor_defaults/center_scale" to="." method="layer_change" binds= [ "center", "scale" ]]
 [connection signal="value_changed" from="GUI/editor_defaults/front_scale" to="." method="layer_change" binds= [ "front", "scale" ]]
-[connection signal="text_changed" from="GUI/editor_defaults/level_name" to="." method="settings_change" binds= [ "editor_default_level_name", "default" ]]
 [connection signal="text_changed" from="GUI/editor_defaults/author" to="." method="settings_change" binds= [ "editor_author_name", "default" ]]
+[connection signal="text_changed" from="GUI/editor_defaults/level_name" to="." method="settings_change" binds= [ "editor_default_level_name", "default" ]]
 [connection signal="toggled" from="GUI/editor_defaults/official" to="." method="settings_change" binds= [ "editor_default_official", "default" ]]
 [connection signal="item_selected" from="GUI/editor_defaults/icon" to="." method="resource_change" binds= [ "editor_default_icon", "GUI/editor_defaults/icon" ]]
 [connection signal="item_selected" from="GUI/editor_defaults/base" to="." method="resource_change" binds= [ "editor_default_base", "GUI/editor_defaults/base" ]]
@@ -1169,9 +1243,14 @@ __meta__ = {
 [connection signal="toggled" from="GUI/keysbinds/buttons/layer_1" to="." method="start_keybind_check" binds= [ 20 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/layer_2" to="." method="start_keybind_check" binds= [ 20 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/layer_3" to="." method="start_keybind_check" binds= [ 20 ]]
+[connection signal="toggled" from="GUI/keysbinds/buttons/return" to="." method="start_keybind_check" binds= [ 20 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/reset_transform" to="." method="start_keybind_check" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/random_transform" to="." method="start_keybind_check" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/game_camera" to="." method="start_keybind_check" binds= [ 3 ]]
+[connection signal="toggled" from="GUI/keysbinds/buttons/save_level2" to="." method="start_keybind_check" binds= [ 12 ]]
 [connection signal="dir_selected" from="sonic_runner_file" to="." method="sonic_runner_folder_selected"]
+[connection signal="file_selected" from="sonic_runner_file" to="." method="sonic_runner_folder_selected"]
 [connection signal="scrolling" from="HScrollBar" to="." method="_on_HScrollBar_scrolling"]
 [connection signal="pressed" from="exit" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="reset" to="." method="reset_settings_popup"]
+[connection signal="confirmed" from="do_reset" to="." method="reset_settings_to_default"]

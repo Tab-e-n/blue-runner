@@ -1,0 +1,177 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=1]
+[ext_resource path="res://Visual/Editor/editor_load_enabled.png" type="Texture" id=2]
+[ext_resource path="res://Visual/Editor/editor_load.png" type="Texture" id=3]
+[ext_resource path="res://Visual/Editor/editor_exit_enabled.png" type="Texture" id=4]
+[ext_resource path="res://Visual/Editor/editor_exit.png" type="Texture" id=5]
+[ext_resource path="res://Text/Text_Editor.tscn" type="PackedScene" id=6]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Control
+
+
+func _ready():
+	pass
+
+func _process(_delta):
+	if Input.is_action_just_pressed(\"25\"):
+		exit_pressed()
+
+func load_popup():
+	$File_Load.popup()
+
+func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
+	var file = File.new()
+	var temp = {}
+	
+	var dat_filename = level_filename.substr(0, level_filename.find_last(\".\")) + \".dat\"
+	
+	if file.file_exists(dat_filename): # does file exist
+		file.open(dat_filename, File.READ)
+		
+		while file.get_position() < file.get_len():
+			var parsedData = parse_json(file.get_line())
+			
+			temp = parsedData
+			
+		file.close()
+	else:
+		$fix_no_file.popup()
+		return
+	
+	var old_dependecies = temp[\"dependencies\"].duplicate()
+	temp[\"dependencies\"] = []
+	
+	if file.file_exists(level_filename): # does file exist
+		file.open(level_filename, File.READ)
+		
+		var parsedData = file.get_line()
+		
+		if parsedData.find(\"load_steps\") == -1: return
+		
+		var string_start : int = parsedData.find(\"load_steps\") + 11
+		var cut_string : String = parsedData.substr(string_start, parsedData.length() - string_start)
+		var string_end : int = cut_string.find(\" \")
+		
+		var repetitions = int(parsedData.substr(string_start, string_end))
+		
+		for _i in range(repetitions):
+			parsedData = file.get_line()
+			if parsedData == \"\": continue
+			string_start = parsedData.find(\"path\")
+			cut_string = parsedData.substr(string_start, parsedData.length() - string_start)
+			string_start = cut_string.find(\"\\\"\") + 1
+			cut_string = cut_string.substr(string_start, cut_string.length() - string_start)
+			string_end = cut_string.find(\"\\\"\")
+			cut_string = cut_string.substr(0, string_end)
+			if !cut_string.begins_with(\"res://Mods/\"): continue
+			cut_string = cut_string.substr(11, cut_string.length() - cut_string.find(\"res://Mods/\"))
+			temp[\"dependencies\"].append(cut_string.substr(0, cut_string.find(\"/\")))
+		
+		file.close()
+		
+		file.open(dat_filename, File.WRITE)
+		file.store_line(to_json(temp))
+		file.close()
+	else: 
+		$fix_no_file.popup()
+		return
+	
+	if old_dependecies != temp[\"dependencies\"]:
+		$fix_complete.popup()
+	else:
+		$fix_complete2.popup()
+
+func exit_pressed():
+	# warning-ignore:return_value_discarded
+	get_tree().change_scene(\"res://Scenes/menu.tscn\")
+"
+
+[node name="dependency" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+script = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button_Exit" type="TextureButton" parent="."]
+margin_left = 32.0
+margin_top = 32.0
+margin_right = 96.0
+margin_bottom = 96.0
+texture_normal = ExtResource( 5 )
+texture_pressed = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button_Load" type="TextureButton" parent="."]
+margin_left = 32.0
+margin_top = 128.0
+margin_right = 96.0
+margin_bottom = 192.0
+texture_normal = ExtResource( 3 )
+texture_pressed = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Text" parent="." instance=ExtResource( 6 )]
+margin_left = 128.0
+margin_top = 144.0
+margin_right = 640.0
+margin_bottom = 560.0
+text = "Remove level dependencies"
+
+[node name="File_Load" type="FileDialog" parent="."]
+margin_left = 128.0
+margin_top = -8.0
+margin_right = 896.0
+margin_bottom = 776.0
+window_title = "Open a File"
+mode = 0
+access = 1
+filters = PoolStringArray( "*.tscn ; Text Scene" )
+show_hidden_files = true
+current_dir = "user://SRLevels"
+current_file = "SRLevels"
+current_path = "user://SRLevels/SRLevels"
+
+[node name="fix_complete" type="AcceptDialog" parent="."]
+margin_left = 400.0
+margin_top = 320.0
+margin_right = 624.0
+margin_bottom = 448.0
+window_title = "Wohoo!"
+dialog_text = "Dependencies
+were removed"
+
+[node name="fix_complete2" type="AcceptDialog" parent="."]
+margin_left = 400.0
+margin_top = 304.0
+margin_right = 624.0
+margin_bottom = 462.0
+window_title = "Hmm..."
+dialog_text = "There wasn't
+anything to
+remove."
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="fix_no_file" type="AcceptDialog" parent="."]
+margin_left = 440.0
+margin_top = 336.0
+margin_right = 582.0
+margin_bottom = 432.0
+window_title = "Hmm..."
+dialog_text = "No file?"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="pressed" from="Button_Exit" to="." method="exit_pressed"]
+[connection signal="pressed" from="Button_Load" to="." method="load_popup"]
+[connection signal="file_selected" from="File_Load" to="." method="load_level"]

@@ -1,0 +1,20 @@
+Level 0 - Open area to test controls
+Level 1 - Wall Jump
+Level 2 - Dash
+Level 3 - Threats
+Level 4 - Combined
+Level 5 - Booster
+Level 6 - Fast Boosters
+Level 7 - Controling Jumps
+Level 8 - Moving Saws
+Level 9 - Can't Slow Down
+Level 10 - Recycler
+Level 11 - OG level 9
+Level 12 - Moving Saws Upwards
+Level 13 - Controling Jumps Midair
+Level 14 - Boosters & Moving Saws
+Level boss - Flood
+Level A - Extreme Speed Boosters
+Level B - A Lot of Moving Parts
+Level C - Greenbox
+Level -1 - Very Little Platform Space

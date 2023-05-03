@@ -1,6 +1,7 @@
 extends Sprite
 
 var editor_properties : Dictionary = {
+	"description" : "A waterfall decoration.",
 	"object_path" : "res://Objects/Decor/Waterfall.tscn",
 	"object_type" : "normal", # some object types have a limited amount of the times they can appear
 	"layer" : "selected", # selected or special
@@ -33,7 +34,7 @@ func _physics_process(_delta):
 	#	else: frame += 1
 	#	timer = 0
 
-func edit_left_just_pressed(_level_mouse_position):
+func edit_left_just_pressed(_mouse_pos, _cursor_pos, _level_scale):
 	frame_hinge = frame
 
 func edit_left_pressed(mouse_pos, mouse_hinge):

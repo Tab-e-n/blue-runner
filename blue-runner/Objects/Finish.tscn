@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=2]
+[gd_scene load_steps=40 format=2]
 
 [ext_resource path="res://Visual/S1/leg2B.png" type="Texture" id=1]
 [ext_resource path="res://Visual/S1/head.png" type="Texture" id=2]
@@ -34,12 +34,18 @@
 [ext_resource path="res://Visual/XT9/head.png" type="Texture" id=32]
 [ext_resource path="res://Visual/XT9/leg1B.png" type="Texture" id=33]
 [ext_resource path="res://Visual/XT9/leg2B.png" type="Texture" id=34]
+[ext_resource path="res://Scripts/single_color.shader" type="Shader" id=35]
+
+[sub_resource type="ShaderMaterial" id=5]
+shader = ExtResource( 35 )
+shader_param/color = null
+shader_param/active = false
+shader_param/blend = 1.0
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 8, 8 )
 
-[sub_resource type="Animation" id=2]
-resource_name = "Call"
+[sub_resource type="Animation" id=3]
 length = 2.0
 loop = true
 tracks/0/type = "value"
@@ -499,7 +505,7 @@ tracks/37/keys = {
 "values": [ 1, 0 ]
 }
 
-[sub_resource type="Animation" id=3]
+[sub_resource type="Animation" id=4]
 length = 2.0
 loop = true
 tracks/0/type = "value"
@@ -960,9 +966,14 @@ tracks/37/keys = {
 }
 
 [node name="Finish" type="StaticBody2D"]
+material = SubResource( 5 )
 collision_layer = 24
 collision_mask = 24
 script = ExtResource( 4 )
+tele_destination = null
+par = null
+type = null
+unlock = null
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -56 )
@@ -971,13 +982,15 @@ shape = SubResource( 1 )
 
 [node name="Visual_XT9" type="Node2D" parent="."]
 visible = false
+use_parent_material = true
 position = Vector2( 1, 0 )
 scale = Vector2( 0.5, 0.5 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Visual_XT9"]
-anims/Call = SubResource( 2 )
+anims/Call = SubResource( 3 )
 
 [node name="arm2B" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( 6, -136 )
 rotation = -3.14159
 z_index = 1
@@ -986,6 +999,7 @@ centered = false
 offset = Vector2( -10, -7 )
 
 [node name="hand2" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( 6, -176 )
 rotation = 3.14159
 z_index = 2
@@ -994,6 +1008,7 @@ centered = false
 offset = Vector2( -10, -3 )
 
 [node name="arm2" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( 13, -174 )
 rotation = 0.174533
 z_index = 1
@@ -1002,6 +1017,7 @@ centered = false
 offset = Vector2( -8, -5 )
 
 [node name="leg2B" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( 13.2594, -59.7193 )
 rotation = 0.0872665
 texture = ExtResource( 34 )
@@ -1009,6 +1025,7 @@ centered = false
 offset = Vector2( -14, -7 )
 
 [node name="leg2" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( 7, -113 )
 rotation = -0.0872665
 texture = ExtResource( 29 )
@@ -1016,12 +1033,14 @@ centered = false
 offset = Vector2( -8, -4 )
 
 [node name="backpack" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( -12, -170 )
 texture = ExtResource( 24 )
 centered = false
 offset = Vector2( -18, -22 )
 
 [node name="bodyM" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( -1, -145 )
 scale = Vector2( 1, 1.2 )
 texture = ExtResource( 25 )
@@ -1029,36 +1048,42 @@ centered = false
 offset = Vector2( -13, -10.8333 )
 
 [node name="bodyB" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( 0, -123 )
 texture = ExtResource( 31 )
 centered = false
 offset = Vector2( -14, -11 )
 
 [node name="bodyT" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( 0, -170 )
 texture = ExtResource( 21 )
 centered = false
 offset = Vector2( -17, -14 )
 
 [node name="neck" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( 0, -182 )
 texture = ExtResource( 27 )
 centered = false
 offset = Vector2( -11, -8 )
 
 [node name="headB" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( 0, -187 )
 texture = ExtResource( 6 )
 centered = false
 offset = Vector2( -27, -49 )
 
 [node name="head" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( 1, -189 )
 texture = ExtResource( 32 )
 centered = false
 offset = Vector2( -20, -37 )
 
 [node name="leg1B" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( -1.74058, -59.7193 )
 rotation = 0.0872665
 texture = ExtResource( 33 )
@@ -1066,6 +1091,7 @@ centered = false
 offset = Vector2( -15, -7 )
 
 [node name="leg1" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( -7, -113 )
 rotation = -0.0872665
 texture = ExtResource( 19 )
@@ -1073,6 +1099,7 @@ centered = false
 offset = Vector2( -9, -3 )
 
 [node name="arm1B" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( -8, -136 )
 rotation = -3.14159
 texture = ExtResource( 23 )
@@ -1080,6 +1107,7 @@ centered = false
 offset = Vector2( -12, -6 )
 
 [node name="hand1" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( -8, -176 )
 rotation = -3.14159
 z_index = 1
@@ -1088,6 +1116,7 @@ centered = false
 offset = Vector2( -11, -3 )
 
 [node name="arm1" type="Sprite" parent="Visual_XT9"]
+use_parent_material = true
 position = Vector2( -14, -174 )
 rotation = -0.174533
 texture = ExtResource( 22 )
@@ -1096,13 +1125,15 @@ offset = Vector2( -9, -5 )
 
 [node name="Visual_S1" type="Node2D" parent="."]
 visible = false
+use_parent_material = true
 position = Vector2( 1, 0 )
 scale = Vector2( 0.5, 0.5 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Visual_S1"]
-anims/Call = SubResource( 3 )
+anims/Call = SubResource( 4 )
 
 [node name="arm2B" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( 6, -136 )
 rotation = -3.14159
 z_index = 1
@@ -1111,6 +1142,7 @@ centered = false
 offset = Vector2( -10, -7 )
 
 [node name="hand2" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( 6, -176 )
 rotation = 3.14159
 z_index = 2
@@ -1119,6 +1151,7 @@ centered = false
 offset = Vector2( -10, -3 )
 
 [node name="arm2" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( 13, -174 )
 rotation = 0.174533
 z_index = 1
@@ -1127,6 +1160,7 @@ centered = false
 offset = Vector2( -8, -5 )
 
 [node name="leg2B" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( 13.2594, -59.7193 )
 rotation = 0.0872665
 texture = ExtResource( 1 )
@@ -1134,6 +1168,7 @@ centered = false
 offset = Vector2( -14, -7 )
 
 [node name="leg2" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( 7, -113 )
 rotation = -0.0872665
 texture = ExtResource( 18 )
@@ -1141,12 +1176,14 @@ centered = false
 offset = Vector2( -8, -4 )
 
 [node name="backpack" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( -10, -170 )
 texture = ExtResource( 12 )
 centered = false
 offset = Vector2( -18, -22 )
 
 [node name="bodyM" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( -1, -145 )
 scale = Vector2( 1, 1.2 )
 texture = ExtResource( 7 )
@@ -1154,36 +1191,42 @@ centered = false
 offset = Vector2( -13, -10.8333 )
 
 [node name="bodyB" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( 0, -123 )
 texture = ExtResource( 3 )
 centered = false
 offset = Vector2( -14, -11 )
 
 [node name="bodyT" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( 0, -170 )
 texture = ExtResource( 13 )
 centered = false
 offset = Vector2( -17, -14 )
 
 [node name="neck" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( 0, -182 )
 texture = ExtResource( 16 )
 centered = false
 offset = Vector2( -11, -8 )
 
 [node name="headB" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( 0, -187 )
 texture = ExtResource( 6 )
 centered = false
 offset = Vector2( -27, -49 )
 
 [node name="head" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( 1, -185 )
 texture = ExtResource( 2 )
 centered = false
 offset = Vector2( -20, -37 )
 
 [node name="leg1B" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( -1.74058, -59.7193 )
 rotation = 0.0872665
 texture = ExtResource( 17 )
@@ -1191,6 +1234,7 @@ centered = false
 offset = Vector2( -15, -7 )
 
 [node name="leg1" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( -7, -113 )
 rotation = -0.0872665
 texture = ExtResource( 9 )
@@ -1198,6 +1242,7 @@ centered = false
 offset = Vector2( -9, -3 )
 
 [node name="arm1B" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( -8, -136 )
 rotation = -3.14159
 texture = ExtResource( 10 )
@@ -1205,6 +1250,7 @@ centered = false
 offset = Vector2( -12, -6 )
 
 [node name="arm1" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( -14, -174 )
 rotation = -0.174533
 texture = ExtResource( 8 )
@@ -1212,6 +1258,7 @@ centered = false
 offset = Vector2( -9, -5 )
 
 [node name="hand1" type="Sprite" parent="Visual_S1"]
+use_parent_material = true
 position = Vector2( -8, -176 )
 rotation = -3.14159
 z_index = 1

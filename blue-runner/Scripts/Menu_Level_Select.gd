@@ -7,6 +7,8 @@ onready var global : Control = $"/root/Global"
 
 var menu : String = "SELECT"
 
+var return_delay : int = 2
+
 func _ready():
 	global.replay = false
 	global.race_mode = false
@@ -62,10 +64,6 @@ func _ready():
 		
 		if global.replay_menu:
 			global.replay_menu = false
-			$REPLAY.selected_replay = global.replay_save[0]
-			$REPLAY.replay_menu_mode = global.replay_save[1]
-			$REPLAY.reset_replays()
-			$REPLAY/replay_list.ensure_current_is_visible()
 			menu = "REPLAY"
 			$AnimationPlayer.play("SET_TO_REPLAY")
 		else:
@@ -77,8 +75,9 @@ func _ready():
 		Global.new_version_alert = false
 
 func _process(_delta):
+	if return_delay > 0: return_delay -= 1
 	# MENU SWITCHING
-	if Input.is_action_just_pressed("return") and $AnimationPlayer.current_animation == "" and menu != "MAIN":
+	if Input.is_action_just_pressed("return") and $AnimationPlayer.current_animation == "" and menu != "MAIN" and return_delay == 0:
 		match menu:
 			"SELECT":
 				$AnimationPlayer.play("SELECT-MAIN")
