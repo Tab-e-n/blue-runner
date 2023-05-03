@@ -1,29 +1,82 @@
-GENERAL
+ - ON HOLD - 
 
-documentation
+mods redo
+mod loader -> mod manager
+you should probs import mods manualy
 
-EDITOR
+how to get modded textures working ideas
+somehow make godot think .import is in a different spot or something
+aka frantically scourer google
+or
+custom sprite node or function that basically loads png images as textures (ImageTexture)
+aka rewrite lot of code in main, and have the possibility of the solution being obtuse.
 
-dependency stripper
-f1 for help
 default-mod
-z_index has some buggy behavior probably
-that shader thing
-visuals for track
+if mod doesn't work it should tell you what dependencies are missing somewhere
+sonic runner self checking if loaded mods exist
 
-exit level editor shortcut
-do you wanna do scrollers?
+dependency fixer for level groups
+
+ - GENERAL - 
+
+documentation (useless since mods are non existant rn but im still gonna do it for future sake)
+level guide lines in documentation
+	Dont put gameplay too close to camera borders
+	Alternate paths
+	secrets
+organize the fucking brancehs
+
+ - EDITOR - 
+
+Selecting Favorite Items Shortcut
+Playtest shortcut
+more help buttons
+track visual
+
+f1 for help
+
 undo system (i dont really wanna)
 rebind move to something if undo system
 
-RUNNER
+ - RUNNER - 
 
-pixelate bricks
+More Gray Rocks
+Move Platform a bit down
+booster is underwhelming visualy
+make MovingPlatform scaleable
+
+options
+3 timer option: Timer only active when you beat the level.
+Outline the character
+Up key for jump
+key that shows level info when in a level
+
+new checkboxes
+redo every menu and add new ones
+main menu options
+	Options - Yellow
+	Credits - Orange
+	Exit - Red
+	
+	Level Select - Cyan
+	VS Race - Blue
+	Replays - Purple
+
+	Help - Teal
+	Achievements - Lime
+	Cheat Codes - Green
+make everything very clear so the player know what they are looking at
+Put level group author and description somewhere
+
+level group description
+level group as level
+changing between "linked" level groups or something
+
+new waterway levels
 tutorial level
-touchup replay menu
-character greenbox
-character missing
 
-level group unlocks
-changing prebuilt level groups
-Cheat code menu
+character greenbox
+missing idle anims
+Touchup spin maybe
+Touchup XT9 idle animations
+just redesign S1 and XT9 heads

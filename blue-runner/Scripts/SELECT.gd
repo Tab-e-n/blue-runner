@@ -19,6 +19,7 @@ var selected : bool = false
 var selected_level_name : String
 var selected_level_location : String
 
+var unlocked_level_group : Array = []
 var group_shift : int = 0
 var selected_group : int = 0
 var group_select : bool = false
@@ -35,8 +36,10 @@ func _ready():
 	#print(loaded_level_groups)
 	
 	for i in Global.loaded_level_groups.size():
-		if Global.current_level_location == Global.loaded_level_groups[i][1] + Global.loaded_level_groups[i][0] + "/":
-			selected_group = i
+		if Global.check_unlock_requirements(Global.loaded_level_groups[i][5][0], Global.loaded_level_groups[i][5][1], Global.loaded_level_groups[i][5][2]):
+			unlocked_level_group.append(Global.loaded_level_groups[i])
+			if Global.current_level_location == Global.loaded_level_groups[i][1] + Global.loaded_level_groups[i][0] + "/":
+				selected_group = unlocked_level_group.size() - 1
 	#camera.bg = $BG_0
 	#$BG_0.camera = camera
 	
@@ -60,13 +63,18 @@ func change_controls():
 func menu_update():
 	var update_level_text = false
 	var update_group_text = false
-	var user_group = Global.loaded_level_groups[selected_group][1] == "user://"
+	var user_group = unlocked_level_group[selected_group][1] == "user://"
 	
 	if Input.is_action_just_pressed("reset"):
+		if group_select:
+			Global.current_level_location = unlocked_level_group[selected_group][1] + unlocked_level_group[selected_group][0] + "/"
+			reload_all_levels()
+			update_level_text = true
+		else:
+			update_group_text = true
+			group_visuals()
 		group_select = !group_select
 		$group_select.visible = group_select
-		update_group_text = true
-		group_visuals()
 	# - - - LEVEL SELECT - - -
 	if !group_select:
 		if Input.is_action_just_pressed("jump"):
@@ -159,19 +167,21 @@ func menu_update():
 			if selected_group - group_shift < 0:
 				group_shift -= 1
 				group_visuals()
-		if Input.is_action_pressed("right") and parent.move and selected_group < Global.loaded_level_groups.size() - 1:
+		if Input.is_action_pressed("right") and parent.move and selected_group < unlocked_level_group.size() - 1:
 			selected_group += 1
 			if selected_group - group_shift > 11:
 				group_shift += 1
 				group_visuals()
 		if Input.is_action_just_pressed("jump"):
-			Global.current_level_location = Global.loaded_level_groups[selected_group][1] + Global.loaded_level_groups[selected_group][0] + "/"
+			Global.current_level_location = unlocked_level_group[selected_group][1] + unlocked_level_group[selected_group][0] + "/"
 			group_select = false
 			$group_select.visible = group_select
 			reload_all_levels()
 			update_level_text = true
 	
+	$pages.visible = user_group
 	if user_group:
+		$pages.text = String(user_levels_page) + "/" + String(user_pages)
 		level_selected_convert = user_selected_level - user_levels_page * 20
 	else:
 		level_selected_convert = selected_level
@@ -198,17 +208,21 @@ func menu_update():
 				$Level_Descriptor/best_time.text = ""
 		elif level_dat != null:
 			$Level_Descriptor/level_name.text = level_dat["level_name"]
-			if !level_dat.has("tags"):
-				if level_dat["official"]: 
-					$Level_Descriptor/creator.text = "This level was made by " + level_dat["creator"] + " in an older version."
-				else:
-					$Level_Descriptor/creator.text = "  Creator:" + level_dat["creator"]
-			elif level_dat["tags"].has("official"):
-				if level_dat["creator"] != "Tabin": 
-					$Level_Descriptor/creator.text = "My thanks goes to " + level_dat["creator"] + " for making this!"
+			var official = false
+			if level_dat.has("tags"):
+				official = level_dat["tags"].has("official")
 			else:
+				official = level_dat["official"]
+			
+			if user_group or !official:
 				$Level_Descriptor/creator.text = "  Creator:" + level_dat["creator"]
-		
+			else: 
+				if Global.level_group.has("author"):
+					if level_dat["creator"] != Global.level_group["author"]:
+						$Level_Descriptor/creator.text = "My thanks goes to " + level_dat["creator"] + " for making this!"
+				elif level_dat["creator"] != "Tabin": 
+					$Level_Descriptor/creator.text = "My thanks goes to " + level_dat["creator"] + " for making this!"
+
 		if Global.level_completion.has(selected_level_location): if Global.level_completion[selected_level_location].has(selected_level_name):
 			if Global.level_completion[selected_level_location][selected_level_name][0] != null:
 				var timer : float = Global.level_completion[selected_level_location][selected_level_name][0]
@@ -224,7 +238,7 @@ func menu_update():
 				$Level_Descriptor/deaths.text = "Deaths: " + String(Global.level_completion[selected_level_location][selected_level_name][2])
 		$Level_Descriptor/replay.visible = Global.load_replay(selected_level_location + selected_level_name + "_Best", true)
 	elif (parent.move and group_select) or update_group_text:
-		$group_select/name.bbcode_text = "[center]" + Global.loaded_level_groups[selected_group][0] + "[/center]"
+		$group_select/name.bbcode_text = "[center]" + unlocked_level_group[selected_group][0] + "[/center]"
 	
 	if !group_select:
 		$Cursor.position = cursor_positions[level_selected_convert]
@@ -242,21 +256,21 @@ func menu_update():
 			if bg_current == null: bg_next.modulate = Color(1, 1, 1, bg_transition)
 
 func group_visuals():
-	var repetitions = Global.loaded_level_groups.size()
+	var repetitions = unlocked_level_group.size()
 	if repetitions > 12:
 		repetitions = 12
 	for i in range(repetitions):
-		var file : String = Global.loaded_level_groups[i + group_shift][1] + Global.loaded_level_groups[i + group_shift][0] + "/logo.png"
-		if Global.loaded_level_groups[i + group_shift][1] == "user://":
+		var file : String = unlocked_level_group[i + group_shift][1] + unlocked_level_group[i + group_shift][0] + "/logo.png"
+		if unlocked_level_group[i + group_shift][1] == "user://":
 			get_node("group_select/" + String(i)).texture = preload("res://Visual/Title/logo_user.png")
-		elif Global.loaded_level_groups[i + group_shift][3] != "":
-			get_node("group_select/" + String(i)).texture = load(Global.loaded_level_groups[i + group_shift][3])
+		elif unlocked_level_group[i + group_shift][3] != null:
+			get_node("group_select/" + String(i)).texture = unlocked_level_group[i + group_shift][3]
 		else:
-			get_node("group_select/" + String(i)).texture = load(file)
-			Global.loaded_level_groups[i + group_shift][3] = file
+			get_node("group_select/" + String(i)).texture = Global.load_texture_from_png(file)
+			unlocked_level_group[i + group_shift][3] = get_node("group_select/" + String(i)).texture
 			if get_node("group_select/" + String(i)).texture == null:
 				get_node("group_select/" + String(i)).texture = preload("res://Visual/Title/logo_custom.png")
-				Global.loaded_level_groups[i + group_shift][3] = "res://Visual/Title/logo_custom.png"
+				unlocked_level_group[i + group_shift][3] = get_node("group_select/" + String(i)).texture
 		
 		Global.scale_down_sprite(get_node("group_select/" + String(i)), Vector2(2, 2))
 
@@ -279,19 +293,20 @@ func reload_all_levels(start : bool = false):
 				continue
 			if Global.level_group["levels"][i][0] == "*Level_Missing":
 				continue
-			if (Global.level_group["levels"][i][1] or Global.level_group["levels"][i][2] != 0):
+			if Global.level_group["levels"][i][1]:
 				Global.unlocked[Global.current_level_location][Global.level_group["levels"][i][0]] = false
 	
 	if user_group:
 		$title.texture = preload("res://Visual/Title/title_user.png")
 	else:
-		if Global.loaded_level_groups[selected_group][2] != "":
-			$title.texture = load(Global.loaded_level_groups[selected_group][2])
-		$title.texture = load(Global.current_level_location + "title.png")
-		Global.loaded_level_groups[selected_group][2] = Global.current_level_location + "title.png"
+		if unlocked_level_group[selected_group][2] != null:
+			$title.texture = unlocked_level_group[selected_group][2]
+		else:
+			$title.texture = Global.load_texture_from_png(Global.current_level_location + "title.png")
+			unlocked_level_group[selected_group][2] = $title.texture
 		if $title.texture == null:
 			$title.texture = preload("res://Visual/Title/title_custom.png")
-			Global.loaded_level_groups[selected_group][2] = "res://Visual/Title/title_custom.png"
+			unlocked_level_group[selected_group][2] = $title.texture 
 	
 	var comp_list : Array = []
 	for i in range(20):
@@ -310,8 +325,11 @@ func reload_all_levels(start : bool = false):
 				level.locked = false
 			elif Global.unlocked[Global.current_level_location].has(level.level_name):
 				level.locked = !Global.unlocked[Global.current_level_location][level.level_name]
-				if Global.level_group["levels"][i][2] != 0 and level.locked:
+				if level.locked and (Global.level_group["levels"][i][2][0] == 3 or Global.level_group["levels"][i][2][0] == 4):
 					comp_list.append(i)
+				if level.locked and Global.level_group["levels"][i][2][0] != 6:
+					Global.unlocked[Global.current_level_location][level.level_name] = Global.check_unlock_requirements(Global.level_group["levels"][i][2][0], Global.level_group["levels"][i][2][1], Global.level_group["levels"][i][2][2])
+					level.locked = !Global.unlocked[Global.current_level_location][level.level_name]
 			else:
 				level.locked = false
 		else:
@@ -320,11 +338,22 @@ func reload_all_levels(start : bool = false):
 			level.locked = true
 	
 	var stats : Array = completion_percentage()
+	
+	unlocked_level_group[selected_group][4] = stats[0]
+	
+	var group = -1
+	for i in range(Global.loaded_level_groups.size()):
+		if unlocked_level_group[selected_group][0] == Global.loaded_level_groups[i][0] and unlocked_level_group[selected_group][1] == Global.loaded_level_groups[i][1]:
+			group = i
+	
+	Global.loaded_level_groups[group][4] = stats[0]
+	
 	if !user_group: 
 		for i in comp_list:
-			if !stats[0] > float(Global.level_group["levels"][i][2]):
-				get_node("L/Level_" + String(i)).locked = true
-				Global.unlocked[Global.current_level_location][get_node("L/Level_" + String(i)).level_name] = true
+			var level = get_node("L/Level_" + String(i))
+			Global.unlocked[Global.current_level_location][level.level_name] = Global.check_unlock_requirements(Global.level_group["levels"][i][2][0], Global.level_group["levels"][i][2][1], Global.level_group["levels"][i][2][2])
+			level.locked = !Global.unlocked[Global.current_level_location][level.level_name]
+			if Global.unlocked[Global.current_level_location][level.level_name]:
 				stats[3] += 1
 		$completion_filling/text.text = String(stepify(stats[0], 1)) + "%"
 		$completion_filling/bar.scale.x = stats[0] / 100
@@ -337,14 +366,11 @@ func reload_all_levels(start : bool = false):
 	if !user_group: $Stats.text += "Unlocked: " + String(stats[3]) + "\n"
 	$Stats.text += "Bonuses: " + String(stats[4])
 	
-	Global.loaded_level_groups[selected_group][4] = stats[0]
-	#Global.loaded_level_groups[selected_group][5] = stats[4]
-	
 	for i in range(20):
 		get_node("L/Level_" + String(i)).reload()
 	
 	if user_group:
-		bg_start_changing("res://Objects/Backgrounds/BG_WaterWay.tscn", start)
+		bg_start_changing("res://Objects/Backgrounds/BG_UserUniverse.tscn", start)
 	elif Global.level_group.has("bg"):
 		bg_start_changing(Global.level_group["bg"], start)
 	else:
@@ -369,7 +395,7 @@ func character_select():
 	
 	var activate_char_select : bool = true
 	
-	if !Global.unlocked["*char_select_active"]: activate_char_select = false
+	if !Global.check_unlock("*char_select_active"): activate_char_select = false
 	if Global.replay: activate_char_select = false
 	if level_dat.has("tags"): if level_dat["tags"].has("character_preselected"): activate_char_select = false
 	
@@ -384,7 +410,7 @@ func character_select():
 		#parent.get_node("CHARACTER").selected_level = selected_level_name
 		#parent.get_node("CHARACTER").selected_location = selected_level_location
 	else:
-		if Global.change_level("", true) != OK:
+		if Global.change_level("", true, false) != OK:
 			$Cursor/AnimationPlayer.play("Refuse")
 			$fail.visible = true
 			selected = false
@@ -419,7 +445,7 @@ func completion_percentage():
 				unlock += 1
 				#print("unlocked " + String(i))
 		for c in range(3):
-			if Global.level_completion["*collectibles"][Global.current_level_location].has(level_string + "*" + String(c)):
+			if Global.level_completion["*collectibles"][Global.current_level_location].has(level_string + "*" + String(c + 1)):
 				bonus += 1
 	#print(String(completion) + " / " + String(full))
 	

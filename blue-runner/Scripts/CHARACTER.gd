@@ -43,7 +43,7 @@ func change_text():
 		$description.bbcode_text = ""
 
 func shift_renders(direction : int):
-	direction = float(sign(direction))
+	direction = int(sign(direction))
 	selected_char += direction
 	if selected_char < 0:
 		selected_char += unlocked_characters.size()

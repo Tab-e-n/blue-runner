@@ -24,9 +24,10 @@ func _ready():
 	ready_optionbutton_setup($GUI/base/base_done, data.level_icon)
 	ready_optionbutton_setup($GUI/base/base_perfect, data.level_icon)
 	
+	# warning-ignore:integer_division
 	$VScrollBar.max_value = options_span / 64
 	
-	character_changed_unlock_type(0)
+	data.changed_unlock_type(0, $GUI/character/text_edit, $GUI/character/type, $\"GUI/character/1_text\", $\"GUI/character/2_text\", $\"GUI/character/2_number\", \"\")
 	
 	$GUI/mod/version.text = data.VERSION
 
@@ -45,6 +46,9 @@ func _process(_delta):
 	rect_size = window
 	$VScrollBar.rect_size.y = window.y
 	$VScrollBar.page = window.y / 64
+	
+	if Input.is_action_just_pressed(\"25\"):
+		_on_exit_pressed()
 
 func _on_VScrollBar_scrolling():
 	$GUI.rect_position.y = -$VScrollBar.value * 64
@@ -121,48 +125,8 @@ func base_remove():
 
 enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
 
-func character_changed_unlock_type(index : int):
-	$\"GUI/character/1_text\".text = \"\"
-	$\"GUI/character/2_text\".text = \"\"
-	$\"GUI/character/2_number\".value = 0
-	match(index):
-		UNLOCK_ALWAYS:
-			$\"GUI/character/1_text\".visible = false
-			$\"GUI/character/2_text\".visible = false
-			$\"GUI/character/2_number\".visible = false
-			$GUI/character/text_edit.text = \"Unlock Type\\n\"
-		UNLOCK_BEAT:
-			$\"GUI/character/1_text\".visible = true
-			$\"GUI/character/2_text\".visible = true
-			$\"GUI/character/2_number\".visible = false
-			$GUI/character/text_edit.text = \"Unlock Type\\nLevel Group\\nLevel Name\"
-		UNLOCK_PAR:
-			$\"GUI/character/1_text\".visible = true
-			$\"GUI/character/2_text\".visible = true
-			$\"GUI/character/2_number\".visible = false
-			$GUI/character/text_edit.text = \"Unlock Type\\nLevel Group\\nLevel Name\"
-		UNLOCK_COMPLETION:
-			$\"GUI/character/1_text\".visible = true
-			$\"GUI/character/2_text\".visible = false
-			$\"GUI/character/2_number\".visible = true
-			$\"GUI/character/2_number\".allow_greater = false
-			$GUI/character/text_edit.text = \"Unlock Type\\nLevel Group\\nPercentage\"
-		UNLOCK_BONUS:
-			$\"GUI/character/1_text\".visible = true
-			$\"GUI/character/2_text\".visible = false
-			$\"GUI/character/2_number\".visible = true
-			$\"GUI/character/2_number\".allow_greater = true
-			$GUI/character/text_edit.text = \"Unlock Type\\nBonus Group\\nAmount of Bonus\"
-		UNLOCK_CUSTOM:
-			$\"GUI/character/1_text\".visible = true
-			$\"GUI/character/2_text\".visible = false
-			$\"GUI/character/2_number\".visible = false
-			$GUI/character/text_edit.text = \"Unlock Type\\nUnlock Name\"
-		UNLOCK_NEVER:
-			$\"GUI/character/1_text\".visible = false
-			$\"GUI/character/2_text\".visible = false
-			$\"GUI/character/2_number\".visible = false
-			$GUI/character/text_edit.text = \"Unlock Type\\n\"
+func character_changed_unlock_type(index):
+	data.changed_unlock_type(index, $GUI/character/text_edit, $GUI/character/type, $\"GUI/character/1_text\", $\"GUI/character/2_text\", $\"GUI/character/2_number\", \"\")
 
 func character_save():
 	var loadfile = File.new()
@@ -230,7 +194,7 @@ func character_load():
 	$GUI/character/name.text = char_data[3]
 	$GUI/character/description.text = char_data[4]
 	
-	character_changed_unlock_type(char_data[0])
+	data.changed_unlock_type(char_data[0], $GUI/character/text_edit, $GUI/character/type, $\"GUI/character/1_text\", $\"GUI/character/2_text\", $\"GUI/character/2_number\", \"\")
 
 func character_remove():
 	var loadfile = File.new()
@@ -355,7 +319,10 @@ __meta__ = {
 position = Vector2( 512, 384 )
 
 [node name="GUI" type="Control" parent="."]
-margin_right = 1024.0
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -512.0
+margin_right = 512.0
 margin_bottom = 768.0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -629,6 +596,9 @@ text = "Always Unlocked"
 clip_text = true
 items = [ "Always Unlocked", null, false, 0, null, "Beat Level", null, false, 1, null, "Par Level", null, false, 2, null, "Group Completion", null, false, 3, null, "Bonus Amount", null, false, 4, null, "Custom Unlock", null, false, 5, null, "Never Unlocked", null, false, 6, null ]
 selected = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="1_text" type="LineEdit" parent="GUI/character"]
 margin_left = 328.0
@@ -808,6 +778,9 @@ margin_right = 64.0
 margin_bottom = 64.0
 texture_normal = ExtResource( 10 )
 texture_pressed = ExtResource( 9 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="pressed" from="GUI/base/load" to="." method="base_load"]
 [connection signal="pressed" from="GUI/base/base_save" to="." method="base_save"]
 [connection signal="pressed" from="GUI/base/base_remove" to="." method="base_remove"]

@@ -19,9 +19,10 @@ var user_directory : String = \"user://sonicRunnerEditor\"
 var mods_installed : Array
 var mods_enabled : Dictionary
 
-const INPUT_AMOUNT : int = 25
+const INPUT_AMOUNT : int = 26
 var last_input_events : Array = range(INPUT_AMOUNT)
 
+var default_settings : Dictionary = {}
 var settings : Dictionary = {
 	\"*version\" : VERSION,
 	\"sonic_runner_folder\" : \"\",
@@ -88,6 +89,7 @@ var settings : Dictionary = {
 		KEY_2,
 		KEY_3,
 		KEY_4,
+		KEY_ESCAPE, # RETURN
 	],
 	
 	\"editor_random_scale_range\" : [0.5, 3],
@@ -112,9 +114,12 @@ func _ready():
 	dir.open(\"user://\")
 	if !dir.dir_exists(\"SRLevels\"): dir.make_dir(\"SRLevels\")
 	
+	default_settings = settings.duplicate()
+	
 	load_game()
 	load_editor_vanilla()
-	load_editor_mods()
+	# MOD LOADING IS DISABLED FOR NOW
+	#load_editor_mods()
 
 func _process(_delta):
 	pass
@@ -150,7 +155,9 @@ func load_game(fail = false):
 	var loadfile = File.new()
 	var temp = {}
 	
-	if not loadfile.file_exists(user_directory) or fail: # does file exist
+	if fail:
+		pass
+	elif !loadfile.file_exists(user_directory): # does file exist
 		save_game()
 	else:
 		loadfile.open(user_directory, File.READ)
@@ -226,7 +233,7 @@ func load_editor_vanilla():
 	
 	# Level Icon
 	print(\"scanning vanilla level icons\")
-	scan_single_directory(\"res:/\", \"/Visual/Level/\", level_icon, \".png\", \"icon\")
+	scan_single_directory(\"res:/\", \"/Visual/Level/\", level_icon, \".png.import\", \"icon\")
 	
 	print(\"scanning vanilla level base\")
 	load_dat_file(\"res:/\", \"/Visual/Level/\", level_base, \"base\")
@@ -235,7 +242,7 @@ func load_editor_vanilla():
 	
 	# Decor
 	print(\"scanning vanilla decor\")
-	scan_multi_directory(\"res:/\", \"/Visual/\", place_decor, \".png\")
+	scan_multi_directory(\"res:/\", \"/Visual/\", place_decor, \".png.import\")
 
 func load_editor_mods():
 	var directory : Directory = Directory.new()
@@ -265,7 +272,7 @@ func load_editor_mods():
 		
 		# Level Icons
 		print(\"scanning for level icons\")
-		scan_single_directory(\"Mods/\" + mod_name, \"/Visual/Level/\", level_icon, \".png\", \"icon\")
+		scan_single_directory(\"Mods/\" + mod_name, \"/Visual/Level/\", level_icon, \".png.import\", \"icon\")
 		
 		print(\"scanning for level base\")
 		load_dat_file(\"Mods/\" + mod_name, \"/Visual/Level/\", level_base, \"base\")
@@ -274,7 +281,7 @@ func load_editor_mods():
 		
 		# Visuals
 		print(\"scanning for decor\")
-		scan_multi_directory(\"Mods/\" + mod_name, \"/Visual/\", place_decor, \".png\")
+		scan_multi_directory(\"Mods/\" + mod_name, \"/Visual/\", place_decor, \".png.import\")
 
 func load_dat_file(main_directory : String, sub_directory : String, storage : Array, file_type : String):
 	var loadfile = File.new()
@@ -306,6 +313,8 @@ func scan_single_directory(main_directory : String, sub_directory : String, stor
 		current_file = directory.get_next()
 		while current_file != \"\":
 			if current_file.ends_with(file_type):
+				if current_file.ends_with(\".import\"):
+					current_file = current_file.substr(0,current_file.find(\".import\"))
 				print(\"found \" + file_descriptor + \": \" + current_file)
 				storage.append([current_file, main_directory])
 			current_file = directory.get_next()
@@ -335,6 +344,8 @@ func scan_multi_directory(main_directory : String, start_directory : String, sto
 					storage[current_directory + current_file + \"/\"] = []
 					directories_to_visit.append(current_directory + current_file + \"/\")
 			elif current_file.ends_with(file_type):
+				if current_file.ends_with(\".import\"):
+					current_file = current_file.substr(0,current_file.find(\".import\"))
 				storage[current_directory].append(current_directory + current_file)
 			current_file = directory.get_next()
 		directories_to_visit.pop_front()
@@ -451,6 +462,30 @@ func load_mods_data_files(mod_name : String):
 	if !mods_enabled[mod_name][0] and !mods_enabled[mod_name][1]:
 		return 2
 
+func load_texture_from_png(path : String = \"\"):
+	if path == \"\": return null
+	
+	if path.begins_with(\"res://\"):
+		var stream_texture : StreamTexture = load(path)
+		if stream_texture != null:
+			return stream_texture
+		return null
+	
+	var file : File = File.new()
+	var image : Image = Image.new()
+	var texture : ImageTexture = ImageTexture.new()
+	
+	if file.file_exists(path):
+		# warning-ignore:return_value_discarded
+		file.open(path, File.READ)
+		var buffer = file.get_buffer(file.get_len())
+		# warning-ignore:return_value_discarded
+		image.load_png_from_buffer(buffer)
+		texture.create_from_image(image, texture.STORAGE_COMPRESS_LOSSLESS)
+		#print(ResourceSaver.get_recognized_extensions(texture))
+		return texture
+	return null
+
 func scale_down_sprite(sprite : Sprite, final_scale : Vector2 = Vector2(1, 1), desired_rect : Vector2 = Vector2(64, 64)):
 	sprite.scale = Vector2(1, 1)
 	var sprite_rect : Vector2 = sprite.get_rect().size
@@ -466,6 +501,60 @@ func select_option_button(button : OptionButton, text : String, meta : String):
 		if button.get_item_text(i) == text and button.get_item_metadata(i) == meta:
 			print(button.get_item_text(i) + button.get_item_metadata(i))
 			button.select(i)
+
+
+enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
+func changed_unlock_type(index : int, unlock_text : RichTextLabel, type_button : OptionButton, text_1 : LineEdit, text_2 : LineEdit, number_2 : SpinBox, extra_text : String = \"\"):
+	if index != -1:
+		type_button.select(index)
+		type_button.visible = true
+	text_1.text = \"\"
+	text_2.text = \"\"
+	number_2.value = 0
+	match(index):
+		-1:
+			text_1.visible = false
+			text_2.visible = false
+			number_2.visible = false
+			type_button.visible = false
+			unlock_text.text = \"\"
+		UNLOCK_ALWAYS:
+			text_1.visible = false
+			text_2.visible = false
+			number_2.visible = false
+			unlock_text.text = \"Unlock Type\" + extra_text
+		UNLOCK_BEAT:
+			text_1.visible = true
+			text_2.visible = true
+			number_2.visible = false
+			unlock_text.text = \"Unlock Type\" + extra_text + \"\\nLevel Group\" + extra_text + \"\\nLevel Name\" + extra_text
+		UNLOCK_PAR:
+			text_1.visible = true
+			text_2.visible = true
+			number_2.visible = false
+			unlock_text.text = \"Unlock Type\" + extra_text + \"\\nLevel Group\" + extra_text + \"\\nLevel Name\" + extra_text
+		UNLOCK_COMPLETION:
+			text_1.visible = true
+			text_2.visible = false
+			number_2.visible = true
+			number_2.allow_greater = false
+			unlock_text.text = \"Unlock Type\" + extra_text + \"\\nLevel Group\" + extra_text + \"\\nPercentage\" + extra_text
+		UNLOCK_BONUS:
+			text_1.visible = true
+			text_2.visible = false
+			number_2.visible = true
+			number_2.allow_greater = true
+			unlock_text.text = \"Unlock Type\" + extra_text + \"\\nBonus Group\" + extra_text + \"\\nBonus Amount\" + extra_text
+		UNLOCK_CUSTOM:
+			text_1.visible = true
+			text_2.visible = false
+			number_2.visible = false
+			unlock_text.text = \"Unlock Type\" + extra_text + \"\\nUnlock Name\" + extra_text
+		UNLOCK_NEVER:
+			text_1.visible = false
+			text_2.visible = false
+			number_2.visible = false
+			unlock_text.text = \"Unlock Type\" + extra_text
 
 func key_names(key_number : int):
 	if key_number >= 33 and key_number <= 255: return char(key_number)
@@ -579,6 +668,39 @@ func key_names(key_number : int):
 		KEY_LAUNCHF: return \"SHORTCUT F\"
 		KEY_UNKNOWN: return \"???\"
 	return \"WHAT IS THIS?\"
+
+# I know what this does i have no idea how it does
+# And i also probs wont use it so cool
+# Here is where i stole it from
+# https://github.com/lifelike/godot-animator-import/blob/master/addons/aaimport/aa_import_plugin.gd
+func save_stex(image, save_path, filter=false):
+	var tmppng = \"%s-tmp.png\" % [save_path]
+	image.save_png(tmppng)
+	var pngf = File.new()
+	pngf.open(tmppng, File.READ)
+	var pnglen = pngf.get_len()
+	var pngdata = pngf.get_buffer(pnglen)
+	pngf.close()
+	# warning-ignore:return_value_discarded
+	Directory.new().remove(tmppng)
+	var stexf = File.new()
+	stexf.open(\"%s.stex\" % [save_path], File.WRITE)
+	stexf.store_8(0x47) # G
+	stexf.store_8(0x44) # D
+	stexf.store_8(0x53) # S
+	stexf.store_8(0x54) # T
+	stexf.store_32(image.get_width())
+	stexf.store_32(image.get_height())
+	stexf.store_32(4 if filter else 0)
+	stexf.store_32(0x07100000) # data format
+	stexf.store_32(1) # nr mipmaps
+	stexf.store_32(pnglen + 6)
+	stexf.store_8(0x50) # P
+	stexf.store_8(0x4e) # N
+	stexf.store_8(0x47) # G
+	stexf.store_8(0x20) # space
+	stexf.store_buffer(pngdata)
+	stexf.close()
 "
 
 [node name="data" type="Control"]

@@ -3608,10 +3608,6 @@ anims/SET_TO_REPLAY = SubResource( 13 )
 
 [node name="CamTarget" type="Node2D" parent="."]
 
-[node name="Camera" parent="." instance=ExtResource( 1 )]
-limit_x = Vector2( -2048, 0 )
-limit_y = Vector2( 0, 2048 )
-
 [node name="SELECT" type="Node2D" parent="."]
 visible = false
 script = ExtResource( 25 )
@@ -3825,6 +3821,13 @@ RETURN - CHANGE ZONE[/right]"
 text = "EXIT - GO BACK
 RETURN - CHANGE ZONE"
 
+[node name="pages" parent="SELECT" instance=ExtResource( 57 )]
+margin_left = -992.0
+margin_top = -728.0
+margin_right = -352.0
+margin_bottom = -653.0
+text = "0/0"
+
 [node name="completion_filling" type="Sprite" parent="SELECT"]
 self_modulate = Color( 0.313726, 0.282353, 0.560784, 1 )
 position = Vector2( -832, -704 )
@@ -3888,7 +3891,7 @@ text = ""
 
 [node name="BG_MENU" type="Polygon2D" parent="SELECT"]
 visible = false
-color = Color( 0.0156863, 0.0235294, 0.133333, 0 )
+color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 polygon = PoolVector2Array( -1024, 768, 1024, 768, 1024, -768, -1024, -768 )
 
 [node name="dependencies" type="Label" parent="SELECT"]
@@ -4016,10 +4019,9 @@ scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 35 )
 
 [node name="menu_circle_3" type="Sprite" parent="."]
-visible = false
 modulate = Color( 0.117647, 0.341176, 0.611765, 1 )
 position = Vector2( -1032, 800 )
-scale = Vector2( 1e-05, 1e-05 )
+scale = Vector2( 2.75, 2.75 )
 texture = ExtResource( 35 )
 
 [node name="REPLAY" type="Node2D" parent="."]
@@ -4034,8 +4036,9 @@ scale = Vector2( 1.3, 1.3 )
 texture = ExtResource( 35 )
 
 [node name="replay_list" type="ItemList" parent="REPLAY"]
-margin_left = -832.0
-margin_top = -576.0
+margin_left = -848.0
+margin_top = -528.0
+margin_bottom = 32.0
 rect_scale = Vector2( 2, 2 )
 theme = ExtResource( 56 )
 __meta__ = {
@@ -4043,20 +4046,27 @@ __meta__ = {
 }
 
 [node name="replay_text" parent="REPLAY" instance=ExtResource( 40 )]
-margin_left = -816.0
-margin_top = -688.0
-margin_right = 0.0
-margin_bottom = -624.0
+margin_left = -832.0
+margin_top = -704.0
+margin_right = -16.0
+margin_bottom = -640.0
 rect_scale = Vector2( 2, 2 )
 text = "VIEW"
 scroll_active = true
 
 [node name="hint" parent="REPLAY" instance=ExtResource( 40 )]
-margin_left = -824.0
-margin_top = -760.0
-margin_right = 824.0
-margin_bottom = -696.0
+margin_left = -832.0
+margin_top = -768.0
+margin_right = 816.0
 text = "Switch mode with "
+scroll_active = true
+
+[node name="dir" parent="REPLAY" instance=ExtResource( 40 )]
+margin_left = -832.0
+margin_top = -584.0
+margin_right = 816.0
+margin_bottom = -520.0
+text = "DIRECTORY"
 scroll_active = true
 
 [node name="HELP" type="Node2D" parent="."]
@@ -4396,8 +4406,6 @@ anims/down = SubResource( 22 )
 anims/up = SubResource( 23 )
 
 [node name="OPTION" type="Node2D" parent="."]
-visible = false
-scale = Vector2( 1e-05, 1e-05 )
 script = ExtResource( 36 )
 
 [node name="menu_circle2" type="Sprite" parent="OPTION"]
@@ -4412,7 +4420,7 @@ anims/Animate = SubResource( 24 )
 [node name="menu_circle" type="Sprite" parent="OPTION"]
 modulate = Color( 0.12549, 0.207843, 0.384314, 0 )
 position = Vector2( -3.38813e-21, 0 )
-scale = Vector2( 2, 2 )
+scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 27 )
 
 [node name="Anim" type="AnimationPlayer" parent="OPTION/menu_circle"]
@@ -4437,6 +4445,7 @@ anims/Refuse = SubResource( 27 )
 anims/Spin = SubResource( 28 )
 
 [node name="main" type="Node2D" parent="OPTION"]
+visible = false
 
 [node name="ghosts" type="Sprite" parent="OPTION/main"]
 position = Vector2( -800, -416 )
@@ -4489,7 +4498,6 @@ custom_colors/default_color = Color( 0.917647, 0.933333, 0.952941, 1 )
 text = "DELETE SAVE"
 
 [node name="controls" type="Node2D" parent="OPTION"]
-visible = false
 
 [node name="static" parent="OPTION/controls" instance=ExtResource( 40 )]
 margin_left = -760.0
@@ -4545,6 +4553,7 @@ scale = Vector2( 3, 3 )
 texture = ExtResource( 28 )
 
 [node name="MAIN" type="Node2D" parent="."]
+visible = false
 rotation = 0.523599
 script = ExtResource( 26 )
 
@@ -4639,3 +4648,7 @@ text = "You are loading into a new
 version of SR. Some files might
 not open correctly, if they
 open at all."
+
+[node name="Camera" parent="." instance=ExtResource( 1 )]
+limit_x = Vector2( -2048, 0 )
+limit_y = Vector2( 0, 2048 )

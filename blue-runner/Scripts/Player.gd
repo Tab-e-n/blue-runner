@@ -1,5 +1,6 @@
 extends KinematicBody2D
 
+onready var level : Node2D = get_tree().current_scene
 onready var global : Control = $"/root/Global"
 onready var character : Node2D
 
@@ -12,11 +13,17 @@ export var facing : String = "right"
 
 var momentum : Vector2 = Vector2(0, 0)
 
-export var deny_input : bool = true
+var _last_on_moving_ground : bool = false
+var on_moving_ground : bool = false
+var extra_momentum : Vector2 = Vector2(0, 0)
+
+var deny_input : bool = true
+var start : bool = true
 var end : bool = false
 var dead : bool = false
 var death_wait : int = 0
 
+var start_timer : bool = false
 var timer : float = 0
 var collectible : Array = []
 var unlock : Array = []
@@ -30,9 +37,10 @@ var current_sound : String = ""
 var break_breakables : bool = false
 var break_just_happened : bool = false
 var punted : bool = false
+var launched : bool = false
+var speeding : bool = false
 
 func _ready():
-	$pointer.visible = false
 	visible = true
 	global.current_level = get_parent().name
 	
@@ -48,6 +56,7 @@ func _ready():
 				queue_free()
 				return
 		replay = true
+		deny_input = true
 		
 		modulate = Color(0, 0, 0, 0.5)
 		#$trail.visible = false
@@ -79,16 +88,44 @@ func _ready():
 	add_child(char_node)
 	character = char_node
 	character.get_node("Anim").current_animation = "Enter"
-	#if get_parent().name == "Main": position = $"/root/Global".tele_pos # HUB WORLD CODE
+	
+	if level.get_script() != null:
+		if level.unicolor_active and !ghost:
+			material.set_shader_param("active", true)
+
+func shader_color():
+	material.set_shader_param("color", character.unicolor_color)
+
+func _input(event):
+	if event is InputEventKey and event.pressed:
+		if !start:
+			level.timers_active = true
+		else:
+			start_timer = true
 
 func _physics_process(delta):
-	if get_parent().get_node("Player").replay and ghost:
+	if level.get_node("Player").replay and ghost:
 		queue_free()
 	
-	timer += delta
+	if !start and start_timer:
+		level.timers_active = true
+		start_timer = false
+	
+	if level.timers_active:
+		timer += delta
+		if !replay and !end:
+			call_deferred("record")
+	
+	#print(deny_input, replay, dead, end, level.timer_active)
 	
 	if !deny_input:
-		pass
+		if !level.unicolor_active and false:
+			var speed : float = sqrt(pow(momentum.x, 2) + pow(momentum.y, 2))
+			material.set_shader_param("active", speed > 1500)
+			if speed > 1500:
+				var blend : float = (speed - 1500) / 1000
+				if blend > 1: blend = 1
+				material.set_shader_param("blend", blend)
 	# - - - REPLAY STATE - - -
 	elif replay:
 		var timer_converted : int = int(timer * 1000)
@@ -115,6 +152,21 @@ func _physics_process(delta):
 					global.level_completion[_name][2] = 1
 			else:
 				global.level_completion[_name] = [null, null, 1]
+
+func move_player_character():
+	collision_mask = 1048575
+	# warning-ignore:return_value_discarded
+	move_and_slide(momentum + extra_momentum, Vector2(0, -1))
+	collision_mask = 1
+	
+	break_just_happened = false
+	on_moving_ground = false
+	set_deferred("launched", false)
+	for i in get_slide_count(): collision_default_effects(get_slide_collision(i).collider.collision_layer, i)
+	if on_moving_ground != _last_on_moving_ground and on_moving_ground == false:
+		momentum += extra_momentum
+		extra_momentum = Vector2(0, 0)
+	_last_on_moving_ground = on_moving_ground
 
 func collision_default_effects(collider_type : int, collider):
 	punted = false
@@ -147,6 +199,10 @@ func collision_default_effects(collider_type : int, collider):
 		object.break_active = true
 		object.break_position = position
 		break_just_happened = true
+	
+	if Layers[0] and Layers[3]:
+		on_moving_ground = true
+		extra_momentum = get_slide_collision(collider).collider.momentum
 	
 	if Layers[2]:
 		dead = true
@@ -191,6 +247,8 @@ func punt(boost : Vector2, overwrite_momentum : bool):
 	
 	state = "air"
 	punted = true
+	if momentum.y < -1500:
+		launched = true
 
 func play_sound(sound_name : String):
 	if sound_name != "" and !ghost:

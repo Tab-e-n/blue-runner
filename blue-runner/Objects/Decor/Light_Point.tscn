@@ -14,7 +14,7 @@ resource_name = "flicker"
 length = 8.0
 loop = true
 tracks/0/type = "value"
-tracks/0/path = NodePath(".:modulate")
+tracks/0/path = NodePath(".:self_modulate")
 tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -23,11 +23,12 @@ tracks/0/keys = {
 "times": PoolRealArray( 0, 4, 8 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
-"values": [ Color( 0, 0.596078, 0.572549, 0.156863 ), Color( 0, 0.596078, 0.572549, 0.313726 ), Color( 0, 0.596078, 0.572549, 0.156863 ) ]
+"values": [ Color( 1, 1, 1, 0.5 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0.5 ) ]
 }
 
 [node name="light_point" type="Sprite"]
-modulate = Color( 0, 0.596078, 0.572549, 0.156863 )
+modulate = Color( 0, 0.596078, 0.572549, 0.313726 )
+self_modulate = Color( 1, 1, 1, 0.5 )
 position = Vector2( 0, -256 )
 texture = ExtResource( 1 )
 script = SubResource( 1 )

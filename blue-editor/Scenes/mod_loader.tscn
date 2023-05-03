@@ -14,18 +14,24 @@ script/source = "extends Control
 var selected_mod : int = 0
 
 func _ready():
+	$import_disabled.popup()
+	return
 	for i in data.mods_enabled.keys():
 		$mod_list.add_item(i)
 	$mod_list.select(selected_mod)
 	mod_selected(selected_mod)
 
 func _process(_delta):
+	return
 	var window = get_viewport().get_visible_rect().end
 	margin_right = window.x / 2
 	margin_left = window.x / -2
 	margin_bottom = window.y / 2
 	margin_top = window.y / -2
 	
+	
+	if Input.is_action_just_pressed(\"25\"):
+		exit_pressed()
 
 func mod_selected(index):
 	var loadfile = File.new()
@@ -198,7 +204,6 @@ func import_dir_selected(dir : String):
 					directory.copy(current_directory + current_file, filepath + \"/Mods\" + new_folder + current_file)
 				current_file = directory.get_next()
 			directories_to_visit.pop_front()
-			
 	data.check_mods()
 	$mod_list.add_item(data.mods_enabled.keys()[data.mods_enabled.size() - 1])
 	$mod_list.select(data.mods_enabled.size() - 1)
@@ -248,7 +253,7 @@ margin_bottom = 128.0
 custom_colors/default_color = Color( 1, 1, 1, 1 )
 bbcode_enabled = true
 bbcode_text = "FILENAME"
-text = "VERSION"
+text = "FILENAME"
 
 [node name="mod_status" parent="." instance=ExtResource( 2 )]
 anchor_right = 0.0
@@ -399,8 +404,28 @@ margin_right = -32.0
 margin_bottom = 64.0
 texture_normal = ExtResource( 7 )
 texture_pressed = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="import_disabled" type="AcceptDialog" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -512.0
+margin_top = -384.0
+margin_right = 512.0
+margin_bottom = 384.0
+window_title = "Oopsie!"
+dialog_text = "The mod loader has been disabled for now, since mods were a more
+complex thing to implement than what i imaged. (I hate .stex)"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="toggled" from="mod_active" to="." method="mod_activate"]
 [connection signal="item_selected" from="mod_list" to="." method="mod_selected"]
 [connection signal="pressed" from="import" to="." method="import_popup"]
 [connection signal="dir_selected" from="import_popup" to="." method="import_dir_selected"]
 [connection signal="pressed" from="exit" to="." method="exit_pressed"]
+[connection signal="confirmed" from="import_disabled" to="." method="exit_pressed"]

@@ -47,6 +47,7 @@ var last_facing : String
 export var trail_color : Color = Color(1, 1, 1, 1)
 var trail : PoolVector2Array = []
 var trail_converted : PoolVector2Array = []
+export var unicolor_color : Color = Color(1, 1, 1, 1)
 
 export var idle_anim_timer : int = -1
 
@@ -60,6 +61,9 @@ func _ready():
 	trail.resize(40)
 	for i in range(trail.size()):
 		trail[i] = player.position
+	
+	if !player.ghost:
+		player.call_deferred("shader_color")
 
 func _physics_process(_delta):
 	col_1.position = $col_1.position
@@ -72,6 +76,12 @@ func _physics_process(_delta):
 	
 	if Input.is_action_just_pressed("jump"): jump_buffer = jump_buffer_constant
 	
+	if player.start:
+		if jump_buffer > 0:
+			jump_buffer -= 1
+		if Input.is_action_just_pressed("special"):
+			sliding = 15
+			player.play_sound("dash")
 	if !player.deny_input:
 		# GRAVITY / DECELERATION
 		if player.is_on_ceiling(): player.momentum.y = 0
@@ -226,18 +236,13 @@ func _physics_process(_delta):
 				jump_amount -= 1
 				jump(jump_power)
 				#jump_buffer = 0
-		if Input.is_action_just_released("jump") and !gravity_switch and !player.punted and sliding == 0:
+		if !Input.is_action_pressed("jump") and !gravity_switch and !player.punted and sliding == 0:
 			gravity_switch = true
 			if player.momentum.y < -200: player.momentum.y = -200
 		
 		# COLLISION / MOVING
 		# warning-ignore:return_value_discarded
-		player.collision_mask = 1048575
-		player.move_and_slide(player.momentum, Vector2(0, -1))
-		player.collision_mask = 1
-		
-		player.break_just_happened = false
-		for i in player.get_slide_count(): player.collision_default_effects(player.get_slide_collision(i).collider.collision_layer, i)
+		player.move_player_character()
 		
 		if player.is_on_floor() or player.move_and_collide(Vector2(0,1), false, true, true): player.state = "ground"
 		
@@ -254,10 +259,14 @@ func _physics_process(_delta):
 				if (player.facing == "left" and on_wall_left) or (player.facing == "right" and on_wall_right):
 					wall_anim = -1
 				$Anim.current_animation = "On_Wall"
+			elif player.launched or $Anim.current_animation == "Jump_Spin":# or (last_anim == "Jump_Spin" and player.momentum.y < 0):
+				$Anim.current_animation = "Jump_Spin"
+			elif last_anim == "Jump_Spin" and $Anim.current_animation == "":#last_anim == "Jump_Up" or last_anim == "On_Wall" or ground_buffer > 0:
+				$Anim.play("Jump_Transition")
 			elif Input.is_action_pressed("jump") and !gravity_switch:
 				$Anim.current_animation = "Jump_Up"
-			elif last_anim != "Jump_Transition" and last_anim != "":#last_anim == "Jump_Up" or last_anim == "On_Wall" or ground_buffer > 0:
-				$Anim.current_animation = "Jump_Transition"
+			elif last_anim != "Jump_Transition" and last_anim != "" and last_anim != "Jump_Spin":
+				$Anim.play("Jump_Transition")
 			
 			if last_anim != "On_Wall" and $Anim.current_animation == "On_Wall":
 				if particle_disable == 0:
@@ -288,7 +297,10 @@ func _physics_process(_delta):
 						2:
 							$Anim.current_animation = "Idle_2"
 					idle_anim_timer -= 1
-				elif $Anim.current_animation != "Default" and $Anim.current_animation != "Idle_1" and $Anim.current_animation != "Idle_2":
+				elif($Anim.current_animation != "Default"
+				and $Anim.current_animation != "Idle_1"
+				and $Anim.current_animation != "Idle_2"
+				and $Anim.current_animation != "Enter"):
 					$Anim.current_animation = "Default"
 					idle_anim_timer = 30 * g.rand.randi_range(7, 11)
 		
@@ -302,8 +314,6 @@ func _physics_process(_delta):
 		
 		if player.state == "air": state_air = 5
 		if particle_disable != 0: particle_disable -= 1
-		
-		player.record()
 	
 	# - - - REPLAY STATE - - -
 	elif player.replay and player.timer > player.replay_timer:
@@ -328,13 +338,6 @@ func _physics_process(_delta):
 		if player.state == "ground":
 			pass
 			#$Anim.current_animation = "Concern"
-	elif player.deny_input:
-		if jump_buffer > 0:
-			jump_buffer -= 1
-		if Input.is_action_just_pressed("special"):
-			sliding = 15
-			player.play_sound("dash")
-		player.record()
 	
 	# Trail code
 	for i in range(trail.size() - 1):
@@ -381,4 +384,5 @@ func particle_summon(particle_position : Vector2, particle_rotation : float, typ
 
 func enter_anim_end():
 	if !player.replay:
+		player.start = false
 		player.deny_input = false

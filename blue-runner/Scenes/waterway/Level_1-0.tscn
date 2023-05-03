@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://Objects/KillFloor.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Objects/Backgrounds/BG_WaterWay.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Visual/decor_bluree.png" type="Texture" id=6]
+[ext_resource path="res://Scripts/Level_Control.gd" type="Script" id=7]
 [ext_resource path="res://Visual/decor_rock_1.png" type="Texture" id=8]
 [ext_resource path="res://Visual/decor_rock_2.png" type="Texture" id=9]
 [ext_resource path="res://Visual/decor_dirt_rock_1.png" type="Texture" id=10]
@@ -17,6 +18,7 @@
 [ext_resource path="res://Visual/decor_tint.png" type="Texture" id=16]
 
 [node name="Level_1-0" type="Node2D"]
+script = ExtResource( 7 )
 
 [node name="Camera" parent="." instance=ExtResource( 1 )]
 
@@ -251,7 +253,7 @@ ghost = true
 position = Vector2( -672, 576 )
 
 [node name="Finish" parent="." instance=ExtResource( 15 )]
-tele_destination = "Level_1-1"
+tele_destination = "*Level_Next"
 par = 2.3
 
 [node name="DECOR_GROUND" type="Node2D" parent="."]

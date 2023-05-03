@@ -1,6 +1,7 @@
 extends StaticBody2D
 
 var editor_properties : Dictionary = {
+	"description" : "Breakable glass.\nIt is solid until the player does a specific action, which then breaks the glass, allowing you to go through it. What action breaks the glass is character specific.",
 	"object_path" : "res://Objects/BreakableGlass.tscn",
 	"object_type" : "normal",
 	"layer" : "selected",

@@ -1,6 +1,7 @@
 extends Node2D
 
 export var editor_properties : Dictionary = {
+	"description" : "The player.\nThis objects position is where the player starts. With the character properties you can specify which character the player plays as. if character_name is left blank, the player will choose the character they want for the level.",
 	"object_path" : "res://Objects/Player/Player.tscn",
 	"object_type" : "player", # some object types have a limited amount of the times they can appear
 	"layer" : "special", # selected or special
@@ -40,9 +41,9 @@ func _process(_delta):
 		if !get_child(0).name == tcl + character_name:
 			new_texture()
 		if facing == "right":
-			scale.x = 1
+			get_child(0).flip_h = false
 		else:
-			scale.x = -1
+			get_child(0).flip_h = true
 
 func new_texture():
 	var tcl = character_location
@@ -55,7 +56,7 @@ func new_texture():
 	else:
 		get_child(0).texture = load("res://Visual/Objects/character_missing.png")
 
-func edit_left_just_pressed(_level_mouse_position : Vector2):
+func edit_left_just_pressed(_mouse_pos, _cursor_pos, _level_scale):
 	if facing == "left":
 		facing = "right"
 	elif facing == "right":
