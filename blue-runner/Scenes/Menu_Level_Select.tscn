@@ -3608,8 +3608,11 @@ anims/SET_TO_REPLAY = SubResource( 13 )
 
 [node name="CamTarget" type="Node2D" parent="."]
 
+[node name="Camera" parent="." instance=ExtResource( 1 )]
+limit_x = Vector2( -2048, 0 )
+limit_y = Vector2( 0, 2048 )
+
 [node name="SELECT" type="Node2D" parent="."]
-visible = false
 script = ExtResource( 25 )
 
 [node name="Cursor" type="Node2D" parent="SELECT"]
@@ -3891,7 +3894,7 @@ text = ""
 
 [node name="BG_MENU" type="Polygon2D" parent="SELECT"]
 visible = false
-color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+color = Color( 0.0156863, 0.0235294, 0.133333, 0 )
 polygon = PoolVector2Array( -1024, 768, 1024, 768, 1024, -768, -1024, -768 )
 
 [node name="dependencies" type="Label" parent="SELECT"]
@@ -4019,9 +4022,10 @@ scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 35 )
 
 [node name="menu_circle_3" type="Sprite" parent="."]
+visible = false
 modulate = Color( 0.117647, 0.341176, 0.611765, 1 )
 position = Vector2( -1032, 800 )
-scale = Vector2( 2.75, 2.75 )
+scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 35 )
 
 [node name="REPLAY" type="Node2D" parent="."]
@@ -4406,6 +4410,8 @@ anims/down = SubResource( 22 )
 anims/up = SubResource( 23 )
 
 [node name="OPTION" type="Node2D" parent="."]
+visible = false
+scale = Vector2( 1e-05, 1e-05 )
 script = ExtResource( 36 )
 
 [node name="menu_circle2" type="Sprite" parent="OPTION"]
@@ -4420,7 +4426,7 @@ anims/Animate = SubResource( 24 )
 [node name="menu_circle" type="Sprite" parent="OPTION"]
 modulate = Color( 0.12549, 0.207843, 0.384314, 0 )
 position = Vector2( -3.38813e-21, 0 )
-scale = Vector2( 1e-05, 1e-05 )
+scale = Vector2( 2, 2 )
 texture = ExtResource( 27 )
 
 [node name="Anim" type="AnimationPlayer" parent="OPTION/menu_circle"]
@@ -4445,7 +4451,6 @@ anims/Refuse = SubResource( 27 )
 anims/Spin = SubResource( 28 )
 
 [node name="main" type="Node2D" parent="OPTION"]
-visible = false
 
 [node name="ghosts" type="Sprite" parent="OPTION/main"]
 position = Vector2( -800, -416 )
@@ -4498,6 +4503,7 @@ custom_colors/default_color = Color( 0.917647, 0.933333, 0.952941, 1 )
 text = "DELETE SAVE"
 
 [node name="controls" type="Node2D" parent="OPTION"]
+visible = false
 
 [node name="static" parent="OPTION/controls" instance=ExtResource( 40 )]
 margin_left = -760.0
@@ -4553,7 +4559,6 @@ scale = Vector2( 3, 3 )
 texture = ExtResource( 28 )
 
 [node name="MAIN" type="Node2D" parent="."]
-visible = false
 rotation = 0.523599
 script = ExtResource( 26 )
 
@@ -4648,7 +4653,3 @@ text = "You are loading into a new
 version of SR. Some files might
 not open correctly, if they
 open at all."
-
-[node name="Camera" parent="." instance=ExtResource( 1 )]
-limit_x = Vector2( -2048, 0 )
-limit_y = Vector2( 0, 2048 )

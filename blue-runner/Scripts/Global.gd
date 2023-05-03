@@ -25,18 +25,11 @@ var options = {
 	"*special" : KEY_CONTROL,
 	"*reset" : KEY_ENTER,
 	"*return" : KEY_ESCAPE,
-	"*menu_left" : KEY_LEFT,
-	"*menu_right" : KEY_RIGHT,
-	"*menu_up" : KEY_UP,
-	"*menu_down" : KEY_DOWN,
-	"*accept" : KEY_SPACE,
-	"*deny" : KEY_BACKSPACE,
-	"*outlines_on" : false,
 	"*ghosts_on" : false,
-	"*timer_on" : 0,
+	"*timer_on" : false,
 	"*first_time_load" : true,
 }
-
+var mods_installed = []
 var default_options = {
 	"*version" : VERSION,
 	"*left" : KEY_LEFT,
@@ -47,19 +40,10 @@ var default_options = {
 	"*special" : KEY_CONTROL,
 	"*reset" : KEY_ENTER,
 	"*return" : KEY_ESCAPE,
-	"*menu_left" : KEY_LEFT,
-	"*menu_right" : KEY_RIGHT,
-	"*menu_up" : KEY_UP,
-	"*menu_down" : KEY_DOWN,
-	"*accept" : KEY_SPACE,
-	"*deny" : KEY_BACKSPACE,
-	"*outlines_on" : false,
 	"*ghosts_on" : false,
-	"*timer_on" : 0,
+	"*timer_on" : false,
 	"*first_time_load" : true,
 }
-var keybind_names : Array = ["*left", "*right", "*up", "*down", "*jump", "*special", "*reset", "*return", "*menu_left", "*menu_right", "*menu_up", "*menu_down", "*accept", "*deny"]
-var mods_installed = []
 
 var rand : RandomNumberGenerator = RandomNumberGenerator.new()
 
@@ -77,13 +61,11 @@ var current_level : String = ""
 var current_level_location : String = "res://Scenes/waterway/"
 
 var loaded_level_groups = []
-var user_levels : Array
-var user_pages : int
 var level_group = {}
 
 var loaded_characters = {}
 
-var last_input_events : Array = []
+var last_input_events : Array = range(8)
 
 var level_control : bool = false
 
@@ -113,51 +95,63 @@ func _ready():
 	
 	load_data()
 	
-	# Bindings
-	for inputs in keybind_names:
-		var new_key = InputEventKey.new()
-		if options[inputs] != null:
-			new_key.scancode = options[inputs]
-		else:
-			new_key.scancode = default_options[inputs]
-		last_input_events.append(new_key)
+	# First it uses the default bindings
+	last_input_events = InputMap.get_action_list("default").duplicate()
 	
-	for i in range(last_input_events.size()):
+	# The every binding that has already been bound replaces the defaults
+	if options["*left"] != null:
+		last_input_events[0] = InputEventKey.new()
+		last_input_events[0].scancode = options["*left"]
+	if options["*right"] != null:
+		last_input_events[1] = InputEventKey.new()
+		last_input_events[1].scancode = options["*right"]
+	if options["*up"] != null:
+		last_input_events[2] = InputEventKey.new()
+		last_input_events[2].scancode = options["*up"]
+	if options["*down"] != null:
+		last_input_events[3] = InputEventKey.new()
+		last_input_events[3].scancode = options["*down"]
+	if options["*jump"] != null:
+		last_input_events[4] = InputEventKey.new()
+		last_input_events[4].scancode = options["*jump"]
+	if options["*special"] != null:
+		last_input_events[5] = InputEventKey.new()
+		last_input_events[5].scancode = options["*special"]
+	if options["*reset"] != null:
+		last_input_events[6] = InputEventKey.new()
+		last_input_events[6].scancode = options["*reset"]
+	if options["*return"] != null:
+		last_input_events[7] = InputEventKey.new()
+		last_input_events[7].scancode = options["*return"]
+	
+	# Then it actualy binds the shit
+	for i in range(8):
 		change_input(i, last_input_events[i])
-	# Load user levels
-	
-	var directory : Directory = Directory.new()
-	var check_exist = directory.open("user://SRLevels/")
-	var current_file
-	
-	if check_exist == OK:
-		# warning-ignore:return_value_discarded
-		directory.list_dir_begin(true)
-		
-		current_file = directory.get_next()
-		while current_file != "":
-			if current_file.ends_with(".tscn"):
-				user_levels.append(current_file.trim_suffix(".tscn"))
-			current_file = directory.get_next()
-		# warning-ignore:integer_division
-		user_pages = user_levels.size() / 20
 
 func _physics_process(_delta):
 	if level_control:
 		add_level_control()
 		level_control = false
 	var curr_scene = get_tree().current_scene.name
-	if Input.is_action_just_pressed("return") and !(curr_scene == "MENU" or curr_scene == "Load"):
-		change_level("*MENU") 
-	if Input.is_action_just_pressed("reset") and !(curr_scene == "MENU" or curr_scene == "Load"):
+	if Input.is_action_just_pressed("return") and !(curr_scene == "Menu_Level_Select" or curr_scene == "Load"):
+		change_level("*Menu_Level_Select")
+	if Input.is_action_just_pressed("reset") and !(curr_scene == "Menu_Level_Select" or curr_scene == "Load"):
 		change_level("")
 
 func _exit_tree():
 	save_game()
 
 func change_input(input_id : int, new_input):
-	var input_string : String = keybind_names[input_id].trim_prefix("*")
-	#print(input_string)
+	var input_string : String
+	match input_id:
+		0: input_string = "left"
+		1: input_string = "right"
+		2: input_string = "up"
+		3: input_string = "down"
+		4: input_string = "jump"
+		5: input_string = "special"
+		6: input_string = "reset"
+		7: input_string = "return"
 	if InputMap.action_has_event(input_string, last_input_events[input_id]):
 		InputMap.action_erase_event(input_string, last_input_events[input_id])
 	InputMap.action_add_event(input_string, new_input)
@@ -166,16 +160,16 @@ func change_input(input_id : int, new_input):
 	options["*" + input_string] = new_input.scancode
 
 func key_names(key : int):
-	var key_number = options[keybind_names[key]]
-	#match key:
-	#	0: key_number = options["*left"]
-	#	1: key_number = options["*right"]
-	#	2: key_number = options["*up"]
-	#	3: key_number = options["*down"]
-	#	4: key_number = options["*jump"]
-	#	5: key_number = options["*special"]
-	#	6: key_number = options["*reset"]
-	#	7: key_number = options["*return"]
+	var key_number
+	match key:
+		0: key_number = options["*left"]
+		1: key_number = options["*right"]
+		2: key_number = options["*up"]
+		3: key_number = options["*down"]
+		4: key_number = options["*jump"]
+		5: key_number = options["*special"]
+		6: key_number = options["*reset"]
+		7: key_number = options["*return"]
 	
 	if key_number >= 33 and key_number <= 255: return char(key_number)
 	else: match(key_number):
@@ -291,7 +285,7 @@ func key_names(key : int):
 
 func text_interpretor(text : String):
 	var next_text : String = text
-	var new_text : String = ""
+	var new_text : String
 	
 	#print("starting :",text)
 	while next_text != "":
@@ -365,12 +359,12 @@ func change_level(destination : String, return_value : bool = false, check_depen
 	
 	if destination == "":
 		destination_new = current_level_location + current_level + ".tscn"
-	elif destination == "*MENU" or destination == "*Menu_Level_Select":
-		destination_new = "res://Scenes/MENU.tscn"
+	elif destination == "*Menu_Level_Select":
+		destination_new = "res://Scenes/Menu_Level_Select.tscn"
 	elif destination == "*Level_Missing":
 		destination_new = "res://Scenes/Level_Missing.tscn"
 	elif destination == "*Level_Next" and current_level_location == "user://SRLevels/":
-		destination_new = "res://Scenes/MENU.tscn"
+		destination_new = "res://Scenes/Menu_Level_Select.tscn"
 	elif destination == "*Level_Next":
 		var level : int = 0
 		for i in range(19):
@@ -383,7 +377,7 @@ func change_level(destination : String, return_value : bool = false, check_depen
 				level = i + 1
 				break
 		if level == 0:
-			destination_new = "res://Scenes/MENU.tscn"
+			destination_new = "res://Scenes/Menu_Level_Select.tscn"
 		else:
 			destination_new = current_level_location + level_group["levels"][level][0] + ".tscn"
 	elif destination.begins_with("*"):
@@ -401,7 +395,7 @@ func change_level(destination : String, return_value : bool = false, check_depen
 				if !mods_installed.has(i):
 					error = ERR_FILE_MISSING_DEPENDENCIES
 	
-	if destination_new != "res://Scenes/MENU.tscn":
+	if destination_new != "res://Scenes/Menu_Level_Select.tscn":
 		current_level_location = destination_new.substr(0, destination_new.find_last("/") + 1)
 		current_level = destination_new.substr(destination_new.find_last("/") + 1, destination_new.find_last(".tscn") - destination_new.find_last("/") - 1)
 		#print(current_level)
@@ -415,7 +409,7 @@ func change_level(destination : String, return_value : bool = false, check_depen
 		return error
 	elif error != OK:
 		# warning-ignore:return_value_discarded
-		get_tree().change_scene("res://Scenes/MENU.tscn")
+		get_tree().change_scene("res://Scenes/Menu_Level_Select.tscn")
 
 func add_level_control():
 	#print(get_tree().current_scene.name)
@@ -567,9 +561,6 @@ func console_arguments():
 	if savefile_interaction / 2: print("write allowed")
 
 func save_game(timer : float = 0, par : float = 0, collectible : Array = [], level = null, recording : Dictionary = {}):
-	
-	print("saving game")
-	
 	var temp = {}
 	
 	temp = level_completion.duplicate()
@@ -670,14 +661,10 @@ func load_game():
 	mods_installed = temp["*mods"].duplicate()
 	#print(mods_installed)
 
-func delete_save():
-	pass
-
 func update_old_save(version : String, save : Dictionary):
 	var settings : Dictionary = {}
 	var unlocks : Dictionary = {}
 	var levels : Dictionary = {}
-	
 	#print(version)
 	if version == "0.X":
 		
