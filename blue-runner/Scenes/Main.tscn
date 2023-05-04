@@ -1,234 +1,390 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://Scripts/menu_shader.shader" type="Shader" id=1]
-[ext_resource path="res://Visual/Menu/pillar.png" type="Texture" id=2]
+[ext_resource path="res://Visual/Menu/button_back.png" type="Texture" id=2]
 [ext_resource path="res://Visual/Menu/button_play.png" type="Texture" id=3]
-[ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Visual/Menu/button_cheat_codes.png" type="Texture" id=5]
+[ext_resource path="res://Scripts/Menu/MAIN_group.gd" type="Script" id=4]
+[ext_resource path="res://Visual/Menu/line.png" type="Texture" id=5]
 [ext_resource path="res://Visual/Menu/button_exit.png" type="Texture" id=6]
 [ext_resource path="res://Visual/Menu/button_help.png" type="Texture" id=7]
 [ext_resource path="res://Visual/Menu/button_options.png" type="Texture" id=8]
 [ext_resource path="res://Visual/Menu/button_replay.png" type="Texture" id=9]
 [ext_resource path="res://Visual/Menu/button_vs.png" type="Texture" id=10]
-[ext_resource path="res://Visual/Menu/button_achievements.png" type="Texture" id=11]
-[ext_resource path="res://Visual/Menu/button_credits.png" type="Texture" id=12]
+[ext_resource path="res://Scripts/Menu/MAIN.gd" type="Script" id=11]
+[ext_resource path="res://Visual/Menu/button_extras.png" type="Texture" id=12]
+[ext_resource path="res://Visual/Menu/button_cheat_codes.png" type="Texture" id=13]
+[ext_resource path="res://Visual/Menu/button_credits.png" type="Texture" id=14]
+[ext_resource path="res://Visual/Menu/button_achievements.png" type="Texture" id=15]
 
-[sub_resource type="ShaderMaterial" id=1]
+[sub_resource type="Animation" id=1]
+resource_name = "move_back"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:switch_time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("top:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -24, 0 ), Vector2( 0, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("sub:position")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 736, 0 ) ]
+}
+
+[sub_resource type="Animation" id=2]
+resource_name = "move_next"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:switch_time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("top:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( -24, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("sub:position")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 736, 0 ), Vector2( 0, 0 ) ]
+}
+
+[sub_resource type="ShaderMaterial" id=3]
 shader = ExtResource( 1 )
-shader_param/color = Plane( 0.25, 0.75, 0.75, 1 )
+shader_param/color = Plane( 0.25, 0.5, 0.75, 0.981 )
 shader_param/replacing = Plane( 1, 1, 1, 1 )
 shader_param/offset = 0.0
+shader_param/only_replaced = false
 
-[sub_resource type="ShaderMaterial" id=2]
+[sub_resource type="Animation" id=4]
+length = 0.2
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[sub_resource type="Animation" id=5]
+length = 8.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:pulse_time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ -1.0, 1.0 ]
+}
+
+[sub_resource type="ShaderMaterial" id=6]
 shader = ExtResource( 1 )
-shader_param/color = Plane( 0.25, 0.75, 0.75, 1 )
+shader_param/color = Plane( 0.25, 0.5, 0.75, 0.981 )
 shader_param/replacing = Plane( 1, 1, 1, 1 )
 shader_param/offset = 0.0
+shader_param/only_replaced = false
+
+[sub_resource type="Animation" id=7]
+length = 0.2
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[sub_resource type="Animation" id=8]
+length = 8.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:pulse_time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ -1.0, 1.0 ]
+}
+
+[sub_resource type="ShaderMaterial" id=9]
+shader = ExtResource( 1 )
+shader_param/color = Plane( 0.25, 0.5, 0.75, 0.981 )
+shader_param/replacing = Plane( 1, 1, 1, 1 )
+shader_param/offset = 0.0
+shader_param/only_replaced = false
+
+[sub_resource type="Animation" id=10]
+length = 0.2
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[sub_resource type="Animation" id=11]
+length = 8.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:pulse_time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ -1.0, 1.0 ]
+}
 
 [node name="MAIN" type="Node2D"]
-material = SubResource( 1 )
+script = ExtResource( 11 )
+switch_time = 0.0
 
-[node name="Polygon2D" type="Polygon2D" parent="."]
-visible = false
-scale = Vector2( 2, 2 )
-polygon = PoolVector2Array( -512, -384, 512, -384, 512, 384, -512, 384 )
+[node name="anim" type="AnimationPlayer" parent="."]
+anims/move_back = SubResource( 1 )
+anims/move_next = SubResource( 2 )
 
-[node name="Camera" parent="." instance=ExtResource( 4 )]
-zoom = Vector2( 1, 1 )
+[node name="top" type="Node2D" parent="."]
+material = SubResource( 3 )
+position = Vector2( -24, 0 )
+script = ExtResource( 4 )
+menu_colors = [ Color( 0.25, 0.25, 0.75, 1 ), Color( 0.25, 0.5, 0.75, 1 ), Color( 0.25098, 0.74902, 0.74902, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25, 0.75, 0.25, 1 ) ]
+submenu = [ 1, 3, 5, 4, 6 ]
 
-[node name="pillar" type="Sprite" parent="."]
-visible = false
+[node name="back" type="Polygon2D" parent="top"]
+position = Vector2( -8, 0 )
+color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+polygon = PoolVector2Array( 64, 384, 320, -384, 768, -384, 768, 384 )
+
+[node name="pillar" type="Sprite" parent="top"]
 use_parent_material = true
-position = Vector2( 0, 448 )
+position = Vector2( 200, 0 )
 scale = Vector2( 1.5, 1.5 )
-texture = ExtResource( 2 )
-
-[node name="button" type="Sprite" parent="pillar"]
-use_parent_material = true
-position = Vector2( 106.667, -320 )
-texture = ExtResource( 3 )
-
-[node name="button3" type="Sprite" parent="pillar"]
-use_parent_material = true
-position = Vector2( 74.6666, -224 )
-texture = ExtResource( 10 )
-
-[node name="button2" type="Sprite" parent="pillar"]
-use_parent_material = true
-position = Vector2( 42.6667, -128 )
-texture = ExtResource( 9 )
-
-[node name="pillar2" type="Sprite" parent="."]
-visible = false
-modulate = Color( 0.5, 0.5, 0.5, 1 )
-use_parent_material = true
-position = Vector2( 352, 448 )
-texture = ExtResource( 2 )
-
-[node name="button" type="Sprite" parent="pillar2"]
-use_parent_material = true
-position = Vector2( 106.667, -320 )
-texture = ExtResource( 8 )
-
-[node name="button3" type="Sprite" parent="pillar2"]
-use_parent_material = true
-position = Vector2( 74.6666, -224 )
-texture = ExtResource( 12 )
-
-[node name="button2" type="Sprite" parent="pillar2"]
-use_parent_material = true
-position = Vector2( 42.6667, -128 )
-texture = ExtResource( 6 )
-
-[node name="pillar3" type="Sprite" parent="."]
-visible = false
-modulate = Color( 0.5, 0.5, 0.5, 1 )
-use_parent_material = true
-position = Vector2( -352, 448 )
-texture = ExtResource( 2 )
-
-[node name="button" type="Sprite" parent="pillar3"]
-use_parent_material = true
-position = Vector2( 106.667, -320 )
-texture = ExtResource( 7 )
-
-[node name="button3" type="Sprite" parent="pillar3"]
-use_parent_material = true
-position = Vector2( 74.6666, -224 )
-texture = ExtResource( 11 )
-
-[node name="button2" type="Sprite" parent="pillar3"]
-use_parent_material = true
-position = Vector2( 42.6667, -128 )
 texture = ExtResource( 5 )
 
-[node name="pillar4" type="Sprite" parent="."]
-visible = false
+[node name="button1" type="Sprite" parent="top"]
 use_parent_material = true
-position = Vector2( 384, 0 )
+position = Vector2( 364, 0 )
 scale = Vector2( 1.5, 1.5 )
-texture = ExtResource( 2 )
-
-[node name="Polygon2D" type="Polygon2D" parent="pillar4"]
-color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
-polygon = PoolVector2Array( 213.333, -256, 197.333, -256, 26.6667, 256, 213.333, 256 )
-
-[node name="button" type="Sprite" parent="pillar4"]
-modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
-material = SubResource( 2 )
-position = Vector2( 48, -241.333 )
-scale = Vector2( 0.75, 0.75 )
-texture = ExtResource( 11 )
-
-[node name="button3" type="Sprite" parent="pillar4"]
-modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
-material = SubResource( 2 )
-position = Vector2( 26.6666, -177.333 )
-scale = Vector2( 0.75, 0.75 )
-texture = ExtResource( 9 )
-
-[node name="button2" type="Sprite" parent="pillar4"]
-modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
-material = SubResource( 2 )
-position = Vector2( 5.33334, -113.333 )
-scale = Vector2( 0.75, 0.75 )
-texture = ExtResource( 7 )
-
-[node name="button4" type="Sprite" parent="pillar4"]
-modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
-material = SubResource( 2 )
-position = Vector2( -16.0001, -49.3334 )
-scale = Vector2( 0.75, 0.75 )
-texture = ExtResource( 10 )
-
-[node name="Polygon2D2" type="Polygon2D" parent="pillar4"]
-position = Vector2( -37.3334, 16 )
-scale = Vector2( 0.75, 0.75 )
-color = Color( 0.111938, 0.119059, 0.21875, 1 )
-polygon = PoolVector2Array( -92.4444, -33.7776, 177.778, -35.5555, 149.333, 64, -120.889, 64 )
-
-[node name="button5" type="Sprite" parent="pillar4"]
-material = SubResource( 2 )
-position = Vector2( -16, 26.6667 )
 texture = ExtResource( 3 )
 
-[node name="button6" type="Sprite" parent="pillar4"]
+[node name="button2" type="Sprite" parent="top"]
 modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
-material = SubResource( 2 )
-position = Vector2( -69.3333, 106.667 )
-scale = Vector2( 0.75, 0.75 )
+use_parent_material = true
+position = Vector2( 288, 112 )
+scale = Vector2( 1.125, 1.125 )
 texture = ExtResource( 8 )
 
-[node name="button7" type="Sprite" parent="pillar4"]
+[node name="button3" type="Sprite" parent="top"]
 modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
-material = SubResource( 2 )
-position = Vector2( -90.6666, 170.667 )
-scale = Vector2( 0.75, 0.75 )
+use_parent_material = true
+position = Vector2( 256, 208 )
+scale = Vector2( 1.125, 1.125 )
 texture = ExtResource( 12 )
 
-[node name="button8" type="Sprite" parent="pillar4"]
+[node name="button4" type="Sprite" parent="top"]
 modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
-material = SubResource( 2 )
-position = Vector2( -112, 234.667 )
-scale = Vector2( 0.75, 0.75 )
-texture = ExtResource( 5 )
-
-[node name="pillar6" type="Sprite" parent="."]
-visible = false
 use_parent_material = true
-position = Vector2( 288, 0 )
-scale = Vector2( 1.5, 1.5 )
-texture = ExtResource( 2 )
+position = Vector2( 224, 304 )
+scale = Vector2( 1.125, 1.125 )
+texture = ExtResource( 7 )
 
-[node name="Polygon2D" type="Polygon2D" parent="pillar6"]
-color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
-polygon = PoolVector2Array( 213.333, -256, 197.333, -256, 26.6667, 256, 213.333, 256 )
-
-[node name="pillar5" type="Sprite" parent="."]
-visible = false
-use_parent_material = true
-position = Vector2( 320, 0 )
-scale = Vector2( 1.5, 1.5 )
-texture = ExtResource( 2 )
-
-[node name="Polygon2D" type="Polygon2D" parent="pillar5"]
-color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
-polygon = PoolVector2Array( 213.333, -256, 197.333, -256, 26.6667, 256, 213.333, 256 )
-
-[node name="Polygon2D2" type="Polygon2D" parent="pillar5"]
-visible = false
-position = Vector2( -37.3334, 16 )
-scale = Vector2( 0.75, 0.75 )
-color = Color( 0.111938, 0.119059, 0.21875, 1 )
-polygon = PoolVector2Array( -92.4444, -33.7776, 177.778, -35.5555, 149.333, 64, -120.889, 64 )
-
-[node name="button5" type="Sprite" parent="pillar5"]
-material = SubResource( 2 )
-position = Vector2( 32, -96 )
-texture = ExtResource( 3 )
-
-[node name="button6" type="Sprite" parent="pillar5"]
-modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
-material = SubResource( 2 )
-texture = ExtResource( 10 )
-
-[node name="button7" type="Sprite" parent="pillar5"]
-modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
-material = SubResource( 2 )
-position = Vector2( -32, 96 )
-texture = ExtResource( 9 )
-
-[node name="button8" type="Sprite" parent="pillar5"]
-visible = false
-modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
-material = SubResource( 2 )
-position = Vector2( -64, 192 )
-texture = ExtResource( 6 )
-
-[node name="button_exit" type="Sprite" parent="."]
-visible = false
+[node name="button_exit" type="Sprite" parent="top"]
 modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
 use_parent_material = true
 position = Vector2( 504, 328 )
 scale = Vector2( 1.125, 1.125 )
 texture = ExtResource( 6 )
+
+[node name="anim" type="AnimationPlayer" parent="top"]
+anims/move = SubResource( 4 )
+
+[node name="pulse" type="AnimationPlayer" parent="top"]
+autoplay = "pulse"
+anims/pulse = SubResource( 5 )
+
+[node name="sub" type="Node2D" parent="."]
+
+[node name="play" type="Node2D" parent="sub"]
+material = SubResource( 6 )
+script = ExtResource( 4 )
+node_buttons = [ "button1", "button2", "button3", "button_exit" ]
+menu_colors = [ Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ) ]
+buttons_amount = 3
+submenu = [ 2, 7, 8, 9 ]
+
+[node name="back" type="Polygon2D" parent="sub/play"]
+position = Vector2( -8, 0 )
+color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+polygon = PoolVector2Array( 64, 384, 320, -384, 768, -384, 768, 384 )
+
+[node name="pillar" type="Sprite" parent="sub/play"]
+use_parent_material = true
+position = Vector2( 200, 0 )
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 5 )
+
+[node name="button1" type="Sprite" parent="sub/play"]
+use_parent_material = true
+position = Vector2( 364, 0 )
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 3 )
+
+[node name="button2" type="Sprite" parent="sub/play"]
+modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
+use_parent_material = true
+position = Vector2( 288, 112 )
+scale = Vector2( 1.125, 1.125 )
+texture = ExtResource( 10 )
+
+[node name="button3" type="Sprite" parent="sub/play"]
+modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
+use_parent_material = true
+position = Vector2( 256, 208 )
+scale = Vector2( 1.125, 1.125 )
+texture = ExtResource( 9 )
+
+[node name="button_exit" type="Sprite" parent="sub/play"]
+modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
+use_parent_material = true
+position = Vector2( 504, 328 )
+scale = Vector2( 1.125, 1.125 )
+texture = ExtResource( 2 )
+
+[node name="anim" type="AnimationPlayer" parent="sub/play"]
+anims/move = SubResource( 7 )
+
+[node name="pulse" type="AnimationPlayer" parent="sub/play"]
+autoplay = "pulse"
+anims/pulse = SubResource( 8 )
+
+[node name="extras" type="Node2D" parent="sub"]
+material = SubResource( 9 )
+script = ExtResource( 4 )
+node_buttons = [ "button1", "button2", "button3", "button_exit" ]
+menu_colors = [ Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ) ]
+buttons_amount = 3
+submenu = [ 2, 10, 11, 12 ]
+pulse_time = -0.95
+
+[node name="back" type="Polygon2D" parent="sub/extras"]
+position = Vector2( -8, 0 )
+color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+polygon = PoolVector2Array( 64, 384, 320, -384, 768, -384, 768, 384 )
+
+[node name="pillar" type="Sprite" parent="sub/extras"]
+use_parent_material = true
+position = Vector2( 200, 0 )
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 5 )
+
+[node name="button1" type="Sprite" parent="sub/extras"]
+use_parent_material = true
+position = Vector2( 364, 0 )
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 15 )
+
+[node name="button2" type="Sprite" parent="sub/extras"]
+modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
+use_parent_material = true
+position = Vector2( 288, 112 )
+scale = Vector2( 1.125, 1.125 )
+texture = ExtResource( 14 )
+
+[node name="button3" type="Sprite" parent="sub/extras"]
+modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
+use_parent_material = true
+position = Vector2( 256, 208 )
+scale = Vector2( 1.125, 1.125 )
+texture = ExtResource( 13 )
+
+[node name="button_exit" type="Sprite" parent="sub/extras"]
+modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
+use_parent_material = true
+position = Vector2( 504, 328 )
+scale = Vector2( 1.125, 1.125 )
+texture = ExtResource( 2 )
+
+[node name="anim" type="AnimationPlayer" parent="sub/extras"]
+anims/move = SubResource( 10 )
+
+[node name="pulse" type="AnimationPlayer" parent="sub/extras"]
+autoplay = "pulse"
+anims/pulse = SubResource( 11 )
