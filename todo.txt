@@ -40,8 +40,8 @@ rebind move to something if undo system
 
  - RUNNER - 
 
+New level completion UI
 More Gray Rocks
-Move Platform a bit down
 booster is underwhelming visualy
 make MovingPlatform scaleable
 

@@ -408,7 +408,6 @@ func change_level(destination : String, return_value : bool = false, check_depen
 		#print(current_level_location)
 	if error == OK:
 		level_control = true
-		compatibility_mode = true
 		#connect("scene_changed", self, "add_level_control")
 		error = get_tree().change_scene(destination_new)
 	if return_value:
@@ -421,6 +420,7 @@ func add_level_control():
 	#print(get_tree().current_scene.name)
 	#print(get_tree().current_scene.get_script())
 	if get_tree().current_scene.get_script() == null:
+		compatibility_mode = true
 		get_tree().current_scene.set_script(load("res://Scripts/Level_Control.gd"))
 		#print(get_tree().current_scene.get_script())
 
