@@ -1,9 +1,10 @@
 [gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://Scripts/Template_Character.gd" type="Script" id=1]
+[ext_resource path="res://Scripts/Player/Template_Character.gd" type="Script" id=1]
 [ext_resource path="res://Visual/vis.png" type="Texture" id=2]
 [ext_resource path="res://Visual/Old/spr_PlayerRight.png" type="Texture" id=3]
 [ext_resource path="res://Sound/jump.wav" type="AudioStream" id=15]
+
 
 [sub_resource type="Animation" id=1]
 resource_name = "Death"

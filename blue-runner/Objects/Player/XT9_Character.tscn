@@ -1,7 +1,7 @@
 [gd_scene load_steps=42 format=2]
 
 [ext_resource path="res://Objects/Player/S1_Particle.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Scripts/S1_Character.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/Player/S1_Character.gd" type="Script" id=2]
 [ext_resource path="res://Visual/S1/headB.png" type="Texture" id=3]
 [ext_resource path="res://Visual/S1/shock.png" type="Texture" id=4]
 [ext_resource path="res://Visual/XT9/arm1.png" type="Texture" id=5]
@@ -27,6 +27,7 @@
 [ext_resource path="res://Visual/XT9/bodyB.png" type="Texture" id=26]
 [ext_resource path="res://Visual/XT9/neck.png" type="Texture" id=27]
 [ext_resource path="res://Visual/XT9/leg1B.png" type="Texture" id=28]
+
 
 [sub_resource type="Animation" id=1]
 resource_name = "Death"

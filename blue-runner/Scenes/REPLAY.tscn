@@ -1,0 +1,641 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://Text/Text_Options.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scripts/Menu/REPLAY.gd" type="Script" id=3]
+[ext_resource path="res://Visual/Menu/replay_cassette.png" type="Texture" id=4]
+[ext_resource path="res://Scripts/menu_shader.shader" type="Shader" id=5]
+[ext_resource path="res://Visual/Menu/options_rectangle.png" type="Texture" id=6]
+[ext_resource path="res://Visual/Menu/replay_rack.png" type="Texture" id=7]
+[ext_resource path="res://Visual/Menu/replay_rack_start.png" type="Texture" id=8]
+[ext_resource path="res://Visual/Menu/replay_rack_end.png" type="Texture" id=9]
+[ext_resource path="res://Scripts/Menu/Scrolling_Text.gd" type="Script" id=10]
+
+[sub_resource type="ShaderMaterial" id=1]
+shader = ExtResource( 5 )
+shader_param/color = Plane( 0.25, 0.5, 0.75, 1 )
+shader_param/replacing = Plane( 1, 1, 1, 1 )
+shader_param/offset_enabled = false
+shader_param/offset = 0.0
+shader_param/only_replaced = false
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 5 )
+shader_param/color = Plane( 0.12, 0.25, 0.32, 1 )
+shader_param/replacing = Plane( 1, 1, 1, 1 )
+shader_param/offset_enabled = false
+shader_param/offset = 0.0
+shader_param/only_replaced = false
+
+[sub_resource type="Animation" id=3]
+resource_name = "shift"
+length = 0.15
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("..:rack_time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.15 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "to_info"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("info:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -1920, -384 ), Vector2( -640, -384 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("interactions:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 1280, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath(".:select_transition")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 1.0, 0.0 ]
+}
+
+[sub_resource type="Animation" id=5]
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("info:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -640, -384 ), Vector2( -1920, -384 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("interactions:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1280, 0 ), Vector2( 0, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath(".:select_transition")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[node name="REPLAY" type="Node2D"]
+material = SubResource( 1 )
+script = ExtResource( 3 )
+rack_time = 0.0
+
+[node name="rack" type="Node2D" parent="."]
+use_parent_material = true
+
+[node name="replay_rack" type="Sprite" parent="rack"]
+material = SubResource( 2 )
+position = Vector2( 0, -128 )
+texture = ExtResource( 7 )
+
+[node name="replay_rack_start" type="Sprite" parent="rack/replay_rack"]
+use_parent_material = true
+texture = ExtResource( 8 )
+
+[node name="shades" type="Polygon2D" parent="rack/replay_rack/replay_rack_start"]
+color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+polygon = PoolVector2Array( -128, -256, -640, -256, -640, 256, -128, 256 )
+
+[node name="replay_rack_end" type="Sprite" parent="rack/replay_rack"]
+use_parent_material = true
+texture = ExtResource( 9 )
+
+[node name="shades" type="Polygon2D" parent="rack/replay_rack/replay_rack_end"]
+color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+polygon = PoolVector2Array( 128, -256, 640, -256, 640, 256, 128, 256 )
+
+[node name="replay_cassette_next" type="Sprite" parent="rack"]
+use_parent_material = true
+position = Vector2( 0, -128 )
+texture = ExtResource( 4 )
+
+[node name="replay_cassette" type="Sprite" parent="rack"]
+use_parent_material = true
+position = Vector2( 0, -128 )
+texture = ExtResource( 4 )
+
+[node name="cassettes" type="Control" parent="rack"]
+margin_left = -640.0
+margin_top = -384.0
+margin_right = 640.0
+margin_bottom = 128.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="0" type="Control" parent="rack/cassettes"]
+modulate = Color( 1, 1, 1, 0.5 )
+margin_left = -194.0
+margin_top = 440.0
+margin_right = 222.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/0" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="1" type="Control" parent="rack/cassettes"]
+modulate = Color( 1, 1, 1, 0.5 )
+margin_left = -102.0
+margin_top = 440.0
+margin_right = 314.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/1" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="2" type="Control" parent="rack/cassettes"]
+modulate = Color( 1, 1, 1, 0.5 )
+margin_left = -10.0
+margin_top = 440.0
+margin_right = 406.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/2" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="3" type="Control" parent="rack/cassettes"]
+modulate = Color( 1, 1, 1, 0.5 )
+margin_left = 82.0
+margin_top = 440.0
+margin_right = 498.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/3" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="4" type="Control" parent="rack/cassettes"]
+modulate = Color( 1, 1, 1, 0.5 )
+margin_left = 174.0
+margin_top = 440.0
+margin_right = 590.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/4" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="5" type="Control" parent="rack/cassettes"]
+modulate = Color( 1, 1, 1, 0.5 )
+margin_left = 266.0
+margin_top = 440.0
+margin_right = 682.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/5" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="6" type="Control" parent="rack/cassettes"]
+modulate = Color( 1, 1, 1, 0.5 )
+margin_left = 358.0
+margin_top = 440.0
+margin_right = 774.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/6" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="7" type="Control" parent="rack/cassettes"]
+modulate = Color( 1, 1, 1, 0.5 )
+margin_left = 450.0
+margin_top = 440.0
+margin_right = 866.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/7" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="8" type="Control" parent="rack/cassettes"]
+margin_left = 542.0
+margin_top = 440.0
+margin_right = 958.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/8" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="9" type="Control" parent="rack/cassettes"]
+modulate = Color( 1, 1, 1, 0.5 )
+margin_left = 634.0
+margin_top = 440.0
+margin_right = 1050.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/9" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="10" type="Control" parent="rack/cassettes"]
+modulate = Color( 1, 1, 1, 0.5 )
+margin_left = 726.0
+margin_top = 440.0
+margin_right = 1142.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/10" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="11" type="Control" parent="rack/cassettes"]
+modulate = Color( 1, 1, 1, 0.5 )
+margin_left = 818.0
+margin_top = 440.0
+margin_right = 1234.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/11" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="12" type="Control" parent="rack/cassettes"]
+modulate = Color( 1, 1, 1, 0.5 )
+margin_left = 910.0
+margin_top = 440.0
+margin_right = 1326.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/12" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="13" type="Control" parent="rack/cassettes"]
+modulate = Color( 1, 1, 1, 0.5 )
+margin_left = 1002.0
+margin_top = 440.0
+margin_right = 1418.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/13" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="14" type="Control" parent="rack/cassettes"]
+modulate = Color( 1, 1, 1, 0.5 )
+margin_left = 1094.0
+margin_top = 440.0
+margin_right = 1510.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/14" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="15" type="Control" parent="rack/cassettes"]
+modulate = Color( 1, 1, 1, 0.5 )
+margin_left = 1186.0
+margin_top = 440.0
+margin_right = 1602.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/15" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="16" type="Control" parent="rack/cassettes"]
+modulate = Color( 1, 1, 1, 0.5 )
+margin_left = 1278.0
+margin_top = 440.0
+margin_right = 1694.0
+margin_bottom = 490.0
+rect_rotation = -67.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" parent="rack/cassettes/16" instance=ExtResource( 1 )]
+margin_right = 634.0
+margin_bottom = 69.0
+rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+
+[node name="anim" type="AnimationPlayer" parent="rack"]
+anims/shift = SubResource( 3 )
+
+[node name="options_rectangle" type="Sprite" parent="."]
+use_parent_material = true
+position = Vector2( 0, 320 )
+texture = ExtResource( 6 )
+
+[node name="backpoly" type="Polygon2D" parent="."]
+position = Vector2( -640, -392 )
+color = Color( 0.25098, 0.501961, 0.74902, 1 )
+polygon = PoolVector2Array( 32, 544, 1248, 544, 1248, 616, 32, 616 )
+
+[node name="replay_name" type="Control" parent="."]
+margin_left = -608.0
+margin_top = 160.0
+margin_right = 608.0
+margin_bottom = 224.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scroll_speed = 1.33
+
+[node name="text" parent="replay_name" instance=ExtResource( 1 )]
+rect_scale = Vector2( 1, 1 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "REPLAY NAME"
+
+[node name="info" type="Node2D" parent="."]
+position = Vector2( -640, -384 )
+
+[node name="time" type="Control" parent="info"]
+margin_left = 64.0
+margin_top = 624.0
+margin_right = 2368.0
+margin_bottom = 688.0
+rect_scale = Vector2( 0.5, 0.5 )
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scroll_speed = 1.33
+
+[node name="text" parent="info/time" instance=ExtResource( 1 )]
+rect_scale = Vector2( 1, 1 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+custom_colors/selection_color = Color( 0, 0, 0, 1 )
+text = "TIME"
+
+[node name="level" type="Control" parent="info"]
+margin_left = 64.0
+margin_top = 664.0
+margin_right = 2368.0
+margin_bottom = 728.0
+rect_scale = Vector2( 0.5, 0.5 )
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scroll_speed = 1.33
+
+[node name="text" parent="info/level" instance=ExtResource( 1 )]
+margin_right = 2432.0
+rect_scale = Vector2( 1, 1 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+text = "LEVEL"
+
+[node name="character" type="Control" parent="info"]
+margin_left = 64.0
+margin_top = 704.0
+margin_right = 2368.0
+margin_bottom = 768.0
+rect_scale = Vector2( 0.5, 0.5 )
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scroll_speed = 1.33
+
+[node name="text" parent="info/character" instance=ExtResource( 1 )]
+rect_scale = Vector2( 1, 1 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+text = "CHARACTER"
+
+[node name="interactions" type="Node2D" parent="."]
+position = Vector2( 1280, 0 )
+
+[node name="back" parent="interactions" instance=ExtResource( 1 )]
+margin_left = -544.0
+margin_top = 232.0
+margin_right = -287.0
+margin_bottom = 296.0
+rect_scale = Vector2( 0.75, 0.75 )
+rect_pivot_offset = Vector2( 128, 32 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+custom_colors/selection_color = Color( 0, 0, 0, 1 )
+bbcode_enabled = true
+bbcode_text = "[center]BACK[/center]"
+text = "BACK"
+
+[node name="view" parent="interactions" instance=ExtResource( 1 )]
+margin_left = -288.0
+margin_top = 232.0
+margin_right = -32.0
+margin_bottom = 296.0
+rect_scale = Vector2( 0.75, 0.75 )
+rect_pivot_offset = Vector2( 128, 32 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+custom_colors/selection_color = Color( 0, 0, 0, 1 )
+bbcode_enabled = true
+bbcode_text = "[center]VIEW[/center]"
+text = "VIEW"
+
+[node name="race" parent="interactions" instance=ExtResource( 1 )]
+margin_left = 32.0
+margin_top = 232.0
+margin_right = 288.0
+margin_bottom = 295.0
+rect_scale = Vector2( 0.75, 0.75 )
+rect_pivot_offset = Vector2( 128, 32 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+custom_colors/selection_color = Color( 0, 0, 0, 1 )
+bbcode_enabled = true
+bbcode_text = "[center]RACE[/center]"
+text = "RACE"
+
+[node name="erase" parent="interactions" instance=ExtResource( 1 )]
+margin_left = 320.0
+margin_top = 232.0
+margin_right = 577.0
+margin_bottom = 296.0
+rect_scale = Vector2( 0.75, 0.75 )
+rect_pivot_offset = Vector2( 128, 32 )
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+custom_colors/selection_color = Color( 0, 0, 0, 1 )
+bbcode_enabled = true
+bbcode_text = "[center]ERASE[/center]"
+text = "ERASE"
+
+[node name="bottom_anim" type="AnimationPlayer" parent="."]
+anims/to_info = SubResource( 4 )
+anims/to_interactions = SubResource( 5 )

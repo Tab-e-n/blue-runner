@@ -1,6 +1,6 @@
 extends Node2D
 
-var MAIN : PackedScene = preload("res://Scenes/OPTIONS.tscn")
+var MAIN : PackedScene = preload("res://Scenes/REPLAY.tscn")
 var current_menu : Node2D
 
 var hold : int = 0
@@ -8,7 +8,7 @@ var move : bool = true
 
 onready var global : Control = $"/root/Global"
 
-var menu : String = "SELECT"
+var menu : String = "REPLAY"
 
 var return_delay : int = 2
 
@@ -20,6 +20,7 @@ func _ready():
 	var main = MAIN.instance()
 	add_child(main)
 	current_menu = main
+	
 	#print(current_menu.position)
 	
 	#if global.current_level_location == "user://SRLevels/":
@@ -46,28 +47,28 @@ func _ready():
 	
 	#$CHARACTER.ready_renders()
 	
-	if start or global.replay_menu:
+	#if start or global.replay_menu:
 		#$menu_circle_2.scale = Vector2(2.75, 2.75)
 		#$menu_button.position = Vector2(0, -64)
 		#$MAIN.position = Vector2(2048, -768)
 		#$MAIN.rotation_degrees = 0
 		#$SELECT/BG_MENU.color.a = 1
 		#$SELECT.visible = false
-		menu = "MAIN"
+		#menu = "MAIN"
 		
-		if global.replay_menu:
-			global.replay_menu = false
-			menu = "REPLAY"
+		#if global.replay_menu:
+			#global.replay_menu = false
+			#menu = "REPLAY"
 			#$AnimationPlayer.play("SET_TO_REPLAY")
-		else:
-			pass
+		#else:
+			#pass
 			#$AnimationPlayer.play("ENTERING")
-	if !start:
-		pass
+	#if !start:
+		#pass
 		#$menu_circle_2.scale = Vector2(0, 0)
-	if Global.new_version_alert:
+	#if Global.new_version_alert:
 		#$NewVersionPopup.visible = true
-		Global.new_version_alert = false
+		#Global.new_version_alert = false
 
 func _process(_delta):
 	if return_delay > 0: return_delay -= 1
@@ -105,7 +106,8 @@ func _process(_delta):
 	
 	if hold >= 20:
 		var hold_shift : int = 6
-		if menu == "MAIN" or menu == "HELP" or menu == "CHARACTER": hold_shift = 10
+		if menu == "REPLAY": hold_shift = 9
+		#if menu == "MAIN" or menu == "HELP" or menu == "CHARACTER": hold_shift = 10
 		hold -= hold_shift
 		move = true
 	

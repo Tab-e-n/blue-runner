@@ -1,7 +1,7 @@
 extends Control
 
 #game Stuff
-const VERSION : String = "1.1.0-dev"
+const VERSION : String = "1.2.0-dev"
 var new_version_alert : bool = false
 var savefile_interaction : int = 3
 var compatibility_mode : bool = false
@@ -567,7 +567,6 @@ func console_arguments():
 	if savefile_interaction / 2: print("write allowed")
 
 func save_game(timer : float = 0, par : float = 0, collectible : Array = [], level = null, recording : Dictionary = {}):
-	
 	print("saving game")
 	
 	var temp = {}
@@ -595,7 +594,9 @@ func save_game(timer : float = 0, par : float = 0, collectible : Array = [], lev
 	level_completion = temp.duplicate()
 	
 # warning-ignore:integer_division
-	if savefile_interaction / 2:
+	if !savefile_interaction / 2:
+		print("saving disabled")
+	else:
 		var temp_full = {
 			"level_completion" : {},
 			"options" : {},
@@ -607,7 +608,7 @@ func save_game(timer : float = 0, par : float = 0, collectible : Array = [], lev
 		
 		temp_full = update_old_save(VERSION, temp_full.duplicate())
 		
-		#print("save: ", temp_full)
+		print("save successful")
 		var savefile = File.new()
 		savefile.open(user_directory, File.WRITE)
 		savefile.store_line(to_json(temp_full))
@@ -617,14 +618,20 @@ func save_game(timer : float = 0, par : float = 0, collectible : Array = [], lev
 
 func load_game():
 	
+	print("loading game")
+	
 	var loadfile = File.new()
 	var temp = {}
 	
 	if !savefile_interaction % 2:
-		pass
+		print("loading disabled")
 	elif !loadfile.file_exists(user_directory): # does file exist
+		print("save doesn't exist")
+		
 		save_game()
 	else:
+		print("loading successful")
+		
 		loadfile.open(user_directory, File.READ)
 		
 		while loadfile.get_position() < loadfile.get_len():
@@ -634,7 +641,6 @@ func load_game():
 		
 		loadfile.close()
 		
-		#print("load: ", temp)
 		var version : String
 		if !temp.has("options"):
 			version = "0.X"
@@ -670,8 +676,14 @@ func load_game():
 	mods_installed = temp["*mods"].duplicate()
 	#print(mods_installed)
 
-func delete_save():
-	pass
+func delete_save(): 
+	level_completion.clear()
+	unlocked.clear()
+	save_game()
+
+func reset_options():
+	options = default_options.duplicate()
+	save_game()
 
 func update_old_save(version : String, save : Dictionary):
 	var settings : Dictionary = {}
@@ -744,13 +756,21 @@ func update_old_save(version : String, save : Dictionary):
 		version = "1.1.0"
 	if version == "1.1.0-dev":
 		version = "1.1.0"
+	if version == "1.1.0":
+		if save["options"]["*timer_on"]:
+			save["options"]["*timer_on"] = 1
+		else:
+			save["options"]["*timer_on"] = 0
+		version = "1.2.0"
 	
-	if !save["unlocked"].has("*char_select_active"): save["unlocked"]["*char_select_active"] = false
+	if !save["unlocked"].has("*char_select_active"):
+		save["unlocked"]["*char_select_active"] = false
 	for i in default_options.keys():
 		if !save["options"].has(i):
 			save["options"][i] = default_options[i]
 			#print(i)
-	if !save["level_completion"].has("*collectibles"):  save["level_completion"]["*collectibles"] = []
+	if !save["level_completion"].has("*collectibles"):
+		save["level_completion"]["*collectibles"] = []
 	
 	save["options"]["*version"] = VERSION
 	

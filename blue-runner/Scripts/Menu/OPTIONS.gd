@@ -6,7 +6,7 @@ var text : PackedScene = preload("res://Text/Text_Options.tscn")
 
 export var pulse_time : float = -1
 
-var current_menu : String = "game"
+var current_menu : String = "main"
 
 onready var cursor : Node2D = $cursor
 var cursor_row : int = 0
@@ -15,19 +15,23 @@ var cursor_positions : Array = []
 var buttons : Array = []
 
 var confirmation : bool = false
+var confirm_popup : bool = false
 var keybinds : bool = false
+var disabled : bool = false
 
 var main_buttons : Array = [
 	["GAME OPTIONS", "submenu", "game"],
 	["CONTROLS", "submenu", "controls"],
-	["AUDIO", "submenu", "audio"],
+	["AUDIO", "disabled", "audio"],
+	["", "label"],
+	["RESET OPTIONS", "globalaction", "reset_options", true],
 ]
 
 var game_buttons : Array = [
 	["OUTLINES", "checkbox", "*outlines_on"],
 	["GHOSTS", "checkbox", "*ghosts_on"],
 	["TIMER", "enum", "*timer_on", ["OFF", "ON", "LEVEL BEAT"]],
-	["DELETE SAVE", "action", "delete_save", true],
+	["DELETE SAVE", "globalaction", "delete_save", true],
 ]
 
 var controls_buttons : Array = [
@@ -110,6 +114,8 @@ func make_options(menu_buttons : Array):
 				should_add_cursor_pos = false
 			"submenu":
 				buttons.append(["submenu", menu_buttons[i][2]])
+			"disabled":
+				buttons.append(["disabled"])
 			"checkbox":
 				var new_checkbox = CheckBox.new()
 				new_checkbox.rect_position = pos - Vector2(0, 20)
@@ -119,7 +125,7 @@ func make_options(menu_buttons : Array):
 				$buttons.add_child(new_checkbox)
 				buttons.append(["checkbox", new_checkbox, menu_buttons[i][2]])
 			"slider":
-				pass
+				buttons.append(["slider"])
 			"enum":
 				var new_text = text.instance()
 				new_text.rect_position = pos
@@ -129,6 +135,8 @@ func make_options(menu_buttons : Array):
 				buttons.append(["enum", new_text, menu_buttons[i][2], menu_buttons[i][3]])
 			"action":
 				buttons.append(["action", menu_buttons[i][2], menu_buttons[i][3]])
+			"globalaction":
+				buttons.append(["globalaction", menu_buttons[i][2], menu_buttons[i][3]])
 			"keybind":
 				var new_text = text.instance()
 				new_text.rect_position = pos
@@ -148,7 +156,7 @@ func make_options(menu_buttons : Array):
 	add_cursor_pos(Vector2(-576, 304))
 
 func add_cursor_pos(button_position : Vector2):
-	cursor_positions.append(button_position + Vector2(-16, 16))
+	cursor_positions.append(button_position + Vector2(-24, 16))
 
 func _ready():
 	change_menu(current_menu)
@@ -159,6 +167,10 @@ func _input(event):
 			Global.change_input(buttons[cursor_row][2], event)
 			buttons[cursor_row][1].text = Global.key_names(buttons[cursor_row][2])
 			confirmation = false
+		if event.pressed and confirm_popup:
+			confirmation = false
+		if event.pressed and disabled:
+			disabled = false
 
 func menu_update():
 	for i in buttons:
@@ -179,7 +191,7 @@ func menu_update():
 		$cursor/anim.stop()
 		$cursor/anim.play("Select")
 		#select()
-	if Input.is_action_just_pressed("deny") and !keybinds:
+	if Input.is_action_just_pressed("deny") and !keybinds and !confirm_popup:
 		if cursor_row != cursor_positions.size() - 1:
 			$cursor/anim.stop()
 			$cursor/anim.play("Spin")
@@ -192,7 +204,13 @@ func menu_update():
 	if !confirmation and keybinds:
 		keybinds = false
 	
+	if !confirmation and confirm_popup:
+		confirm_popup = false
+	
 	cursor.position = cursor_positions[cursor_row]
+	
+	$confirmation.visible = confirm_popup
+	$disabled.visible = disabled
 	
 	material.set_shader_param("offset", pulse_time)
 
@@ -218,6 +236,8 @@ func select():
 				pass
 		"submenu":
 			change_menu(buttons[cursor_row][1])
+		"disabled":
+			disabled = true
 		"checkbox":
 			Global.options[buttons[cursor_row][2]] = !Global.options[buttons[cursor_row][2]]
 			buttons[cursor_row][1].pressed = Global.options[buttons[cursor_row][2]]
@@ -229,7 +249,21 @@ func select():
 				Global.options[buttons[cursor_row][2]] = 0
 			buttons[cursor_row][1].text = buttons[cursor_row][3][Global.options[buttons[cursor_row][2]]]
 		"action":
-			pass
+			if buttons[cursor_row][2] and !confirmation:
+				confirmation = true
+				confirm_popup = true
+			elif (buttons[cursor_row][2] and confirmation) or !buttons[cursor_row][2]:
+				call(buttons[cursor_row][1])
+				confirmation = false
+				confirm_popup = false
+		"globalaction":
+			if buttons[cursor_row][2] and !confirmation:
+				confirmation = true
+				confirm_popup = true
+			elif (buttons[cursor_row][2] and confirmation) or !buttons[cursor_row][2]:
+				Global.call(buttons[cursor_row][1])
+				confirmation = false
+				confirm_popup = false
 		"keybind":
 			buttons[cursor_row][1].text = "???"
 			confirmation = true

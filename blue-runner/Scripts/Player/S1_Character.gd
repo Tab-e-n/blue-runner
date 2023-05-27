@@ -33,10 +33,10 @@ var super_slide : bool = false
 var dropping : int = 0
 var saved_momentum : float = 0
 
-const jump_buffer_constant : int = 5
+const jump_buffer_constant : int = 3
 var jump_buffer : int = 0
 
-const ground_buffer_constant : int = 6
+const ground_buffer_constant : int = 3
 var ground_buffer : int = 0
 
 var last_anim : String = "Default"

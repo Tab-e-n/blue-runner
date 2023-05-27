@@ -33,10 +33,6 @@ window/size/fullscreen=true
 window/stretch/mode="viewport"
 window/stretch/aspect="keep_height"
 
-[editor]
-
-main_run_args="--save_interaction=x"
-
 [importer_defaults]
 
 texture={
