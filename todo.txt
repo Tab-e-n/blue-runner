@@ -46,12 +46,6 @@ More Gray Rocks
 booster is underwhelming visualy
 make MovingPlatform scaleable
 
-options
-3 timer option: Timer only active when you beat the level.
-Outline the character
-Up key for jump
-key that shows level info when in a level
-
 new checkboxes
 redo every menu and add new ones
 remaining main menu options
@@ -65,7 +59,17 @@ remaining main menu options
 make everything very clear so the player know what they are looking at
 Put level group author and description somewhere
 
+options
+3 timer option: Timer only active when you beat the level.
+Outline the character
+Up key for jump
+key that shows level info when in a level
 audio options
+
+replays
+fix bug when you race a replay then make a new replay while racing then return to the replay menu you will be in the incorrect position.
+remove replay anim
+
 level group description
 level group as level
 changing between "linked" level groups or something

@@ -15,7 +15,7 @@ var return_delay : int = 2
 func _ready():
 	global.replay = false
 	global.race_mode = false
-	var start : bool = true
+	var _start : bool = true
 	
 	var main = MAIN.instance()
 	add_child(main)

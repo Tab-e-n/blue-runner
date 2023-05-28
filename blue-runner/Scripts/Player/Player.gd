@@ -77,6 +77,7 @@ func _ready():
 		replay_timer = recording["timer"]
 		character_name = recording["character"]
 		if recording.has("character_location"): character_location = recording["character_location"]
+		level.timers_active = true
 	else:
 		if character_name == "":
 			character_name = global.current_character

@@ -10,8 +10,6 @@ var last_replay : int = 0
 var next_replay : int = 0
 var replay_amount : int = 0
 
-var replay_interact_mode : int = 0
-
 export var rack_time : float = 1
 export var rack_idle : bool = true
 var rack_anim_ended : bool = false
@@ -21,6 +19,7 @@ var is_selecting_replay : bool = true
 
 export var select_transition : float = 0
 var current_mode : int = 0
+var delete_confirmation : bool = false
 
 func _ready():
 	load_replays()
@@ -52,16 +51,19 @@ func info_inputs():
 		is_selecting_replay = false
 		$bottom_anim.play("to_interactions")
 		current_mode = 1
-	
 
 func interactions_inputs():
-	if Input.is_action_pressed("menu_left") and parent.move and current_mode > 0:
-		current_mode -= 1
-	if Input.is_action_pressed("menu_right") and parent.move and current_mode < 3:
-		current_mode += 1
-	if Input.is_action_just_pressed("deny"):
-		is_selecting_replay = true
-		$bottom_anim.play("to_info")
+	if !delete_confirmation:
+		if Input.is_action_pressed("menu_left") and parent.move and current_mode > 0:
+			current_mode -= 1
+		if Input.is_action_pressed("menu_right") and parent.move and current_mode < 3:
+			current_mode += 1
+		if Input.is_action_just_pressed("deny"):
+			is_selecting_replay = true
+			$bottom_anim.play("to_info")
+	else:
+		if Input.is_action_just_pressed("deny"):
+			delete_confirmation = false
 	if Input.is_action_just_pressed("accept"):
 		match current_mode:
 			0:
@@ -101,46 +103,46 @@ func interactions_inputs():
 	else:
 		$interactions/erase.rect_scale = Vector2(0.75, 0.75)
 		$interactions/erase.modulate = Color(0.5, 0.5, 0.5)
+	
+	$interactions/sure.visible = delete_confirmation
 
 func play_replay_level():
 	Global.replay_save[0] = next_replay
 	Global.replay_save[1] = current_mode
 	Global.replay_save[2] = current_directory
 	#print("dir in global: ", Global.replay_save[2])
-#	if $replay_list.get_item_count() > 0 and $replay_list.get_item_metadata(selected_replay) != "*":
-#		if replay_menu_mode == 0 or replay_menu_mode == 1:
-#			var selected_list_replay = $replay_list.get_selected_items()[0]
-			
-			
-#			global.current_recording = global.load_replay($replay_list.get_item_metadata(selected_list_replay) + "/" + $replay_list.get_item_text(selected_list_replay), false, false)
-			
-#			if global.current_recording.has("level"): 
-#				if replay_menu_mode == 1: global.race_mode = true
-#				else: global.replay = true
-				
-#				global.replay_menu = true
-				
-				# warning-ignore:return_value_discarded
-#				var level_file = global.current_recording["level"]
-#				if level_file.find("/") == -1:
-#					level_file = "res://Scenes/waterway/" + level_file
-				
-				
-#				Global.change_level("*" + level_file + ".tscn")
+	
+	Global.current_recording = Global.load_replay(current_directory + replays[current_directory][next_replay], false, false)
+	
+	if Global.current_recording.has("level"): 
+		if current_mode == 1:
+			Global.replay = true
+		if current_mode == 2: 
+			Global.race_mode = true
+		
+		Global.replay_menu = true
+		
+		# warning-ignore:return_value_discarded
+		var level_file = Global.current_recording["level"]
+		if level_file.find("/") == -1:
+			level_file = "res://Scenes/waterway/" + level_file
+		
+		Global.change_level("*" + level_file + ".tscn")
 
 func erase_replay():
-	pass
-#			if delete_confirmation:
-#				var selected_list_replay = $replay_list.get_selected_items()[0]
-#				global.delete_replay($replay_list.get_item_text(selected_list_replay))
-#				$replay_list.remove_item(selected_list_replay)
-#				if selected_replay > $replay_list.get_item_count() - 1:
-#					selected_replay = $replay_list.get_item_count() - 1
-#					if $replay_list.get_item_count() > 0: $replay_list.select(selected_replay)
-				
-#				delete_confirmation = false
-#			else:
-#				delete_confirmation = true
+	if delete_confirmation:
+		Global.delete_replay(current_directory + replays[current_directory][next_replay])
+		replays[current_directory].remove(next_replay)
+		
+		if next_replay > replay_amount - 1:
+			next_replay = replay_amount - 1
+		
+		delete_confirmation = false
+		
+		set_cassette_labes()
+	else:
+		delete_confirmation = true
+	print(delete_confirmation)
 
 func setup_rack(reset_selection : bool = true):
 	var new_replay_amount : int = replays[current_directory].size()
@@ -277,15 +279,16 @@ func load_replays():
 		
 		directories_to_visit.pop_front()
 	
-	current_replay = Global.replay_save[0]
-	last_replay = Global.replay_save[0]
-	next_replay = Global.replay_save[0]
-	
-	replay_interact_mode = Global.replay_save[1]
-	
-	for i in range(directories.size()):
-		if directories[i] == Global.replay_save[2]:
-			current_directory = directories[i]
-			break
+	if Global.replay_menu:
+		current_replay = Global.replay_save[0]
+		last_replay = Global.replay_save[0]
+		next_replay = Global.replay_save[0]
+		
+		current_mode = Global.replay_save[1]
+		
+		for i in range(directories.size()):
+			if directories[i] == Global.replay_save[2]:
+				current_directory = Global.replay_save[2]
+				break
 	
 	setup_rack(false)
