@@ -28,6 +28,7 @@ organize the fucking brancehs
 
  - EDITOR - 
 
+Attachables work like shit
 Flood Fill Alogritm tiles yay
 Selecting Favorite Items Shortcut
 Playtest shortcut
@@ -41,6 +42,8 @@ rebind move to something if undo system
 
  - RUNNER - 
 
+dash doesnt fuck you speed over
+fix forced max jump when booster
 New level completion UI
 More Gray Rocks
 booster is underwhelming visualy
@@ -69,6 +72,8 @@ audio options
 replays
 fix bug when you race a replay then make a new replay while racing then return to the replay menu you will be in the incorrect position.
 remove replay anim
+sinc the movement of text in the replay selection
+brighter text
 
 level group description
 level group as level
