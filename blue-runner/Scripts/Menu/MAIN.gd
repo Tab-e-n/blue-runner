@@ -9,8 +9,40 @@ export var switch_time : float = 1
 
 onready var submenus : Array = [$top, $sub/play, $sub/extras]
 
-func _ready():
-	pass
+func menu_ready(comming_from : String = ""):
+	$top.position.x = 736
+	$sub.position.x = 736
+	
+	match(comming_from):
+		"", "OPTIONS", "HELP":
+			current_menu = MENU_TOP
+			$mainAnim.play("enter_top")
+		"PLAY", "VS", "REPLAY":
+			current_menu = MENU_PLAY
+			$mainAnim.play("enter_sub")
+			$sub/play.visible = true
+		"ACHIEVEMENTS", "CREDITS", "CHEATCODES":
+			current_menu = MENU_EXTRAS
+			$mainAnim.play("enter_sub")
+			$sub/extras.visible = true
+	match(comming_from):
+		"OPTIONS":
+			$top.reset(2)
+		"HELP":
+			$top.reset(4)
+		"PLAY":
+			$sub/play.reset(1)
+		"VS":
+			$sub/play.reset(2)
+		"REPLAY":
+			$sub/play.reset(3)
+		"ACHIEVEMENTS":
+			$sub/extras.reset(1)
+		"CREDITS":
+			$sub/extras.reset(2)
+		"CHEATCODES":
+			$sub/extras.reset(3)
+	
 	#call_deferred("set_buttons", MENU_TOP)
 
 func menu_update():
@@ -75,19 +107,24 @@ func accept(group : Node2D):
 			get_tree().quit()
 		BUTTON_MENU_TOP:
 			current_menu = MENU_TOP
-			$anim.play("move_back")
+			$mainAnim.stop()
+			$mainAnim.play("move_back")
 		BUTTON_MENU_PLAY:
 			current_menu = MENU_PLAY
-			$anim.play("move_next")
+			$mainAnim.stop()
+			$mainAnim.play("move_next")
 			$sub/play.visible = true
 			$sub/play.reset()
 		BUTTON_MENU_EXTRAS:
 			current_menu = MENU_EXTRAS
-			$anim.play("move_next")
+			$mainAnim.stop()
+			$mainAnim.play("move_next")
 			$sub/extras.visible = true
 			$sub/extras.reset()
 		BUTTON_OPTIONS:
-			print("incomplete")
+			parent.switch_menu("OPTIONS", "MAIN")
+			$mainAnim.stop()
+			$mainAnim.play("exit_top")
 		BUTTON_HELP:
 			print("incomplete")
 		BUTTON_PLAY:
@@ -95,7 +132,9 @@ func accept(group : Node2D):
 		BUTTON_VS:
 			print("incomplete")
 		BUTTON_REPLAY:
-			print("incomplete")
+			parent.switch_menu("REPLAY", "MAIN")
+			$mainAnim.stop()
+			$mainAnim.play("exit_sub")
 		BUTTON_ACHIEVEMENTS:
 			print("incomplete")
 		BUTTON_CREDITS:

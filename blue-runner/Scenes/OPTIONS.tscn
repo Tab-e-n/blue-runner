@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Visual/Menu/menu_circle.png" type="Texture" id=1]
 [ext_resource path="res://Visual/Menu/options_rectangle.png" type="Texture" id=2]
@@ -12,6 +12,7 @@
 shader = ExtResource( 4 )
 shader_param/color = Plane( 0.25, 0.75, 0.75, 1 )
 shader_param/replacing = Plane( 1, 1, 1, 1 )
+shader_param/offset_enabled = true
 shader_param/offset = 0.0
 shader_param/only_replaced = false
 
@@ -130,7 +131,7 @@ tracks/0/keys = {
 "values": [ Vector2( 1, 1 ), Vector2( 1, 0 ), Vector2( 1, 1 ) ]
 }
 
-[sub_resource type="StyleBoxFlat" id=7]
+[sub_resource type="StyleBoxFlat" id=6]
 bg_color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 border_width_left = 4
 border_width_top = 4
@@ -138,7 +139,7 @@ border_width_right = 4
 border_width_bottom = 4
 border_color = Color( 0.25098, 0.74902, 0.74902, 1 )
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=7]
 length = 8.0
 loop = true
 tracks/0/type = "value"
@@ -154,8 +155,57 @@ tracks/0/keys = {
 "values": [ -1.0, 1.0 ]
 }
 
+[sub_resource type="Animation" id=8]
+resource_name = "enter"
+length = 0.6
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.25, 0.4, 0.55 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1e-05, 1e-05 ), Vector2( 0, 0 ), Vector2( 1.5, 0.5 ), Vector2( 1, 1.5 ), Vector2( 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=9]
+resource_name = "exit"
+length = 0.45
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.15, 0.3, 0.45 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1, 1.5 ), Vector2( 1.5, 0.5 ), Vector2( 0, 0 ) ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.45 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "queue_free"
+} ]
+}
+
 [node name="OPTIONS" type="Node2D"]
 material = SubResource( 1 )
+scale = Vector2( 1e-05, 1e-05 )
 script = ExtResource( 3 )
 
 [node name="menu_circle_1" type="Sprite" parent="."]
@@ -195,7 +245,6 @@ margin_left = -576.0
 margin_top = 308.0
 margin_right = 64.0
 margin_bottom = 372.0
-custom_colors/default_color = Color( 0.235294, 0.576471, 0.576471, 1 )
 text = "BACK"
 
 [node name="cursor" type="Node2D" parent="."]
@@ -218,7 +267,7 @@ margin_top = -32.0
 margin_right = 128.0
 margin_bottom = 32.0
 theme = ExtResource( 6 )
-custom_styles/normal = SubResource( 7 )
+custom_styles/normal = SubResource( 6 )
 custom_colors/font_color = Color( 0.235294, 0.576471, 0.576471, 1 )
 text = "Are you sure?"
 align = 1
@@ -234,7 +283,7 @@ margin_top = -32.0
 margin_right = 128.0
 margin_bottom = 32.0
 theme = ExtResource( 6 )
-custom_styles/normal = SubResource( 7 )
+custom_styles/normal = SubResource( 6 )
 custom_colors/font_color = Color( 0.235294, 0.576471, 0.576471, 1 )
 text = "Not done sorry"
 align = 1
@@ -245,4 +294,8 @@ __meta__ = {
 
 [node name="pulse" type="AnimationPlayer" parent="."]
 autoplay = "pulse"
-anims/pulse = SubResource( 6 )
+anims/pulse = SubResource( 7 )
+
+[node name="mainAnim" type="AnimationPlayer" parent="."]
+anims/enter = SubResource( 8 )
+anims/exit = SubResource( 9 )

@@ -46,12 +46,12 @@ func _ready():
 #func _physics_process(_delta):
 #	set_buttons()
 
-func reset():
+func reset(pos : int = 1):
 	on_exit = false
 	last_on_exit = false
-	current_button = 1
-	last_button = 1
-	next_button = 1
+	current_button = pos
+	last_button = pos
+	next_button = pos
 
 func set_buttons():
 	if (next_button != current_button or on_exit != last_on_exit) and !anim.is_playing():

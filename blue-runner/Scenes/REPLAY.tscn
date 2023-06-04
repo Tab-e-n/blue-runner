@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://Text/Text_Options.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Visual/Menu/button.png" type="Texture" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://Visual/Menu/replay_rack_start.png" type="Texture" id=8]
 [ext_resource path="res://Visual/Menu/replay_rack_end.png" type="Texture" id=9]
 [ext_resource path="res://Scripts/Menu/Scrolling_Text.gd" type="Script" id=10]
+[ext_resource path="res://Visual/Menu/replay_directory_walls.png" type="Texture" id=11]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 5 )
@@ -44,7 +45,7 @@ tracks/0/keys = {
 "values": [ 0.0, 1.0 ]
 }
 
-[sub_resource type="ShaderMaterial" id=6]
+[sub_resource type="ShaderMaterial" id=4]
 shader = ExtResource( 5 )
 shader_param/color = Plane( 0.13, 0.08, 0.2, 1 )
 shader_param/replacing = Plane( 1, 1, 1, 1 )
@@ -52,8 +53,7 @@ shader_param/offset_enabled = false
 shader_param/offset = 0.0
 shader_param/only_replaced = false
 
-[sub_resource type="Animation" id=4]
-resource_name = "to_info"
+[sub_resource type="Animation" id=5]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("info:position")
@@ -80,7 +80,7 @@ tracks/1/keys = {
 "values": [ Vector2( 0, 0 ), Vector2( 1280, 0 ) ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath(".:select_transition")
+tracks/2/path = NodePath("..:select_transition")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
@@ -92,7 +92,7 @@ tracks/2/keys = {
 "values": [ 1.0, 0.0 ]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=6]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("info:position")
@@ -119,7 +119,7 @@ tracks/1/keys = {
 "values": [ Vector2( 1280, 0 ), Vector2( 0, 0 ) ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath(".:select_transition")
+tracks/2/path = NodePath("..:select_transition")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
@@ -131,17 +131,462 @@ tracks/2/keys = {
 "values": [ 0.0, 1.0 ]
 }
 
+[sub_resource type="Animation" id=7]
+resource_name = "Move"
+length = 2.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("wall_left:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -576, 0 ), Vector2( -576, 92 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("wall_right:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 576, 0 ), Vector2( 576, -92 ) ]
+}
+
+[sub_resource type="Animation" id=8]
+resource_name = "Directory Return"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("bottom:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 0, 256 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("rack:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 0, 768 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("directories/curdir:rect_position")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -608, -376 ), Vector2( -928, -376 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("directories/directory:rect_position")
+tracks/3/interp = 2
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -320, -376 ), Vector2( -464, -32 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("directories/directory:rect_scale")
+tracks/4/interp = 2
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 2, 2 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("directories/walls:scale")
+tracks/5/interp = 2
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1.25, 1.25 ), Vector2( 1, 1 ) ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("directories/other_directories:modulate")
+tracks/6/interp = 2
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath(".:directory_animation_ongoing")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+
+[sub_resource type="Animation" id=9]
+resource_name = "Directory Selected"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("bottom:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 256 ), Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("rack:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 768 ), Vector2( 0, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("directories/curdir:rect_position")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -928, -376 ), Vector2( -608, -376 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("directories/directory:rect_position")
+tracks/3/interp = 2
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -464, -32 ), Vector2( -320, -376 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("directories/directory:rect_scale")
+tracks/4/interp = 2
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 2, 2 ), Vector2( 1, 1 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("directories/walls:scale")
+tracks/5/interp = 2
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1.25, 1.25 ) ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("directories/other_directories:modulate")
+tracks/6/interp = 2
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+
+[sub_resource type="Animation" id=11]
+resource_name = "Enter"
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("directories/walls:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1.25, 1.25 ), Vector2( 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("directories/other_directories/-3:rect_position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.15, 0.65, 0.85 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -1568, -368 ), Vector2( -1568, -368 ), Vector2( -432, -368 ), Vector2( -464, -368 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("directories/other_directories/-2:rect_position")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.6, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -1568, -256 ), Vector2( -1568, -256 ), Vector2( -432, -256 ), Vector2( -464, -256 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("directories/other_directories/-1:rect_position")
+tracks/3/interp = 2
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.05, 0.55, 0.75 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -1568, -144 ), Vector2( -1568, -144 ), Vector2( -432, -144 ), Vector2( -464, -144 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("directories/other_directories/+1:rect_position")
+tracks/4/interp = 2
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.05, 0.55, 0.75 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -1568, 80 ), Vector2( -1568, 80 ), Vector2( -432, 80 ), Vector2( -464, 80 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("directories/other_directories/+2:rect_position")
+tracks/5/interp = 2
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.1, 0.6, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -1568, 192 ), Vector2( -1568, 192 ), Vector2( -432, 192 ), Vector2( -464, 192 ) ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("directories/other_directories/+3:rect_position")
+tracks/6/interp = 2
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0, 0.15, 0.65, 0.85 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -1568, 304 ), Vector2( -1568, 304 ), Vector2( -432, 304 ), Vector2( -464, 304 ) ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("directories/directory:rect_position")
+tracks/7/interp = 2
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0, 0.5, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -1568, -32 ), Vector2( -432, -32 ), Vector2( -464, -32 ) ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath(".:directory_animation_ongoing")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+
+[sub_resource type="Animation" id=10]
+resource_name = "Exit"
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("directories/walls:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1.25, 1.25 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("directories/other_directories/-3:rect_position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.15, 0.35, 0.85 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -464, -368 ), Vector2( -464, -368 ), Vector2( -432, -368 ), Vector2( -1568, -368 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("directories/other_directories/-2:rect_position")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -464, -256 ), Vector2( -464, -256 ), Vector2( -432, -256 ), Vector2( -1568, -256 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("directories/other_directories/-1:rect_position")
+tracks/3/interp = 2
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.05, 0.25, 0.75 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -464, -144 ), Vector2( -464, -144 ), Vector2( -432, -144 ), Vector2( -1568, -144 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("directories/other_directories/+1:rect_position")
+tracks/4/interp = 2
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.05, 0.25, 0.75 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -464, 80 ), Vector2( -464, 80 ), Vector2( -432, 80 ), Vector2( -1568, 80 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("directories/other_directories/+2:rect_position")
+tracks/5/interp = 2
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -464, 192 ), Vector2( -464, 192 ), Vector2( -432, 192 ), Vector2( -1568, 192 ) ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("directories/other_directories/+3:rect_position")
+tracks/6/interp = 2
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0, 0.15, 0.35, 0.85 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -464, 304 ), Vector2( -464, 304 ), Vector2( -432, 304 ), Vector2( -1568, 304 ) ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("directories/directory:rect_position")
+tracks/7/interp = 2
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0, 0.2, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -464, -32 ), Vector2( -432, -32 ), Vector2( -1568, -32 ) ]
+}
+tracks/8/type = "method"
+tracks/8/path = NodePath(".")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 1 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "queue_free"
+} ]
+}
+
 [node name="REPLAY" type="Node2D"]
 material = SubResource( 1 )
 script = ExtResource( 3 )
+directory_animation_ongoing = true
 rack_time = 0.0
 
 [node name="rack" type="Node2D" parent="."]
+visible = false
 use_parent_material = true
 
 [node name="replay_rack" type="Sprite" parent="rack"]
 material = SubResource( 2 )
-position = Vector2( 0, -128 )
+position = Vector2( 0, -112 )
 texture = ExtResource( 7 )
 
 [node name="replay_rack_start" type="Sprite" parent="rack/replay_rack"]
@@ -162,19 +607,19 @@ polygon = PoolVector2Array( 128, -256, 640, -256, 640, 256, 128, 256 )
 
 [node name="replay_cassette_next" type="Sprite" parent="rack"]
 use_parent_material = true
-position = Vector2( 0, -128 )
+position = Vector2( 0, -112 )
 texture = ExtResource( 4 )
 
 [node name="replay_cassette" type="Sprite" parent="rack"]
 use_parent_material = true
-position = Vector2( 0, -128 )
+position = Vector2( 0, -112 )
 texture = ExtResource( 4 )
 
 [node name="cassettes" type="Control" parent="rack"]
 margin_left = -640.0
-margin_top = -384.0
+margin_top = -368.0
 margin_right = 640.0
-margin_bottom = 128.0
+margin_bottom = 144.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -326,6 +771,10 @@ __meta__ = {
 }
 
 [node name="text" parent="rack/cassettes/7" instance=ExtResource( 1 )]
+anchor_left = -0.00187859
+anchor_top = -0.0368201
+anchor_right = -0.00187859
+anchor_bottom = -0.0368201
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
@@ -501,20 +950,37 @@ margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
+[node name="no_replays" parent="rack" instance=ExtResource( 1 )]
+visible = false
+margin_left = -208.0
+margin_top = -160.0
+margin_right = 624.0
+margin_bottom = -32.0
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+bbcode_enabled = true
+bbcode_text = "[center]There isn't anything here
+:([/center]"
+text = "There isn't anything here
+:("
+
 [node name="anim" type="AnimationPlayer" parent="rack"]
 anims/shift = SubResource( 3 )
 
-[node name="options_rectangle" type="Sprite" parent="."]
+[node name="bottom" type="Node2D" parent="."]
 use_parent_material = true
-position = Vector2( 0, 320 )
+
+[node name="options_rectangle" type="Sprite" parent="bottom"]
+use_parent_material = true
+position = Vector2( 5.05447e-05, 320 )
+scale = Vector2( 1.025, 1 )
 texture = ExtResource( 6 )
 
-[node name="backpoly" type="Polygon2D" parent="."]
+[node name="backpoly" type="Polygon2D" parent="bottom"]
 position = Vector2( -640, -392 )
 color = Color( 0.25098, 0.501961, 0.74902, 1 )
 polygon = PoolVector2Array( 32, 544, 1248, 544, 1248, 616, 32, 616 )
 
-[node name="replay_name" type="Control" parent="."]
+[node name="replay_name" type="Control" parent="bottom"]
 margin_left = -608.0
 margin_top = 160.0
 margin_right = 608.0
@@ -526,15 +992,15 @@ __meta__ = {
 }
 scroll_speed = 1.33
 
-[node name="text" parent="replay_name" instance=ExtResource( 1 )]
+[node name="text" parent="bottom/replay_name" instance=ExtResource( 1 )]
 rect_scale = Vector2( 1, 1 )
 custom_colors/default_color = Color( 0, 0, 0, 1 )
 text = "REPLAY NAME"
 
-[node name="info" type="Node2D" parent="."]
+[node name="info" type="Node2D" parent="bottom"]
 position = Vector2( -640, -384 )
 
-[node name="time" type="Control" parent="info"]
+[node name="time" type="Control" parent="bottom/info"]
 margin_left = 64.0
 margin_top = 624.0
 margin_right = 2368.0
@@ -547,13 +1013,13 @@ __meta__ = {
 }
 scroll_speed = 1.33
 
-[node name="text" parent="info/time" instance=ExtResource( 1 )]
+[node name="text" parent="bottom/info/time" instance=ExtResource( 1 )]
 rect_scale = Vector2( 1, 1 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 custom_colors/selection_color = Color( 0, 0, 0, 1 )
 text = "TIME"
 
-[node name="level" type="Control" parent="info"]
+[node name="level" type="Control" parent="bottom/info"]
 margin_left = 64.0
 margin_top = 664.0
 margin_right = 2368.0
@@ -566,13 +1032,13 @@ __meta__ = {
 }
 scroll_speed = 1.33
 
-[node name="text" parent="info/level" instance=ExtResource( 1 )]
+[node name="text" parent="bottom/info/level" instance=ExtResource( 1 )]
 margin_right = 2432.0
 rect_scale = Vector2( 1, 1 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 text = "LEVEL"
 
-[node name="character" type="Control" parent="info"]
+[node name="character" type="Control" parent="bottom/info"]
 margin_left = 64.0
 margin_top = 704.0
 margin_right = 2368.0
@@ -585,15 +1051,15 @@ __meta__ = {
 }
 scroll_speed = 1.33
 
-[node name="text" parent="info/character" instance=ExtResource( 1 )]
+[node name="text" parent="bottom/info/character" instance=ExtResource( 1 )]
 rect_scale = Vector2( 1, 1 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 text = "CHARACTER"
 
-[node name="interactions" type="Node2D" parent="."]
+[node name="interactions" type="Node2D" parent="bottom"]
 position = Vector2( 1280, 0 )
 
-[node name="back" parent="interactions" instance=ExtResource( 1 )]
+[node name="back" parent="bottom/interactions" instance=ExtResource( 1 )]
 margin_left = -544.0
 margin_top = 232.0
 margin_right = -287.0
@@ -606,7 +1072,7 @@ bbcode_enabled = true
 bbcode_text = "[center]BACK[/center]"
 text = "BACK"
 
-[node name="view" parent="interactions" instance=ExtResource( 1 )]
+[node name="view" parent="bottom/interactions" instance=ExtResource( 1 )]
 margin_left = -288.0
 margin_top = 232.0
 margin_right = -32.0
@@ -619,7 +1085,7 @@ bbcode_enabled = true
 bbcode_text = "[center]VIEW[/center]"
 text = "VIEW"
 
-[node name="race" parent="interactions" instance=ExtResource( 1 )]
+[node name="race" parent="bottom/interactions" instance=ExtResource( 1 )]
 margin_left = 32.0
 margin_top = 232.0
 margin_right = 288.0
@@ -632,7 +1098,7 @@ bbcode_enabled = true
 bbcode_text = "[center]RACE[/center]"
 text = "RACE"
 
-[node name="erase" parent="interactions" instance=ExtResource( 1 )]
+[node name="erase" parent="bottom/interactions" instance=ExtResource( 1 )]
 margin_left = 320.0
 margin_top = 232.0
 margin_right = 577.0
@@ -645,7 +1111,8 @@ bbcode_enabled = true
 bbcode_text = "[center]ERASE[/center]"
 text = "ERASE"
 
-[node name="sure" parent="interactions" instance=ExtResource( 1 )]
+[node name="sure" parent="bottom/interactions" instance=ExtResource( 1 )]
+visible = false
 margin_left = -216.0
 margin_top = -80.0
 margin_right = 296.0
@@ -659,13 +1126,181 @@ bbcode_enabled = true
 bbcode_text = "[center]Are you sure you want to delete this replay?[/center]"
 text = "Are you sure you want to delete this replay?"
 
-[node name="button" type="Sprite" parent="interactions/sure"]
+[node name="button" type="Sprite" parent="bottom/interactions/sure"]
 show_behind_parent = true
-material = SubResource( 6 )
+material = SubResource( 4 )
 position = Vector2( 245.333, 96 )
 scale = Vector2( 2.66667, 2.66667 )
 texture = ExtResource( 2 )
 
-[node name="bottom_anim" type="AnimationPlayer" parent="."]
-anims/to_info = SubResource( 4 )
-anims/to_interactions = SubResource( 5 )
+[node name="bottom_anim" type="AnimationPlayer" parent="bottom"]
+anims/to_info = SubResource( 5 )
+anims/to_interactions = SubResource( 6 )
+
+[node name="directories" type="Node2D" parent="."]
+
+[node name="curdir" parent="directories" instance=ExtResource( 1 )]
+margin_left = -608.0
+margin_top = -376.0
+margin_right = -32.0
+margin_bottom = -312.0
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+text = "Current Directory:"
+
+[node name="directory" type="Control" parent="directories"]
+margin_left = -320.0
+margin_top = -376.0
+margin_right = 144.0
+margin_bottom = -344.0
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scroll_speed = 1.33
+
+[node name="text" parent="directories/directory" instance=ExtResource( 1 )]
+margin_right = 576.0
+custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
+text = "DIR"
+
+[node name="other_directories" type="Node2D" parent="directories"]
+modulate = Color( 1, 1, 1, 0 )
+
+[node name="-3" type="Control" parent="directories/other_directories"]
+margin_left = -1568.0
+margin_top = -368.0
+margin_right = -1104.0
+margin_bottom = -336.0
+rect_scale = Vector2( 2, 2 )
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+default_text = "def"
+scroll_speed = 1.33
+
+[node name="text" parent="directories/other_directories/-3" instance=ExtResource( 1 )]
+margin_right = 576.0
+custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
+text = "DIR"
+
+[node name="-2" type="Control" parent="directories/other_directories"]
+margin_left = -1568.0
+margin_top = -256.0
+margin_right = -1104.0
+margin_bottom = -224.0
+rect_scale = Vector2( 2, 2 )
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+default_text = "def"
+scroll_speed = 1.33
+
+[node name="text" parent="directories/other_directories/-2" instance=ExtResource( 1 )]
+margin_right = 576.0
+custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
+text = "DIR"
+
+[node name="-1" type="Control" parent="directories/other_directories"]
+margin_left = -1568.0
+margin_top = -144.0
+margin_right = -1104.0
+margin_bottom = -112.0
+rect_scale = Vector2( 2, 2 )
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+default_text = "def"
+scroll_speed = 1.33
+
+[node name="text" parent="directories/other_directories/-1" instance=ExtResource( 1 )]
+margin_right = 576.0
+custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
+text = "DIR"
+
+[node name="+1" type="Control" parent="directories/other_directories"]
+margin_left = -1568.0
+margin_top = 80.0
+margin_right = -1104.0
+margin_bottom = 112.0
+rect_scale = Vector2( 2, 2 )
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+default_text = "def"
+scroll_speed = 1.33
+
+[node name="text" parent="directories/other_directories/+1" instance=ExtResource( 1 )]
+margin_right = 576.0
+custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
+text = "DIR"
+
+[node name="+2" type="Control" parent="directories/other_directories"]
+margin_left = -1568.0
+margin_top = 192.0
+margin_right = -1104.0
+margin_bottom = 224.0
+rect_scale = Vector2( 2, 2 )
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+default_text = "def"
+scroll_speed = 1.33
+
+[node name="text" parent="directories/other_directories/+2" instance=ExtResource( 1 )]
+margin_right = 576.0
+custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
+text = "DIR"
+
+[node name="+3" type="Control" parent="directories/other_directories"]
+margin_left = -1568.0
+margin_top = 304.0
+margin_right = -1104.0
+margin_bottom = 336.0
+rect_scale = Vector2( 2, 2 )
+rect_clip_content = true
+script = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+default_text = "def"
+scroll_speed = 1.33
+
+[node name="text" parent="directories/other_directories/+3" instance=ExtResource( 1 )]
+margin_right = 576.0
+custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
+text = "DIR"
+
+[node name="walls" type="Node2D" parent="directories"]
+scale = Vector2( 1.25, 1.25 )
+
+[node name="wall_left" type="Sprite" parent="directories/walls"]
+modulate = Color( 0.25098, 0.501961, 0.74902, 1 )
+position = Vector2( -576, 0 )
+texture = ExtResource( 11 )
+
+[node name="wall_right" type="Sprite" parent="directories/walls"]
+modulate = Color( 0.25098, 0.501961, 0.74902, 1 )
+position = Vector2( 576, 0 )
+rotation = 3.14159
+texture = ExtResource( 11 )
+
+[node name="anim" type="AnimationPlayer" parent="directories/walls"]
+autoplay = "Move"
+anims/Move = SubResource( 7 )
+
+[node name="mainAnim" type="AnimationPlayer" parent="."]
+"anims/Directory Return" = SubResource( 8 )
+"anims/Directory Selected" = SubResource( 9 )
+anims/Enter = SubResource( 11 )
+anims/Exit = SubResource( 10 )

@@ -1,6 +1,6 @@
 extends Node2D
 
-var MAIN : PackedScene = preload("res://Scenes/REPLAY.tscn")
+#var loaded_menu : PackedScene = preload("res://Scenes/MAIN.tscn")
 var current_menu : Node2D
 
 var hold : int = 0
@@ -8,7 +8,7 @@ var move : bool = true
 
 onready var global : Control = $"/root/Global"
 
-var menu : String = "REPLAY"
+var menu : String = "MAIN"
 
 var return_delay : int = 2
 
@@ -17,9 +17,7 @@ func _ready():
 	global.race_mode = false
 	var _start : bool = true
 	
-	var main = MAIN.instance()
-	add_child(main)
-	current_menu = main
+	switch_menu(menu)
 	
 	#print(current_menu.position)
 	
@@ -57,7 +55,7 @@ func _ready():
 		#menu = "MAIN"
 		
 		#if global.replay_menu:
-			#global.replay_menu = false
+			#global.replay_menu = falsef
 			#menu = "REPLAY"
 			#$AnimationPlayer.play("SET_TO_REPLAY")
 		#else:
@@ -129,3 +127,12 @@ func _process(_delta):
 	if move == true:
 	#	$NewVersionPopup.visible = false
 		move = false
+
+func switch_menu(menu : String, comming_from : String = ""):
+	var load_menu : PackedScene = load("res://Scenes/" + menu + ".tscn") 
+	var new_menu = load_menu.instance()
+	add_child(new_menu)
+	current_menu = new_menu
+	
+	if current_menu.has_method("menu_ready"):
+		current_menu.menu_ready(comming_from)

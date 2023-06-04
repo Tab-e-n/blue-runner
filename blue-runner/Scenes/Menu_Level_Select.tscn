@@ -4406,6 +4406,8 @@ anims/down = SubResource( 22 )
 anims/up = SubResource( 23 )
 
 [node name="OPTION" type="Node2D" parent="."]
+visible = false
+scale = Vector2( 1e-05, 1e-05 )
 script = ExtResource( 36 )
 
 [node name="menu_circle2" type="Sprite" parent="OPTION"]
@@ -4538,23 +4540,21 @@ custom_colors/default_color = Color( 0.917647, 0.933333, 0.952941, 1 )
 text = "EXIT"
 
 [node name="menu_circle_2" type="Sprite" parent="."]
-visible = false
 modulate = Color( 0.12549, 0.207843, 0.384314, 1 )
 position = Vector2( -1040, 784 )
-scale = Vector2( 1e-05, 1e-05 )
+scale = Vector2( 2.41898, 2.41898 )
 texture = ExtResource( 35 )
 
 [node name="menu_button" type="Sprite" parent="."]
-visible = false
 modulate = Color( 0.117647, 0.341176, 0.611765, 1 )
-position = Vector2( -3008, -320 )
+position = Vector2( -1002.67, -149.333 )
 rotation = 0.0872665
 scale = Vector2( 3, 3 )
 texture = ExtResource( 28 )
 
 [node name="MAIN" type="Node2D" parent="."]
-visible = false
-rotation = 0.523599
+position = Vector2( 1801.48, -675.556 )
+rotation = 0.0872665
 script = ExtResource( 26 )
 
 [node name="menu_button1" type="Sprite" parent="MAIN"]

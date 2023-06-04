@@ -160,6 +160,8 @@ func add_cursor_pos(button_position : Vector2):
 
 func _ready():
 	change_menu(current_menu)
+	scale = Vector2(0, 0)
+	$mainAnim.play("enter")
 
 func _input(event):
 	if event is InputEventKey:
@@ -232,8 +234,8 @@ func select():
 			if current_menu != "main":
 				change_menu("main")
 			else:
-				# RETURN TO MAIN MENU
-				pass
+				parent.switch_menu("MAIN", "OPTIONS")
+				$mainAnim.play("exit")
 		"submenu":
 			change_menu(buttons[cursor_row][1])
 		"disabled":

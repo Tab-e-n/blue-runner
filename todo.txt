@@ -46,34 +46,9 @@ dash doesnt fuck you speed over
 fix forced max jump when booster
 New level completion UI
 More Gray Rocks
+More Blurees
 booster is underwhelming visualy
 make MovingPlatform scaleable
-
-new checkboxes
-redo every menu and add new ones
-remaining main menu options
-	Credits
-	Level Select
-	VS Race
-	Replays
-	Help
-	Achievements
-	Cheat Codes
-make everything very clear so the player know what they are looking at
-Put level group author and description somewhere
-
-options
-3 timer option: Timer only active when you beat the level.
-Outline the character
-Up key for jump
-key that shows level info when in a level
-audio options
-
-replays
-fix bug when you race a replay then make a new replay while racing then return to the replay menu you will be in the incorrect position.
-remove replay anim
-sinc the movement of text in the replay selection
-brighter text
 
 level group description
 level group as level
@@ -81,6 +56,41 @@ changing between "linked" level groups or something
 
 new waterway levels
 tutorial level
+
+
+new checkboxes
+redo every menu and add new ones
+make everything very clear so the player know what they are looking at
+
+Main [Functional]
+S1 on title screen
+
+Options [Functional]
+3 timer option: Timer only active when you beat the level.
+Outline the character
+Up key for jump
+key that shows level info when in a level
+audio options
+
+Help [Not remade]
+
+Level Select [Not remade]
+Put level group author and description somewhere
+
+VS Race [Not made]
+
+Replays [Functional]
+fix bug when you race a replay then make a new replay while racing then return to the replay menu you will be in the incorrect position.
+remove replay anim
+sinc the movement of text in the replay selection or remove movement when its not selected
+brighter text
+
+Achievements [Not made]
+
+Credits [Not made]
+
+Cheat Codes [Not made]
+
 
 character greenbox
 missing idle anims

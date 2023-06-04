@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://Scripts/menu_shader.shader" type="Shader" id=1]
 [ext_resource path="res://Scripts/Menu/MAIN.gd" type="Script" id=2]
@@ -15,6 +15,122 @@
 [ext_resource path="res://Visual/Menu/button_credits.png" type="Texture" id=13]
 [ext_resource path="res://Visual/Menu/line.png" type="Texture" id=14]
 [ext_resource path="res://Visual/Menu/button_vs.png" type="Texture" id=15]
+
+[sub_resource type="Animation" id=14]
+resource_name = "enter_sub"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("top:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 712, 0 ), Vector2( -56, 0 ), Vector2( -24, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("sub:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.1, 0.3, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 736, 0 ), Vector2( -32, 0 ), Vector2( 0, 0 ) ]
+}
+
+[sub_resource type="Animation" id=15]
+resource_name = "enter_top"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("top:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 736, 0 ), Vector2( -32, 0 ), Vector2( 0, 0 ) ]
+}
+
+[sub_resource type="Animation" id=13]
+resource_name = "exit_sub"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("top:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0.1, 0.3, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -24, 0 ), Vector2( -56, 0 ), Vector2( 712, 0 ) ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.5 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "queue_free"
+} ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("sub:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( -32, 0 ), Vector2( 736, 0 ) ]
+}
+
+[sub_resource type="Animation" id=16]
+resource_name = "exit_top"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("top:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( -32, 0 ), Vector2( 736, 0 ) ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.4 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "queue_free"
+} ]
+}
 
 [sub_resource type="Animation" id=1]
 resource_name = "move_back"
@@ -217,20 +333,23 @@ tracks/0/keys = {
 }
 
 [node name="MAIN" type="Node2D"]
+z_index = 10
 script = ExtResource( 2 )
 switch_time = 0.0
 
-[node name="anim" type="AnimationPlayer" parent="."]
+[node name="mainAnim" type="AnimationPlayer" parent="."]
+anims/enter_sub = SubResource( 14 )
+anims/enter_top = SubResource( 15 )
+anims/exit_sub = SubResource( 13 )
+anims/exit_top = SubResource( 16 )
 anims/move_back = SubResource( 1 )
 anims/move_next = SubResource( 2 )
 
 [node name="top" type="Node2D" parent="."]
 material = SubResource( 3 )
-position = Vector2( -24, 0 )
 script = ExtResource( 3 )
 menu_colors = [ Color( 0.25, 0.25, 0.75, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.74902, 0.74902, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.25098, 1 ) ]
 submenu = [ 1, 3, 5, 4, 6 ]
-time = 0.0
 
 [node name="back" type="Polygon2D" parent="top"]
 position = Vector2( -8, 0 )
@@ -285,6 +404,7 @@ autoplay = "pulse"
 anims/pulse = SubResource( 5 )
 
 [node name="sub" type="Node2D" parent="."]
+position = Vector2( 736, 0 )
 
 [node name="play" type="Node2D" parent="sub"]
 visible = false
@@ -348,7 +468,6 @@ node_buttons = [ "button1", "button2", "button3", "button_exit" ]
 menu_colors = [ Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ) ]
 buttons_amount = 3
 submenu = [ 2, 10, 11, 12 ]
-pulse_time = -0.95
 
 [node name="back" type="Polygon2D" parent="sub/extras"]
 position = Vector2( -8, 0 )

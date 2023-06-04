@@ -2,9 +2,14 @@ extends Node2D
 
 onready var parent : Node2D = get_parent()
 
-var replays : Dictionary = {}
 var directories : Array = []
 var current_directory : String = ""
+
+var selected_directory : int = 0
+export var directory_animation_ongoing : bool = false
+var is_selecting_directory : bool = true
+
+var replays : Dictionary = {}
 var current_replay : int = 0
 var last_replay : int = 0
 var next_replay : int = 0
@@ -15,14 +20,30 @@ export var rack_idle : bool = true
 var rack_anim_ended : bool = false
 var rack_anim_direction : int = 0
 
-var is_selecting_replay : bool = true
+var is_selecting_replay : bool = false
 
 export var select_transition : float = 0
 var current_mode : int = 0
 var delete_confirmation : bool = false
 
 func _ready():
+	$bottom.position = Vector2(0, 256)
+	$rack.position = Vector2(0, 768)
+	$directories/curdir.rect_position = Vector2(-928, -376)
+	$directories/directory.rect_position = Vector2(-1568, -32)
+	$directories/directory.rect_scale = Vector2(2, 2)
+	$directories/walls.scale = Vector2(1.25, 1.25)
+	$directories/other_directories.modulate = Color(1, 1, 1, 1)
+	
+	$directories.visible = true
+	$rack.visible = false
+	$bottom.visible = false
+	
+	$mainAnim.play("Enter")
+	
 	load_replays()
+	
+	set_directory_name(0, current_directory)
 
 func menu_update():
 	
@@ -32,10 +53,20 @@ func menu_update():
 		rack_idle = true
 		rack_anim_ended = true
 	
-	if is_selecting_replay:
+	$rack.visible = !is_selecting_directory or directory_animation_ongoing
+	$bottom.visible = !is_selecting_directory or directory_animation_ongoing
+	$directories/curdir.visible = !is_selecting_directory or directory_animation_ongoing
+	
+	if directory_animation_ongoing:
+		pass
+	if is_selecting_directory:
+		directory_inputs()
+		directory_text()
+	elif is_selecting_replay:
 		info_inputs()
 	else:
 		interactions_inputs()
+	
 	
 	rack_visuals()
 	
@@ -47,10 +78,15 @@ func info_inputs():
 		next_replay -= 1
 	if Input.is_action_pressed("menu_right") and parent.move and next_replay < replay_amount - 1:
 		next_replay += 1
-	if Input.is_action_just_pressed("accept"):
+	if Input.is_action_just_pressed("accept") and replay_amount > 0:
 		is_selecting_replay = false
-		$bottom_anim.play("to_interactions")
+		$bottom/bottom_anim.play("to_interactions")
 		current_mode = 1
+	if Input.is_action_just_pressed("deny"):
+		is_selecting_replay = false
+		is_selecting_directory = true
+		$mainAnim.play("Directory Return")
+		directory_text()
 
 func interactions_inputs():
 	if !delete_confirmation:
@@ -60,7 +96,7 @@ func interactions_inputs():
 			current_mode += 1
 		if Input.is_action_just_pressed("deny"):
 			is_selecting_replay = true
-			$bottom_anim.play("to_info")
+			$bottom/bottom_anim.play("to_info")
 	else:
 		if Input.is_action_just_pressed("deny"):
 			delete_confirmation = false
@@ -68,7 +104,7 @@ func interactions_inputs():
 		match current_mode:
 			0:
 				is_selecting_replay = true
-				$bottom_anim.play("to_info")
+				$bottom/bottom_anim.play("to_info")
 			1:
 				play_replay_level()
 			2:
@@ -77,34 +113,74 @@ func interactions_inputs():
 				erase_replay()
 	
 	if current_mode == 0:
-		$interactions/back.rect_scale = Vector2(1, 1)
-		$interactions/back.modulate = Color(1, 1, 1)
+		$bottom/interactions/back.rect_scale = Vector2(1, 1)
+		$bottom/interactions/back.modulate = Color(1, 1, 1)
 	else:
-		$interactions/back.rect_scale = Vector2(0.75, 0.75)
-		$interactions/back.modulate = Color(0.5, 0.5, 0.5)
+		$bottom/interactions/back.rect_scale = Vector2(0.75, 0.75)
+		$bottom/interactions/back.modulate = Color(0.5, 0.5, 0.5)
 	
 	if current_mode == 1:
-		$interactions/view.rect_scale = Vector2(1, 1)
-		$interactions/view.modulate = Color(1, 1, 1)
+		$bottom/interactions/view.rect_scale = Vector2(1, 1)
+		$bottom/interactions/view.modulate = Color(1, 1, 1)
 	else:
-		$interactions/view.rect_scale = Vector2(0.75, 0.75)
-		$interactions/view.modulate = Color(0.5, 0.5, 0.5)
+		$bottom/interactions/view.rect_scale = Vector2(0.75, 0.75)
+		$bottom/interactions/view.modulate = Color(0.5, 0.5, 0.5)
 	
 	if current_mode == 2:
-		$interactions/race.rect_scale = Vector2(1, 1)
-		$interactions/race.modulate = Color(1, 1, 1)
+		$bottom/interactions/race.rect_scale = Vector2(1, 1)
+		$bottom/interactions/race.modulate = Color(1, 1, 1)
 	else:
-		$interactions/race.rect_scale = Vector2(0.75, 0.75)
-		$interactions/race.modulate = Color(0.5, 0.5, 0.5)
+		$bottom/interactions/race.rect_scale = Vector2(0.75, 0.75)
+		$bottom/interactions/race.modulate = Color(0.5, 0.5, 0.5)
 	
 	if current_mode == 3:
-		$interactions/erase.rect_scale = Vector2(1, 1)
-		$interactions/erase.modulate = Color(1, 1, 1)
+		$bottom/interactions/erase.rect_scale = Vector2(1, 1)
+		$bottom/interactions/erase.modulate = Color(1, 1, 1)
 	else:
-		$interactions/erase.rect_scale = Vector2(0.75, 0.75)
-		$interactions/erase.modulate = Color(0.5, 0.5, 0.5)
+		$bottom/interactions/erase.rect_scale = Vector2(0.75, 0.75)
+		$bottom/interactions/erase.modulate = Color(0.5, 0.5, 0.5)
 	
-	$interactions/sure.visible = delete_confirmation
+	$bottom/interactions/sure.visible = delete_confirmation
+
+func directory_inputs():
+	if Input.is_action_pressed("menu_up") and parent.move and selected_directory > 0:
+		selected_directory -= 1
+	if Input.is_action_pressed("menu_down") and parent.move and selected_directory < directories.size() - 1:
+		selected_directory += 1
+	if Input.is_action_just_pressed("accept"):
+		current_directory = directories[selected_directory]
+		setup_rack(true)
+		is_selecting_replay = true
+		is_selecting_directory = false
+		$mainAnim.play("Directory Selected")
+	if Input.is_action_just_pressed("deny"):
+		parent.switch_menu("MAIN", "REPLAY")
+		$mainAnim.play("Exit")
+
+func directory_text():
+	for i in range(-3, 4):
+		if selected_directory + i >= 0 and selected_directory + i < directories.size():
+			set_directory_name(i, directories[selected_directory + i])
+		else:
+			set_directory_name(i, "", true)
+
+func set_directory_name(node_number : int, dir_name : String = "", clear : bool = false):
+	if dir_name == "":
+		dir_name = "root"
+	
+	var text_object : Control
+	
+	if node_number == 0:
+		text_object = $directories/directory
+	elif node_number < 0:
+		text_object = get_node("directories/other_directories/" + String(node_number))
+	else:
+		text_object = get_node("directories/other_directories/+" + String(node_number))
+	
+	if clear:
+		text_object.set_text("")
+	else:
+		text_object.set_text(dir_name)
 
 func play_replay_level():
 	Global.replay_save[0] = next_replay
@@ -203,14 +279,31 @@ func rack_visuals():
 			$"rack/cassettes/9".modulate.a = 0.5
 		else:
 			$"rack/cassettes/8".modulate.a = (1 - rack_time) * 0.5 + 0.5
+	else:
+		pass
+	$rack/no_replays.visible = replay_amount == 0
 
 func set_cassette_labes():
-	
-	var recording : Dictionary = Global.load_replay(current_directory + replays[current_directory][current_replay])
-	$replay_name.set_text(replays[current_directory][current_replay])
-	$info/time.set_text(String(Global.convert_float_to_time(recording["timer"])))
-	$info/level.set_text(String(recording["level"]))
-	$info/character.set_text(String(recording["character"]))
+	if replays[current_directory].size() > 0:
+		var recording : Dictionary = Global.load_replay(current_directory + replays[current_directory][current_replay])
+		$bottom/replay_name.set_text(replays[current_directory][current_replay])
+		if recording.has("timer"):
+			$bottom/info/time.set_text(String(Global.convert_float_to_time(recording["timer"])))
+		else:
+			$bottom/info/time.set_text("??:??.??")
+		if recording.has("level"):
+			$bottom/info/level.set_text(String(recording["level"]))
+		else:
+			$bottom/info/level.set_text("Unspecified level")
+		if recording.has("character"):
+			$bottom/info/character.set_text(String(recording["character"]))
+		else:
+			$bottom/info/character.set_text("Unspecified character")
+	else:
+		$bottom/replay_name.set_text("No level selected")
+		$bottom/info/time.set_text("")
+		$bottom/info/level.set_text("")
+		$bottom/info/character.set_text("")
 	
 	for i in range(17):
 		var current_cassette : Control
