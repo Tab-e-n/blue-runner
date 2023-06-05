@@ -6,64 +6,28 @@ var current_menu : Node2D
 var hold : int = 0
 var move : bool = true
 
-onready var global : Control = $"/root/Global"
-
 var menu : String = "MAIN"
 
 var return_delay : int = 2
 
 func _ready():
-	global.replay = false
-	global.race_mode = false
+	Global.replay = false
+	Global.race_mode = false
 	var _start : bool = true
-	
-	switch_menu(menu)
 	
 	#print(current_menu.position)
 	
-	#if global.current_level_location == "user://SRLevels/":
-	#	for i in range($SELECT.user_levels.size()):
-	#		if $SELECT.user_levels[i] == global.current_level:
-	#			$SELECT.user_selected_level = int(i)
-	#			# warning-ignore:integer_division
-	#			$SELECT.user_levels_page = int(i) / 20
-	#			$SELECT.visible = true
-	#			start = false
-	#			break
-	#$SELECT.selected_level_name = global.current_level
-	#$SELECT.selected_level_location = global.current_level_location
-	#$SELECT.reload_all_levels(true)
-	#if start != false: 
-	#	for i in range(20):
-	#		if get_node("SELECT/L/Level_" + String(i)).level_name == global.current_level and get_node("SELECT/L/Level_" + String(i)).level_location == global.current_level_location:
-	#			$SELECT.selected_level = i
-	#			$SELECT.visible = true
-	#			start = false
-	#			break
-	
-	#$CHARACTER.check_character_unlocks()
-	
-	#$CHARACTER.ready_renders()
-	
-	#if start or global.replay_menu:
-		#$menu_circle_2.scale = Vector2(2.75, 2.75)
-		#$menu_button.position = Vector2(0, -64)
-		#$MAIN.position = Vector2(2048, -768)
-		#$MAIN.rotation_degrees = 0
-		#$SELECT/BG_MENU.color.a = 1
-		#$SELECT.visible = false
-		#menu = "MAIN"
+	if _start or Global.replay_menu:
 		
-		#if global.replay_menu:
-			#global.replay_menu = falsef
-			#menu = "REPLAY"
+		if Global.replay_menu:
+			menu = "REPLAY"
 			#$AnimationPlayer.play("SET_TO_REPLAY")
-		#else:
-			#pass
+		else:
+			menu = "MAIN"
 			#$AnimationPlayer.play("ENTERING")
-	#if !start:
-		#pass
-		#$menu_circle_2.scale = Vector2(0, 0)
+	
+	switch_menu(menu)
+	
 	#if Global.new_version_alert:
 		#$NewVersionPopup.visible = true
 		#Global.new_version_alert = false

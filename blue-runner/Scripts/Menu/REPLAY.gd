@@ -27,21 +27,57 @@ var current_mode : int = 0
 var delete_confirmation : bool = false
 
 func _ready():
-	$bottom.position = Vector2(0, 256)
-	$rack.position = Vector2(0, 768)
-	$directories/curdir.rect_position = Vector2(-928, -376)
-	$directories/directory.rect_position = Vector2(-1568, -32)
-	$directories/directory.rect_scale = Vector2(2, 2)
-	$directories/walls.scale = Vector2(1.25, 1.25)
-	$directories/other_directories.modulate = Color(1, 1, 1, 1)
+	load_replays()
+	
+	if Global.replay_menu:
+		Global.replay_menu = false
+		
+		current_replay = Global.replay_save[0]
+		last_replay = Global.replay_save[0]
+		next_replay = Global.replay_save[0]
+		
+		current_mode = Global.replay_save[1]
+		
+		current_directory = Global.replay_save[2]
+		selected_directory = directories.bsearch(current_directory)
+		
+		is_selecting_replay = true
+		is_selecting_directory = false
+		
+		$bottom.position = Vector2(0, 0)
+		$rack.position = Vector2(0, 0)
+		$directories/curdir.rect_position = Vector2(-608, -376)
+		$directories/directory.rect_position = Vector2(-320, -376)
+		$directories/directory.rect_scale = Vector2(1, 1)
+		$directories/walls.scale = Vector2(1.25, 1.25)
+		$directories/other_directories.modulate = Color(1, 1, 1, 0)
+		
+		$"directories/other_directories/-3".rect_position.x = -464
+		$"directories/other_directories/-2".rect_position.x = -464
+		$"directories/other_directories/-1".rect_position.x = -464
+		$"directories/other_directories/+1".rect_position.x = -464
+		$"directories/other_directories/+2".rect_position.x = -464
+		$"directories/other_directories/+3".rect_position.x = -464
+		
+		$rack.visible = true
+		$bottom.visible = true
+	else:
+		$bottom.position = Vector2(0, 256)
+		$rack.position = Vector2(0, 768)
+		$directories/curdir.rect_position = Vector2(-928, -376)
+		$directories/directory.rect_position = Vector2(-1568, -32)
+		$directories/directory.rect_scale = Vector2(2, 2)
+		$directories/walls.scale = Vector2(1.25, 1.25)
+		$directories/other_directories.modulate = Color(1, 1, 1, 1)
+		
+		$rack.visible = false
+		$bottom.visible = false
+		
+		$mainAnim.play("Enter")
 	
 	$directories.visible = true
-	$rack.visible = false
-	$bottom.visible = false
 	
-	$mainAnim.play("Enter")
-	
-	load_replays()
+	setup_rack(false)
 	
 	set_directory_name(0, current_directory)
 
@@ -187,7 +223,7 @@ func play_replay_level():
 	Global.replay_save[1] = current_mode
 	Global.replay_save[2] = current_directory
 	#print("dir in global: ", Global.replay_save[2])
-	
+	#print(current_directory + replays[current_directory][next_replay])
 	Global.current_recording = Global.load_replay(current_directory + replays[current_directory][next_replay], false, false)
 	
 	if Global.current_recording.has("level"): 
@@ -286,6 +322,7 @@ func rack_visuals():
 func set_cassette_labes():
 	if replays[current_directory].size() > 0:
 		var recording : Dictionary = Global.load_replay(current_directory + replays[current_directory][current_replay])
+		#print(current_directory + replays[current_directory][current_replay])
 		$bottom/replay_name.set_text(replays[current_directory][current_replay])
 		if recording.has("timer"):
 			$bottom/info/time.set_text(String(Global.convert_float_to_time(recording["timer"])))
@@ -372,16 +409,4 @@ func load_replays():
 		
 		directories_to_visit.pop_front()
 	
-	if Global.replay_menu:
-		current_replay = Global.replay_save[0]
-		last_replay = Global.replay_save[0]
-		next_replay = Global.replay_save[0]
-		
-		current_mode = Global.replay_save[1]
-		
-		for i in range(directories.size()):
-			if directories[i] == Global.replay_save[2]:
-				current_directory = Global.replay_save[2]
-				break
-	
-	setup_rack(false)
+	print(directories)

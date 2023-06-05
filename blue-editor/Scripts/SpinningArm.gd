@@ -30,7 +30,7 @@ export var lenght : float = 1
 
 var rotations = []
 
-var attached_nodes = [null]
+export var attached_nodes = [null]
 var scale_hinge : float
 var timer_hinge : int
 
