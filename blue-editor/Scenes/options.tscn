@@ -108,6 +108,7 @@ func set_buttons():
 	$GUI/keysbinds/buttons/reset_transform.text = data.key_names(data.settings[\"editor_keys\"][1])
 	$GUI/keysbinds/buttons/random_transform.text = data.key_names(data.settings[\"editor_keys\"][1])
 	$GUI/keysbinds/buttons/game_camera.text = data.key_names(data.settings[\"editor_keys\"][3])
+	$GUI/keysbinds/buttons/save_level2.text = data.key_names(data.settings[\"editor_keys\"][12])
 	
 	$GUI/editor_defaults/sonic_runner.text = data.settings[\"sonic_runner_folder\"]
 

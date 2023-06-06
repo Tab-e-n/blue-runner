@@ -262,14 +262,17 @@ func _ready():
 			current_node.focus_neighbour_right = NodePath(\"/root/main/GUI/Place/Panel/favorite\")
 		else:
 			current_node.focus_next = NodePath(\"/root/main/GUI/Place/Panel/item/\" + String(i + 1))
-			if i == 7: current_node.focus_neighbour_right = NodePath(\"/root/main/GUI/Place/Panel/more\")
-			else: current_node.focus_neighbour_right = NodePath(\"/root/main/GUI/Place/Panel/item/\" + String(i + 1))
+			if i == 7:
+				current_node.focus_neighbour_right = NodePath(\"/root/main/GUI/Place/Panel/more\")
+			else:
+				current_node.focus_neighbour_right = NodePath(\"/root/main/GUI/Place/Panel/item/\" + String(i + 1))
 		if i == 0:
 			current_node.focus_neighbour_left = NodePath(\"/root/main/GUI/Place/Panel/layer_2\")
 			current_node.focus_previous = NodePath(\"/root/main/GUI/Place/Panel/layer_2\")
 		else:
 			current_node.focus_previous = NodePath(\"/root/main/GUI/Place/Panel/item/\" + String(i - 1))
-			if i == 8: current_node.focus_neighbour_left = NodePath(\"/root/main/GUI/Place/Panel/layer_3\")
+			if i == 8:
+				current_node.focus_neighbour_left = NodePath(\"/root/main/GUI/Place/Panel/layer_3\")
 			else: current_node.focus_neighbour_left = NodePath(\"/root/main/GUI/Place/Panel/item/\" + String(i - 1))
 		if i < 8:
 			current_node.focus_neighbour_top = NodePath(\"/root/main/GUI/Place/Panel/item/\" + String(i + 8))
@@ -295,15 +298,24 @@ func _ready():
 		else:
 			current_node.focus_neighbour_left = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/buttons/\" + String(i - 1))
 			current_node.focus_neighbour_right = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/buttons/\" + String(i))
-		if i == 0: current_node.focus_neighbour_top = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/sublayer_0\")
-		elif i == 1: current_node.focus_neighbour_top = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/sublayer_2\")
-		else: current_node.focus_neighbour_top = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/buttons/\" + String(i - 2))
-		if i > 5: current_node.focus_neighbour_bottom = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/buttons/\" + String(i))
-		else: current_node.focus_neighbour_bottom = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/buttons/\" + String(i + 2))
-		if i == 0: current_node.focus_previous = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/sublayer_2\")
-		else: current_node.focus_previous = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/buttons/\" + String(i - 1))
-		if i == 7: current_node.focus_next = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/buttons/\" + String(i))
-		else: current_node.focus_next = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/buttons/\" + String(i + 1))
+		if i == 0:
+			current_node.focus_neighbour_top = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/sublayer_0\")
+		elif i == 1:
+			current_node.focus_neighbour_top = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/sublayer_2\")
+		else:
+			current_node.focus_neighbour_top = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/buttons/\" + String(i - 2))
+		if i > 5:
+			current_node.focus_neighbour_bottom = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/buttons/\" + String(i))
+		else:
+			current_node.focus_neighbour_bottom = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/buttons/\" + String(i + 2))
+		if i == 0:
+			current_node.focus_previous = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/sublayer_2\")
+		else:
+			current_node.focus_previous = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/buttons/\" + String(i - 1))
+		if i == 7:
+			current_node.focus_next = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/buttons/\" + String(i))
+		else: 
+			current_node.focus_next = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/buttons/\" + String(i + 1))
 	
 	$GUI/Edit_Tiles/Panel/sublayer_0.focus_neighbour_bottom = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/buttons/0\")
 	$GUI/Edit_Tiles/Panel/sublayer_1.focus_neighbour_bottom = NodePath(\"/root/main/GUI/Edit_Tiles/Panel/buttons/0\")
@@ -584,10 +596,16 @@ func _process(_delta):
 				level_scale_hinge = level.scale
 			 # This is pretty equation is here to make the zooming out slower and zooming in faster
 			level.scale.y = pow(2, log(level_scale_hinge.y) / log(2) + (mouse_hinge.y - mouse_pos.y) / 128)
-			if level.scale.y < 0.1: level.scale.y = 0.1
-			if level.scale.y > 10: level.scale.y = 10
+			if level.scale.y < 0.1:
+				level.scale.y = 0.1
+			if level.scale.y > 10:
+				level.scale.y = 10
 			level.scale.x = level.scale.y
 			level.position = level_position_hinge * (level.scale / level_scale_hinge)
+	elif level_layer_visible[place_current_layer] == false:
+		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
+			if Input.is_action_just_pressed(\"mouse_left\"):
+				done_action(\"you cannot edit invisible layers\", \"#5d1f31\")
 	elif place_current_mode == PLACEMODE_PAINT:
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
 			if Input.is_action_just_pressed(\"mouse_left\"):
@@ -602,8 +620,10 @@ func _process(_delta):
 	elif place_current_mode == PLACEMODE_ERASER:
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
 			if Input.is_action_just_pressed(\"mouse_left\") :
-				if place_current_tab != PLACE_TILES: level_remove_closest_item()
-				if place_current_tab == PLACE_TILES: done_action(\"erase tiles\", \"#923155\")
+				if place_current_tab != PLACE_TILES:
+					level_remove_closest_item()
+				if place_current_tab == PLACE_TILES:
+					done_action(\"erase tiles\", \"#923155\")
 			if place_current_tab == PLACE_TILES:
 				level_draw_tile(-1)
 	elif place_current_mode == PLACEMODE_COG:
@@ -654,40 +674,48 @@ func _process(_delta):
 		
 		
 	if $GUI/cursor.visible and place_selected_object.visible:
-		if $GUI/Edit_Items/Panel/other/scale_x.editable: place_selected_object.scale.x = $GUI/Edit_Items/Panel/other/scale_x.value
-		if $GUI/Edit_Items/Panel/other/scale_y.editable: place_selected_object.scale.y = $GUI/Edit_Items/Panel/other/scale_y.value
-		if $GUI/Edit_Items/Panel/other/rotation.editable: place_selected_object.rotation_degrees = $GUI/Edit_Items/Panel/other/rotation.value
-		if $GUI/Edit_Items/Panel/other/z_index.editable: place_selected_object.z_index = $GUI/Edit_Items/Panel/other/z_index.value
-		if !$GUI/Edit_Items/Panel/other/color.disabled: place_selected_object.modulate = $GUI/Edit_Items/Panel/other/color.color
-		if level_objects[\"bg\"] != null: if level_objects[\"bg\"].editor_properties[\"object_type\"] == \"bg\":
-			level_objects[\"bg\"].ready_up(level_objects[\"camera\"])
-		if !edit_mode: for property in edit_buttons:
-			if property[4] == TYPE_NIL:
-				property[0][0].set(property[1], property[2].get(property[3]))
-			elif property[4] == TYPE_VECTOR2:
-				property[2].set(property[3], Vector2(
-					property[0][0].get(property[1]),
-					property[0][1].get(property[1])
-				))
-			elif property[4] == TYPE_VECTOR3:
-				property[2].set(property[3], Vector3(
-					property[0][0].get(property[1]),
-					property[0][1].get(property[1]),
-					property[0][2].get(property[1])
-				))
-			else:
-				property[2].set(property[3], property[0][0].get(property[1]))
-		else: for property in edit_buttons:
-			var variant = property[2].get(property[3])
-			if property[4] == TYPE_VECTOR2:
-				property[0][0].set(property[1], variant.x)
-				property[0][1].set(property[1], variant.y)
-			elif property[4] == TYPE_VECTOR3:
-				property[0][0].set(property[1], variant.x)
-				property[0][1].set(property[1], variant.y)
-				property[0][2].set(property[1], variant.z)
-			else:
-				property[0][0].set(property[1], property[2].get(property[3]))
+		if $GUI/Edit_Items/Panel/other/scale_x.editable:
+			place_selected_object.scale.x = $GUI/Edit_Items/Panel/other/scale_x.value
+		if $GUI/Edit_Items/Panel/other/scale_y.editable:
+			place_selected_object.scale.y = $GUI/Edit_Items/Panel/other/scale_y.value
+		if $GUI/Edit_Items/Panel/other/rotation.editable:
+			place_selected_object.rotation_degrees = $GUI/Edit_Items/Panel/other/rotation.value
+		if $GUI/Edit_Items/Panel/other/z_index.editable:
+			place_selected_object.z_index = $GUI/Edit_Items/Panel/other/z_index.value
+		if !$GUI/Edit_Items/Panel/other/color.disabled:
+			place_selected_object.modulate = $GUI/Edit_Items/Panel/other/color.color
+		if level_objects[\"bg\"] != null:
+			if level_objects[\"bg\"].editor_properties[\"object_type\"] == \"bg\":
+				level_objects[\"bg\"].ready_up(level_objects[\"camera\"])
+		if !edit_mode:
+			for property in edit_buttons:
+				if property[4] == TYPE_NIL:
+					property[0][0].set(property[1], property[2].get(property[3]))
+				elif property[4] == TYPE_VECTOR2:
+					property[2].set(property[3], Vector2(
+						property[0][0].get(property[1]),
+						property[0][1].get(property[1])
+					))
+				elif property[4] == TYPE_VECTOR3:
+					property[2].set(property[3], Vector3(
+						property[0][0].get(property[1]),
+						property[0][1].get(property[1]),
+						property[0][2].get(property[1])
+					))
+				else:
+					property[2].set(property[3], property[0][0].get(property[1]))
+		else: 
+			for property in edit_buttons:
+				var variant = property[2].get(property[3])
+				if property[4] == TYPE_VECTOR2:
+					property[0][0].set(property[1], variant.x)
+					property[0][1].set(property[1], variant.y)
+				elif property[4] == TYPE_VECTOR3:
+					property[0][0].set(property[1], variant.x)
+					property[0][1].set(property[1], variant.y)
+					property[0][2].set(property[1], variant.z)
+				else:
+					property[0][0].set(property[1], property[2].get(property[3]))
 		$GUI/cursor/editor_vector.rotation_degrees = place_selected_object.rotation_degrees
 	if $GUI/cursor.visible and place_selected_decor.visible:
 		place_selected_decor.scale.x = $GUI/Edit_Items/Panel/other/scale_x.value
@@ -799,10 +827,14 @@ func create_new_level(remove_old : bool = true):
 		level_layer_data[i] = []
 		level_layer_data[i].append(Color(temp_layer_data[i][0][0],temp_layer_data[i][0][1],temp_layer_data[i][0][2],temp_layer_data[i][0][3]))
 		level_layer_data[i].append(Vector2(temp_layer_data[i][1][0],temp_layer_data[i][1][1]))
-		if i == level_layers[LAYER_BACKGROUND]: level_layer_data[i].append(-40)
-		if i == level_layers[LAYER_BACK]: level_layer_data[i].append(-20)
-		if i == level_layers[LAYER_CENTER]: level_layer_data[i].append(0)
-		if i == level_layers[LAYER_FRONT]: level_layer_data[i].append(40)
+		if i == level_layers[LAYER_BACKGROUND]:
+			level_layer_data[i].append(-40)
+		if i == level_layers[LAYER_BACK]:
+			level_layer_data[i].append(-20)
+		if i == level_layers[LAYER_CENTER]:
+			level_layer_data[i].append(0)
+		if i == level_layers[LAYER_FRONT]:
+			level_layer_data[i].append(40)
 		
 		get_node(\"GUI/Edit_Layers/Panel/scale_\" + i).value = level_layer_data[i][1].x
 		get_node(\"GUI/Edit_Layers/Panel/color_\" + i).color = level_layer_data[i][0]
@@ -868,7 +900,8 @@ func create_new_level_objects(object_type : String):
 				node.position.x = data.settings[\"editor_create_\" + object_type + \"_position\"][0]
 				node.position.y = data.settings[\"editor_create_\" + object_type + \"_position\"][1]
 			node.set_owner(level)
-			if node.has_method(\"editor_ready\"): node.editor_ready()
+			if node.has_method(\"editor_ready\"):
+				node.editor_ready()
 			level_objects[object_type] = node
 
 func create_new_level_option_select(option_button, setting : String):
@@ -1003,10 +1036,11 @@ func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
 			if tilesets.get_item_metadata(i) + \"/Objects/Tilesets/\" + tilesets.get_item_text(i) == load_tileset.resource_path:
 				tilesets.select(i)
 		bg.select(0)
-		if level_objects[\"bg\"] != null:for i in range(bg.get_item_count() - 1):
-			if bg.get_item_metadata(i + 1) + \"/Objects/Backgrounds/\" + bg.get_item_text(i + 1) == level_objects[\"bg\"].editor_properties[\"object_path\"]:
-				bg.select(i + 1)
-				break
+		if level_objects[\"bg\"] != null:
+			for i in range(bg.get_item_count() - 1):
+				if bg.get_item_metadata(i + 1) + \"/Objects/Backgrounds/\" + bg.get_item_text(i + 1) == level_objects[\"bg\"].editor_properties[\"object_path\"]:
+					bg.select(i + 1)
+					break
 		for i in range(level_icon.get_item_count()):
 			if level_icon.get_item_text(i) == temp[\"level_icon\"][0] and level_icon.get_item_metadata(i) == temp[\"level_icon\"][1]:
 				level_icon.select(i)
@@ -1021,13 +1055,19 @@ func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
 		$Game.add_child(level)
 		level.scale = Vector2(0.5, 0.5)
 		level.name = \"Level\"
-		if has_node(\"Game/Level/Camera\"): level_objects[\"camera\"] = get_node(\"Game/Level/Camera\")
-		if has_node(\"Game/Level/BG\"): level_objects[\"bg\"] = get_node(\"Game/Level/BG\")
-		if has_node(\"Game/Level/Player\"): level_objects[\"player\"] = get_node(\"Game/Level/Player\")
-		if has_node(\"Game/Level/Ghost\"): level_objects[\"ghost\"] = get_node(\"Game/Level/Ghost\")
-		if has_node(\"Game/Level/Finish\"): level_objects[\"finish\"] = get_node(\"Game/Level/Finish\")
+		if has_node(\"Game/Level/Camera\"):
+			level_objects[\"camera\"] = get_node(\"Game/Level/Camera\")
+		if has_node(\"Game/Level/BG\"):
+			level_objects[\"bg\"] = get_node(\"Game/Level/BG\")
+		if has_node(\"Game/Level/Player\"):
+			level_objects[\"player\"] = get_node(\"Game/Level/Player\")
+		if has_node(\"Game/Level/Ghost\"):
+			level_objects[\"ghost\"] = get_node(\"Game/Level/Ghost\")
+		if has_node(\"Game/Level/Finish\"):
+			level_objects[\"finish\"] = get_node(\"Game/Level/Finish\")
 		change_tilemap()
-		if level_objects[\"bg\"] != null: level_objects[\"bg\"].ready_up(level_objects[\"camera\"])
+		if level_objects[\"bg\"] != null:
+			level_objects[\"bg\"].ready_up(level_objects[\"camera\"])
 		
 		if level.get_script() == null:
 			$GUI/Edit_Layers/Panel/unicolor.pressed = false
@@ -1052,7 +1092,8 @@ func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
 
 func ready_loaded_level(group : Array):
 	for node in group:
-		if node.has_method(\"editor_ready\"): node.editor_ready()
+		if node.has_method(\"editor_ready\"):
+			node.editor_ready()
 		ready_loaded_level(node.get_children())
 
 func tileset_changed(index):
@@ -1063,12 +1104,15 @@ func tileset_changed(index):
 	$GUI/Items/Panel/tiles.tile_set = tileset_resource
 	$GUI/cursor_tiled/selected_tile.tile_set = tileset_resource
 	$GUI/Edit_Tiles/Panel/tile_visual.tile_set = tileset_resource
-	for layer in range(level_layers.size()):for i in range(LEVEL_TILE_SUBLAYER_AMOUNT):
-		var tilemap = get_node(\"Game/Level/tiles_\" + level_layers[layer] + \"_\" + String(i))
-		if tilemap != null:
-			tilemap.tile_set = tileset_resource
-	if !data.favorite.has(tileset): data.favorite[tileset] = []
-	if !data.recent.has(tileset): data.recent[tileset] = []
+	for layer in range(level_layers.size()):
+		for i in range(LEVEL_TILE_SUBLAYER_AMOUNT):
+			var tilemap = get_node(\"Game/Level/tiles_\" + level_layers[layer] + \"_\" + String(i))
+			if tilemap != null:
+				tilemap.tile_set = tileset_resource
+	if !data.favorite.has(tileset):
+		data.favorite[tileset] = []
+	if !data.recent.has(tileset):
+		data.recent[tileset] = []
 	place_update_tiles(tileset)
 	
 	done_action(\"change tileset\", \"#c837af\")
@@ -1105,7 +1149,8 @@ func set_owner_recursive(nodes : Array):
 func convert_object_into_sprite(path : String):
 	var item_texture_name : String = path.right(path.find_last(\"/\") + 1)
 	var item_texture_place : String = path.left(path.find(\"/\"))
-	if item_texture_place == \"res:\": item_texture_place = \"res:/\"
+	if item_texture_place == \"res:\":
+		item_texture_place = \"res:/\"
 	return item_texture_place + \"/Visual/Objects/\" + item_texture_name + \".png\"
 
 func change_filepath_text(text : String):
@@ -1191,9 +1236,15 @@ func object_select(object_file : String, _object : Node = null, no_selected_obje
 		place_selected_object.modulate = _object.modulate
 		place_selected_object.z_index = _object.z_index
 		for i in _object.editor_properties[\"editable_properties\"].keys():
-			place_selected_object.set(i, _object.get(i))
-		add_subjects(_object, place_selected_object, false)
-		if place_selected_object.has_method(\"editor_ready\"): place_selected_object.editor_ready()
+			var new_prop = _object.get(i)
+			if typeof(new_prop) in [TYPE_ARRAY, TYPE_DICTIONARY]:
+				place_selected_object.set(i, new_prop.duplicate())
+			else:
+				place_selected_object.set(i, new_prop)
+		if _object.editor_properties[\"attachable\"]:
+			add_subjects(_object, place_selected_object, false)
+		if place_selected_object.has_method(\"editor_ready\"):
+			place_selected_object.editor_ready()
 	
 	if !no_selected_object:
 		editor_properties_node = place_selected_object
@@ -1232,7 +1283,8 @@ func layer_changed(button_pressed, layer : int):
 	if button_pressed:
 		place_current_layer = layer
 		for i in range(4):
-			if i != layer: get_node(\"GUI/Place/Panel/layer_\" + String(i)).pressed = false
+			if i != layer:
+				get_node(\"GUI/Place/Panel/layer_\" + String(i)).pressed = false
 		change_tilemap()
 	elif place_current_layer == layer:
 		get_node(\"GUI/Place/Panel/layer_\" + String(layer)).pressed = true
@@ -1283,7 +1335,8 @@ func sublayer_changed(button_pressed, layer : int):
 	if button_pressed:
 		place_current_sublayer = layer
 		for i in range(LEVEL_TILE_SUBLAYER_AMOUNT):
-			if i != layer: get_node(\"GUI/Edit_Tiles/Panel/sublayer_\" + String(i)).pressed = false
+			if i != layer:
+				get_node(\"GUI/Edit_Tiles/Panel/sublayer_\" + String(i)).pressed = false
 		$GUI/cursor_tiled/sublayer.text = String(layer)
 		change_tilemap()
 	elif place_current_sublayer == layer:
@@ -1305,6 +1358,7 @@ func _on_unicolor_toggled(button_pressed):
 
 # LEVEL FUNCTIONS
 func level_recieved_input(_button_pressed):
+	# I never used haha i love my code
 	match place_current_mode:
 		PLACEMODE_MOVE:
 			pass
@@ -1338,7 +1392,8 @@ func level_add_decor():
 			return
 	
 	var step = 0
-	if place_grid_snap: step = 16
+	if place_grid_snap:
+		step = 16
 	new_decor.position.x = stepify(level_mouse_position.x, step)
 	new_decor.position.y = stepify(level_mouse_position.y, step)
 	new_decor.texture = place_selected_decor.texture
@@ -1351,7 +1406,8 @@ func level_add_decor():
 	new_decor.use_parent_material = true
 	new_decor.set_owner(level)
 	
-	if attachable != null: attachable.attached(new_decor)
+	if attachable != null:
+		attachable.attached(new_decor)
 
 func level_add_objects():
 	var object = PackedScene.new()
@@ -1378,7 +1434,8 @@ func level_add_objects():
 		if new_object.editor_properties[\"layer\"] != \"selected\":
 			var layer_name = new_object.editor_properties[\"layer\"]
 			layer = \"Game/Level\"
-			if layer_name == \"special\": z_add = 20
+			if layer_name == \"special\":
+				z_add = 20
 			#\"bg\": z_add = -100
 			#\"camera\": z_add = 100
 		else:
@@ -1390,13 +1447,15 @@ func level_add_objects():
 		done_action(\"paint object\", \"#06e6a1\")
 	
 	var step = 0
-	if place_grid_snap: step = 16
+	if place_grid_snap:
+		step = 16
 	new_object.position.x = stepify(level_mouse_position.x, step)
 	new_object.position.y = stepify(level_mouse_position.y, step)
 	new_object.scale = place_selected_object.scale
 	new_object.rotation_degrees = place_selected_object.rotation_degrees
 	new_object.modulate = place_selected_object.modulate
-	if new_object.editor_properties[\"layer\"] == \"selected\": new_object.use_parent_material = true
+	if new_object.editor_properties[\"layer\"] == \"selected\":
+		new_object.use_parent_material = true
 	new_object.z_index = place_selected_object.z_index + z_add
 	if place_current_layer != LAYER_CENTER and new_object.editor_properties[\"layer\"] != \"special\":
 		for i in new_object.get_property_list():
@@ -1408,12 +1467,15 @@ func level_add_objects():
 				new_object.collision_mask = 0
 	new_object.set_owner(level)
 	for i in place_selected_object.editor_properties[\"editable_properties\"].keys():
-		#if i == \"points\":
-		#	new_object.set_points(place_selected_object.get_points())
-		#else:
-			new_object.set(i, place_selected_object.get(i))
-	add_subjects(place_selected_object, new_object)
-	if new_object.has_method(\"editor_ready\"): new_object.editor_ready()
+		var new_prop = place_selected_object.get(i)
+		if typeof(new_prop) in [TYPE_ARRAY, TYPE_DICTIONARY]:
+			new_object.set(i, new_prop.duplicate())
+		else:
+			new_object.set(i, new_prop)
+	if place_selected_object.editor_properties[\"attachable\"]:
+		add_subjects(place_selected_object, new_object)
+	if new_object.has_method(\"editor_ready\"):
+		new_object.editor_ready()
 	
 	if object_type != \"normal\":
 		if level_objects[object_type] != null: level_objects[object_type].queue_free()
@@ -1421,11 +1483,14 @@ func level_add_objects():
 		if (object_type == \"camera\" and level_objects[\"bg\"] != null) or object_type == \"bg\":
 			level_objects[\"bg\"].ready_up(level_objects[\"camera\"])
 	
-	if attachable != null: attachable.attached(new_object)
+	if attachable != null: 
+		attachable.attached(new_object)
 
 func add_subjects(source, reciever, set_owner : bool = true):
+	reciever.attached_nodes.resize(source.attached_nodes.size())
+	
 	var l : int = 0
-	if source.editor_properties[\"attachable\"]: for obj in source.attached_nodes: if obj != null:
+	for obj in source.attached_nodes: if obj != null:
 		var new_item
 		if obj is Sprite:
 			new_item = Sprite.new()
@@ -1437,7 +1502,11 @@ func add_subjects(source, reciever, set_owner : bool = true):
 			packed_scene = load(obj.editor_properties[\"object_path\"])
 			new_item = packed_scene.instance()
 			for i in obj.editor_properties[\"editable_properties\"].keys():
-				new_item.set(i, obj.get(i))
+				var new_prop = obj.get(i)
+				if typeof(new_prop) in [TYPE_ARRAY, TYPE_DICTIONARY]:
+					new_item.set(i, new_prop.duplicate())
+				else:
+					new_item.set(i, new_prop)
 		new_item.position.x = obj.position.x
 		new_item.position.y = obj.position.y
 		new_item.scale = obj.scale
@@ -1448,7 +1517,8 @@ func add_subjects(source, reciever, set_owner : bool = true):
 		reciever.attached_nodes[l] = new_item
 		
 		if set_owner: new_item.set_owner(level)
-		add_subjects(obj, new_item, set_owner)
+		if obj.editor_properties[\"attachable\"]:
+			add_subjects(obj, new_item, set_owner)
 		if new_item.has_method(\"editor_ready\"): new_item.editor_ready()
 		l += 1
 
@@ -4240,11 +4310,11 @@ text = "???"
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
@@ -4265,8 +4335,8 @@ text = "???"
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_back" to="." method="layer_color_changed" binds= [ 1 ]]
 [connection signal="value_changed" from="GUI/Edit_Layers/Panel/scale_background" to="." method="layer_scale_changed" binds= [ 0 ]]
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_background" to="." method="layer_color_changed" binds= [ 0 ]]
-[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
 [connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
+[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
 [connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
 [connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="items_scroll_scrolling"]
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]
