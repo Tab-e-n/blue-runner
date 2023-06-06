@@ -184,7 +184,7 @@ func _physics_process(_delta):
 			elif super_slide:
 				player.momentum.x = round(max_speed * 1.35) * facing_multiplier
 			else:
-				player.momentum.x = round(max_speed * 1.25) * facing_multiplier
+				player.momentum.x = round(max_speed * 1.2) * facing_multiplier
 			
 			if player.move_and_collide(Vector2(0,-40), false, true, true) and !on_wall:
 				sliding = 7

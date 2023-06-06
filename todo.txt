@@ -24,7 +24,6 @@ level guide lines in documentation
 	Dont put gameplay too close to camera borders
 	Alternate paths
 	secrets
-organize the fucking brancehs
 
  - EDITOR - 
 
@@ -42,7 +41,6 @@ rebind move to something if undo system
 
  - RUNNER - 
 
-dash doesnt fuck you speed over
 fix forced max jump when booster
 New level completion UI
 More Gray Rocks
@@ -74,7 +72,7 @@ audio options
 
 Help [Not remade]
 
-Level Select [Not remade]
+Level Select [Currently being made]
 Put level group author and description somewhere
 
 VS Race [Not made]

@@ -11,10 +11,12 @@ onready var parent : Node2D = get_parent()
 var current_world : int = 1
 var selected_level : int = 0
 var level_selected_convert : int = 0
-var cursor_positions = [	Vector2(-192,0), Vector2(64,0), Vector2(320,0), Vector2(576,0), Vector2(832,0),
-							Vector2(-192,192), Vector2(64,192), Vector2(320,192), Vector2(576,192), Vector2(832,192), 
-							Vector2(-192,384), Vector2(64,384), Vector2(320,384), Vector2(576,384), Vector2(832,384), 
-							Vector2(-192,576), Vector2(64,576), Vector2(320,576), Vector2(576,576), Vector2(832,576),]
+var cursor_positions = [
+		Vector2(-192,0), Vector2(64,0), Vector2(320,0), Vector2(576,0), Vector2(832,0),
+		Vector2(-192,192), Vector2(64,192), Vector2(320,192), Vector2(576,192), Vector2(832,192), 
+		Vector2(-192,384), Vector2(64,384), Vector2(320,384), Vector2(576,384), Vector2(832,384), 
+		Vector2(-192,576), Vector2(64,576), Vector2(320,576), Vector2(576,576), Vector2(832,576),
+]
 var selected : bool = false
 var selected_level_name : String
 var selected_level_location : String
@@ -97,7 +99,8 @@ func menu_update():
 				selected = false
 				$Cursor/AnimationPlayer.play("Refuse")
 		
-		if selected: parent.move = false
+		if selected:
+			parent.move = false
 		
 		if Input.is_action_pressed("left") and parent.move and selected_level > 0 and !user_group:
 			selected_level -= 1
@@ -138,7 +141,7 @@ func menu_update():
 					reload_all_levels()
 			$Cursor/AnimationPlayer.stop()
 			$Cursor/AnimationPlayer.play("Spin")
-		if Input.is_action_pressed("up") and parent.move  and user_group:
+		if Input.is_action_pressed("up") and parent.move and user_group:
 			user_selected_level -= 5
 			if user_group and user_selected_level - user_levels_page * 20 < 0:
 				user_levels_page -= 1
@@ -223,19 +226,20 @@ func menu_update():
 				elif level_dat["creator"] != "Tabin": 
 					$Level_Descriptor/creator.text = "My thanks goes to " + level_dat["creator"] + " for making this!"
 
-		if Global.level_completion.has(selected_level_location): if Global.level_completion[selected_level_location].has(selected_level_name):
-			if Global.level_completion[selected_level_location][selected_level_name][0] != null:
-				var timer : float = Global.level_completion[selected_level_location][selected_level_name][0]
-				$Level_Descriptor/best_time.text = "Best time: " + Global.convert_float_to_time(timer, false)
+		if Global.level_completion.has(selected_level_location):
+			if Global.level_completion[selected_level_location].has(selected_level_name):
+				if Global.level_completion[selected_level_location][selected_level_name][0] != null:
+					var timer : float = Global.level_completion[selected_level_location][selected_level_name][0]
+					$Level_Descriptor/best_time.text = "Best time: " + Global.convert_float_to_time(timer, false)
+					
+					timer = Global.level_completion[selected_level_location][selected_level_name][1]
+					if timer != 0:
+						# warning-ignore:integer_division
+						# warning-ignore:integer_division
+						$Level_Descriptor/par.text = "Par: " + Global.convert_float_to_time(timer, false)
 				
-				timer = Global.level_completion[selected_level_location][selected_level_name][1]
-				if timer != 0:
-					# warning-ignore:integer_division
-					# warning-ignore:integer_division
-					$Level_Descriptor/par.text = "Par: " + Global.convert_float_to_time(timer, false)
-			
-			if Global.level_completion[selected_level_location][selected_level_name].size() > 2: 
-				$Level_Descriptor/deaths.text = "Deaths: " + String(Global.level_completion[selected_level_location][selected_level_name][2])
+				if Global.level_completion[selected_level_location][selected_level_name].size() > 2: 
+					$Level_Descriptor/deaths.text = "Deaths: " + String(Global.level_completion[selected_level_location][selected_level_name][2])
 		$Level_Descriptor/replay.visible = Global.load_replay(selected_level_location + selected_level_name + "_Best", true)
 	elif (parent.move and group_select) or update_group_text:
 		$group_select/name.bbcode_text = "[center]" + unlocked_level_group[selected_group][0] + "[/center]"
@@ -253,7 +257,8 @@ func menu_update():
 		if bg_next != null:
 			bg_next.update_self(Vector2(1024 * bg_transition - 1024, 0))
 			bg_next.position = Vector2(-1 * bg_transition, 0)
-			if bg_current == null: bg_next.modulate = Color(1, 1, 1, bg_transition)
+			if bg_current == null:
+				bg_next.modulate = Color(1, 1, 1, bg_transition)
 
 func group_visuals():
 	var repetitions = unlocked_level_group.size()
@@ -363,7 +368,8 @@ func reload_all_levels(start : bool = false):
 	
 	$Stats.text = "Beat: " + String(stats[1]) + "\n"
 	$Stats.text += "Par: " + String(stats[2]) + "\n"
-	if !user_group: $Stats.text += "Unlocked: " + String(stats[3]) + "\n"
+	if !user_group:
+		$Stats.text += "Unlocked: " + String(stats[3]) + "\n"
 	$Stats.text += "Bonuses: " + String(stats[4])
 	
 	for i in range(20):
@@ -395,9 +401,13 @@ func character_select():
 	
 	var activate_char_select : bool = true
 	
-	if !Global.check_unlock("*char_select_active"): activate_char_select = false
-	if Global.replay: activate_char_select = false
-	if level_dat.has("tags"): if level_dat["tags"].has("character_preselected"): activate_char_select = false
+	if !Global.check_unlock("*char_select_active"):
+		activate_char_select = false
+	if Global.replay:
+		activate_char_select = false
+	if level_dat.has("tags"):
+		if level_dat["tags"].has("character_preselected"):
+			activate_char_select = false
 	
 	if error:
 		$Cursor/AnimationPlayer.play("Refuse")
@@ -427,23 +437,25 @@ func completion_percentage():
 		if get_node("L/Level_" + String(i)).level_name == "Level_Missing" and get_node("L/Level_" + String(i)).level_location == "res://Scenes/": continue
 		full += 2
 		var level_string : String = get_node("L/Level_" + String(i)).level_name
-		if Global.level_completion[Global.current_level_location].has(level_string): if Global.level_completion[Global.current_level_location][level_string][0] != null:
-			completion += 1
-			beat += 1
-			#print("beat " + String(i))
-			if Global.level_completion[Global.current_level_location][level_string][1] != null:
-				if Global.level_completion[Global.current_level_location][level_string][1] == 0:
-					completion += 1
-				elif Global.level_completion[Global.current_level_location][level_string][0] < Global.level_completion[Global.current_level_location][level_string][1]:
-					completion += 1
-					par += 1
-					#print("par " + String(i))
-		if Global.unlocked.has(Global.current_level_location): if Global.unlocked[Global.current_level_location].has(get_node("L/Level_" + String(i)).level_name):
-			full += 1
-			if Global.unlocked[Global.current_level_location][get_node("L/Level_" + String(i)).level_name]:
+		if Global.level_completion[Global.current_level_location].has(level_string):
+			if Global.level_completion[Global.current_level_location][level_string][0] != null:
 				completion += 1
-				unlock += 1
-				#print("unlocked " + String(i))
+				beat += 1
+				#print("beat " + String(i))
+				if Global.level_completion[Global.current_level_location][level_string][1] != null:
+					if Global.level_completion[Global.current_level_location][level_string][1] == 0:
+						completion += 1
+					elif Global.level_completion[Global.current_level_location][level_string][0] < Global.level_completion[Global.current_level_location][level_string][1]:
+						completion += 1
+						par += 1
+						#print("par " + String(i))
+		if Global.unlocked.has(Global.current_level_location):
+			if Global.unlocked[Global.current_level_location].has(get_node("L/Level_" + String(i)).level_name):
+				full += 1
+				if Global.unlocked[Global.current_level_location][get_node("L/Level_" + String(i)).level_name]:
+					completion += 1
+					unlock += 1
+					#print("unlocked " + String(i))
 		for c in range(3):
 			if Global.level_completion["*collectibles"][Global.current_level_location].has(level_string + "*" + String(c + 1)):
 				bonus += 1

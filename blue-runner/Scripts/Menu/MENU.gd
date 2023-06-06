@@ -21,10 +21,9 @@ func _ready():
 		
 		if Global.replay_menu:
 			menu = "REPLAY"
-			#$AnimationPlayer.play("SET_TO_REPLAY")
 		else:
-			menu = "MAIN"
-			#$AnimationPlayer.play("ENTERING")
+			#menu = "MAIN"
+			menu = "SELECT"
 	
 	switch_menu(menu)
 	

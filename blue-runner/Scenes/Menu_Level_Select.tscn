@@ -3609,7 +3609,6 @@ anims/SET_TO_REPLAY = SubResource( 13 )
 [node name="CamTarget" type="Node2D" parent="."]
 
 [node name="SELECT" type="Node2D" parent="."]
-visible = false
 script = ExtResource( 25 )
 
 [node name="Cursor" type="Node2D" parent="SELECT"]
@@ -3891,7 +3890,7 @@ text = ""
 
 [node name="BG_MENU" type="Polygon2D" parent="SELECT"]
 visible = false
-color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+color = Color( 0.0156863, 0.0235294, 0.133333, 0 )
 polygon = PoolVector2Array( -1024, 768, 1024, 768, 1024, -768, -1024, -768 )
 
 [node name="dependencies" type="Label" parent="SELECT"]
@@ -3920,7 +3919,6 @@ this level, sorry"
 anims/change = SubResource( 18 )
 
 [node name="CHARACTER" type="Node2D" parent="."]
-visible = false
 position = Vector2( 2264, 1320 )
 script = ExtResource( 55 )
 
@@ -4019,9 +4017,10 @@ scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 35 )
 
 [node name="menu_circle_3" type="Sprite" parent="."]
+visible = false
 modulate = Color( 0.117647, 0.341176, 0.611765, 1 )
 position = Vector2( -1032, 800 )
-scale = Vector2( 2.75, 2.75 )
+scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 35 )
 
 [node name="REPLAY" type="Node2D" parent="."]
@@ -4540,21 +4539,22 @@ custom_colors/default_color = Color( 0.917647, 0.933333, 0.952941, 1 )
 text = "EXIT"
 
 [node name="menu_circle_2" type="Sprite" parent="."]
+visible = false
 modulate = Color( 0.12549, 0.207843, 0.384314, 1 )
 position = Vector2( -1040, 784 )
-scale = Vector2( 2.41898, 2.41898 )
+scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 35 )
 
 [node name="menu_button" type="Sprite" parent="."]
+visible = false
 modulate = Color( 0.117647, 0.341176, 0.611765, 1 )
-position = Vector2( -1002.67, -149.333 )
+position = Vector2( -3008, -320 )
 rotation = 0.0872665
 scale = Vector2( 3, 3 )
 texture = ExtResource( 28 )
 
 [node name="MAIN" type="Node2D" parent="."]
-position = Vector2( 1801.48, -675.556 )
-rotation = 0.0872665
+rotation = 0.523599
 script = ExtResource( 26 )
 
 [node name="menu_button1" type="Sprite" parent="MAIN"]

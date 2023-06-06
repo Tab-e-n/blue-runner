@@ -77,7 +77,8 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(_delta):
-	if timer_going: delay_timer += 1
+	if timer_going:
+		delay_timer += 1
 	if delay_timer >= LINE_DELAY:
 		delay_timer = 0
 		if sentence < text.size():

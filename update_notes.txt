@@ -1,4 +1,4 @@
-# 1.1.1 SMALL UPDATE ?
+# 1.2.0 SMALL UPDATE ? NO !!!!
 
 <details><summary><h2>GENERAL</h2></summary><p>
 
@@ -9,18 +9,22 @@
 
 ### VISUAL
 
+ - Sonic runner is no longer in the 4:3 aspect ratio, it is now in the glorious___ 5:3 aspect ratio___!
  - XT9 has new idle animations.
  - When launched very high with a mushroom, you now spin.
- - The timer is now outlined.
+ - The timer is now outlined for better visibility.
  - User Universe now has a unique BG.
  - Bootup sequence has a new font.
 
 ### FIXES & CHANGES
 
- - You can select the group with both jump and reset.
+ - The menu now has it's own seperate keys from gameplay.
  - The level timer doesn't start until you start moving.
- - XT9 is unlocked when you have 7 bonuses now. If you already have it unlocked,
+ - S1's dash is now a bit slower.
+ - Shortend coyote time on S1 and it's derivates.
+ - XT9 is unlocked when you have 7 bonuses now. If you already have them unlocked,
    this update wont take it away.
+ - Fixed `savefile_interaction` argument working incorrectly.
 
 </p></details>
 <details><summary><h2>SONIC RUNNER EDITOR</h2></summary><p>
@@ -28,13 +32,13 @@
 ### NEW ADDITIONS
 
  - Added new shortcuts to temporarely hide layers.
- - In the edit layers panel, there is now a new option: Unicolor! Turning this
+ - In the edit layers panel, there is now a new option:__ Unicolor__! Turning this
    on will make every layer only one color.
- - Added a new object: Boosters! The act similarly to mushrooms, but just with
+ - Added a new object:__ Boosters__! The act similarly to mushrooms, but just with
    different theming.
- - Added a new object: Platforms! The moving platforms are real!
+ - Added a new object:__ Platforms__! The moving platforms are real!
  - You can now change the font of HoverText.
- - New text interpreter!
+ - New text interpreter or something!
 	 - When typing text into HoverText, you can type some commands
 	   inbetween %% and they will be replaced by game info.
 	 - `%left%`, `%right%`, `%up%`, `%down%`, `%jump%`, `%special%`,
@@ -61,12 +65,14 @@
 
 ### FIXES & CHANGES
 
+ - Attachables should no longer have wacky behaviours when you do anything complex with them.
  - Fixed a bug where you could have multiple of the same tile in the place panel.
  - Fixed playtested levels not reloading when you die or press reset.
  - Playtested levels no longer save as seperate levels.
  - The official tag has been altered. Now when a level has the official tag:
-	 - If the levels author matches the level groups author, the level won't have the "Creator:" line, similary to how WaterWay doesn't have it.
-	 - If the levels author is different to the level groups author, it will show a thank you message.
+	 - If the level's author matches the level groups author, the level won't have the "Creator:" line, similary to how WaterWay doesn't have it.
+	 - If the level's author is different to the level groups author, it will show a thank you message.
  - The official tag now does nothing in UserUniverse.
+ - The keybind for saving with a popup is now shown in full.
 
 </p></details>
