@@ -1,22 +1,153 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Scripts/Menu/SELECT.gd" type="Script" id=1]
 [ext_resource path="res://Objects/Level.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Visual/Title/menu_waterway.png" type="Texture" id=3]
 [ext_resource path="res://Objects/Backgrounds/BG_WaterWay.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Visual/light_plane.png" type="Texture" id=5]
+[ext_resource path="res://Visual/Menu/options_rectangle.png" type="Texture" id=6]
+[ext_resource path="res://Text/Text_White.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Scripts/Menu/Scrolling_Text.gd" type="Script" id=8]
 
 [node name="SELECT" type="Node2D"]
 script = ExtResource( 1 )
 
+[node name="Line2D" type="Line2D" parent="."]
+visible = false
+points = PoolVector2Array( -640, -384, 640, -384, 640, 384, -640, 384, -640, -384 )
+
 [node name="BG" parent="." instance=ExtResource( 4 )]
 scale = Vector2( 0.5, 0.5 )
 
-[node name="Level" parent="." instance=ExtResource( 2 )]
-position = Vector2( 320, 0 )
+[node name="levels" type="Node2D" parent="."]
+
+[node name="0" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( -32, -32 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="1" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( 96, -32 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="2" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( 224, -32 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="3" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( 352, -32 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="4" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( 480, -32 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="5" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( -32, 64 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="6" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( 96, 64 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="7" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( 224, 64 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="8" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( 352, 64 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="9" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( 480, 64 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="10" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( -32, 160 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="11" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( 96, 160 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="12" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( 224, 160 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="13" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( 352, 160 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="14" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( 480, 160 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="15" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( -32, 256 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="16" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( 96, 256 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="17" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( 224, 256 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="18" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( 352, 256 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="19" parent="levels" instance=ExtResource( 2 )]
+position = Vector2( 480, 256 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+visible = false
+position = Vector2( -64, 0 )
+rotation = -1.57079
+scale = Vector2( 1, 0.5 )
+color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+polygon = PoolVector2Array( -384.001, -255.999, -384.004, -1152, 383.996, -1152, 383.999, -256.001 )
+
+[node name="light_plane" type="Sprite" parent="."]
+visible = false
+modulate = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+position = Vector2( -64, 0 )
+rotation = -1.57079
+scale = Vector2( 1, 0.5 )
+texture = ExtResource( 5 )
+
+[node name="level_data" type="Node2D" parent="."]
+
+[node name="opt_rect" type="Sprite" parent="level_data"]
+position = Vector2( -424, 0 )
+rotation = -1.57079
+scale = Vector2( 1, 1.25 )
+texture = ExtResource( 6 )
+
+[node name="Control" type="Control" parent="level_data"]
+margin_left = -624.0
+margin_top = -360.0
+margin_right = -208.0
+margin_bottom = -264.0
+rect_clip_content = true
+script = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+default_text = "DANGER LEVEL: HIGH"
+line_number = 2
+scroll_speed = 0.5
+pause_time = 120
+
+[node name="text" parent="level_data/Control" instance=ExtResource( 7 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 400.0
+margin_bottom = 128.0
+rect_scale = Vector2( 0.75, 0.75 )
 
 [node name="menu_waterway" type="Sprite" parent="."]
-position = Vector2( -256, -192 )
+position = Vector2( 224, -224 )
+scale = Vector2( 0.75, 0.75 )
 texture = ExtResource( 3 )
-
-[node name="Line2D" type="Line2D" parent="."]
-points = PoolVector2Array( -640, -384, 640, -384, 640, 384, -640, 384, -640, -384 )
