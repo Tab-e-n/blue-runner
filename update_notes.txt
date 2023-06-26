@@ -61,6 +61,7 @@
 ### VISUAL
 
  - There are now more variations of dirt tiles.
+ - More Blurees are now available.
  - The .dat creator has been centralized.
 
 ### FIXES & CHANGES
