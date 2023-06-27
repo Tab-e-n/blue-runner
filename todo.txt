@@ -72,7 +72,7 @@ audio options
 
 Help [Not remade]
 
-Level Select [Currently being made]
+Level Select [Currently being remade]
 Put level group author and description somewhere
 
 VS Race [Not made]

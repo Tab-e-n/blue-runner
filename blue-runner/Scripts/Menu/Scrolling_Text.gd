@@ -31,7 +31,7 @@ func set_text(text, rect_pos = 0, paused = pause_time, new_direction = -1):
 	
 	if line_number > 1:
 		var scaling : int = ceil(($text.rect_size.x * $text.rect_scale.x) / rect_size.x)
-		print(scaling)
+#		print(scaling)
 		if scaling != 1:
 			var fake_line_number : int
 			if scaling < line_number:
@@ -39,25 +39,34 @@ func set_text(text, rect_pos = 0, paused = pause_time, new_direction = -1):
 			elif scaling >= line_number:
 				fake_line_number = line_number
 			
-			var line_character : int = text.length() / fake_line_number
-			var lines : Array = range(fake_line_number)
-			var last_pos : int = 0
-			for i in range(fake_line_number - 1):
-				var empty_pos : int = text.find(" ", line_character * (i + 1)) + 1
-				if empty_pos == -1:
-					empty_pos = line_character * (i + 1)
-				var line_text = text.substr(last_pos, empty_pos)
-				lines[i] = line_text
-				last_pos = empty_pos
-			lines[fake_line_number - 1] = text.substr(last_pos, text.length() - 1)
-			#print(lines)
-			var longest_line = lines[0]
-			text = lines[0]
-			for i in range(fake_line_number - 1):
-				text += "\n" + lines[i + 1]
-				if lines[i + 1].length() > longest_line.length():
-					longest_line = lines[i + 1]
-			#print(longest_line)
+			var longest_line
+			if fake_line_number > 0:
+				var line_character : int = text.length() / fake_line_number
+#				print(line_character)
+				var lines : Array = range(fake_line_number)
+				var last_pos : int = 0
+				for i in range(fake_line_number - 1):
+					var empty_pos : int = text.find(" ", line_character * (i + 1)) + 1
+#					print(empty_pos)
+					if empty_pos == 0:
+						empty_pos = text.rfind(" ", line_character * (i + 1)) + 1
+					if empty_pos == 0:
+						empty_pos = line_character * (i + 1)
+					var line_text = text.substr(last_pos, empty_pos)
+					
+					lines[i] = line_text
+					last_pos = empty_pos
+				lines[fake_line_number - 1] = text.substr(last_pos, text.length() - 1)
+#				print(lines)
+				longest_line = lines[0]
+				text = lines[0]
+				for i in range(fake_line_number - 1):
+					text += "\n" + lines[i + 1]
+					if lines[i + 1].length() > longest_line.length():
+						longest_line = lines[i + 1]
+#				print(longest_line)
+			else:
+				longest_line = text
 			
 			$text.text = text
 			$text.rect_size.x = $text.get_font("normal_font").get_string_size(longest_line).x

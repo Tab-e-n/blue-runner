@@ -482,7 +482,7 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
 		var collectible_amount : int = 0
 		for i in level_completion["*collectibles"].keys():
 			if i.begins_with(parameter_1):
-				collectible_amount += Global.level_completion["*collectibles"][i].size()
+				collectible_amount += level_completion["*collectibles"][i].size()
 		if parameter_2 > collectible_amount:
 			return false
 	
@@ -534,6 +534,73 @@ func load_texture_from_png(path : String = ""):
 		#print(ResourceSaver.get_recognized_extensions(texture))
 		return texture
 	return null
+
+func update_level_group_save():
+	var is_user_group : bool = current_level_location == "user://SRLevels/"
+	
+	if !load_level_group() and !is_user_group:
+		return false
+	
+	if !level_completion.has(current_level_location):
+		level_completion[current_level_location] = {}
+	if !level_completion["*collectibles"].has(current_level_location):
+		level_completion["*collectibles"][current_level_location] = []
+	if !is_user_group:
+		if !unlocked.has(current_level_location):
+			unlocked[current_level_location] = {}
+		if typeof(unlocked[current_level_location]) != TYPE_DICTIONARY:
+			unlocked[current_level_location] = {}
+		for i in range(20):
+			if unlocked[current_level_location].has(level_group["levels"][i][0]):
+				continue
+			if level_group["levels"][i][0] == "*Level_Missing":
+				continue
+			if level_group["levels"][i][1]:
+				unlocked[current_level_location][level_group["levels"][i][0]] = false
+
+func completion_percentage():
+	var full : float = 0
+	var completion : float = 0
+	var beat : int = 0
+	var par : int = 0
+	var unlock : int = 0
+	var bonus : int = 0
+	for i in range(20):
+		if level_group["levels"][i][0] == "*Level_Missing" and current_level_location == "res://Scenes/":
+			continue
+		full += 2
+		var level_name : String = level_group["levels"][i][0]
+		if level_completion[current_level_location].has(level_name):
+			if level_completion[current_level_location][level_name][0] != null:
+				completion += 1
+				beat += 1
+				#print("beat " + String(i))
+				if level_completion[current_level_location][level_name][1] != null:
+					if level_completion[current_level_location][level_name][1] == 0:
+						completion += 1
+					elif level_completion[current_level_location][level_name][0] < level_completion[current_level_location][level_name][1]:
+						completion += 1
+						par += 1
+						#print("par " + String(i))
+		if unlocked.has(current_level_location):
+			if unlocked[current_level_location].has(level_name):
+				full += 1
+				if unlocked[current_level_location][level_name]:
+					completion += 1
+					unlock += 1
+					#print("unlocked " + String(i))
+		for c in range(3):
+			if level_completion["*collectibles"][current_level_location].has(level_name + "*" + String(c + 1)):
+				bonus += 1
+	#print(String(completion) + " / " + String(full))
+	
+	var stats : Array = [0, beat, par, unlock, bonus]
+	
+	if full > 0:
+		stats[0] = (completion / full) * 100
+	else:
+		stats[0] =  0
+	return stats
 
 func console_arguments():
 	var arguments = {}
@@ -906,7 +973,8 @@ func load_level_group():
 	
 	#print(current_level_location + "level_group.dat")
 	
-	if not loadfile.file_exists(current_level_location + "level_group.dat"): # does file exist
+	if not loadfile.file_exists(current_level_location + "level_group.dat"):
+		 # file doesn't exist
 		level_group = {}
 		return false
 	
