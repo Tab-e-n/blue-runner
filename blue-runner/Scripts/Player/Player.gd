@@ -1,7 +1,6 @@
 extends KinematicBody2D
 
 onready var level : Node2D = get_tree().current_scene
-onready var global : Control = $"/root/Global"
 onready var character : Node2D
 
 export var character_name : String = ""
@@ -42,17 +41,17 @@ var speeding : bool = false
 
 func _ready():
 	visible = true
-	global.current_level = get_parent().name
+	Global.current_level = get_parent().name
 	
 	recording.clear()
 	
-	replay = global.replay
+	replay = Global.replay
 	
 	if facing != "right" and facing != "left": facing = "right"
 	
 	if ghost:
-		if !global.race_mode:
-			if !global.load_replay(global.current_level_location + global.current_level + "_Best", true) or !global.options["*ghosts_on"]:
+		if !Global.race_mode:
+			if !Global.load_replay(Global.current_level_location + Global.current_level + "_Best", true) or !Global.options["*ghosts_on"]:
 				queue_free()
 				return
 		replay = true
@@ -63,8 +62,8 @@ func _ready():
 		
 		position = get_parent().get_node("Player").position
 		
-		if global.replay_menu: recording = global.current_recording.duplicate()
-		else: recording = global.load_replay(global.current_level_location + global.current_level + "_Best")
+		if Global.replay_menu: recording = Global.current_recording.duplicate()
+		else: recording = Global.load_replay(Global.current_level_location + Global.current_level + "_Best")
 		replay_timer = recording["timer"]
 		character_name = recording["character"]
 		if recording.has("character_location"): character_location = recording["character_location"]
@@ -73,7 +72,7 @@ func _ready():
 		collision_mask = 0
 		
 	elif replay: 
-		recording = global.current_recording.duplicate()
+		recording = Global.current_recording.duplicate()
 		replay_timer = recording["timer"]
 		character_name = recording["character"]
 		if recording.has("character_location"):
@@ -81,8 +80,8 @@ func _ready():
 		level.timers_active = true
 	else:
 		if character_name == "":
-			character_name = global.current_character
-			character_location = global.current_character_location
+			character_name = Global.current_character
+			character_location = Global.current_character_location
 	
 	var char_load : PackedScene = load(character_location + "/Objects/Player/" + character_name + "_Character.tscn")
 	if char_load == null: char_load = preload("res://Objects/Player/missing_Character.tscn")
@@ -144,16 +143,17 @@ func _physics_process(delta):
 	elif dead:
 		death_wait += 1
 		if death_wait >= 20:
-			Global.change_level("")
-			var _name : String = global.current_level_location + get_parent().name
-			if global.level_completion.has(_name):
-				if global.level_completion[_name].size() > 2:
-					global.level_completion[_name][2] += 1
+			var _name : String = get_parent().name
+			if Global.level_completion[Global.current_level_location].has(_name):
+				if Global.level_completion[Global.current_level_location][_name].size() > 2:
+					Global.level_completion[Global.current_level_location][_name][2] += 1
 				else:
-					global.level_completion[_name].resize(3)
-					global.level_completion[_name][2] = 1
+					Global.level_completion[Global.current_level_location][_name].resize(3)
+					Global.level_completion[Global.current_level_location][_name][2] = 1
 			else:
-				global.level_completion[_name] = [null, null, 1]
+				Global.level_completion[Global.current_level_location][_name] = [null, null, 1]
+#			print(Global.level_completion[Global.current_level_location][_name])
+			Global.change_level("")
 
 func move_player_character():
 	collision_mask = 1048575
@@ -265,8 +265,8 @@ func finish(collision):
 	recording["timer"] = timer
 	recording["character"] = character_name
 	recording["character_location"] = character_location
-	recording["level"] = global.current_level_location + get_parent().name
-	#global.current_recording = recording.duplicate()
+	recording["level"] = Global.current_level_location + get_parent().name
+	#Global.current_recording = recording.duplicate()
 	deny_input = true
 	end = true
 	get_slide_collision(collision).collider.teleport(float(int(timer * 100)) / 100, collectible, unlock, recording.duplicate())

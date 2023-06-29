@@ -72,6 +72,7 @@ var replay_menu : bool = false
 var replay_save : Array = [0, 0, ""]
 var race_mode : bool = false
 
+var select_menu : bool = false
 var current_page : int = 0
 var current_level : String = ""
 var current_level_location : String = "res://Scenes/waterway/"
@@ -111,21 +112,7 @@ func _ready():
 	if !dir.dir_exists("SRReplays/user"):
 		dir.make_dir("SRReplays/user")
 	
-	load_data()
-	
-	# Bindings
-	for inputs in keybind_names:
-		var new_key = InputEventKey.new()
-		if options[inputs] != null:
-			new_key.scancode = options[inputs]
-		else:
-			new_key.scancode = default_options[inputs]
-		last_input_events.append(new_key)
-	
-	for i in range(last_input_events.size()):
-		change_input(i, last_input_events[i])
 	# Load user levels
-	
 	var directory : Directory = Directory.new()
 	var check_exist = directory.open("user://SRLevels/")
 	var current_file
@@ -141,6 +128,20 @@ func _ready():
 			current_file = directory.get_next()
 		# warning-ignore:integer_division
 		user_pages = user_levels.size() / 20
+	
+	load_data()
+	
+	# Bindings
+	for inputs in keybind_names:
+		var new_key = InputEventKey.new()
+		if options[inputs] != null:
+			new_key.scancode = options[inputs]
+		else:
+			new_key.scancode = default_options[inputs]
+		last_input_events.append(new_key)
+	
+	for i in range(last_input_events.size()):
+		change_input(i, last_input_events[i])
 
 func _physics_process(_delta):
 	if level_control:
@@ -566,33 +567,34 @@ func completion_percentage():
 	var unlock : int = 0
 	var bonus : int = 0
 	for i in range(20):
-		if level_group["levels"][i][0] == "*Level_Missing" and current_level_location == "res://Scenes/":
+		if level_group["levels"][i][0] == "*Level_Missing":# and current_level_location == "res://Scenes/":
 			continue
 		full += 2
+#		print(level_group["levels"][i][0])
 		var level_name : String = level_group["levels"][i][0]
 		if level_completion[current_level_location].has(level_name):
 			if level_completion[current_level_location][level_name][0] != null:
 				completion += 1
 				beat += 1
-				#print("beat " + String(i))
+#				print("beat " + String(i))
 				if level_completion[current_level_location][level_name][1] != null:
 					if level_completion[current_level_location][level_name][1] == 0:
 						completion += 1
 					elif level_completion[current_level_location][level_name][0] < level_completion[current_level_location][level_name][1]:
 						completion += 1
 						par += 1
-						#print("par " + String(i))
+#						print("par " + String(i))
 		if unlocked.has(current_level_location):
 			if unlocked[current_level_location].has(level_name):
 				full += 1
 				if unlocked[current_level_location][level_name]:
 					completion += 1
 					unlock += 1
-					#print("unlocked " + String(i))
+#					print("unlocked " + String(i))
 		for c in range(3):
 			if level_completion["*collectibles"][current_level_location].has(level_name + "*" + String(c + 1)):
 				bonus += 1
-	#print(String(completion) + " / " + String(full))
+#	print(String(completion) + " / " + String(full))
 	
 	var stats : Array = [0, beat, par, unlock, bonus]
 	
@@ -600,7 +602,7 @@ func completion_percentage():
 		stats[0] = (completion / full) * 100
 	else:
 		stats[0] =  0
-	return stats
+	return stats.duplicate()
 
 func console_arguments():
 	var arguments = {}
@@ -993,6 +995,8 @@ func load_level_group():
 	return true
 
 func load_data():
+	loaded_level_groups.append(["SRLevels","user://"])
+	
 	scan_for_directories("res://Scenes/", loaded_level_groups, "group")
 	for mod_name in mods_installed:
 		scan_for_directories("Mods/" + mod_name + "/Scenes/", loaded_level_groups, "group")
@@ -1000,7 +1004,14 @@ func load_data():
 	
 	var temp_level_groups = loaded_level_groups.duplicate()
 	var group_unlocks : Array = []
+	
 	for group in range(loaded_level_groups.size()):
+		if group == 0:
+			if user_levels.size() == 0:
+				temp_level_groups.remove(group)
+			else:
+				group_unlocks.append([0, "", ""])
+			continue
 		var level_dat = load_dat_file(loaded_level_groups[group][1] + loaded_level_groups[group][0] + "/level_group")
 		var depend_test = true
 		for i in level_dat["dependencies"]:
@@ -1013,9 +1024,6 @@ func load_data():
 			else:
 				group_unlocks.append([0, "", ""])
 	loaded_level_groups = temp_level_groups.duplicate()
-	
-	loaded_level_groups.append(["SRLevels","user://"])
-	group_unlocks.append([0, "", ""])
 	
 	for i in range(loaded_level_groups.size()):
 		loaded_level_groups[i].resize(6)

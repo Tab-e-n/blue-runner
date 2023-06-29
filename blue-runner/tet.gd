@@ -59,14 +59,6 @@ func menu_update():
 	
 	# - - - LEVEL SELECT - - -
 	if !group_select:
-		if Input.is_action_just_pressed("jump"):
-			if !get_node("L/Level_" + String(level_selected_convert)).locked:
-				selected = true
-				$Cursor/AnimationPlayer.play("Go_In")
-				get_node("L/Level_" + String(level_selected_convert)).get_node("Anim").play("Bump")
-			else:
-				$Cursor/AnimationPlayer.play("Refuse")
-		
 		if Input.is_action_just_pressed("special"):
 			if Global.load_replay(selected_level_location + selected_level_name + "_Best", true):
 				Global.current_recording = Global.load_replay(selected_level_location + selected_level_name + "_Best")
@@ -78,9 +70,6 @@ func menu_update():
 				Global.replay = false
 				selected = false
 				$Cursor/AnimationPlayer.play("Refuse")
-		
-		if selected:
-			parent.move = false
 		
 	elif group_select:
 		if Input.is_action_pressed("left") and parent.move and selected_group > 0:

@@ -16,14 +16,12 @@ func _ready():
 	var _start : bool = true
 	
 	#print(current_menu.position)
-	
-	if _start or Global.replay_menu:
-		
-		if Global.replay_menu:
-			menu = "REPLAY"
-		else:
-			#menu = "MAIN"
-			menu = "SELECT"
+	if Global.select_menu or true:
+		menu = "SELECT"
+	elif Global.replay_menu:
+		menu = "REPLAY"
+	else: #if _start:
+		menu = "MAIN"
 	
 	switch_menu(menu)
 	

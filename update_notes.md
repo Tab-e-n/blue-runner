@@ -15,7 +15,6 @@
  - The timer is now outlined for better visibility.
  - User Universe now has a unique BG.
  - Bootup sequence has a new font.
- - Spikes' inner glowing circle thing is now purple because they are the things behind the slaughter.
 
 ### FIXES & CHANGES
 
@@ -26,6 +25,7 @@
  - XT9 is unlocked when you have 7 bonuses now. If you already have them unlocked,
    this update wont take it away.
  - Fixed `savefile_interaction` argument working incorrectly.
+ - Fixed the number of deaths in a level not saving.
 
 </p></details>
 <details><summary><h2>SONIC RUNNER EDITOR</h2></summary><p>

@@ -1,37 +1,224 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://Scripts/Menu/SELECT.gd" type="Script" id=1]
 [ext_resource path="res://Objects/Level.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Visual/Title/menu_waterway.png" type="Texture" id=3]
 [ext_resource path="res://Objects/Backgrounds/BG_WaterWay.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Visual/light_plane.png" type="Texture" id=5]
 [ext_resource path="res://Visual/Menu/options_rectangle.png" type="Texture" id=6]
 [ext_resource path="res://Text/Text_White.tscn" type="PackedScene" id=7]
 [ext_resource path="res://Scripts/Menu/Scrolling_Text.gd" type="Script" id=8]
 [ext_resource path="res://Visual/Level/selected_level.png" type="Texture" id=9]
+[ext_resource path="res://Objects/Completion.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Visual/boltcollect.png" type="Texture" id=11]
+[ext_resource path="res://Text/Text_Outlined.tscn" type="PackedScene" id=12]
+[ext_resource path="res://Visual/keycollect.png" type="Texture" id=13]
+[ext_resource path="res://Visual/parstar.png" type="Texture" id=14]
+[ext_resource path="res://Visual/beatflag.png" type="Texture" id=15]
+[ext_resource path="res://Visual/particle_circle.png" type="Texture" id=16]
+
+[sub_resource type="Animation" id=1]
+resource_name = "Bump"
+length = 0.5
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprit:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1.25, 0.75 ), Vector2( 1, 1.25 ), Vector2( 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("particle_circle:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 2, 2 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("particle_circle:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("sprit:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("sprit:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=2]
+length = 0.5
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprit:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 2, 0 ), Vector2( -4, 0 ), Vector2( 6, 0 ), Vector2( -8, 0 ), Vector2( 8, 0 ), Vector2( -6, 0 ), Vector2( 4, 0 ), Vector2( -2, 0 ), Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("sprit:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.15, 0.3, 0.45 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 0.858824, 0.415686, 0.415686, 1 ), Color( 0.858824, 0.415686, 0.415686, 1 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("sprit:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "Reset"
+length = 0.02
+tracks/0/type = "value"
+tracks/0/path = NodePath("sprit:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("sprit:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("sprit:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("particle_circle:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1e-05, 1e-05 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("particle_circle:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
 
 [node name="SELECT" type="Node2D"]
 script = ExtResource( 1 )
 
 [node name="Line2D" type="Line2D" parent="."]
-visible = false
 points = PoolVector2Array( -640, -384, 640, -384, 640, 384, -640, 384, -640, -384 )
 
 [node name="group_select" type="Node2D" parent="."]
 
+[node name="cursor" type="Line2D" parent="group_select"]
+points = PoolVector2Array( -64, -64, 64, -64, 64, 64, -64, 64, -64, -64 )
+
 [node name="level_select" type="Node2D" parent="."]
+visible = false
 
 [node name="BG" parent="level_select" instance=ExtResource( 4 )]
 scale = Vector2( 0.5, 0.5 )
 
 [node name="levels" type="Node2D" parent="level_select"]
-position = Vector2( 224, 112 )
+position = Vector2( 224, 160 )
 
-[node name="selected_level" type="Sprite" parent="level_select/levels"]
-modulate = Color( 0.0235294, 0.901961, 0.631373, 1 )
-position = Vector2( -288, -144 )
+[node name="selected_level" type="Node2D" parent="level_select/levels"]
 scale = Vector2( 0.75, 0.75 )
+
+[node name="sprit" type="Sprite" parent="level_select/levels/selected_level"]
 texture = ExtResource( 9 )
+
+[node name="particle_circle" type="Sprite" parent="level_select/levels/selected_level"]
+position = Vector2( 1.52588e-05, 0 )
+scale = Vector2( 1e-05, 1e-05 )
+texture = ExtResource( 16 )
+
+[node name="anim" type="AnimationPlayer" parent="level_select/levels/selected_level"]
+anims/Bump = SubResource( 1 )
+anims/Refuse = SubResource( 2 )
+anims/Reset = SubResource( 3 )
 
 [node name="0" parent="level_select/levels" instance=ExtResource( 2 )]
 position = Vector2( -288, -144 )
@@ -113,21 +300,45 @@ scale = Vector2( 0.75, 0.75 )
 position = Vector2( 288, 144 )
 scale = Vector2( 0.75, 0.75 )
 
-[node name="Polygon2D" type="Polygon2D" parent="level_select"]
-visible = false
-position = Vector2( -64, 0 )
-rotation = -1.57079
-scale = Vector2( 1, 0.5 )
-color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
-polygon = PoolVector2Array( -384.001, -255.999, -384.004, -1152, 383.996, -1152, 383.999, -256.001 )
+[node name="title" type="Sprite" parent="level_select"]
+position = Vector2( 224, -160 )
+scale = Vector2( 0.75, 0.75 )
 
-[node name="light_plane" type="Sprite" parent="level_select"]
-visible = false
-modulate = Color( 0.0156863, 0.0235294, 0.133333, 1 )
-position = Vector2( -64, 0 )
-rotation = -1.57079
-scale = Vector2( 1, 0.5 )
-texture = ExtResource( 5 )
+[node name="Completion" parent="level_select" instance=ExtResource( 10 )]
+position = Vector2( 408, -344 )
+scale = Vector2( 0.75, 0.75 )
+
+[node name="stats" parent="level_select" instance=ExtResource( 12 )]
+margin_left = 568.0
+margin_top = -356.0
+margin_right = 888.0
+margin_bottom = -100.0
+rect_scale = Vector2( 0.5, 0.5 )
+text = ""
+
+[node name="author" parent="level_select" instance=ExtResource( 12 )]
+margin_left = -168.0
+margin_top = -368.0
+margin_right = 712.0
+margin_bottom = -240.0
+rect_scale = Vector2( 0.5, 0.5 )
+text = "By:"
+
+[node name="beatflag" type="Sprite" parent="level_select"]
+position = Vector2( 548, -344 )
+texture = ExtResource( 15 )
+
+[node name="parstar" type="Sprite" parent="level_select"]
+position = Vector2( 548, -312 )
+texture = ExtResource( 14 )
+
+[node name="boltcollect" type="Sprite" parent="level_select"]
+position = Vector2( 548, -280 )
+texture = ExtResource( 11 )
+
+[node name="keycollect" type="Sprite" parent="level_select"]
+position = Vector2( 548, -248 )
+texture = ExtResource( 13 )
 
 [node name="level_data" type="Node2D" parent="level_select"]
 
@@ -139,9 +350,9 @@ texture = ExtResource( 6 )
 
 [node name="level_name" type="Control" parent="level_select/level_data"]
 margin_left = -624.0
-margin_top = -360.0
+margin_top = -216.0
 margin_right = -208.0
-margin_bottom = -264.0
+margin_bottom = -120.0
 rect_clip_content = true
 script = ExtResource( 8 )
 __meta__ = {
@@ -164,9 +375,9 @@ TEXT
 
 [node name="best_time" type="Control" parent="level_select/level_data"]
 margin_left = -624.0
-margin_top = -56.0
+margin_top = 96.0
 margin_right = -208.0
-margin_bottom = -24.0
+margin_bottom = 128.0
 rect_clip_content = true
 script = ExtResource( 8 )
 __meta__ = {
@@ -185,9 +396,9 @@ rect_scale = Vector2( 0.5, 0.5 )
 
 [node name="par" type="Control" parent="level_select/level_data"]
 margin_left = -624.0
-margin_top = -24.0
+margin_top = 128.0
 margin_right = -208.0
-margin_bottom = 8.0
+margin_bottom = 160.0
 rect_clip_content = true
 script = ExtResource( 8 )
 __meta__ = {
@@ -206,9 +417,9 @@ rect_scale = Vector2( 0.5, 0.5 )
 
 [node name="deaths" type="Control" parent="level_select/level_data"]
 margin_left = -624.0
-margin_top = 8.0
+margin_top = 160.0
 margin_right = -208.0
-margin_bottom = 40.0
+margin_bottom = 192.0
 rect_clip_content = true
 script = ExtResource( 8 )
 __meta__ = {
@@ -227,9 +438,9 @@ rect_scale = Vector2( 0.5, 0.5 )
 
 [node name="creator" type="Control" parent="level_select/level_data"]
 margin_left = -624.0
-margin_top = 40.0
+margin_top = 192.0
 margin_right = -208.0
-margin_bottom = 104.0
+margin_bottom = 256.0
 rect_clip_content = true
 script = ExtResource( 8 )
 __meta__ = {
@@ -247,9 +458,5 @@ margin_right = 400.0
 margin_bottom = 128.0
 rect_scale = Vector2( 0.5, 0.5 )
 
-[node name="menu_waterway" type="Sprite" parent="level_select"]
-position = Vector2( 224, -224 )
-scale = Vector2( 0.75, 0.75 )
-texture = ExtResource( 3 )
-
 [node name="character_select" type="Node2D" parent="."]
+visible = false

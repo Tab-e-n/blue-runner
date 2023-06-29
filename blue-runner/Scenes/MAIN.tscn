@@ -1,9 +1,9 @@
-[gd_scene load_steps=31 format=2]
+[gd_scene load_steps=32 format=2]
 
 [ext_resource path="res://Scripts/menu_shader.shader" type="Shader" id=1]
 [ext_resource path="res://Scripts/Menu/MAIN_group.gd" type="Script" id=2]
 [ext_resource path="res://Scripts/Menu/MAIN.gd" type="Script" id=3]
-[ext_resource path="res://Visual/Menu/button_vs.png" type="Texture" id=4]
+[ext_resource path="res://Visual/Menu/button_for_future_me.png" type="Texture" id=4]
 [ext_resource path="res://Visual/Menu/button_cheat_codes.png" type="Texture" id=5]
 [ext_resource path="res://Visual/Menu/button_replay.png" type="Texture" id=6]
 [ext_resource path="res://Visual/Menu/button_play.png" type="Texture" id=7]
@@ -15,6 +15,7 @@
 [ext_resource path="res://Visual/Menu/button_exit.png" type="Texture" id=13]
 [ext_resource path="res://Visual/Menu/button_options.png" type="Texture" id=14]
 [ext_resource path="res://Visual/Menu/button_back.png" type="Texture" id=15]
+[ext_resource path="res://Visual/Menu/button_level_select.png" type="Texture" id=16]
 
 [sub_resource type="Animation" id=1]
 resource_name = "enter_sub"
@@ -411,7 +412,7 @@ script = ExtResource( 2 )
 node_buttons = [ "button1", "button2", "button3", "button_exit" ]
 menu_colors = [ Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ) ]
 buttons_amount = 3
-submenu = [ 2, 7, 8, 9 ]
+submenu = [ 2, 7, 9, 8 ]
 
 [node name="back" type="Polygon2D" parent="sub/play"]
 position = Vector2( -8, 0 )
@@ -428,21 +429,21 @@ texture = ExtResource( 10 )
 use_parent_material = true
 position = Vector2( 364, 0 )
 scale = Vector2( 1.5, 1.5 )
-texture = ExtResource( 7 )
+texture = ExtResource( 16 )
 
 [node name="button2" type="Sprite" parent="sub/play"]
 modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
 use_parent_material = true
 position = Vector2( 288, 112 )
 scale = Vector2( 1.125, 1.125 )
-texture = ExtResource( 4 )
+texture = ExtResource( 6 )
 
 [node name="button3" type="Sprite" parent="sub/play"]
 modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
 use_parent_material = true
 position = Vector2( 256, 208 )
 scale = Vector2( 1.125, 1.125 )
-texture = ExtResource( 6 )
+texture = ExtResource( 4 )
 
 [node name="button_exit" type="Sprite" parent="sub/play"]
 modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
