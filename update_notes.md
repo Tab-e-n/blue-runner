@@ -10,6 +10,7 @@
 ### VISUAL
 
  - Sonic Runner is no longer in the 4:3 aspect ratio, it is now in the glorious___ 5:3 aspect ratio___!
+ - Redesigned many menus, made a few new ones and touched up some which were already fine. The menus should now be more readable / slightly cooler.
  - XT9 has new idle animations.
  - When launched very high with a mushroom, you now spin.
  - The timer is now outlined for better visibility.
@@ -20,12 +21,11 @@
 
  - The menu now has it's own seperate keys from gameplay.
  - The level timer doesn't start until you start moving.
- - S1's dash is now a bit slower.
+ - S1's default slide is now a bit slower. Dropslide is staying the same speed, however.
  - Shortend coyote time on S1 and it's derivates.
  - XT9 is unlocked when you have 7 bonuses now. If you already have them unlocked,
    this update wont take it away.
  - Fixed `savefile_interaction` argument working incorrectly.
- - Fixed the number of deaths in a level not saving.
 
 </p></details>
 <details><summary><h2>SONIC RUNNER EDITOR</h2></summary><p>
@@ -57,11 +57,13 @@
 	   and the interpreter will ignore them.
 	 - %\`% will put a \`, since otherwise it will be removed.
  - You can now set `tele_destination` of the portal and finish to `*Level_Next`, which will change the level to the next level in the level group.
- - You can now add the name of the author to a level group.
+ - You can now add the name of the author to a level group. You can choose to have it visible or you can just have it in the files.
 
 ### VISUAL
 
+ - You can now specify the "ui color" for a level group.
  - There are now more variations of dirt tiles.
+ - More Blurees! i love trees trees so cool
  - The .dat creator has been centralized.
 
 ### FIXES & CHANGES

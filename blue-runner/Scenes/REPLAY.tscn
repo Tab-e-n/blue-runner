@@ -576,6 +576,7 @@ tracks/8/keys = {
 [node name="REPLAY" type="Node2D"]
 material = SubResource( 1 )
 script = ExtResource( 3 )
+directory_animation_ongoing = true
 rack_time = 0.0
 
 [node name="rack" type="Node2D" parent="."]

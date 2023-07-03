@@ -11,8 +11,11 @@ onready var parent : Node2D = get_parent()
 
 #var group_select : bool = false
 
-var is_selecting_groups : bool = true
-var is_selecting_characters : bool = false
+
+var is_selecting_groups : bool = false
+var groups_first_time : bool = true
+var current_group_color : int = 0
+
 
 var selected_level : int
 var has_selected_level : bool = false
@@ -26,6 +29,17 @@ var user_page_current : int = 0
 var user_selected_level : int = 0
 var user_current_page : int = 0
 var user_page_amount : int = 0
+
+var bg : Node2D
+export var cam_target : Vector2 = Vector2(0, 0)
+
+
+export var character_pulse : float = 0
+
+var is_selecting_characters : bool = false
+var characters_first_time : bool = true
+var unlocked_characters : Array = []
+var selected_character : int = 0
 
 func _ready():
 	for i in Global.loaded_level_groups.size():
@@ -47,6 +61,7 @@ func _ready():
 			if current_file.ends_with(".tscn"):
 				user_levels.append(current_file.trim_suffix(".tscn"))
 			current_file = directory.get_next()
+		# warning-ignore:integer_division
 		user_page_amount = user_levels.size() / 20
 	
 	if Global.current_level_location == "user://SRLevels/":
@@ -59,7 +74,7 @@ func _ready():
 				break
 #	selected_level_name = Global.current_level
 #	selected_level_location = Global.current_level_location
-	reload_all_levels(true)
+	reload_all_levels()
 	if Global.select_menu:
 		Global.select_menu = false
 		for i in range(20):
@@ -71,29 +86,86 @@ func _ready():
 	set_level_data_text(false)
 	level_move_cursor()
 	
-	make_group_icons()
-	group_move_cursor()
+#	group_move_cursor()
+	
+	check_character_unlocks()
+	
+	$mainAnim.play("enter")
 
 func menu_update():
+	if $mainAnim.is_playing() and bg != null:
+		bg.update_self(cam_target)
+		bg.position = Vector2(0, 0)
+	
+	if parent.move:
+		$level_select/dependency.visible = false
+		$level_select/fail.visible = false
+	
 	if is_selecting_groups:
-		if Input.is_action_pressed("left") and parent.move:
+		if Input.is_action_just_pressed("deny"):
+			parent.switch_menu("MAIN", "SELECT")
+			$mainAnim.play("exit")
+			return
+		
+		if Input.is_action_just_pressed("accept"):
+			Global.current_level_location = unlocked_level_groups[group_current][1] + unlocked_level_groups[group_current][0] + "/"
+			is_selecting_groups = false
+			selected_level = 0
+			user_current_page = 0
+			user_page_amount = 0
+			reload_all_levels()
+			set_level_data_text(false)
+			level_move_cursor()
+			$mainAnim.play("GROUP -> LEVEL")
+		
+		if Input.is_action_pressed("menu_left") and parent.move:
 			group_move_cursor(Vector2(-1, 0))
-		if Input.is_action_pressed("right") and parent.move:
+		if Input.is_action_pressed("menu_right") and parent.move:
 			group_move_cursor(Vector2(1, 0))
-		if Input.is_action_pressed("up") and parent.move:
+		if Input.is_action_pressed("menu_up") and parent.move:
 			group_move_cursor(Vector2(0, -1))
-		if Input.is_action_pressed("down") and parent.move:
+		if Input.is_action_pressed("menu_down") and parent.move:
 			group_move_cursor(Vector2(0, 1))
+		
 	elif is_selecting_characters:
-		pass
+		if Input.is_action_just_pressed("deny"):
+			is_selecting_characters = false
+			$mainAnim.play("CHARACTER -> LEVEL")
+			
+		if Input.is_action_just_pressed("jump"):
+			Global.current_character = unlocked_characters[selected_character][0]
+			Global.current_character_location = unlocked_characters[selected_character][1]
+			if Global.change_level("", true) != OK:
+				is_selecting_characters = false
+				$mainAnim.play("CHARACTER -> LEVEL")
+		
+		if Input.is_action_pressed("menu_left") and parent.move:
+			character_move_cursor(-1)
+		if Input.is_action_pressed("menu_right") and parent.move:
+			character_move_cursor(1)
+		if Input.is_action_pressed("menu_up") and parent.move:
+			character_move_cursor(-4)
+		if Input.is_action_pressed("menu_down") and parent.move:
+			character_move_cursor(4)
+		
+		$character_select/options_rectangle.material.set_shader_param("offset", character_pulse)
 	else:
+		if Input.is_action_just_pressed("deny"):
+			is_selecting_groups = true
+			if groups_first_time:
+				make_group_icons()
+				groups_first_time = false
+			group_move_cursor()
+			$mainAnim.play("LEVEL -> GROUP")
 		if Input.is_action_just_pressed("accept"):
 			if not get_node("level_select/levels/" + String(selected_level)).locked:
 				get_node("level_select/levels/" + String(selected_level)).get_node("Anim").play("Bump")
 				$level_select/levels/selected_level/anim.play("Bump")
 				
 				var timer : Timer = Timer.new()
-				timer.connect("timeout", self, "character_select")
+				# warning-ignore:return_value_discarded
+				timer.connect("timeout", self, "level_selected")
+				# warning-ignore:return_value_discarded
 				timer.connect("timeout", timer, "queue_free")
 				timer.paused = false
 				add_child(timer)
@@ -107,13 +179,13 @@ func menu_update():
 		if has_selected_level:
 			parent.move = false
 		
-		if Input.is_action_pressed("left") and parent.move:
+		if Input.is_action_pressed("menu_left") and parent.move:
 			level_move_cursor(-1)
-		if Input.is_action_pressed("right") and parent.move:
+		if Input.is_action_pressed("menu_right") and parent.move:
 			level_move_cursor(1)
-		if Input.is_action_pressed("up") and parent.move:
+		if Input.is_action_pressed("menu_up") and parent.move:
 			level_move_cursor(-5)
-		if Input.is_action_pressed("down") and parent.move:
+		if Input.is_action_pressed("menu_down") and parent.move:
 			level_move_cursor(5)
 
 
@@ -133,6 +205,7 @@ func level_move_cursor(move_amount : int = 0, is_in_user_universe : bool = false
 				if user_current_page <= -1:
 					user_current_page += 1
 					user_selected_level -= move_amount
+					$level_select/author.text = String(user_current_page + 1) + "/" + String(user_page_amount + 1)
 				else:
 					reload_all_levels()
 		if sign(move_amount) == 1:
@@ -142,9 +215,12 @@ func level_move_cursor(move_amount : int = 0, is_in_user_universe : bool = false
 				if user_current_page > user_page_amount:
 					user_current_page -= 1
 					user_selected_level -= move_amount
+					$level_select/author.text = String(user_current_page + 1) + "/" + String(user_page_amount + 1)
 				else:
 					reload_all_levels()
-	
+		
+		selected_level = user_selected_level - user_current_page * 20
+	# warning-ignore:integer_division
 	$level_select/levels/selected_level.position = Vector2(-288 + 144 * (selected_level % 5), -144 + 96 * (selected_level / 5))
 	$level_select/levels/selected_level/anim.stop()
 	$level_select/levels/selected_level/anim.play("Reset")
@@ -155,28 +231,36 @@ func group_move_cursor(move_amount : Vector2 = Vector2(0, 0)):
 	if move_amount.x != 0:
 		if sign(move_amount.x) == -1:
 			if (group_current % 7) + move_amount.x < 0:
+				# warning-ignore:integer_division
 				group_current = (group_current / 7) * 7
 			else:
+				# warning-ignore:narrowing_conversion
 				group_current += move_amount.x
 		if sign(move_amount.x) == 1:
 			if (group_current % 7) + move_amount.x >= 7:
+				# warning-ignore:integer_division
 				group_current = (group_current / 7) * 7 + 6
 			else:
+				# warning-ignore:narrowing_conversion
 				group_current += move_amount.x
 	
 	var group_num : int = unlocked_level_groups.size()
 	
 	if move_amount.y != 0:
+		# warning-ignore:narrowing_conversion
 		var row_amount : int = ceil(float(group_num) / 7)
 		if sign(move_amount.y) == -1:
 			if ceil(float(group_current + 1) / 7) == row_amount:
 				var end_columbs : int = group_num % 7
 				if end_columbs == 0:
 					end_columbs = 7
+				# warning-ignore:integer_division
 				var left_end : int = (7 - end_columbs) / 2
 				
+				# warning-ignore:narrowing_conversion
 				group_current += move_amount.y * 7 + left_end
 			elif group_current + move_amount.y * 7 >= 0:
+				# warning-ignore:narrowing_conversion
 				group_current += move_amount.y * 7
 		if sign(move_amount.y) == 1:
 			if ceil(float(group_current + move_amount.y * 7) / 7) == row_amount:
@@ -184,7 +268,9 @@ func group_move_cursor(move_amount : Vector2 = Vector2(0, 0)):
 				var end_columbs : int = group_num % 7
 				if end_columbs == 0:
 					end_columbs = 7
+				# warning-ignore:integer_division
 				var left_end : int = (7 - end_columbs) / 2 + 1
+				# warning-ignore:integer_division
 				var right_end : int = 7 - (8 - end_columbs) / 2 - 1
 				
 				if starting_columb < left_end:
@@ -197,16 +283,56 @@ func group_move_cursor(move_amount : Vector2 = Vector2(0, 0)):
 #				print(starting_columb, " ", group_current % 7)
 				
 			elif ceil(float(group_current + move_amount.y * 7) / 7) < row_amount:
+				# warning-ignore:narrowing_conversion
 				group_current += move_amount.y * 7
 	
 	if group_current >= group_num:
 		group_current = group_num - 1
 	
-	$group_select/cursor.position = get_node("group_select/" + String(group_current)).position
+	if group_current < 0:
+		group_current = 0
+	
+	$group_select/groups/cursor.position = get_node("group_select/groups/" + String(group_current)).position
+	
+	while $group_select/groups.position.y + $group_select/groups/cursor.position.y < -192:
+		$group_select/groups.position.y += 64
+	while $group_select/groups.position.y + $group_select/groups/cursor.position.y > 192:
+		$group_select/groups.position.y -= 64
+	
 #	print(group_current)
+
+func character_move_cursor(move_amount : int = 0):
+	if move_amount == 0:
+		pass
+	else:
+		if sign(move_amount) == -1 and selected_character + move_amount >= 0:
+			selected_character += move_amount
+		if sign(move_amount) == 1 and selected_character + move_amount < unlocked_characters.size():
+			selected_character += move_amount
+	
+#	print(selected_character)
+	
+	if selected_character < 0:
+		selected_character = 0
+	if selected_character >= unlocked_characters.size():
+		selected_character = unlocked_characters.size() - 1
+	
+	# warning-ignore:integer_division
+	# warning-ignore:integer_division
+	$character_select/characters.position = Vector2(160 - (selected_character / 4) * 32, (selected_character / 4) * 128)
+	$character_select/characters/cursor.position = get_node("character_select/characters/" + String(selected_character)).position
+	load_render(selected_character)
+	
+	if Global.loaded_characters[unlocked_characters[selected_character][1]][unlocked_characters[selected_character][0]].size() > 3:
+		$character_select/name.bbcode_text = "[center]" + Global.loaded_characters[unlocked_characters[selected_character][1]][unlocked_characters[selected_character][0]][3] + "[/center]"
+		$character_select/description.bbcode_text = "[center]" + Global.loaded_characters[unlocked_characters[selected_character][1]][unlocked_characters[selected_character][0]][4] + "[/center]"
+	else:
+		$character_select/name.bbcode_text = "[center]" + unlocked_characters[selected_character][0] + "[/center]"
+		$character_select/description.bbcode_text = ""
 
 func make_group_icons():
 	var repetitions : int = unlocked_level_groups.size()
+	# warning-ignore:narrowing_conversion
 	var row_amount : int = ceil(float(repetitions) / 7)
 	for i in range(repetitions):
 		var new_sprite : Sprite = Sprite.new()
@@ -214,33 +340,34 @@ func make_group_icons():
 		new_sprite.texture = preload("res://Visual/Editor/editor_missing.png")
 		new_sprite.scale = Vector2(2, 2)
 		
-		var sprite_position : Vector2
+		var sprite_position : Vector2 = Vector2(0, 0)
 		if i + 1 > (row_amount - 1) * 7 and repetitions % 7 != 0:
 			sprite_position.x = (repetitions % 7 - 1) * -64 + 128 * (i % 7)
 		else:
 			sprite_position.x = -384 + 128 * (i % 7)
+		# warning-ignore:integer_division
 		sprite_position.y = (-64 * (row_amount - 1)) + 128 * (i / 7)
 		
 		new_sprite.position = sprite_position
 		
-		$group_select.add_child(new_sprite)
+		$group_select/groups.add_child(new_sprite)
 	
 	for i in range(repetitions):
 		var file : String = unlocked_level_groups[i][1] + unlocked_level_groups[i][0] + "/logo.png"
 		if unlocked_level_groups[i][1] == "user://":
-			get_node("group_select/" + String(i)).texture = preload("res://Visual/Title/logo_user.png")
+			get_node("group_select/groups/" + String(i)).texture = preload("res://Visual/Title/logo_user.png")
 		elif unlocked_level_groups[i][3] != null:
-			get_node("group_select/" + String(i)).texture = unlocked_level_groups[i][3]
+			get_node("group_select/groups/" + String(i)).texture = unlocked_level_groups[i][3]
 		else:
-			get_node("group_select/" + String(i)).texture = Global.load_texture_from_png(file)
-			unlocked_level_groups[i][3] = get_node("group_select/" + String(i)).texture
-			if get_node("group_select/" + String(i)).texture == null:
-				get_node("group_select/" + String(i)).texture = preload("res://Visual/Title/logo_custom.png")
-				unlocked_level_groups[i][3] = get_node("group_select/" + String(i)).texture
+			get_node("group_select/groups/" + String(i)).texture = Global.load_texture_from_png(file)
+			unlocked_level_groups[i][3] = get_node("group_select/groups/" + String(i)).texture
+			if get_node("group_select/groups/" + String(i)).texture == null:
+				get_node("group_select/groups/" + String(i)).texture = preload("res://Visual/Title/logo_custom.png")
+				unlocked_level_groups[i][3] = get_node("group_select/groups/" + String(i)).texture
 		
-		Global.scale_down_sprite(get_node("group_select/" + String(i)), Vector2(2, 2))
+		Global.scale_down_sprite(get_node("group_select/groups/" + String(i)), Vector2(2, 2))
 
-func reload_all_levels(start : bool = false):
+func reload_all_levels():
 	var is_user_group : bool = Global.current_level_location == "user://SRLevels/"
 	
 	if !Global.load_level_group() and !is_user_group:
@@ -290,7 +417,7 @@ func reload_all_levels(start : bool = false):
 			level.level_name = "Level_Missing"
 			level.locked = true
 	
-	var stats : Array = Global.completion_percentage()
+	var stats : Array = Global.completion_percentage(is_user_group, user_current_page)
 	
 	unlocked_level_groups[group_current][4] = stats[0]
 	
@@ -321,12 +448,12 @@ func reload_all_levels(start : bool = false):
 	for i in range(20):
 		get_node("level_select/levels/" + String(i)).reload()
 	
-	#if is_user_group:
-		#bg_start_changing("res://Objects/Backgrounds/BG_UserUniverse.tscn", start)
-	#elif Global.level_group.has("bg"):
-		#bg_start_changing(Global.level_group["bg"], start)
-	#else:
-		#bg_start_changing("", start)
+	if is_user_group:
+		make_new_bg("res://Objects/Backgrounds/BG_UserUniverse.tscn")
+	elif Global.level_group.has("bg"):
+		make_new_bg(Global.level_group["bg"])
+	else:
+		make_new_bg("")
 	
 	var color = Color(0.02, 0.9, 0.63, 1)
 	if !is_user_group:
@@ -343,6 +470,9 @@ func reload_all_levels(start : bool = false):
 				$level_select/author.text = ""
 			else:
 				$level_select/author.text = "By: " + Global.level_group["author"]
+	else:
+		$level_select/author.visible = true
+		$level_select/author.text = String(user_current_page + 1) + "/" + String(user_page_amount + 1)
 	
 	$level_select/levels/selected_level.modulate = color
 	$level_select/Completion.set_color(color)
@@ -350,6 +480,25 @@ func reload_all_levels(start : bool = false):
 	$level_select/parstar.modulate = color
 	$level_select/boltcollect.modulate = color
 	$level_select/keycollect.modulate = color
+	
+	$level_select/level_data.material.set_shader_param("color", color)
+#	$level_select/level_data/level_name.modulate = color
+#	$level_select/level_data/best_time.modulate = color
+#	$level_select/level_data/par.modulate = color
+#	$level_select/level_data/deaths.modulate = color
+#	$level_select/level_data/creator.modulate = color
+
+func make_new_bg(bg_filepath : String):
+	if bg != null:
+		bg.queue_free()
+	if bg_filepath != "*none":
+		var packed_bg = load(bg_filepath)
+		if packed_bg != null:
+			bg = packed_bg.instance()
+			bg.update_self(cam_target)
+			bg.position = Vector2(0, 0)
+			bg.scale = Vector2(0.5, 0.5)
+			$level_select.add_child(bg)
 
 func set_level_data_text(is_in_user_universe : bool = false):
 	var selected_level_location = get_node("level_select/levels/" + String(selected_level)).level_location
@@ -375,6 +524,7 @@ func set_level_data_text(is_in_user_universe : bool = false):
 	# Author and level name
 	if level_dat != null:
 		$level_select/level_data/level_name.set_text(level_dat["level_name"])
+		$level_select/level_data/creator.set_text("")
 		
 		if is_in_user_universe:
 			$level_select/level_data/creator.set_text("  Creator:" + level_dat["creator"])
@@ -411,7 +561,11 @@ func set_level_data_text(is_in_user_universe : bool = false):
 	
 	#$level_data/replay.visible = Global.load_replay(selected_level_location + selected_level_name + "_Best", true)
 
-func character_select():
+func remove_bg():
+	if bg != null:
+		bg.queue_free()
+
+func level_selected():
 	Global.current_level = get_node("level_select/levels/" + String(selected_level)).level_name
 	Global.current_level_location = get_node("level_select/levels/" + String(selected_level)).level_location
 	
@@ -423,7 +577,7 @@ func character_select():
 		for i in level_dat["dependencies"]:
 			if !Global.mods_installed.has(i):
 				error = true
-				#$dependencies.visible = true
+				$level_select/dependency.visible = true
 	var file : File = File.new()
 	if !file.file_exists(Global.current_level_location + Global.current_level + ".tscn"):
 		error = true
@@ -443,14 +597,106 @@ func character_select():
 		$level_select/levels/selected_level/anim.play("Refuse")
 		has_selected_level = false
 	elif activate_char_select:
-		#parent.get_node("AnimationPlayer").play("SELECT-CHARACTER")
-		#parent.menu = "CHARACTER"
-		#$Cursor/AnimationPlayer.play("Reset")
+		if characters_first_time:
+			make_character_icons()
+			characters_first_time = false
+		character_move_cursor()
+		$mainAnim.play("LEVEL -> CHARACTER")
+		is_selecting_characters = true
 		has_selected_level = false
 	else:
 		Global.select_menu = true
 		if Global.change_level("", true, false) != OK:
 			get_node("level_select/levels/" + String(selected_level)).get_node("Anim").play("Refuse")
 			$level_select/levels/selected_level/anim.play("Refuse")
-			#$fail.visible = true
+			$level_select/fail.visible = true
 			has_selected_level = false
+
+func check_character_unlocks():
+	
+	unlocked_characters = []
+	print(Global.loaded_characters)
+	for place in Global.loaded_characters.keys():
+		for character in Global.loaded_characters[place].keys():
+			
+			var unlock_type : int = Global.loaded_characters[place][character][0]
+			var parameter_1 = Global.loaded_characters[place][character][1]
+			var parameter_2 = Global.loaded_characters[place][character][2]
+			
+			var check : bool = false
+			
+			if unlock_type == 5:
+				check = Global.check_unlock_requirements(unlock_type, parameter_1, place)
+			else:
+				check = Global.check_unlock_requirements(unlock_type, parameter_1, parameter_2)
+			
+			if check:
+				unlocked_characters.append([character, place, "", ""])
+				
+				if unlocked_characters.size() > 1: Global.unlock("*char_select_active")
+
+func make_character_icons():
+	var repetitions : int = unlocked_characters.size()
+	# warning-ignore:narrowing_conversion
+	var row_amount : int = ceil(float(repetitions) / 4)
+	for i in range(repetitions):
+		var new_sprite : Sprite = Sprite.new()
+		new_sprite.name = String(i)
+		new_sprite.texture = preload("res://Visual/Editor/editor_missing.png")
+		new_sprite.scale = Vector2(2, 2)
+		
+		var sprite_position : Vector2 = Vector2(0, 0)
+		sprite_position.x = 128 * (i % 4) - 32 * (int(i) / 4)
+		# warning-ignore:integer_division
+		sprite_position.y = 128 * (int(i) / 4)
+		
+		new_sprite.position = sprite_position
+		
+		$character_select/characters.add_child(new_sprite)
+	
+	for i in range(repetitions):
+		load_icon(i)
+
+func load_render(index : int):
+	if unlocked_characters.size() == 0:
+		$character_select/character_render.texture = preload("res://Visual/Menu/no_character_found.png")
+		return
+	if index < 0:
+		index += unlocked_characters.size()
+	if index >= unlocked_characters.size():
+		index -= unlocked_characters.size()
+	
+	var texture : Texture
+	if unlocked_characters[index][2] != "":
+		texture = load(unlocked_characters[index][2])
+	else:
+		texture = load(unlocked_characters[index][1] + "/Visual/" + unlocked_characters[index][0] + "/portrait.png")
+		unlocked_characters[index][2] = unlocked_characters[index][1] + "/Visual/" + unlocked_characters[index][0] + "/portrait.png"
+		if texture == null:
+			texture = preload("res://Visual/Menu/no_character_found.png")
+			unlocked_characters[index][2] = "res://Visual/Menu/no_character_found.png"
+	$character_select/character_render.texture = texture
+	
+	Global.scale_down_sprite($character_select/character_render, Vector2(1, 1), Vector2(384, 384))
+
+func load_icon(index : int):
+	if unlocked_characters.size() == 0:
+		get_node("character_select/characters/" + String(index)).texture.texture = preload("res://Visual/Menu/no_icon_found.png")
+		return
+	if index < 0:
+		index += unlocked_characters.size()
+	if index >= unlocked_characters.size():
+		index -= unlocked_characters.size()
+	
+	var texture : Texture
+	if unlocked_characters[index][3] != "":
+		texture = load(unlocked_characters[index][3])
+	else:
+		texture = load(unlocked_characters[index][1] + "/Visual/" + unlocked_characters[index][0] + "/icon.png")
+		unlocked_characters[index][3] = unlocked_characters[index][1] + "/Visual/" + unlocked_characters[index][0] + "/icon.png"
+		if texture == null:
+			texture = preload("res://Visual/Menu/no_icon_found.png")
+			unlocked_characters[index][3] = "res://Visual/Menu/no_icon_found.png"
+	get_node("character_select/characters/" + String(index)).texture = texture
+	
+	Global.scale_down_sprite(get_node("character_select/characters/" + String(index)), Vector2(1, 1), Vector2(128, 128))

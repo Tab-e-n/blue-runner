@@ -17,7 +17,7 @@ func menu_ready(comming_from : String = ""):
 		"", "OPTIONS", "HELP":
 			current_menu = MENU_TOP
 			$mainAnim.play("enter_top")
-		"PLAY", "VS", "REPLAY":
+		"SELECT", "VS", "REPLAY":
 			current_menu = MENU_PLAY
 			$mainAnim.play("enter_sub")
 			$sub/play.visible = true
@@ -30,11 +30,11 @@ func menu_ready(comming_from : String = ""):
 			$top.reset(2)
 		"HELP":
 			$top.reset(4)
-		"PLAY":
+		"SELECT":
 			$sub/play.reset(1)
-		"VS":
-			$sub/play.reset(2)
 		"REPLAY":
+			$sub/play.reset(2)
+		"VS":
 			$sub/play.reset(3)
 		"ACHIEVEMENTS":
 			$sub/extras.reset(1)
@@ -128,7 +128,9 @@ func accept(group : Node2D):
 		BUTTON_HELP:
 			print("incomplete")
 		BUTTON_PLAY:
-			print("incomplete")
+			parent.switch_menu("SELECT", "MAIN")
+			$mainAnim.stop()
+			$mainAnim.play("exit_sub")
 		BUTTON_VS:
 			print("incomplete")
 		BUTTON_REPLAY:

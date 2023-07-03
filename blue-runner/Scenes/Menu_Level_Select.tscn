@@ -3919,7 +3919,6 @@ this level, sorry"
 anims/change = SubResource( 18 )
 
 [node name="CHARACTER" type="Node2D" parent="."]
-position = Vector2( 2264, 1320 )
 script = ExtResource( 55 )
 
 [node name="menu_rectangle" type="Sprite" parent="CHARACTER"]
@@ -3931,14 +3930,14 @@ texture = ExtResource( 41 )
 
 [node name="menu_rectangle2" type="Sprite" parent="CHARACTER"]
 modulate = Color( 0.145098, 0.141176, 0.27451, 1 )
-position = Vector2( 952, -1656 )
+position = Vector2( 616, -1064 )
 rotation = 0.523598
 scale = Vector2( 2, 2 )
 texture = ExtResource( 41 )
 
 [node name="menu_rectangle3" type="Sprite" parent="CHARACTER"]
 modulate = Color( 0.145098, 0.141176, 0.27451, 1 )
-position = Vector2( -936, 1592 )
+position = Vector2( -480, 824 )
 rotation = 0.523598
 scale = Vector2( 2, 2 )
 texture = ExtResource( 41 )

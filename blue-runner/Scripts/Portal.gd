@@ -54,7 +54,10 @@ func teleport(timer : float, collectible : Array, collectible_unlock : Array, re
 	if name == "Portal":
 		Global.save_game()
 		
-		Global.change_level(tele_destination)
+		if !Global.race_mode:
+			Global.change_level(tele_destination)
+		else:
+			Global.change_level("")
 	
 	if name == "Finish":
 		Global.save_game(timer, par, collectible, get_parent().name, recording)

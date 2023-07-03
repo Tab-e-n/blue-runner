@@ -254,7 +254,7 @@ func erase_replay():
 		set_cassette_labes()
 	else:
 		delete_confirmation = true
-	print(delete_confirmation)
+#	print(delete_confirmation)
 
 func setup_rack(reset_selection : bool = true):
 	var new_replay_amount : int = replays[current_directory].size()
@@ -409,4 +409,4 @@ func load_replays():
 		
 		directories_to_visit.pop_front()
 	
-	print(directories)
+#	print(directories)

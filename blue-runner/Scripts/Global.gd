@@ -35,6 +35,7 @@ var options = {
 	"*ghosts_on" : false,
 	"*timer_on" : 0,
 	"*first_time_load" : true,
+	"*last_level_location" : "res://Scenes/waterway/",
 }
 
 var default_options = {
@@ -57,6 +58,7 @@ var default_options = {
 	"*ghosts_on" : false,
 	"*timer_on" : 0,
 	"*first_time_load" : true,
+	"*last_level_location" : "res://Scenes/waterway/",
 }
 var keybind_names : Array = ["*left", "*right", "*up", "*down", "*jump", "*special", "*reset", "*return", "*menu_left", "*menu_right", "*menu_up", "*menu_down", "*accept", "*deny"]
 var mods_installed = []
@@ -142,6 +144,8 @@ func _ready():
 	
 	for i in range(last_input_events.size()):
 		change_input(i, last_input_events[i])
+	
+	current_level_location = options["*last_level_location"]
 
 func _physics_process(_delta):
 	if level_control:
@@ -559,7 +563,7 @@ func update_level_group_save():
 			if level_group["levels"][i][1]:
 				unlocked[current_level_location][level_group["levels"][i][0]] = false
 
-func completion_percentage():
+func completion_percentage(is_user_group : bool, user_current_page : int):
 	var full : float = 0
 	var completion : float = 0
 	var beat : int = 0
@@ -567,11 +571,18 @@ func completion_percentage():
 	var unlock : int = 0
 	var bonus : int = 0
 	for i in range(20):
-		if level_group["levels"][i][0] == "*Level_Missing":# and current_level_location == "res://Scenes/":
-			continue
+		var level_name : String
+		if !is_user_group:
+			if level_group["levels"][i][0] == "*Level_Missing":# and current_level_location == "res://Scenes/":
+				continue
+			level_name = level_group["levels"][i][0]
+		else:
+			if i + user_current_page * 20 > user_levels.size():
+				continue
+			level_name = user_levels[user_current_page * 20]
 		full += 2
 #		print(level_group["levels"][i][0])
-		var level_name : String = level_group["levels"][i][0]
+		
 		if level_completion[current_level_location].has(level_name):
 			if level_completion[current_level_location][level_name][0] != null:
 				completion += 1
@@ -661,6 +672,8 @@ func save_game(timer : float = 0, par : float = 0, collectible : Array = [], lev
 			temp["*collectibles"][current_level_location].append(collect)
 	
 	level_completion = temp.duplicate()
+	
+	options["*last_level_location"] = current_level_location
 	
 # warning-ignore:integer_division
 	if !savefile_interaction / 2:
