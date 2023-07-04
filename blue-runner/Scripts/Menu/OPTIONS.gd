@@ -169,7 +169,7 @@ func _input(event):
 			Global.change_input(buttons[cursor_row][2], event)
 			buttons[cursor_row][1].text = Global.key_names(buttons[cursor_row][2])
 			confirmation = false
-		if event.pressed and confirm_popup:
+		if event.pressed and confirm_popup and event.scancode != Global.options["*accept"]:
 			confirmation = false
 		if event.pressed and disabled:
 			disabled = false

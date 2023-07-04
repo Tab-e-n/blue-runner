@@ -371,6 +371,8 @@ position = Vector2( -416, 384 )
 position = Vector2( -128, -1536 )
 tele_destination = "Level_1-11"
 par = 8.2
+type = 0
+unlock = ""
 
 [node name="DECOR_GROUND" type="Node2D" parent="."]
 

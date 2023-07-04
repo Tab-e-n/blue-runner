@@ -30,6 +30,7 @@ func set_text(text, rect_pos = 0, paused = pause_time, new_direction = -1):
 	$text.rect_size.x = $text.get_font("normal_font").get_string_size($text.text).x
 	
 	if line_number > 1:
+		# warning-ignore:narrowing_conversion
 		var scaling : int = ceil(($text.rect_size.x * $text.rect_scale.x) / rect_size.x)
 #		print(scaling)
 		if scaling != 1:

@@ -24,7 +24,6 @@ var unlocked_level_groups : Array = []
 var group_current : int = 0
 
 var user_levels : Array
-var user_page_current : int = 0
 
 var user_selected_level : int = 0
 var user_current_page : int = 0
@@ -62,8 +61,9 @@ func _ready():
 				user_levels.append(current_file.trim_suffix(".tscn"))
 			current_file = directory.get_next()
 		# warning-ignore:integer_division
-		user_page_amount = user_levels.size() / 20
+	user_page_amount = user_levels.size() / 20 + 1
 	
+#	print(user_levels)
 	if Global.current_level_location == "user://SRLevels/":
 		for i in range(user_levels.size()):
 			if user_levels[i] == Global.current_level:
@@ -72,8 +72,7 @@ func _ready():
 				user_current_page = int(i) / 20
 				Global.select_menu = false
 				break
-#	selected_level_name = Global.current_level
-#	selected_level_location = Global.current_level_location
+	
 	reload_all_levels()
 	if Global.select_menu:
 		Global.select_menu = false
@@ -84,6 +83,7 @@ func _ready():
 	
 #	reload_all_levels()
 	set_level_data_text(false)
+#	print(Global.current_level_location)
 	level_move_cursor()
 	
 #	group_move_cursor()
@@ -111,8 +111,8 @@ func menu_update():
 			Global.current_level_location = unlocked_level_groups[group_current][1] + unlocked_level_groups[group_current][0] + "/"
 			is_selecting_groups = false
 			selected_level = 0
+			user_selected_level = 0
 			user_current_page = 0
-			user_page_amount = 0
 			reload_all_levels()
 			set_level_data_text(false)
 			level_move_cursor()
@@ -135,6 +135,7 @@ func menu_update():
 		if Input.is_action_just_pressed("jump"):
 			Global.current_character = unlocked_characters[selected_character][0]
 			Global.current_character_location = unlocked_characters[selected_character][1]
+			Global.select_menu = true
 			if Global.change_level("", true) != OK:
 				is_selecting_characters = false
 				$mainAnim.play("CHARACTER -> LEVEL")
@@ -189,7 +190,10 @@ func menu_update():
 			level_move_cursor(5)
 
 
-func level_move_cursor(move_amount : int = 0, is_in_user_universe : bool = false):
+func level_move_cursor(move_amount : int = 0):
+	
+	var is_in_user_universe = Global.current_level_location == "user://SRLevels/"
+	
 	if move_amount == 0:
 		pass
 	elif !is_in_user_universe:
@@ -205,20 +209,20 @@ func level_move_cursor(move_amount : int = 0, is_in_user_universe : bool = false
 				if user_current_page <= -1:
 					user_current_page += 1
 					user_selected_level -= move_amount
-					$level_select/author.text = String(user_current_page + 1) + "/" + String(user_page_amount + 1)
 				else:
+					$level_select/author.text = String(user_current_page + 1) + "/" + String(user_page_amount)
 					reload_all_levels()
 		if sign(move_amount) == 1:
 			user_selected_level += move_amount
 			if user_selected_level - user_current_page * 20 > 19:
 				user_current_page += 1
-				if user_current_page > user_page_amount:
+				if user_current_page >= user_page_amount:
 					user_current_page -= 1
 					user_selected_level -= move_amount
-					$level_select/author.text = String(user_current_page + 1) + "/" + String(user_page_amount + 1)
 				else:
+					$level_select/author.text = String(user_current_page + 1) + "/" + String(user_page_amount)
 					reload_all_levels()
-		
+	if is_in_user_universe:
 		selected_level = user_selected_level - user_current_page * 20
 	# warning-ignore:integer_division
 	$level_select/levels/selected_level.position = Vector2(-288 + 144 * (selected_level % 5), -144 + 96 * (selected_level / 5))
@@ -392,10 +396,10 @@ func reload_all_levels():
 	for i in range(20):
 		var level = get_node("level_select/levels/" + String(i))
 		if is_user_group:
-			if i + user_page_current * 20 >= user_levels.size():
+			if i + user_current_page * 20 >= user_levels.size():
 				level.level_name = "*Level_Missing"
 			else:
-				level.level_name = user_levels[i + user_page_current * 20]
+				level.level_name = user_levels[i + user_current_page * 20]
 		else:
 			level.level_name = Global.level_group["levels"][i][0]
 		
@@ -472,7 +476,7 @@ func reload_all_levels():
 				$level_select/author.text = "By: " + Global.level_group["author"]
 	else:
 		$level_select/author.visible = true
-		$level_select/author.text = String(user_current_page + 1) + "/" + String(user_page_amount + 1)
+		$level_select/author.text = String(user_current_page + 1) + "/" + String(user_page_amount)
 	
 	$level_select/levels/selected_level.modulate = color
 	$level_select/Completion.set_color(color)
@@ -522,7 +526,7 @@ func set_level_data_text(is_in_user_universe : bool = false):
 		return
 	
 	# Author and level name
-	if level_dat != null:
+	if !level_dat.empty():
 		$level_select/level_data/level_name.set_text(level_dat["level_name"])
 		$level_select/level_data/creator.set_text("")
 		
@@ -615,7 +619,7 @@ func level_selected():
 func check_character_unlocks():
 	
 	unlocked_characters = []
-	print(Global.loaded_characters)
+#	print(Global.loaded_characters)
 	for place in Global.loaded_characters.keys():
 		for character in Global.loaded_characters[place].keys():
 			
@@ -638,7 +642,6 @@ func check_character_unlocks():
 func make_character_icons():
 	var repetitions : int = unlocked_characters.size()
 	# warning-ignore:narrowing_conversion
-	var row_amount : int = ceil(float(repetitions) / 4)
 	for i in range(repetitions):
 		var new_sprite : Sprite = Sprite.new()
 		new_sprite.name = String(i)
@@ -646,6 +649,7 @@ func make_character_icons():
 		new_sprite.scale = Vector2(2, 2)
 		
 		var sprite_position : Vector2 = Vector2(0, 0)
+		# warning-ignore:integer_division
 		sprite_position.x = 128 * (i % 4) - 32 * (int(i) / 4)
 		# warning-ignore:integer_division
 		sprite_position.y = 128 * (int(i) / 4)

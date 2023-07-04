@@ -402,9 +402,12 @@ position = Vector2( -1344, 64 )
 position = Vector2( 1344, 64 )
 tele_destination = "Level_1-9"
 par = 4.0
+type = 0
+unlock = ""
 
 [node name="Portal" parent="." instance=ExtResource( 19 )]
 position = Vector2( 0, -896 )
+tele_destination = "Level_1-C"
 unlock = "Level_1-C"
 
 [node name="DECOR_GROUND" type="Node2D" parent="."]

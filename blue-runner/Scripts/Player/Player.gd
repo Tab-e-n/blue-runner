@@ -40,6 +40,12 @@ var launched : bool = false
 var speeding : bool = false
 
 func _ready():
+	for i in range(8):
+#		print(Global.keybind_names[i].trim_prefix("*"))
+#		print(Input.is_action_pressed(Global.keybind_names[i].trim_prefix("*")))
+		Input.action_release(Global.keybind_names[i].trim_prefix("*"))
+#		print(Input.is_action_pressed(Global.keybind_names[i].trim_prefix("*")))
+	
 	visible = true
 	Global.current_level = get_parent().name
 	
@@ -72,12 +78,12 @@ func _ready():
 		collision_mask = 0
 		
 	elif replay: 
+		timer = -1
 		recording = Global.current_recording.duplicate()
 		replay_timer = recording["timer"]
 		character_name = recording["character"]
 		if recording.has("character_location"):
 			character_location = recording["character_location"]
-		level.timers_active = true
 	else:
 		if character_name == "":
 			character_name = Global.current_character
@@ -90,6 +96,7 @@ func _ready():
 	character = char_node
 	character.get_node("Anim").current_animation = "Enter"
 	
+#	print(get_tree().current_scene)
 	if level.get_script() != null:
 		if level.unicolor_active and !ghost:
 			material.set_shader_param("active", true)
@@ -98,7 +105,7 @@ func shader_color():
 	material.set_shader_param("color", character.unicolor_color)
 
 func _input(event):
-	if event is InputEventKey and event.pressed:
+	if event is InputEventKey and event.pressed and !replay:
 		if !start:
 			level.timers_active = true
 		else:
@@ -108,11 +115,14 @@ func _physics_process(delta):
 	if level.get_node("Player").replay and ghost:
 		queue_free()
 	
-	if !start and start_timer:
+	if !start and start_timer and !ghost:
 		level.timers_active = true
 		start_timer = false
 	
-	if level.timers_active:
+	if replay and timer >= 0 and !ghost:
+		level.timers_active = true
+	
+	if level.timers_active or (replay and !ghost):
 		timer += delta
 		if !replay and !end:
 			call_deferred("record")
@@ -153,6 +163,7 @@ func _physics_process(delta):
 			else:
 				Global.level_completion[Global.current_level_location][_name] = [null, null, 1]
 #			print(Global.level_completion[Global.current_level_location][_name])
+			
 			Global.change_level("")
 
 func move_player_character():

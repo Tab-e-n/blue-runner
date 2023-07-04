@@ -8,7 +8,8 @@ var dat : Dictionary
 func _init():
 	dat = Global.load_dat_file(Global.current_level_location + Global.current_level)
 
-#func _ready():
+func _ready():
+	pass
 #	print("level ready")
 
 #func _physics_process(_delta):

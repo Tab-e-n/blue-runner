@@ -88,8 +88,6 @@ var loaded_characters = {}
 
 var last_input_events : Array = []
 
-var level_control : bool = false
-
 func _ready():
 	console_arguments()
 	
@@ -148,9 +146,6 @@ func _ready():
 	current_level_location = options["*last_level_location"]
 
 func _physics_process(_delta):
-	if level_control:
-		add_level_control()
-		level_control = false
 	var curr_scene = get_tree().current_scene.name
 	if Input.is_action_just_pressed("return") and !(curr_scene == "MENU" or curr_scene == "Load"):
 		change_level("*MENU") 
@@ -162,7 +157,7 @@ func _exit_tree():
 
 func change_input(input_id : int, new_input):
 	var input_string : String = keybind_names[input_id].trim_prefix("*")
-	#print(input_string)
+#	print(input_string)
 	if InputMap.action_has_event(input_string, last_input_events[input_id]):
 		InputMap.action_erase_event(input_string, last_input_events[input_id])
 	InputMap.action_add_event(input_string, new_input)
@@ -370,7 +365,7 @@ func change_level(destination : String, return_value : bool = false, check_depen
 	
 	if destination == "":
 		destination_new = current_level_location + current_level + ".tscn"
-	elif destination == "*MENU" or destination == "*Menu_Level_Select":
+	elif destination == "*MENU" or destination == "*Menu_Level_Select" or destination == "*Menu_Level_Select.tscn":
 		destination_new = "res://Scenes/MENU.tscn"
 	elif destination == "*Level_Missing":
 		destination_new = "res://Scenes/Level_Missing.tscn"
@@ -406,28 +401,45 @@ func change_level(destination : String, return_value : bool = false, check_depen
 				if !mods_installed.has(i):
 					error = ERR_FILE_MISSING_DEPENDENCIES
 	
+#	print(destination_new)
 	if destination_new != "res://Scenes/MENU.tscn":
 		current_level_location = destination_new.substr(0, destination_new.find_last("/") + 1)
 		current_level = destination_new.substr(destination_new.find_last("/") + 1, destination_new.find_last(".tscn") - destination_new.find_last("/") - 1)
-		#print(current_level)
-		#print(current_level_location)
+#		print(current_level)
+#		print(current_level_location)
 	if error == OK:
-		level_control = true
-		#connect("scene_changed", self, "add_level_control")
-		error = get_tree().change_scene(destination_new)
+		error = change_scene_level(destination_new)
 	if return_value:
 		return error
 	elif error != OK:
 		# warning-ignore:return_value_discarded
 		get_tree().change_scene("res://Scenes/MENU.tscn")
 
-func add_level_control():
-	#print(get_tree().current_scene.name)
-	#print(get_tree().current_scene.get_script())
-	if get_tree().current_scene.get_script() == null:
+func change_scene_level(file : String):
+	var packed_scene : PackedScene = load(file)
+	if packed_scene == null:
+		return ERR_CANT_OPEN
+	var current_scene = packed_scene.instance()
+	if current_scene == null:
+		return ERR_CANT_CREATE
+	
+#	print(current_scene.name)
+#	print(current_scene.get_script())
+	if current_scene.get_script() == null:
 		compatibility_mode = true
-		get_tree().current_scene.set_script(load("res://Scripts/Level_Control.gd"))
-		#print(get_tree().current_scene.get_script())
+		current_scene.set_script(load("res://Scripts/Level_Control.gd"))
+#	print(current_scene.get_script())
+	
+	# warning-ignore:return_value_discarded
+	packed_scene.pack(current_scene)
+	
+	# warning-ignore:return_value_discarded
+	get_tree().change_scene_to(packed_scene)
+	
+	current_scene.free()
+	
+	return OK
+
 
 func unlock(unlock):
 	if unlock != "":
@@ -497,15 +509,22 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
 	return true
 
 func convert_float_to_time(timer : float, limit_size : bool = true):
-	var minutes : int = int(floor(timer) / 60)
-	var seconds : int = int(floor(timer)) - minutes * 60
-	var decimal : int = int(floor(timer * 100 + 0.1)) % 100
+	# warning-ignore:narrowing_conversion
+	var minutes : int = int(abs(floor(timer) / 60))
+	# warning-ignore:narrowing_conversion
+	var seconds : int = int(abs(floor(timer))) - minutes * 60
+	# warning-ignore:narrowing_conversion
+	var decimal : int = int(abs(floor(timer * 100 + 0.1))) % 100
 	if timer >= 6000 and limit_size:
 		return "too much"
-	else:
+	elif timer >= 0:
 		# warning-ignore:integer_division
 		# warning-ignore:integer_division
 		return String(minutes)+":"+String(seconds/10)+String(seconds%10)+"."+String(decimal/10)+String(decimal%10)
+	else:
+		# warning-ignore:integer_division
+		# warning-ignore:integer_division
+		return "-"+String(minutes)+":"+String(seconds/10)+String(seconds%10)+"."+String(decimal/10)+String(decimal%10)
 
 func scale_down_sprite(sprite : Sprite, final_scale : Vector2 = Vector2(1, 1), desired_rect : Vector2 = Vector2(64, 64)):
 	sprite.scale = Vector2(1, 1)
@@ -577,9 +596,9 @@ func completion_percentage(is_user_group : bool, user_current_page : int):
 				continue
 			level_name = level_group["levels"][i][0]
 		else:
-			if i + user_current_page * 20 > user_levels.size():
+			if i + user_current_page * 20 >= user_levels.size():
 				continue
-			level_name = user_levels[user_current_page * 20]
+			level_name = user_levels[i + user_current_page * 20]
 		full += 2
 #		print(level_group["levels"][i][0])
 		
@@ -587,21 +606,21 @@ func completion_percentage(is_user_group : bool, user_current_page : int):
 			if level_completion[current_level_location][level_name][0] != null:
 				completion += 1
 				beat += 1
-#				print("beat " + String(i))
+#				print("beat " + level_name)
 				if level_completion[current_level_location][level_name][1] != null:
 					if level_completion[current_level_location][level_name][1] == 0:
 						completion += 1
 					elif level_completion[current_level_location][level_name][0] < level_completion[current_level_location][level_name][1]:
 						completion += 1
 						par += 1
-#						print("par " + String(i))
+#						print("par " + level_name)
 		if unlocked.has(current_level_location):
 			if unlocked[current_level_location].has(level_name):
 				full += 1
 				if unlocked[current_level_location][level_name]:
 					completion += 1
 					unlock += 1
-#					print("unlocked " + String(i))
+#					print("unlocked " + level_name)
 		for c in range(3):
 			if level_completion["*collectibles"][current_level_location].has(level_name + "*" + String(c + 1)):
 				bonus += 1
@@ -1023,9 +1042,12 @@ func load_data():
 			if user_levels.size() == 0:
 				temp_level_groups.remove(group)
 			else:
-				group_unlocks.append([0, "", ""])
+				group_unlocks.append([UNLOCK_ALWAYS, "", ""])
 			continue
 		var level_dat = load_dat_file(loaded_level_groups[group][1] + loaded_level_groups[group][0] + "/level_group")
+		if level_dat.empty():
+			group_unlocks.append([UNLOCK_NEVER, "", ""])
+			continue
 		var depend_test = true
 		for i in level_dat["dependencies"]:
 			if !mods_installed.has(i):
@@ -1035,7 +1057,7 @@ func load_data():
 			if level_dat.has("unlock"):
 				group_unlocks.append(level_dat["unlock"])
 			else:
-				group_unlocks.append([0, "", ""])
+				group_unlocks.append([UNLOCK_ALWAYS, "", ""])
 	loaded_level_groups = temp_level_groups.duplicate()
 	
 	for i in range(loaded_level_groups.size()):

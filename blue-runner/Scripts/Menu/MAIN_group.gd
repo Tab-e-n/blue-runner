@@ -59,6 +59,7 @@ func set_buttons():
 		time = 0
 	
 	if idle == true and time != 1:
+		# warning-ignore:narrowing_conversion
 		current_button += sign(next_button - current_button)
 		idle = false
 	

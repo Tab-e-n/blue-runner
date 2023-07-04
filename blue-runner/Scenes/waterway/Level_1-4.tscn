@@ -326,6 +326,8 @@ position = Vector2( -864, 0 )
 position = Vector2( 3648, 0 )
 tele_destination = "Level_1-5"
 par = 5.0
+type = 0
+unlock = ""
 
 [node name="Collectible" parent="." instance=ExtResource( 15 )]
 position = Vector2( 1568, -672 )

@@ -16,7 +16,7 @@ func _ready():
 	var _start : bool = true
 	
 	#print(current_menu.position)
-	if Global.select_menu or true:
+	if Global.select_menu:
 		menu = "SELECT"
 	elif Global.replay_menu:
 		menu = "REPLAY"
@@ -56,8 +56,8 @@ func _process(_delta):
 	#	$NewVersionPopup.visible = false
 		move = false
 
-func switch_menu(menu : String, comming_from : String = ""):
-	var load_menu : PackedScene = load("res://Scenes/" + menu + ".tscn") 
+func switch_menu(menu_name : String, comming_from : String = ""):
+	var load_menu : PackedScene = load("res://Scenes/" + menu_name + ".tscn") 
 	var new_menu = load_menu.instance()
 	add_child(new_menu)
 	current_menu = new_menu

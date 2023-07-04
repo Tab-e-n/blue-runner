@@ -1303,7 +1303,10 @@ position = Vector2( 0, -384 )
 
 [node name="Finish" parent="." instance=ExtResource( 9 )]
 position = Vector2( -480, 1504 )
+tele_destination = "*Menu_Level_Select"
 par = 17.0
+type = 0
+unlock = ""
 
 [node name="DECOR_GROUND" type="Node2D" parent="."]
 

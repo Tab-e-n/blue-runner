@@ -15,6 +15,7 @@ var text = [
 	" SD/CCMN 4096MB\n",
 	"WARNING: Machine has been tampered with\n\n",
 	
+	"Press F12 to reset motor settings.\n",
 	"Checking motor settings",
 	".",
 	".",
@@ -23,7 +24,7 @@ var text = [
 	"",
 	"",
 	"",
-	["no motor settings found\n", "motor settings found\n", "F12 pressed, doing new bindings regardless\n", "looks like someone had a little fun\n"],
+	["no motor settings found\n", "motor settings found\n", "F12 pressed, doing new bindings\n", "looks like someone had a little fun\n"],
 	"",
 	"",
 	"",
@@ -34,12 +35,19 @@ var text = [
 	"RIGHT - ",
 	"UP - ",
 	"DOWN - ",
-	"JUMP / ACCEPT - ",
+	"JUMP - ",
 	"SPECIAL - ",
 	"RESET - ",
 	"RETURN - ",
+	"MENU LEFT - ",
+	"MENU RIGHT - ",
+	"MENU UP - ",
+	"MENU DOWN - ",
+	"ACCEPT - ",
+	"DECLINE - ",
 	
-	"If you are unhappy with these, you can change them in the options, or by pressing F12 when booting.\n",
+	
+	"If you are unhappy with these, you can change them in the options.\n",
 	["press any key to continue... \n"],
 	"Booting system",
 	".",
@@ -113,28 +121,10 @@ func _physics_process(_delta):
 		sentence += 1
 
 func checking_motor():
-	for key in range(8):
-		var key_number
-		match key:
-			0: key_number = Global.options["*left"]
-			1: key_number = Global.options["*right"]
-			2: key_number = Global.options["*up"]
-			3: key_number = Global.options["*down"]
-			4: key_number = Global.options["*jump"]
-			5: key_number = Global.options["*special"]
-			6: key_number = Global.options["*reset"]
-			7: key_number = Global.options["*return"]
+	for key in range(Global.keybind_names.size()):
+		var key_number = Global.options[Global.keybind_names[key]]
 		for i in range(8 - key - 1):
-			var key_check
-			match i + key + 1:
-				0: key_check = Global.options["*left"]
-				1: key_check = Global.options["*right"]
-				2: key_check = Global.options["*up"]
-				3: key_check = Global.options["*down"]
-				4: key_check = Global.options["*jump"]
-				5: key_check = Global.options["*special"]
-				6: key_check = Global.options["*reset"]
-				7: key_check = Global.options["*return"]
+			var key_check = Global.options[Global.keybind_names[i + key + 1]]
 			if key_check == key_number:
 				duplicates = true
 				break
@@ -165,12 +155,12 @@ func _input(event):
 				booting = false
 				section += 1
 		elif !booting:
-			if current_key < 8:
+			if current_key < Global.keybind_names.size():
 				global.change_input(current_key, event)
 				$t/boot.text += global.key_names(current_key)
 				current_key += 1
 				$t/boot.text += "\n"
-				if current_key == 8:
+				if current_key == Global.keybind_names.size():
 					#$t/boot.text += text[sentence][0]
 					#sentence += 1
 					$t/boot.text += "\n"
@@ -185,7 +175,7 @@ func _input(event):
 
 func bind_skip():
 	$t/boot.text += "Y\n\n"
-	for i in range(8):
+	for i in range(Global.keybind_names.size()):
 		$t/boot.text += text[sentence]
 		sentence += 1
 		$t/boot.text += global.key_names(i)

@@ -22,7 +22,7 @@ export var editor_properties : Dictionary = {
 	"attachable" : false,
 }
 
-export var tele_destination : String = "*Menu_Level_Select.tscn"
+export var tele_destination : String = "*MENU"
 export var par : float = 0
 
 export(int, "XT9", "S1") var type = 0

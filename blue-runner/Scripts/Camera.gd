@@ -87,13 +87,7 @@ func _physics_process(_delta):
 			$speed.rotation_degrees = temp_calc / 2
 			$info/text.text = String(temp_calc)
 		if visible_timer and (cam_target.timer <= cam_target.replay_timer + 0.016 or !cam_target.replay):
-			var minutes : int = int(floor(cam_target.timer) / 60)
-			var seconds : int = int(floor(cam_target.timer)) - minutes * 60
-			var decimal : int = int(floor(cam_target.timer * 100 + 0.1)) % 100
-			
-			# warning-ignore:integer_division
-			# warning-ignore:integer_division
-			$info/text.text = String(minutes)+":"+String(seconds/10)+String(seconds%10)+"."+String(decimal/10)+String(decimal%10)
+			$info/text.text = Global.convert_float_to_time(cam_target.timer)
 	else:
 		$info.visible = false
 		$speed.visible = false
