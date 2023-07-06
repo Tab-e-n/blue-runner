@@ -1,11 +1,17 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Text/Text_Editor.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Text/Shixel.tres" type="DynamicFont" id=2]
 
 [node name="Text" instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_right = 640.0
-margin_bottom = 64.0
-custom_colors/default_color = Color( 0.235294, 0.576471, 0.576471, 1 )
+margin_bottom = 128.0
+custom_fonts/mono_font = ExtResource( 2 )
+custom_fonts/bold_italics_font = ExtResource( 2 )
+custom_fonts/italics_font = ExtResource( 2 )
+custom_fonts/bold_font = ExtResource( 2 )
+custom_fonts/normal_font = ExtResource( 2 )
+custom_colors/default_color = Color( 0.25098, 0.74902, 0.74902, 1 )
 text = ""

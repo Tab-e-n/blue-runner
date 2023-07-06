@@ -24,7 +24,7 @@ var text = [
 	"",
 	"",
 	"",
-	["no motor settings found\n", "motor settings found\n", "F12 pressed, doing new bindings\n", "looks like someone had a little fun\n"],
+	["no motor settings found\n", "motor settings found\n", "F12 pressed, doing new bindings\n", "looks like someone had a little fun :)\n"],
 	"",
 	"",
 	"",
@@ -185,4 +185,4 @@ func bind_skip():
 	section += 1
 
 func anim_end():
-	Global.change_level("*Menu_Level_Select")
+	Global.change_level("*MENU")

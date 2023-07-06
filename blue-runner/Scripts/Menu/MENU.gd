@@ -24,10 +24,6 @@ func _ready():
 		menu = "MAIN"
 	
 	switch_menu(menu)
-	
-	if Global.new_version_alert:
-		#$NewVersionPopup.visible = true
-		Global.new_version_alert = false
 
 func _process(_delta):
 	if return_delay > 0:
@@ -52,9 +48,7 @@ func _process(_delta):
 	
 	current_menu.menu_update()
 	
-	if move == true:
-	#	$NewVersionPopup.visible = false
-		move = false
+	move = false
 
 func switch_menu(menu_name : String, comming_from : String = ""):
 	var load_menu : PackedScene = load("res://Scenes/" + menu_name + ".tscn") 

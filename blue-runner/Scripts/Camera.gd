@@ -26,7 +26,10 @@ var visible_timer : bool = false
 func _ready():
 	$Fade.visible = true
 	$border.visible = true
-	visible_timer = $"/root/Global".options["*timer_on"]
+	if $"/root/Global".options["*timer_on"] == 1:
+		visible_timer = true
+	elif $"/root/Global".options["*timer_on"] == 2:
+		visible_timer = Global.check_unlock_requirements(Global.UNLOCK_BEAT, Global.current_level_location, Global.current_level)
 	
 	if get_parent().has_node("BG"):
 		bg = get_parent().get_node("BG")

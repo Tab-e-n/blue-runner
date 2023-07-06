@@ -5,6 +5,7 @@ const VERSION : String = "1.2.0-dev"
 var new_version_alert : bool = false
 var savefile_interaction : int = 3
 var compatibility_mode : bool = false
+var playtesting : bool = false
 
 var user_directory : String = "user://sonicRunner"
 var mod_user_directory : String = "user://sonicRunnerMods"
@@ -401,6 +402,9 @@ func change_level(destination : String, return_value : bool = false, check_depen
 				if !mods_installed.has(i):
 					error = ERR_FILE_MISSING_DEPENDENCIES
 	
+	if destination_new == "res://Scenes/MENU.tscn" and playtesting:
+		get_tree().quit()
+		return OK
 #	print(destination_new)
 	if destination_new != "res://Scenes/MENU.tscn":
 		current_level_location = destination_new.substr(0, destination_new.find_last("/") + 1)
@@ -433,10 +437,11 @@ func change_scene_level(file : String):
 	# warning-ignore:return_value_discarded
 	packed_scene.pack(current_scene)
 	
+	current_scene.free()
+	
 	# warning-ignore:return_value_discarded
 	get_tree().change_scene_to(packed_scene)
 	
-	current_scene.free()
 	
 	return OK
 
@@ -549,10 +554,10 @@ func load_texture_from_png(path : String = ""):
 	var texture : ImageTexture = ImageTexture.new()
 	
 	if file.file_exists(path):
-# warning-ignore:return_value_discarded
+		# warning-ignore:return_value_discarded
 		file.open(path, File.READ)
 		var buffer = file.get_buffer(file.get_len())
-# warning-ignore:return_value_discarded
+		# warning-ignore:return_value_discarded
 		image.load_png_from_buffer(buffer)
 		texture.create_from_image(image, texture.STORAGE_COMPRESS_LOSSLESS)
 		#print(ResourceSaver.get_recognized_extensions(texture))
@@ -649,6 +654,9 @@ func console_arguments():
 	#--level=res://Scenes/waterway/Level_1-0.tscn
 	if arguments.has("level"):
 		change_level("*" + arguments["level"])
+	if arguments.has("playtest"):
+		change_level("*" + arguments["playtest"])
+		playtesting = true
 	if arguments.has("save_interaction"):
 		match(arguments["save_interaction"]):
 			"x":
@@ -662,7 +670,7 @@ func console_arguments():
 			"wr":
 				savefile_interaction = 3
 	if savefile_interaction % 2: print("read allowed")
-# warning-ignore:integer_division
+	# warning-ignore:integer_division
 	if savefile_interaction / 2: print("write allowed")
 
 func save_game(timer : float = 0, par : float = 0, collectible : Array = [], level = null, recording : Dictionary = {}):

@@ -188,6 +188,9 @@ func menu_update():
 			level_move_cursor(-5)
 		if Input.is_action_pressed("menu_down") and parent.move:
 			level_move_cursor(5)
+		
+		if parent.move == true:
+			$level_select/new_version.visible = false
 
 
 func level_move_cursor(move_amount : int = 0):
@@ -491,6 +494,10 @@ func reload_all_levels():
 #	$level_select/level_data/par.modulate = color
 #	$level_select/level_data/deaths.modulate = color
 #	$level_select/level_data/creator.modulate = color
+	
+	if is_user_group and Global.new_version_alert:
+		$level_select/new_version.visible = true
+		Global.new_version_alert = false
 
 func make_new_bg(bg_filepath : String):
 	if bg != null:

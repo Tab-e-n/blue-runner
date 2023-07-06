@@ -148,4 +148,3 @@ z_index = 100
 
 [node name="BG" parent="." instance=ExtResource( 10 )]
 use_parent_material = true
-position = Vector2( 245.7, 93.8666 )

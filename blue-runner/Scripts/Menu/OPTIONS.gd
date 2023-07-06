@@ -70,7 +70,7 @@ func make_options(menu_buttons : Array):
 	for i in $buttons.get_children():
 		i.queue_free()
 	
-	var section_position : Vector2 = Vector2(-576, -256)
+	var section_position : Vector2 = Vector2(-576, -260)
 	var section_size : Vector2 = Vector2(3072, 1024)
 	var section_offset : int = 192
 	
@@ -128,7 +128,7 @@ func make_options(menu_buttons : Array):
 				buttons.append(["slider"])
 			"enum":
 				var new_text = text.instance()
-				new_text.rect_position = pos
+				new_text.rect_position = pos - Vector2(0, 4)
 				new_text.text = menu_buttons[i][3][Global.options[menu_buttons[i][2]]]
 				$buttons.add_child(new_text)
 				

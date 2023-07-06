@@ -1350,7 +1350,27 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="new_version" type="Label" parent="level_select"]
+visible = false
+margin_left = 32.0
+margin_top = 72.0
+margin_right = 420.0
+margin_bottom = 248.0
+theme = ExtResource( 17 )
+text = "DISCLAIMER
+You are loading into a new
+version of SR. Some levels
+might not play correctly, 
+if they will even open."
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="bg" type="Polygon2D" parent="."]
+visible = false
+modulate = Color( 1, 1, 1, 0 )
 color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 polygon = PoolVector2Array( 640, -384, 640, 384, -640, 384, -640, -384 )
 

@@ -7,10 +7,15 @@
 </p></details>
 <details><summary><h2>SONIC RUNNER</h2></summary><p>
 
+### NEW ADDITIONS
+
+ - The main menu got almost completely redesigned, with every menu that it had originaly either completely overhalled or at least changed in some way.
+   There were no escapees. On top of that, there are now also new menus! And also a new inaccesable menu! God damn!
+ - New timer setting, where it will only appear if you had beaten the level you are playing.
+
 ### VISUAL
 
  - Sonic Runner is no longer in the 4:3 aspect ratio, it is now in the glorious___ 5:3 aspect ratio___!
- - Redesigned many menus, made a few new ones and touched up some which were already fine. The menus should now be more readable / slightly cooler.
  - XT9 has new idle animations.
  - When launched very high with a mushroom, you now spin.
  - The timer is now outlined for better visibility.
@@ -25,7 +30,7 @@
  - Shortend coyote time on S1 and it's derivates.
  - XT9 is unlocked when you have 7 bonuses now. If you already have them unlocked,
    this update wont take it away.
- - Fixed `savefile_interaction` argument working incorrectly.
+ - Fixed `--savefile_interaction` console argument working incorrectly.
 
 </p></details>
 <details><summary><h2>SONIC RUNNER EDITOR</h2></summary><p>
@@ -72,6 +77,7 @@
  - Fixed a bug where you could have multiple of the same tile in the place panel.
  - Fixed playtested levels not reloading when you die or press reset.
  - Playtested levels no longer save as seperate levels.
+ - Upon exiting a level when you are platesting it, you will also exit SR. You won't need to do some menuing to get back to the editor.
  - The official tag has been altered. Now when a level has the official tag:
 	 - If the level's author matches the level groups author, the level won't have the "Creator:" line, similary to how WaterWay doesn't have it.
 	 - If the level's author is different to the level groups author, it will show a thank you message.

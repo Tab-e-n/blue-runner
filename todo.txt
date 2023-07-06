@@ -27,7 +27,6 @@ level guide lines in documentation
 
  - EDITOR - 
 
-Attachables work like shit
 Flood Fill Alogritm tiles yay
 Selecting Favorite Items Shortcut
 Playtest shortcut
@@ -64,16 +63,16 @@ Main [Functional]
 S1 on title screen
 
 Options [Functional]
-3 timer option: Timer only active when you beat the level.
-Outline the character
+Outline the character option
 Up key for jump
 key that shows level info when in a level
 audio options
 
 Help [Not remade]
 
-Level Select [Currently being remade]
-Put level group author and description somewhere
+Level Select [Functional]
+Make a way to access the best replay from the level select
+Touchup the level group selector
 
 VS Race [Not made]
 
@@ -94,4 +93,4 @@ character greenbox
 missing idle anims
 Touchup spin maybe
 Touchup XT9 idle animations
-just redesign S1 and XT9 heads
+just redesign S1 and XT9 heads maybe

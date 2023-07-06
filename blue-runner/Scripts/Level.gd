@@ -55,10 +55,15 @@ func reload():
 		level_symbol = load("res://Visual/Level/questionmark.png")
 	$symbol.texture = level_symbol
 	$boltcollect.visible = false
+	
+	var use_default : bool = true
 	if locked:
+		use_default = false
 		$icon.texture = load(base[level_dat["level_base"][0]][1][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][1][0])
 	elif global.level_completion[level_location].has(level_name):
 		if global.level_completion[level_location][level_name][0] != null:
+			use_default = false
+			
 			time = global.level_completion[level_location][level_name][0]
 			par = global.level_completion[level_location][level_name][1]
 			
@@ -78,5 +83,5 @@ func reload():
 				$icon.texture = load(base[level_dat["level_base"][0]][3][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][3][0])
 			else:
 				$icon.texture = load(base[level_dat["level_base"][0]][2][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][2][0])
-	else:
+	if use_default:
 		$icon.texture = load(base[level_dat["level_base"][0]][0][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][0][0])
