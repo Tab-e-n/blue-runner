@@ -1,0 +1,699 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Scripts/CHEAT_CODES.gd" type="Script" id=1]
+[ext_resource path="res://Text/Text_Codes.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Text/Shixel.tres" type="DynamicFont" id=3]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.00784314, 0.235294, 0.317647, 1 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0, 0, 0, 0 )
+draw_center = false
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color( 0.25098, 0.74902, 0.501961, 1 )
+
+[sub_resource type="Theme" id=3]
+default_font = ExtResource( 3 )
+Label/colors/font_color = Color( 0.25098, 0.74902, 0.501961, 1 )
+Label/colors/font_color_shadow = Color( 0, 0, 0, 0 )
+Label/colors/font_outline_modulate = Color( 0.25098, 0.74902, 0.501961, 1 )
+Label/constants/line_spacing = 3
+Label/constants/shadow_as_outline = 0
+Label/constants/shadow_offset_x = 1
+Label/constants/shadow_offset_y = 1
+Label/fonts/font = null
+Label/styles/normal = SubResource( 1 )
+Panel/styles/panel = SubResource( 2 )
+
+[sub_resource type="Animation" id=4]
+resource_name = "Fail"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("cross:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("code:rect_position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -512, -256 ), Vector2( -504, -256 ), Vector2( -520, -256 ), Vector2( -504, -256 ), Vector2( -512, -256 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("fill:position")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, -64 ), Vector2( -8, -64 ), Vector2( 8, -64 ), Vector2( -8, -64 ), Vector2( 0, -64 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("code_outline:position")
+tracks/3/interp = 2
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, -64 ), Vector2( -8, -64 ), Vector2( 8, -64 ), Vector2( -8, -64 ), Vector2( 0, -64 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath(".:code_text")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0.4 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ "" ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("code:bbcode_text")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0.4 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ "" ]
+}
+
+[sub_resource type="Animation" id=5]
+resource_name = "Success"
+length = 0.9
+tracks/0/type = "value"
+tracks/0/path = NodePath("bg:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.9 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("bg:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2, 0.7, 0.9 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0.498039 ), Color( 1, 1, 1, 0.498039 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("did_it:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.9 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("did_it:rect_position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.2, 0.7, 0.9 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 640, -64 ), Vector2( -544, -64 ), Vector2( -544, -64 ), Vector2( -1728, -64 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath(".:code_text")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0.9 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ "" ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("code:bbcode_text")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0.9 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ "" ]
+}
+
+[node name="CHEAT_CODES" type="Node2D"]
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_horizontal_guides_": [ 384.0, -384.0 ],
+"_edit_vertical_guides_": [ 640.0, -640.0 ]
+}
+
+[node name="keyboard_outline" type="Line2D" parent="."]
+position = Vector2( 0, -64 )
+points = PoolVector2Array( -288, 0, 288, 0, 288, 256, 160, 256, 160, 320, -160, 320, -160, 256, -288, 256, -288, 0 )
+width = 12.0
+default_color = Color( 0, 0.596078, 0.572549, 1 )
+begin_cap_mode = 1
+
+[node name="keyboard" type="Control" parent="."]
+margin_left = -288.0
+margin_top = -64.0
+margin_right = 288.0
+margin_bottom = 256.0
+theme = SubResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="A" type="Label" parent="keyboard"]
+margin_right = 64.0
+margin_bottom = 64.0
+text = "A"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="B" type="Label" parent="keyboard"]
+margin_left = 64.0
+margin_right = 128.0
+margin_bottom = 64.0
+text = "B"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="C" type="Label" parent="keyboard"]
+margin_left = 128.0
+margin_right = 192.0
+margin_bottom = 64.0
+text = "C"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="D" type="Label" parent="keyboard"]
+margin_left = 192.0
+margin_right = 256.0
+margin_bottom = 64.0
+text = "D"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="E" type="Label" parent="keyboard"]
+margin_left = 256.0
+margin_right = 320.0
+margin_bottom = 64.0
+text = "E"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="F" type="Label" parent="keyboard"]
+margin_left = 320.0
+margin_right = 384.0
+margin_bottom = 64.0
+text = "F"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="G" type="Label" parent="keyboard"]
+margin_left = 384.0
+margin_right = 448.0
+margin_bottom = 64.0
+text = "G"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="H" type="Label" parent="keyboard"]
+margin_left = 448.0
+margin_right = 512.0
+margin_bottom = 64.0
+text = "H"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="I" type="Label" parent="keyboard"]
+margin_left = 512.0
+margin_right = 576.0
+margin_bottom = 64.0
+text = "I"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="J" type="Label" parent="keyboard"]
+margin_top = 64.0
+margin_right = 64.0
+margin_bottom = 128.0
+text = "J"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="K" type="Label" parent="keyboard"]
+margin_left = 64.0
+margin_top = 64.0
+margin_right = 128.0
+margin_bottom = 128.0
+text = "K"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="L" type="Label" parent="keyboard"]
+margin_left = 128.0
+margin_top = 64.0
+margin_right = 192.0
+margin_bottom = 128.0
+text = "L"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="M" type="Label" parent="keyboard"]
+margin_left = 192.0
+margin_top = 64.0
+margin_right = 256.0
+margin_bottom = 128.0
+text = "M"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="N" type="Label" parent="keyboard"]
+margin_left = 256.0
+margin_top = 64.0
+margin_right = 320.0
+margin_bottom = 128.0
+text = "N"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="O" type="Label" parent="keyboard"]
+margin_left = 320.0
+margin_top = 64.0
+margin_right = 384.0
+margin_bottom = 128.0
+text = "O"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="P" type="Label" parent="keyboard"]
+margin_left = 384.0
+margin_top = 64.0
+margin_right = 448.0
+margin_bottom = 128.0
+text = "P"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Q" type="Label" parent="keyboard"]
+margin_left = 448.0
+margin_top = 64.0
+margin_right = 512.0
+margin_bottom = 128.0
+text = "Q"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="R" type="Label" parent="keyboard"]
+margin_left = 512.0
+margin_top = 64.0
+margin_right = 576.0
+margin_bottom = 128.0
+text = "R"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="S" type="Label" parent="keyboard"]
+margin_top = 128.0
+margin_right = 64.0
+margin_bottom = 192.0
+text = "S"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="T" type="Label" parent="keyboard"]
+margin_left = 64.0
+margin_top = 128.0
+margin_right = 128.0
+margin_bottom = 192.0
+text = "T"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="U" type="Label" parent="keyboard"]
+margin_left = 128.0
+margin_top = 128.0
+margin_right = 192.0
+margin_bottom = 192.0
+text = "U"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="V" type="Label" parent="keyboard"]
+margin_left = 192.0
+margin_top = 128.0
+margin_right = 256.0
+margin_bottom = 192.0
+text = "V"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="W" type="Label" parent="keyboard"]
+margin_left = 256.0
+margin_top = 128.0
+margin_right = 320.0
+margin_bottom = 192.0
+text = "W"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="X" type="Label" parent="keyboard"]
+margin_left = 320.0
+margin_top = 128.0
+margin_right = 384.0
+margin_bottom = 192.0
+text = "X"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Y" type="Label" parent="keyboard"]
+margin_left = 384.0
+margin_top = 128.0
+margin_right = 448.0
+margin_bottom = 192.0
+text = "Y"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Z" type="Label" parent="keyboard"]
+margin_left = 448.0
+margin_top = 128.0
+margin_right = 512.0
+margin_bottom = 192.0
+text = "Z"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="0" type="Label" parent="keyboard"]
+margin_left = 512.0
+margin_top = 128.0
+margin_right = 576.0
+margin_bottom = 192.0
+text = "0"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="1" type="Label" parent="keyboard"]
+margin_top = 192.0
+margin_right = 64.0
+margin_bottom = 256.0
+text = "1"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="2" type="Label" parent="keyboard"]
+margin_left = 64.0
+margin_top = 192.0
+margin_right = 128.0
+margin_bottom = 256.0
+text = "2"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="3" type="Label" parent="keyboard"]
+margin_left = 128.0
+margin_top = 192.0
+margin_right = 192.0
+margin_bottom = 256.0
+text = "3"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="4" type="Label" parent="keyboard"]
+margin_left = 192.0
+margin_top = 192.0
+margin_right = 256.0
+margin_bottom = 256.0
+text = "4"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="5" type="Label" parent="keyboard"]
+margin_left = 256.0
+margin_top = 192.0
+margin_right = 320.0
+margin_bottom = 256.0
+text = "5"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="6" type="Label" parent="keyboard"]
+margin_left = 320.0
+margin_top = 192.0
+margin_right = 384.0
+margin_bottom = 256.0
+text = "6"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="7" type="Label" parent="keyboard"]
+margin_left = 384.0
+margin_top = 192.0
+margin_right = 448.0
+margin_bottom = 256.0
+text = "7"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="8" type="Label" parent="keyboard"]
+margin_left = 448.0
+margin_top = 192.0
+margin_right = 512.0
+margin_bottom = 256.0
+text = "8"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="9" type="Label" parent="keyboard"]
+margin_left = 512.0
+margin_top = 192.0
+margin_right = 576.0
+margin_bottom = 256.0
+text = "9"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="back" type="Label" parent="keyboard"]
+margin_left = 128.0
+margin_top = 256.0
+margin_right = 288.0
+margin_bottom = 320.0
+text = "BACK"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="enter" type="Label" parent="keyboard"]
+margin_left = 288.0
+margin_top = 256.0
+margin_right = 448.0
+margin_bottom = 320.0
+text = "ENTER"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="cursor" type="Panel" parent="keyboard"]
+margin_right = 64.0
+margin_bottom = 64.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="code_outline" type="Line2D" parent="."]
+position = Vector2( 0, -64 )
+points = PoolVector2Array( -512, -192, 512, -192, 512, -64, -512, -64, -512, -192 )
+width = 12.0
+default_color = Color( 0, 0.596078, 0.572549, 1 )
+begin_cap_mode = 1
+
+[node name="fill" type="Polygon2D" parent="."]
+position = Vector2( 0, -64 )
+color = Color( 0.00784314, 0.235294, 0.317647, 1 )
+polygon = PoolVector2Array( -512, -192, 512, -192, 512, -64, -512, -64 )
+
+[node name="code" parent="." instance=ExtResource( 2 )]
+margin_left = -512.0
+margin_top = -256.0
+margin_right = 1536.0
+margin_bottom = 0.0
+bbcode_enabled = true
+
+[node name="cross" type="Polygon2D" parent="."]
+visible = false
+color = Color( 0.572549, 0.192157, 0.333333, 1 )
+polygon = PoolVector2Array( -80, -64, -128, -112, -48, -192, -128, -272, -80, -320, 0, -240, 80, -320, 128, -272, 48, -192, 128, -112, 80, -64, 0, -144 )
+
+[node name="bg" type="Polygon2D" parent="."]
+visible = false
+modulate = Color( 1, 1, 1, 0 )
+color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+polygon = PoolVector2Array( -640, -384, 640, -384, 640, 384, -640, 384 )
+
+[node name="did_it" parent="." instance=ExtResource( 2 )]
+visible = false
+margin_left = -1728.0
+margin_top = -64.0
+margin_right = 448.0
+margin_bottom = 192.0
+text = "YOU GOT SOMETHING
+"
+
+[node name="Anim" type="AnimationPlayer" parent="."]
+anims/Fail = SubResource( 4 )
+anims/Success = SubResource( 5 )

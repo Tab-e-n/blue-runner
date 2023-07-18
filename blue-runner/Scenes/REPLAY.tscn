@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://Text/Text_Options.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Visual/Menu/button.png" type="Texture" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://Visual/Menu/replay_rack_end.png" type="Texture" id=9]
 [ext_resource path="res://Scripts/Menu/Scrolling_Text.gd" type="Script" id=10]
 [ext_resource path="res://Visual/Menu/replay_directory_walls.png" type="Texture" id=11]
+[ext_resource path="res://Text/Lacrimae.tres" type="DynamicFont" id=12]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 5 )
@@ -640,6 +641,11 @@ __meta__ = {
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="1" type="Control" parent="rack/cassettes"]
@@ -659,6 +665,11 @@ __meta__ = {
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="2" type="Control" parent="rack/cassettes"]
@@ -678,6 +689,11 @@ __meta__ = {
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="3" type="Control" parent="rack/cassettes"]
@@ -697,6 +713,11 @@ __meta__ = {
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="4" type="Control" parent="rack/cassettes"]
@@ -716,6 +737,11 @@ __meta__ = {
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="5" type="Control" parent="rack/cassettes"]
@@ -735,6 +761,11 @@ __meta__ = {
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="6" type="Control" parent="rack/cassettes"]
@@ -754,6 +785,11 @@ __meta__ = {
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="7" type="Control" parent="rack/cassettes"]
@@ -777,6 +813,11 @@ anchor_bottom = -0.0368201
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="8" type="Control" parent="rack/cassettes"]
@@ -795,6 +836,11 @@ __meta__ = {
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="9" type="Control" parent="rack/cassettes"]
@@ -814,6 +860,11 @@ __meta__ = {
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="10" type="Control" parent="rack/cassettes"]
@@ -833,6 +884,11 @@ __meta__ = {
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="11" type="Control" parent="rack/cassettes"]
@@ -852,6 +908,11 @@ __meta__ = {
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="12" type="Control" parent="rack/cassettes"]
@@ -871,6 +932,11 @@ __meta__ = {
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="13" type="Control" parent="rack/cassettes"]
@@ -890,6 +956,11 @@ __meta__ = {
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="14" type="Control" parent="rack/cassettes"]
@@ -909,6 +980,11 @@ __meta__ = {
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="15" type="Control" parent="rack/cassettes"]
@@ -928,6 +1004,11 @@ __meta__ = {
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="16" type="Control" parent="rack/cassettes"]
@@ -947,6 +1028,11 @@ __meta__ = {
 margin_right = 634.0
 margin_bottom = 69.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 
 [node name="no_replays" parent="rack" instance=ExtResource( 1 )]
@@ -955,6 +1041,11 @@ margin_left = -208.0
 margin_top = -160.0
 margin_right = 624.0
 margin_bottom = -32.0
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 bbcode_enabled = true
 bbcode_text = "[center]There isn't anything here
@@ -993,6 +1084,11 @@ scroll_speed = 1.33
 
 [node name="text" parent="bottom/replay_name" instance=ExtResource( 1 )]
 rect_scale = Vector2( 1, 1 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0, 0, 0, 1 )
 text = "REPLAY NAME"
 
@@ -1014,6 +1110,11 @@ scroll_speed = 1.33
 
 [node name="text" parent="bottom/info/time" instance=ExtResource( 1 )]
 rect_scale = Vector2( 1, 1 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 custom_colors/selection_color = Color( 0, 0, 0, 1 )
 text = "TIME"
@@ -1034,6 +1135,11 @@ scroll_speed = 1.33
 [node name="text" parent="bottom/info/level" instance=ExtResource( 1 )]
 margin_right = 2432.0
 rect_scale = Vector2( 1, 1 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 text = "LEVEL"
 
@@ -1052,6 +1158,11 @@ scroll_speed = 1.33
 
 [node name="text" parent="bottom/info/character" instance=ExtResource( 1 )]
 rect_scale = Vector2( 1, 1 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 text = "CHARACTER"
 
@@ -1065,6 +1176,11 @@ margin_right = -287.0
 margin_bottom = 296.0
 rect_scale = Vector2( 0.75, 0.75 )
 rect_pivot_offset = Vector2( 128, 32 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 custom_colors/selection_color = Color( 0, 0, 0, 1 )
 bbcode_enabled = true
@@ -1078,6 +1194,11 @@ margin_right = -32.0
 margin_bottom = 296.0
 rect_scale = Vector2( 0.75, 0.75 )
 rect_pivot_offset = Vector2( 128, 32 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 custom_colors/selection_color = Color( 0, 0, 0, 1 )
 bbcode_enabled = true
@@ -1091,6 +1212,11 @@ margin_right = 288.0
 margin_bottom = 295.0
 rect_scale = Vector2( 0.75, 0.75 )
 rect_pivot_offset = Vector2( 128, 32 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 custom_colors/selection_color = Color( 0, 0, 0, 1 )
 bbcode_enabled = true
@@ -1104,6 +1230,11 @@ margin_right = 577.0
 margin_bottom = 296.0
 rect_scale = Vector2( 0.75, 0.75 )
 rect_pivot_offset = Vector2( 128, 32 )
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 custom_colors/selection_color = Color( 0, 0, 0, 1 )
 bbcode_enabled = true
@@ -1119,6 +1250,11 @@ margin_bottom = 112.0
 rect_scale = Vector2( 0.75, 0.75 )
 rect_pivot_offset = Vector2( 128, 32 )
 rect_clip_content = false
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 custom_colors/selection_color = Color( 0, 0, 0, 1 )
 bbcode_enabled = true
@@ -1143,6 +1279,11 @@ margin_left = -608.0
 margin_top = -376.0
 margin_right = -32.0
 margin_bottom = -312.0
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 text = "Current Directory:"
 
@@ -1158,6 +1299,11 @@ scroll_speed = 1.33
 
 [node name="text" parent="directories/directory" instance=ExtResource( 1 )]
 margin_right = 576.0
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 text = "DIR"
 
@@ -1179,6 +1325,11 @@ scroll_speed = 1.33
 
 [node name="text" parent="directories/other_directories/-3" instance=ExtResource( 1 )]
 margin_right = 576.0
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
@@ -1197,6 +1348,11 @@ scroll_speed = 1.33
 
 [node name="text" parent="directories/other_directories/-2" instance=ExtResource( 1 )]
 margin_right = 576.0
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
@@ -1215,6 +1371,11 @@ scroll_speed = 1.33
 
 [node name="text" parent="directories/other_directories/-1" instance=ExtResource( 1 )]
 margin_right = 576.0
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
@@ -1233,6 +1394,11 @@ scroll_speed = 1.33
 
 [node name="text" parent="directories/other_directories/+1" instance=ExtResource( 1 )]
 margin_right = 576.0
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
@@ -1251,6 +1417,11 @@ scroll_speed = 1.33
 
 [node name="text" parent="directories/other_directories/+2" instance=ExtResource( 1 )]
 margin_right = 576.0
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
@@ -1269,6 +1440,11 @@ scroll_speed = 1.33
 
 [node name="text" parent="directories/other_directories/+3" instance=ExtResource( 1 )]
 margin_right = 576.0
+custom_fonts/mono_font = ExtResource( 12 )
+custom_fonts/bold_italics_font = ExtResource( 12 )
+custom_fonts/italics_font = ExtResource( 12 )
+custom_fonts/bold_font = ExtResource( 12 )
+custom_fonts/normal_font = ExtResource( 12 )
 custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 

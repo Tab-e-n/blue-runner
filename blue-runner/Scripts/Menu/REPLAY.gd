@@ -286,6 +286,7 @@ func rack_visuals():
 		if next_replay != current_replay and !$rack/anim.is_playing():
 			$rack/anim.play("shift")
 			rack_time = 0
+			# warning-ignore:narrowing_conversion
 			rack_anim_direction = sign(next_replay - current_replay)
 		
 		if rack_idle == true and rack_time != 1:

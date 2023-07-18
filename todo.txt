@@ -38,6 +38,10 @@ f1 for help
 undo system (i dont really wanna)
 rebind move to something if undo system
 
+ui color
+tags for level groups
+hide author
+
  - RUNNER - 
 
 fix forced max jump when booster

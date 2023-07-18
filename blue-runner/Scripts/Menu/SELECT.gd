@@ -16,7 +16,6 @@ var is_selecting_groups : bool = false
 var groups_first_time : bool = true
 var current_group_color : int = 0
 
-
 var selected_level : int
 var has_selected_level : bool = false
 
