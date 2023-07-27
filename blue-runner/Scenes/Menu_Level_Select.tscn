@@ -3891,7 +3891,7 @@ text = ""
 
 [node name="BG_MENU" type="Polygon2D" parent="SELECT"]
 visible = false
-color = Color( 0.0156863, 0.0235294, 0.133333, 0 )
+color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 polygon = PoolVector2Array( -1024, 768, 1024, 768, 1024, -768, -1024, -768 )
 
 [node name="dependencies" type="Label" parent="SELECT"]
@@ -4019,10 +4019,9 @@ scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 35 )
 
 [node name="menu_circle_3" type="Sprite" parent="."]
-visible = false
 modulate = Color( 0.117647, 0.341176, 0.611765, 1 )
 position = Vector2( -1032, 800 )
-scale = Vector2( 1e-05, 1e-05 )
+scale = Vector2( 2.75, 2.75 )
 texture = ExtResource( 35 )
 
 [node name="REPLAY" type="Node2D" parent="."]
@@ -4071,8 +4070,6 @@ text = "DIRECTORY"
 scroll_active = true
 
 [node name="HELP" type="Node2D" parent="."]
-visible = false
-scale = Vector2( 1e-05, 1e-05 )
 script = ExtResource( 43 )
 
 [node name="bg" type="Node2D" parent="HELP"]
@@ -4556,6 +4553,7 @@ scale = Vector2( 3, 3 )
 texture = ExtResource( 28 )
 
 [node name="MAIN" type="Node2D" parent="."]
+visible = false
 rotation = 0.523599
 script = ExtResource( 26 )
 

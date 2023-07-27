@@ -1,7 +1,7 @@
 extends Control
 
 #game Stuff
-const VERSION : String = "1.2.0-dev"
+const VERSION : String = "2.0.0-dev"
 var new_version_alert : bool = false
 var savefile_interaction : int = 3
 var compatibility_mode : bool = false
@@ -15,6 +15,7 @@ var level_completion = {
 }
 var unlocked = {
 	"*char_select_active" : false,
+	"completion_percentages" : {},
 }
 var options = {
 	"*version" : VERSION,
@@ -32,6 +33,7 @@ var options = {
 	"*menu_down" : KEY_DOWN,
 	"*accept" : KEY_SPACE,
 	"*deny" : KEY_BACKSPACE,
+	"*save_replay" : KEY_F6,
 	"*outlines_on" : false,
 	"*ghosts_on" : false,
 	"*timer_on" : 0,
@@ -55,6 +57,7 @@ var default_options = {
 	"*menu_down" : KEY_DOWN,
 	"*accept" : KEY_SPACE,
 	"*deny" : KEY_BACKSPACE,
+	"*save_replay" : KEY_F6,
 	"*outlines_on" : false,
 	"*ghosts_on" : false,
 	"*timer_on" : 0,
@@ -178,116 +181,226 @@ func key_names(key : int):
 	#	6: key_number = options["*reset"]
 	#	7: key_number = options["*return"]
 	
-	if key_number >= 33 and key_number <= 255: return char(key_number)
-	else: match(key_number):
-		KEY_SPACE: return "SPACE"
-		KEY_ESCAPE: return "ESCAPE"
-		KEY_TAB: return "TAB"
-		KEY_BACKTAB: return "SPICY TAB"
-		KEY_BACKSPACE: return "BACKSPACE"
-		KEY_ENTER: return "ENTER"
-		KEY_KP_ENTER: return "KEYPAD ENTER"
-		KEY_INSERT: return "INSERT"
-		KEY_DELETE: return "DELETE"
-		KEY_PAUSE: return "PAUSE"
-		KEY_PRINT: return "SCREENSHOT"
-		KEY_SYSREQ: return "SYSTEM REQUEST"
-		KEY_CLEAR: return "CLEAR"
-		KEY_HOME: return "SWEET HOME ALABAMA"
-		KEY_END: return "THE END"
-		KEY_LEFT: return "LEFT ARROW"
-		KEY_UP: return "UP ARROW"
-		KEY_RIGHT: return "RIGHT ARROW"
-		KEY_DOWN: return "DOWN ARROW"
-		KEY_PAGEUP: return "PAGE UP"
-		KEY_PAGEDOWN: return "PAGE DOWN"
-		KEY_SHIFT: return "SHIFT"
-		KEY_CONTROL: return "CONTROL"
-		KEY_META: return "THIS KEY IS THE META"
-		KEY_ALT: return "ALT"
-		KEY_CAPSLOCK: return "SCREAM LOCK"
-		KEY_NUMLOCK: return "THE LOCK THATS ALWAYS ON"
-		KEY_SCROLLLOCK: return "WHO EVEN USES THIS LOCK"
-		KEY_F1: return "F1"
-		KEY_F2: return "F2"
-		KEY_F3: return "F3"
-		KEY_F4: return "F4"
-		KEY_F5: return "F5"
-		KEY_F6: return "F6"
-		KEY_F7: return "F7"
-		KEY_F8: return "F8"
-		KEY_F9: return "F9"
-		KEY_F10: return "F10"
-		KEY_F11: return "F11"
-		KEY_F12: return "F12"
-		KEY_F13: return "F13"
-		KEY_F14: return "F14"
-		KEY_F15: return "F15"
-		KEY_F16: return "F16"
-		KEY_KP_MULTIPLY: return "KEYPAD *"
-		KEY_KP_DIVIDE: return "KEYPAD /"
-		KEY_KP_SUBTRACT: return "KEYPAD -"
-		KEY_KP_PERIOD: return "KEYPAD ."
-		KEY_KP_ADD: return "KEYPAD +"
-		KEY_KP_0: return "KEYPAD 0"
-		KEY_KP_1: return "KEYPAD 1"
-		KEY_KP_2: return "KEYPAD 2"
-		KEY_KP_3: return "KEYPAD 3"
-		KEY_KP_4: return "KEYPAD 4"
-		KEY_KP_5: return "KEYPAD 5"
-		KEY_KP_6: return "KEYPAD 6"
-		KEY_KP_7: return "KEYPAD 7"
-		KEY_KP_8: return "KEYPAD 8"
-		KEY_KP_9: return "KEYPAD 9"
-		KEY_SUPER_L: return "SUPER LEFT WING"
-		KEY_SUPER_R: return "SUPER RIGHT WING"
-		KEY_MENU: return "YOU NEED TO GIVE CONTEXT"
-		KEY_HYPER_L: return "HYPER LEFT WING"
-		KEY_HYPER_R: return "HYPER RIGHT WING"
-		KEY_HELP: return "HELP ME GOD"
-		KEY_DIRECTION_L: return "DIRECTIONAL LEFT"
-		KEY_DIRECTION_R: return "DIRECTIONAL RIGHT"
-		KEY_BACK: return "BACK TO THE MARK"
-		KEY_FORWARD: return "FOWARD TO THE FUTURE"
-		KEY_STOP: return "STOP IT"
-		KEY_REFRESH: return "REFRESHING"
-		KEY_VOLUMEDOWN: return "TURN IT DOWN"
-		KEY_VOLUMEMUTE: return "MUTE IT PLEASE"
-		KEY_VOLUMEUP: return "TURN IT UP"
-		KEY_BASSBOOST: return "LOUD = FUNNY"
-		KEY_BASSUP: return "BASS UP"
-		KEY_BASSDOWN: return "BASS DOWN"
-		KEY_TREBLEUP: return "TREBLE UP"
-		KEY_TREBLEDOWN: return "TREBLE DOWN"
-		KEY_MEDIAPLAY: return "PLAY THAT SONG AGAIN"
-		KEY_MEDIASTOP: return "STOP THE MUSIC"
-		KEY_MEDIAPREVIOUS: return "PAST ART"
-		KEY_MEDIANEXT: return "ART OF THE FUTURE"
-		KEY_MEDIARECORD: return "CAUGHT ON CAMERA"
-		KEY_HOMEPAGE: return "HOME WITH DR. PAGE"
-		KEY_FAVORITES: return "MY JAM"
-		KEY_SEARCH: return "FIND THEM"
-		KEY_STANDBY: return "HALT"
-		KEY_OPENURL: return "BROWSER TIME"
-		KEY_LAUNCHMAIL: return "MAIL TIME"
-		KEY_LAUNCHMEDIA: return "MEDIA TIME"
-		KEY_LAUNCH0: return "SHORTCUT 0"
-		KEY_LAUNCH1: return "SHORTCUT 1"
-		KEY_LAUNCH2: return "SHORTCUT 2"
-		KEY_LAUNCH3: return "SHORTCUT 3"
-		KEY_LAUNCH4: return "SHORTCUT 4"
-		KEY_LAUNCH5: return "SHORTCUT 5"
-		KEY_LAUNCH6: return "SHORTCUT 6"
-		KEY_LAUNCH7: return "SHORTCUT 7"
-		KEY_LAUNCH8: return "SHORTCUT 8"
-		KEY_LAUNCH9: return "SHORTCUT 9"
-		KEY_LAUNCHA: return "SHORTCUT A"
-		KEY_LAUNCHB: return "SHORTCUT B"
-		KEY_LAUNCHC: return "SHORTCUT C"
-		KEY_LAUNCHD: return "SHORTCUT D"
-		KEY_LAUNCHE: return "SHORTCUT E"
-		KEY_LAUNCHF: return "SHORTCUT F"
-		KEY_UNKNOWN: return "???"
+	if key_number >= 33 and key_number <= 255:
+		return char(key_number)
+	else:
+		match(key_number):
+			KEY_SPACE:
+				return "SPACE"
+			KEY_ESCAPE:
+				return "ESCAPE"
+			KEY_TAB:
+				return "TAB"
+			KEY_BACKTAB:
+				return "SPICY TAB"
+			KEY_BACKSPACE:
+				return "BACKSPACE"
+			KEY_ENTER:
+				return "ENTER"
+			KEY_KP_ENTER:
+				return "KEYPAD ENTER"
+			KEY_INSERT:
+				return "INSERT"
+			KEY_DELETE:
+				return "DELETE"
+			KEY_PAUSE:
+				return "PAUSE"
+			KEY_PRINT:
+				return "SCREENSHOT"
+			KEY_SYSREQ:
+				return "SYSTEM REQUEST"
+			KEY_CLEAR:
+				return "CLEAR"
+			KEY_HOME:
+				return "COME BACK HOME"
+			KEY_END:
+				return "THE END"
+			KEY_LEFT:
+				return "LEFT ARROW"
+			KEY_UP:
+				return "UP ARROW"
+			KEY_RIGHT:
+				return "RIGHT ARROW"
+			KEY_DOWN:
+				return "DOWN ARROW"
+			KEY_PAGEUP:
+				return "PAGE UP"
+			KEY_PAGEDOWN:
+				return "PAGE DOWN"
+			KEY_SHIFT:
+				return "SHIFT"
+			KEY_CONTROL:
+				return "CONTROL"
+			KEY_META:
+				return "THIS KEY IS THE META"
+			KEY_ALT:
+				return "ALT"
+			KEY_CAPSLOCK:
+				return "SCREAM LOCK"
+			KEY_NUMLOCK:
+				return "ALWAYS ON LOCK"
+			KEY_SCROLLLOCK:
+				return "SOMETHING LOCK"
+			KEY_F1:
+				return "F1"
+			KEY_F2:
+				return "F2"
+			KEY_F3:
+				return "F3"
+			KEY_F4:
+				return "F4"
+			KEY_F5:
+				return "F5"
+			KEY_F6:
+				return "F6"
+			KEY_F7:
+				return "F7"
+			KEY_F8:
+				return "F8"
+			KEY_F9:
+				return "F9"
+			KEY_F10:
+				return "F10"
+			KEY_F11:
+				return "F11"
+			KEY_F12:
+				return "F12"
+			KEY_F13:
+				return "F13"
+			KEY_F14:
+				return "F14"
+			KEY_F15:
+				return "F15"
+			KEY_F16:
+				return "F16"
+			KEY_KP_MULTIPLY:
+				return "KEYPAD *"
+			KEY_KP_DIVIDE:
+				return "KEYPAD /"
+			KEY_KP_SUBTRACT:
+				return "KEYPAD -"
+			KEY_KP_PERIOD:
+				return "KEYPAD ."
+			KEY_KP_ADD:
+				return "KEYPAD +"
+			KEY_KP_0:
+				return "KEYPAD 0"
+			KEY_KP_1:
+				return "KEYPAD 1"
+			KEY_KP_2:
+				return "KEYPAD 2"
+			KEY_KP_3:
+				return "KEYPAD 3"
+			KEY_KP_4:
+				return "KEYPAD 4"
+			KEY_KP_5:
+				return "KEYPAD 5"
+			KEY_KP_6:
+				return "KEYPAD 6"
+			KEY_KP_7:
+				return "KEYPAD 7"
+			KEY_KP_8:
+				return "KEYPAD 8"
+			KEY_KP_9:
+				return "KEYPAD 9"
+			KEY_SUPER_L:
+				return "SUPER LEFT"
+			KEY_SUPER_R:
+				return "SUPER RIGHT"
+			KEY_MENU:
+				return "GIVE THE CONTEXT"
+			KEY_HYPER_L:
+				return "HYPER LEFT"
+			KEY_HYPER_R:
+				return "HYPER RIGHT"
+			KEY_HELP:
+				return "HELP ME GOD"
+			KEY_DIRECTION_L:
+				return "DIRECTIONAL LEFT"
+			KEY_DIRECTION_R:
+				return "DIRECTIONAL RIGHT"
+			KEY_BACK:
+				return "BACK TO THE MARK"
+			KEY_FORWARD:
+				return "FOWARD TO THE FUTURE"
+			KEY_STOP:
+				return "STOP IT"
+			KEY_REFRESH:
+				return "REFRESHING"
+			KEY_VOLUMEDOWN:
+				return "TURN IT DOWN"
+			KEY_VOLUMEMUTE:
+				return "MUTE IT PLEASE"
+			KEY_VOLUMEUP:
+				return "TURN IT UP"
+			KEY_BASSBOOST:
+				return "LOUD EQUALS FUNNY"
+			KEY_BASSUP:
+				return "BASS UP"
+			KEY_BASSDOWN:
+				return "BASS DOWN"
+			KEY_TREBLEUP:
+				return "TREBLE UP"
+			KEY_TREBLEDOWN:
+				return "TREBLE DOWN"
+			KEY_MEDIAPLAY:
+				return "PLAY THAT SONG AGAIN"
+			KEY_MEDIASTOP:
+				return "STOP THE MUSIC"
+			KEY_MEDIAPREVIOUS:
+				return "CLASSICAL ART"
+			KEY_MEDIANEXT:
+				return "ART OF THE FUTURE"
+			KEY_MEDIARECORD:
+				return "CAUGHT ON CAMERA"
+			KEY_HOMEPAGE:
+				return "HOME WITH PAGE"
+			KEY_FAVORITES:
+				return "MY JAM"
+			KEY_SEARCH:
+				return "FIND THEM"
+			KEY_STANDBY:
+				return "HALT"
+			KEY_OPENURL:
+				return "BROWSER TIME"
+			KEY_LAUNCHMAIL:
+				return "MAIL TIME"
+			KEY_LAUNCHMEDIA:
+				return "MEDIA TIME"
+			KEY_LAUNCH0:
+				return "SHORTCUT 0"
+			KEY_LAUNCH1:
+				return "SHORTCUT 1"
+			KEY_LAUNCH2:
+				return "SHORTCUT 2"
+			KEY_LAUNCH3:
+				return "SHORTCUT 3"
+			KEY_LAUNCH4:
+				return "SHORTCUT 4"
+			KEY_LAUNCH5:
+				return "SHORTCUT 5"
+			KEY_LAUNCH6:
+				return "SHORTCUT 6"
+			KEY_LAUNCH7:
+				return "SHORTCUT 7"
+			KEY_LAUNCH8:
+				return "SHORTCUT 8"
+			KEY_LAUNCH9:
+				return "SHORTCUT 9"
+			KEY_LAUNCHA:
+				return "SHORTCUT A"
+			KEY_LAUNCHB:
+				return "SHORTCUT B"
+			KEY_LAUNCHC:
+				return "SHORTCUT C"
+			KEY_LAUNCHD:
+				return "SHORTCUT D"
+			KEY_LAUNCHE:
+				return "SHORTCUT E"
+			KEY_LAUNCHF:
+				return "SHORTCUT F"
+			KEY_UNKNOWN:
+				return "???"
 	return "WHAT IS THIS?"
 
 func text_interpretor(text : String):
@@ -723,7 +836,8 @@ func save_game(timer : float = 0, par : float = 0, collectible : Array = [], lev
 		savefile.store_line(to_json(temp_full))
 		savefile.close()
 		
-		if level != null: condicional_save_replay(current_level_location + level + "_Best", recording)
+		if level != null:
+			condicional_save_replay(current_level_location + level + "_Best", recording)
 
 func load_game():
 	
@@ -870,7 +984,14 @@ func update_old_save(version : String, save : Dictionary):
 			save["options"]["*timer_on"] = 1
 		else:
 			save["options"]["*timer_on"] = 0
-		version = "1.2.0"
+		
+		if !save["unlocked"].has("completion_percentages"):
+			save["unlocked"]["completion_percentages"] = {}
+		
+		version = "2.0.0"
+	if version == "1.2.0-dev":
+		if !save["unlocked"].has("completion_percentages"):
+			save["unlocked"]["completion_percentages"] = {}
 	
 	if !save["unlocked"].has("*char_select_active"):
 		save["unlocked"]["*char_select_active"] = false
@@ -893,6 +1014,18 @@ func condicional_save_replay(replay_name, recording : Dictionary):
 	else:
 		save_replay(replay_name, recording.duplicate())
 
+func save_replay_with_date(new_name : String, recording : Dictionary):
+	var date = OS.get_datetime()
+	
+	Global.save_replay(new_name
+	+"_"+String(date["year"])
+	+"-"+String(date["month"])
+	+"-"+String(date["day"])
+	+"_"+String(date["hour"])
+	+"-"+String(date["minute"])
+	+"-"+String(date["second"]),
+	recording)
+
 func save_replay(new_name : String, recording : Dictionary, level : bool = true):
 	var replay_name : String = new_name
 	if level: replay_name = replay_filename(new_name, true)
@@ -910,11 +1043,14 @@ func save_replay(new_name : String, recording : Dictionary, level : bool = true)
 	savefile.store_line(to_json(temp))
 	savefile.close()
 
-func load_replay(new_name, existance_check : bool = false, level : bool = true):
+func load_replay(new_name, existance_check : bool = false, level : bool = true, built_in : bool = false):
 	var replay_name : String = new_name
 	if level: replay_name = replay_filename(new_name, false)
 	
-	replay_name = "user://SRReplays/" + replay_name
+	if built_in:
+		replay_name = "res://Replays/" + replay_name
+	else:
+		replay_name = "user://SRReplays/" + replay_name
 	
 	#print("load: " + replay_name)
 	
@@ -922,8 +1058,10 @@ func load_replay(new_name, existance_check : bool = false, level : bool = true):
 	var temp = {}
 	
 	if not loadfile.file_exists(replay_name): # does file exist
-		if existance_check: return false
-		else: return temp
+		if existance_check: 
+			return false
+		else: 
+			return temp
 	
 	if !existance_check:
 		loadfile.open(replay_name, File.READ)
@@ -936,10 +1074,12 @@ func load_replay(new_name, existance_check : bool = false, level : bool = true):
 		
 		#print("load: ", temp)
 		
-		if !temp.has("character"): temp["character"] = "S1"
+		if !temp.has("character"):
+			temp["character"] = "S1"
 		
 		return temp
-	else: return true
+	else:
+		return true
 
 func delete_replay(new_name, level : bool = true):
 	var replay_name : String = new_name
@@ -1072,9 +1212,12 @@ func load_data():
 		loaded_level_groups[i].resize(6)
 		loaded_level_groups[i][2] = null
 		loaded_level_groups[i][3] = null
-		loaded_level_groups[i][4] = 0
+		if unlocked["completion_percentages"].has(loaded_level_groups[i][1] + loaded_level_groups[i][0]):
+			loaded_level_groups[i][4] = unlocked["completion_percentages"][loaded_level_groups[i][1] + loaded_level_groups[i][0]]
+		else:
+			loaded_level_groups[i][4] = 0
+			unlocked["completion_percentages"][loaded_level_groups[i][1] + loaded_level_groups[i][0]] = 0
 		loaded_level_groups[i][5] = group_unlocks[i]
-	
 	# CHARACTERS.DAT
 	
 	var scan_places = ["res:/"]

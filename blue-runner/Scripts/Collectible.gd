@@ -3,9 +3,14 @@ extends Area2D
 export(int, 1, 3) var id : int = 1
 export var unlock : String = ""
 
+export var decorative : bool = false
+
 var collected : bool = false
 
 func _ready():
+	if decorative:
+		monitoring = false
+		monitorable = false
 	if unlock != "":
 		$collect.texture = preload("res://Visual/keycollect.png")
 		if Global.check_unlock(unlock):

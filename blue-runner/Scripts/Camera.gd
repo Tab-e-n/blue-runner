@@ -117,16 +117,7 @@ func _physics_process(_delta):
 				color_timer = 24
 				$Fade.visible = true
 			if Input.is_action_just_pressed("special") and replay_saved:
-				var date = OS.get_datetime()
-				
-				Global.save_replay(get_parent().name
-				+"_"+String(date["year"])
-				+"-"+String(date["month"])
-				+"-"+String(date["day"])
-				+"_"+String(date["hour"])
-				+"-"+String(date["minute"])
-				+"-"+String(date["second"]),
-				get_parent().get_node("Player").recording.duplicate())
+				Global.save_replay_with_date(get_parent().name, get_parent().get_node("Player").recording.duplicate())
 				
 				$border_thing/replay.text = "REPLAY SAVED"
 				replay_saved = false

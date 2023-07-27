@@ -136,11 +136,15 @@ func _physics_process(_delta):
 		
 		# MOVEMENT
 		if Input.is_action_pressed("left") and sliding == 0 and dropping == 0:
-			if player.momentum.x > -max_speed: player.momentum.x -= acceleration - round(player.momentum.x / acc_dividor)
-			if dropping == 0 and !on_wall: player.facing = "left"
+			if player.momentum.x > -max_speed:
+				player.momentum.x -= acceleration - round(player.momentum.x / acc_dividor)
+			if dropping == 0 and !on_wall:
+				player.facing = "left"
 		if Input.is_action_pressed("right") and sliding == 0 and dropping == 0:
-			if player.momentum.x < max_speed: player.momentum.x += acceleration - round(player.momentum.x / acc_dividor)
-			if dropping == 0 and !on_wall: player.facing = "right"
+			if player.momentum.x < max_speed:
+				player.momentum.x += acceleration - round(player.momentum.x / acc_dividor)
+			if dropping == 0 and !on_wall:
+				player.facing = "right"
 		
 		# SPECIAL ABILITIES
 		if sliding > 0: sliding -= 1
@@ -358,6 +362,9 @@ func _physics_process(_delta):
 		trail_converted[trail.size() - 2 - i] = trail_converted[trail.size() - 1 - i] + temp
 	
 	trail_node.points = trail_converted
+	
+	if $Anim.current_animation != "Enter":
+		position.y = 0
 
 #func _process(delta):
 #	pass

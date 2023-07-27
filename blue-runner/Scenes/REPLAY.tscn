@@ -583,6 +583,7 @@ rack_time = 0.0
 [node name="rack" type="Node2D" parent="."]
 visible = false
 use_parent_material = true
+position = Vector2( 0, 768 )
 
 [node name="replay_rack" type="Sprite" parent="rack"]
 material = SubResource( 2 )
@@ -1058,6 +1059,7 @@ anims/shift = SubResource( 3 )
 
 [node name="bottom" type="Node2D" parent="."]
 use_parent_material = true
+position = Vector2( 0, 256 )
 
 [node name="options_rectangle" type="Sprite" parent="bottom"]
 use_parent_material = true
@@ -1275,9 +1277,9 @@ anims/to_interactions = SubResource( 6 )
 [node name="directories" type="Node2D" parent="."]
 
 [node name="curdir" parent="directories" instance=ExtResource( 1 )]
-margin_left = -608.0
+margin_left = -928.0
 margin_top = -376.0
-margin_right = -32.0
+margin_right = -352.0
 margin_bottom = -312.0
 custom_fonts/mono_font = ExtResource( 12 )
 custom_fonts/bold_italics_font = ExtResource( 12 )
@@ -1288,8 +1290,10 @@ custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 text = "Current Directory:"
 
 [node name="directory" type="Control" parent="directories"]
-margin_left = -464.0
+margin_left = -1568.0
 margin_top = -32.0
+margin_right = -1104.0
+rect_scale = Vector2( 2, 2 )
 rect_clip_content = true
 script = ExtResource( 10 )
 __meta__ = {
@@ -1308,11 +1312,11 @@ custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 text = "DIR"
 
 [node name="other_directories" type="Node2D" parent="directories"]
-modulate = Color( 1, 1, 1, 0 )
 
 [node name="-3" type="Control" parent="directories/other_directories"]
-margin_left = -464.0
+margin_left = -1568.0
 margin_top = -368.0
+margin_right = -1104.0
 margin_bottom = -336.0
 rect_scale = Vector2( 2, 2 )
 rect_clip_content = true
@@ -1334,8 +1338,9 @@ custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
 [node name="-2" type="Control" parent="directories/other_directories"]
-margin_left = -464.0
+margin_left = -1568.0
 margin_top = -256.0
+margin_right = -1104.0
 margin_bottom = -224.0
 rect_scale = Vector2( 2, 2 )
 rect_clip_content = true
@@ -1357,8 +1362,9 @@ custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
 [node name="-1" type="Control" parent="directories/other_directories"]
-margin_left = -464.0
+margin_left = -1568.0
 margin_top = -144.0
+margin_right = -1104.0
 margin_bottom = -112.0
 rect_scale = Vector2( 2, 2 )
 rect_clip_content = true
@@ -1380,8 +1386,9 @@ custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
 [node name="+1" type="Control" parent="directories/other_directories"]
-margin_left = -464.0
+margin_left = -1568.0
 margin_top = 80.0
+margin_right = -1104.0
 margin_bottom = 112.0
 rect_scale = Vector2( 2, 2 )
 rect_clip_content = true
@@ -1403,8 +1410,9 @@ custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
 [node name="+2" type="Control" parent="directories/other_directories"]
-margin_left = -464.0
+margin_left = -1568.0
 margin_top = 192.0
+margin_right = -1104.0
 margin_bottom = 224.0
 rect_scale = Vector2( 2, 2 )
 rect_clip_content = true
@@ -1426,8 +1434,9 @@ custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
 [node name="+3" type="Control" parent="directories/other_directories"]
-margin_left = -464.0
+margin_left = -1568.0
 margin_top = 304.0
+margin_right = -1104.0
 margin_bottom = 336.0
 rect_scale = Vector2( 2, 2 )
 rect_clip_content = true
@@ -1449,6 +1458,7 @@ custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
 [node name="walls" type="Node2D" parent="directories"]
+scale = Vector2( 1.25, 1.25 )
 
 [node name="wall_left" type="Sprite" parent="directories/walls"]
 modulate = Color( 0.25098, 0.501961, 0.74902, 1 )

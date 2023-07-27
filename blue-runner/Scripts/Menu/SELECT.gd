@@ -89,6 +89,13 @@ func _ready():
 	
 	check_character_unlocks()
 	
+	$bg.modulate.a = 1
+	$bg.visible = true
+	$level_select.visible = true
+	cam_target = Vector2(320, 160)
+	$level_select/levels.position = Vector2(1024, 160)
+	$level_select/level_data.position = Vector2(-800, 0)
+	
 	$mainAnim.play("enter")
 
 func menu_update():
@@ -433,6 +440,7 @@ func reload_all_levels():
 			group = i
 	
 	Global.loaded_level_groups[group][4] = stats[0]
+	Global.unlocked["completion_percentages"][Global.loaded_level_groups[group][1] + Global.loaded_level_groups[group][0]] = stats[0]
 	
 	if !is_user_group:
 		for i in comp_list:

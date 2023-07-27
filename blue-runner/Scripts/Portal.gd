@@ -1,6 +1,6 @@
 extends Node2D
 
-onready var level : Node2D = get_tree().current_scene
+onready var level : Node2D
 
 export var tele_destination : String = "*Menu_Level_Select"
 export var par : float = 0
@@ -8,7 +8,13 @@ export var par : float = 0
 export(int, "XT9", "S1") var type = 0
 export var unlock : String = ""
 
+export var automatic_set_level_node : bool = true
+
 func _ready():
+	
+	if automatic_set_level_node:
+		level = get_tree().current_scene
+	
 	call_deferred("_ready_deferred")
 	
 	# Pretty Portal Colors

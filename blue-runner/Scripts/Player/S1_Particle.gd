@@ -9,6 +9,7 @@ var color_star : Color = Color(0.05, 0.9, 0.95, 1)
 func start(type : int):
 	if type == 0:
 		$AnimationPlayer.play("Particle")
+		$Light.color = color_start
 	else:
 		$AnimationPlayer.play("Star")
 		$star.modulate = color_star

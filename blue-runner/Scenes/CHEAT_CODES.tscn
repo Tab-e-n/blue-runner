@@ -1,13 +1,13 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Scripts/CHEAT_CODES.gd" type="Script" id=1]
 [ext_resource path="res://Text/Text_Codes.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Text/Shixel.tres" type="DynamicFont" id=3]
 
-[sub_resource type="StyleBoxFlat" id=1]
+[sub_resource type="StyleBoxFlat" id=2]
 bg_color = Color( 0.00784314, 0.235294, 0.317647, 1 )
 
-[sub_resource type="StyleBoxFlat" id=2]
+[sub_resource type="StyleBoxFlat" id=3]
 bg_color = Color( 0, 0, 0, 0 )
 draw_center = false
 border_width_left = 6
@@ -16,7 +16,7 @@ border_width_right = 6
 border_width_bottom = 6
 border_color = Color( 0.25098, 0.74902, 0.501961, 1 )
 
-[sub_resource type="Theme" id=3]
+[sub_resource type="Theme" id=4]
 default_font = ExtResource( 3 )
 Label/colors/font_color = Color( 0.25098, 0.74902, 0.501961, 1 )
 Label/colors/font_color_shadow = Color( 0, 0, 0, 0 )
@@ -26,11 +26,150 @@ Label/constants/shadow_as_outline = 0
 Label/constants/shadow_offset_x = 1
 Label/constants/shadow_offset_y = 1
 Label/fonts/font = null
-Label/styles/normal = SubResource( 1 )
-Panel/styles/panel = SubResource( 2 )
+Label/styles/normal = SubResource( 2 )
+Panel/styles/panel = SubResource( 3 )
 
-[sub_resource type="Animation" id=4]
-resource_name = "Fail"
+[sub_resource type="Animation" id=5]
+length = 0.95
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:keyboard_anim_progress")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 2.9 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("keyboard_outline:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.6, 0.9 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("keyboard/cursor:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.6, 0.9 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("code_outline:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.6, 0.9 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("fill:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.6, 0.9 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=6]
+length = 0.8
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:keyboard_anim_progress")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 2.9, 0.0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("keyboard_outline:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.3, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("keyboard/cursor:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.3, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("code_outline:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.3, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("fill:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.3, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/5/type = "method"
+tracks/5/path = NodePath(".")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0.8 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "queue_free"
+} ]
+}
+
+[sub_resource type="Animation" id=7]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("cross:visible")
@@ -105,9 +244,8 @@ tracks/5/keys = {
 "values": [ "" ]
 }
 
-[sub_resource type="Animation" id=5]
-resource_name = "Success"
-length = 0.9
+[sub_resource type="Animation" id=8]
+length = 1.2
 tracks/0/type = "value"
 tracks/0/path = NodePath("bg:visible")
 tracks/0/interp = 1
@@ -115,7 +253,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.9 ),
+"times": PoolRealArray( 0, 1.2 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ true, false ]
@@ -127,7 +265,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.2, 0.7, 0.9 ),
+"times": PoolRealArray( 0, 0.2, 1, 1.2 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0.498039 ), Color( 1, 1, 1, 0.498039 ), Color( 1, 1, 1, 0 ) ]
@@ -139,7 +277,7 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.9 ),
+"times": PoolRealArray( 0, 1.2 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ true, false ]
@@ -151,7 +289,7 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.2, 0.7, 0.9 ),
+"times": PoolRealArray( 0, 0.2, 1, 1.2 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
 "values": [ Vector2( 640, -64 ), Vector2( -544, -64 ), Vector2( -544, -64 ), Vector2( -1728, -64 ) ]
@@ -163,7 +301,7 @@ tracks/4/loop_wrap = true
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/keys = {
-"times": PoolRealArray( 0.9 ),
+"times": PoolRealArray( 1.2 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ "" ]
@@ -175,7 +313,7 @@ tracks/5/loop_wrap = true
 tracks/5/imported = false
 tracks/5/enabled = true
 tracks/5/keys = {
-"times": PoolRealArray( 0.9 ),
+"times": PoolRealArray( 1.2 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ "" ]
@@ -187,6 +325,13 @@ __meta__ = {
 "_edit_horizontal_guides_": [ 384.0, -384.0 ],
 "_edit_vertical_guides_": [ 640.0, -640.0 ]
 }
+keyboard_anim_progress = 2.9
+
+[node name="Text" parent="." instance=ExtResource( 2 )]
+margin_left = -640.0
+margin_top = -384.0
+margin_right = 1920.0
+margin_bottom = 1152.0
 
 [node name="keyboard_outline" type="Line2D" parent="."]
 position = Vector2( 0, -64 )
@@ -200,7 +345,7 @@ margin_left = -288.0
 margin_top = -64.0
 margin_right = 288.0
 margin_bottom = 256.0
-theme = SubResource( 3 )
+theme = SubResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -695,5 +840,7 @@ text = "YOU GOT SOMETHING
 "
 
 [node name="Anim" type="AnimationPlayer" parent="."]
-anims/Fail = SubResource( 4 )
-anims/Success = SubResource( 5 )
+anims/Enter = SubResource( 5 )
+anims/Exit = SubResource( 6 )
+anims/Fail = SubResource( 7 )
+anims/Success = SubResource( 8 )

@@ -70,6 +70,13 @@ func _ready():
 		$directories/walls.scale = Vector2(1.25, 1.25)
 		$directories/other_directories.modulate = Color(1, 1, 1, 1)
 		
+		$"directories/other_directories/-3".rect_position.x = -1568
+		$"directories/other_directories/-2".rect_position.x = -1568
+		$"directories/other_directories/-1".rect_position.x = -1568
+		$"directories/other_directories/+1".rect_position.x = -1568
+		$"directories/other_directories/+2".rect_position.x = -1568
+		$"directories/other_directories/+3".rect_position.x = -1568
+		
 		$rack.visible = false
 		$bottom.visible = false
 		

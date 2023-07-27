@@ -28,7 +28,6 @@
 [ext_resource path="res://Visual/XT9/neck.png" type="Texture" id=27]
 [ext_resource path="res://Visual/XT9/leg1B.png" type="Texture" id=28]
 
-
 [sub_resource type="Animation" id=1]
 resource_name = "Death"
 length = 0.4

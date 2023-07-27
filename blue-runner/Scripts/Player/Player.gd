@@ -1,6 +1,6 @@
 extends KinematicBody2D
 
-onready var level : Node2D = get_tree().current_scene
+onready var level : Node2D
 onready var character : Node2D
 
 export var character_name : String = ""
@@ -26,18 +26,27 @@ var start_timer : bool = false
 var timer : float = 0
 var collectible : Array = []
 var unlock : Array = []
-export var ghost : bool = false
 
-var replay : bool = false
+export var replay : bool = false
 var replay_timer : float = 3
-var recording = {}
+var recording = {
+	"timer" : 0,
+	"character" : "",
+	"character_location" : "",
+}
 var current_sound : String = ""
+export var ghost : bool = false
 
 var break_breakables : bool = false
 var break_just_happened : bool = false
 var punted : bool = false
 var launched : bool = false
 var speeding : bool = false
+
+export var increment_timer : bool = true
+export var loop_replay : bool = false
+export var load_replay : bool = true
+export var automatic_set_level_node : bool = true
 
 func _ready():
 	for i in range(8):
@@ -49,9 +58,10 @@ func _ready():
 	visible = true
 	Global.current_level = get_parent().name
 	
-	recording.clear()
+	#recording.clear()
 	
-	replay = Global.replay
+	if load_replay:
+		replay = Global.replay
 	
 	if facing != "right" and facing != "left": facing = "right"
 	
@@ -68,18 +78,22 @@ func _ready():
 		
 		position = get_parent().get_node("Player").position
 		
-		if Global.replay_menu: recording = Global.current_recording.duplicate()
-		else: recording = Global.load_replay(Global.current_level_location + Global.current_level + "_Best")
+		if Global.replay_menu: 
+			recording = Global.current_recording.duplicate()
+		else: 
+			recording = Global.load_replay(Global.current_level_location + Global.current_level + "_Best")
 		replay_timer = recording["timer"]
 		character_name = recording["character"]
-		if recording.has("character_location"): character_location = recording["character_location"]
+		if recording.has("character_location"): 
+			character_location = recording["character_location"]
 		
 		collision_layer = 0
 		collision_mask = 0
 		
 	elif replay: 
 		timer = -1
-		recording = Global.current_recording.duplicate()
+		if load_replay:
+			recording = Global.current_recording.duplicate()
 		replay_timer = recording["timer"]
 		character_name = recording["character"]
 		if recording.has("character_location"):
@@ -94,12 +108,24 @@ func _ready():
 	var char_node = char_load.instance()
 	add_child(char_node)
 	character = char_node
-	character.get_node("Anim").current_animation = "Enter"
+	
+	if replay:
+		play_loaded_recording(0)
+		if character.get_node("Anim").has_animation("_RESET"):
+			character.get_node("Anim").current_animation = "_RESET"
+	else:
+		if character.get_node("Anim").has_animation("Enter"):
+			character.get_node("Anim").current_animation = "Enter"
+	
+	if automatic_set_level_node:
+		level = get_tree().current_scene
 	
 #	print(get_tree().current_scene)
 	if level.get_script() != null:
 		if level.unicolor_active and !ghost:
 			material.set_shader_param("active", true)
+		if !ghost:
+			level.player = self
 
 func shader_color():
 	material.set_shader_param("color", character.unicolor_color)
@@ -112,8 +138,13 @@ func _input(event):
 			start_timer = true
 
 func _physics_process(delta):
-	if level.get_node("Player").replay and ghost:
-		queue_free()
+	if level.get_script() == null:
+		if level.get_node("Player").replay and ghost:
+			queue_free()
+	else:
+		if level.player.replay and ghost:
+			queue_free()
+	
 	
 	if !start and start_timer and !ghost:
 		level.timers_active = true
@@ -123,36 +154,43 @@ func _physics_process(delta):
 		level.timers_active = true
 	
 	if level.timers_active or (replay and !ghost):
-		timer += delta
 		if !replay and !end:
+			if timer == 0:
+				record()
 			call_deferred("record")
+		if increment_timer:
+			timer += delta
 	
 	#print(deny_input, replay, dead, end, level.timer_active)
 	
 	if !deny_input:
+		if Input.is_action_just_pressed("save_replay"):
+			add_recording_data()
+			Global.save_replay_with_date(get_parent().name, recording.duplicate())
 		if !level.unicolor_active and false:
 			var speed : float = sqrt(pow(momentum.x, 2) + pow(momentum.y, 2))
 			material.set_shader_param("active", speed > 1500)
 			if speed > 1500:
 				var blend : float = (speed - 1500) / 1000
-				if blend > 1: blend = 1
+				if blend > 1:
+					blend = 1
 				material.set_shader_param("blend", blend)
 	# - - - REPLAY STATE - - -
 	elif replay:
-		var timer_converted : int = int(timer * 1000)
-		if recording.has(String(timer_converted)):
-			var replay_data = recording[String(timer_converted)]
-			position = Vector2(replay_data[0], replay_data[1])
-			character.get_node("Anim").current_animation = replay_data[4]
-			character.scale = Vector2(replay_data[2], replay_data[3])
-			if replay_data.size() > 5: play_sound(replay_data[5])
-		else:
+		if !play_loaded_recording(int(timer * 1000)):
 			if timer > replay_timer + 2 and !ghost:
-				Global.change_level("*Menu_Level_Select")
+				if loop_replay:
+					timer = -1
+					play_loaded_recording(0)
+					if character.get_node("Anim").has_animation("_RESET"):
+						character.get_node("Anim").current_animation = "_RESET"
+					if level.has_method("_on_replay_looped"):
+						level._on_replay_looped()
+				else:
+					Global.change_level("*Menu_Level_Select")
 	# - - - DEATH STATE - - -
 	elif dead:
-		death_wait += 1
-		if death_wait >= 20:
+		if death_wait == 0:
 			var _name : String = get_parent().name
 			if Global.level_completion[Global.current_level_location].has(_name):
 				if Global.level_completion[Global.current_level_location][_name].size() > 2:
@@ -163,7 +201,8 @@ func _physics_process(delta):
 			else:
 				Global.level_completion[Global.current_level_location][_name] = [null, null, 1]
 #			print(Global.level_completion[Global.current_level_location][_name])
-			
+		death_wait += 1
+		if death_wait >= 20:
 			Global.change_level("")
 
 func move_player_character():
@@ -272,12 +311,27 @@ func record():
 	recording[int(timer * 1000)] = [position.x, position.y, character.scale.x, character.scale.y, $Character/Anim.current_animation, current_sound]
 	current_sound = ""
 
-func finish(collision):
+func add_recording_data():
 	recording["timer"] = timer
 	recording["character"] = character_name
 	recording["character_location"] = character_location
 	recording["level"] = Global.current_level_location + get_parent().name
 	#Global.current_recording = recording.duplicate()
+
+func play_loaded_recording(time : int):
+	if recording.has(String(time)):
+		var replay_data = recording[String(time)]
+		position = Vector2(replay_data[0], replay_data[1])
+		character.get_node("Anim").current_animation = replay_data[4]
+		character.scale = Vector2(replay_data[2], replay_data[3])
+		if replay_data.size() > 5:
+			play_sound(replay_data[5])
+		return true
+	else:
+		return false
+
+func finish(collision):
+	add_recording_data()
 	deny_input = true
 	end = true
 	get_slide_collision(collision).collider.teleport(float(int(timer * 100)) / 100, collectible, unlock, recording.duplicate())

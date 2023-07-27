@@ -3,7 +3,6 @@
 [ext_resource path="res://Scripts/Player/S1_Particle.gd" type="Script" id=1]
 [ext_resource path="res://Visual/S1/star.png" type="Texture" id=2]
 
-
 [sub_resource type="Animation" id=1]
 resource_name = "Particle"
 length = 0.5
@@ -99,10 +98,6 @@ anims/Star = SubResource( 2 )
 scale = Vector2( 1e-05, 1 )
 color = Color( 0.0470588, 0.901961, 0.94902, 1 )
 polygon = PoolVector2Array( -48, -8, 48, -8, 48, 0, -48, 0 )
-
-[node name="Polygon2D" type="Polygon2D" parent="."]
-visible = false
-polygon = PoolVector2Array( -3, -16, 3, -16, 1, 0, -1, 0 )
 
 [node name="star" type="Sprite" parent="."]
 modulate = Color( 0.0470588, 0.901961, 0.94902, 1 )

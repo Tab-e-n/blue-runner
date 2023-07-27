@@ -1,4 +1,4 @@
-# 1.2.0 SMALL UPDATE ? NO !!!!
+# 2.0.0 SMALL UPDATE ? NO !!!!
 
 <details><summary><h2>GENERAL</h2></summary><p>
 
@@ -12,12 +12,15 @@
  - The main menu got almost completely redesigned, with every menu that it had originaly either completely overhalled or at least changed in some way.
    There were no escapees. On top of that, there are now also new menus! And also a new inaccesable menu! God damn!
  - New timer setting, where it will only appear if you had beaten the level you are playing.
+ - You can now save replays while playing the level with F6. This will save a replay without you needing to finish the level.
+ - You can now unlock missing legitimately.
 
 ### VISUAL
 
  - Sonic Runner is no longer in the 4:3 aspect ratio, it is now in the glorious___ 5:3 aspect ratio___!
  - XT9 has new idle animations.
  - When launched very high with a mushroom, you now spin.
+ - Fixed XT9's and missing's particles being the wrong color for 1 frame
  - The timer is now outlined for better visibility.
  - User Universe now has a unique BG.
  - Bootup sequence has a new font.
@@ -30,6 +33,8 @@
  - Shortend coyote time on S1 and it's derivates.
  - XT9 is unlocked when you have 7 bonuses now. If you already have them unlocked,
    this update wont take it away.
+ - Fixed a bug where you could quit to the menu after you've hit an obstacle, making the game not count the death.
+ - Fixed a bug where the game didn't record the first frame of a replay.
  - Fixed `--savefile_interaction` console argument working incorrectly.
 
 </p></details>

@@ -2,6 +2,7 @@ extends Node2D
 
 export var unicolor_active : bool
 var timers_active : bool = false
+var player : Node2D
 
 var dat : Dictionary
 

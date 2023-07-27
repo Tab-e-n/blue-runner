@@ -26,7 +26,6 @@
 [ext_resource path="res://Visual/missing/bodyM.png" type="Texture" id=26]
 [ext_resource path="res://Visual/missing/arm1.png" type="Texture" id=27]
 
-
 [sub_resource type="Animation" id=1]
 resource_name = "Death"
 length = 0.4

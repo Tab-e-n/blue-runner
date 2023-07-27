@@ -346,6 +346,7 @@ anims/move_next = SubResource( 6 )
 
 [node name="top" type="Node2D" parent="."]
 material = SubResource( 7 )
+position = Vector2( -24, 0 )
 script = ExtResource( 2 )
 menu_colors = [ Color( 0.25098, 0.25098, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.74902, 0.74902, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.25098, 1 ) ]
 submenu = [ 1, 3, 5, 4, 6 ]
@@ -403,7 +404,6 @@ autoplay = "pulse"
 anims/pulse = SubResource( 9 )
 
 [node name="sub" type="Node2D" parent="."]
-position = Vector2( 736, 0 )
 
 [node name="play" type="Node2D" parent="sub"]
 visible = false

@@ -21,7 +21,7 @@ func menu_ready(comming_from : String = ""):
 			current_menu = MENU_PLAY
 			$mainAnim.play("enter_sub")
 			$sub/play.visible = true
-		"ACHIEVEMENTS", "CREDITS", "CHEATCODES":
+		"ACHIEVEMENTS", "CREDITS", "CHEAT_CODES":
 			current_menu = MENU_EXTRAS
 			$mainAnim.play("enter_sub")
 			$sub/extras.visible = true
@@ -31,16 +31,22 @@ func menu_ready(comming_from : String = ""):
 		"HELP":
 			$top.reset(4)
 		"SELECT":
+			$top.reset(1)
 			$sub/play.reset(1)
 		"REPLAY":
+			$top.reset(1)
 			$sub/play.reset(2)
 		"VS":
+			$top.reset(1)
 			$sub/play.reset(3)
 		"ACHIEVEMENTS":
+			$top.reset(3)
 			$sub/extras.reset(1)
 		"CREDITS":
+			$top.reset(3)
 			$sub/extras.reset(2)
-		"CHEATCODES":
+		"CHEAT_CODES":
+			$top.reset(3)
 			$sub/extras.reset(3)
 	
 	#call_deferred("set_buttons", MENU_TOP)
@@ -126,7 +132,9 @@ func accept(group : Node2D):
 			$mainAnim.stop()
 			$mainAnim.play("exit_top")
 		BUTTON_HELP:
-			print("incomplete")
+			parent.switch_menu("HELP", "MAIN")
+			$mainAnim.stop()
+			$mainAnim.play("exit_top")
 		BUTTON_PLAY:
 			parent.switch_menu("SELECT", "MAIN")
 			$mainAnim.stop()
@@ -138,7 +146,9 @@ func accept(group : Node2D):
 			$mainAnim.stop()
 			$mainAnim.play("exit_sub")
 		BUTTON_ACHIEVEMENTS:
-			print("incomplete")
+			parent.switch_menu("ACHIEVEMENTS", "MAIN")
+			$mainAnim.stop()
+			$mainAnim.play("exit_sub")
 		BUTTON_CREDITS:
 			print("incomplete")
 		BUTTON_CHEATCODES:

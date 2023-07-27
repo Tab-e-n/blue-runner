@@ -1369,8 +1369,6 @@ __meta__ = {
 }
 
 [node name="bg" type="Polygon2D" parent="."]
-visible = false
-modulate = Color( 1, 1, 1, 0 )
 color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 polygon = PoolVector2Array( 640, -384, 640, 384, -640, 384, -640, -384 )
 
@@ -1433,26 +1431,30 @@ end_cap_mode = 1
 visible = false
 
 [node name="bg" type="Polygon2D" parent="character_select"]
+position = Vector2( -1024, -1024 )
 color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 polygon = PoolVector2Array( 640, -384, 1024, 0, 0, 1024, -640, 384, -640, -384 )
 
 [node name="character_render" type="Sprite" parent="character_select"]
-position = Vector2( -320, -128 )
+visible = false
+position = Vector2( 384, -128 )
 texture = ExtResource( 18 )
 
 [node name="name" parent="character_select" instance=ExtResource( 7 )]
-margin_left = -576.0
+visible = false
+margin_left = 96.0
 margin_top = 72.0
-margin_right = 107.0
+margin_right = 779.0
 margin_bottom = 136.0
 rect_scale = Vector2( 0.75, 0.75 )
 bbcode_enabled = true
 text = ""
 
 [node name="description" parent="character_select" instance=ExtResource( 7 )]
-margin_left = -600.0
+visible = false
+margin_left = 64.0
 margin_top = 128.0
-margin_right = 520.0
+margin_right = 1184.0
 margin_bottom = 512.0
 rect_scale = Vector2( 0.5, 0.5 )
 bbcode_enabled = true
@@ -1460,7 +1462,7 @@ text = ""
 
 [node name="options_rectangle" type="Sprite" parent="character_select"]
 material = SubResource( 13 )
-position = Vector2( 352, 7.31647e-06 )
+position = Vector2( 800, -1792 )
 rotation = 1.8158
 scale = Vector2( 2, 1.52326 )
 texture = ExtResource( 6 )
@@ -1470,6 +1472,7 @@ autoplay = "shift"
 anims/shift = SubResource( 14 )
 
 [node name="characters" type="Node2D" parent="character_select"]
+modulate = Color( 1, 1, 1, 0 )
 position = Vector2( 160, 0 )
 
 [node name="cursor" type="Polygon2D" parent="character_select/characters"]

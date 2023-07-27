@@ -56,6 +56,7 @@ level group as level
 changing between "linked" level groups or something
 
 new waterway levels
+breakable waterway ground
 tutorial level
 
 
@@ -72,13 +73,15 @@ Up key for jump
 key that shows level info when in a level
 audio options
 
-Help [Not remade]
+Help [Functional]
+Tutorial level button
 
 Level Select [Functional]
 Make a way to access the best replay from the level select
 Touchup the level group selector
+XT9 portrait
 
-VS Race [Not made]
+VS Race [will not be made this update]
 
 Replays [Functional]
 fix bug when you race a replay then make a new replay while racing then return to the replay menu you will be in the incorrect position.
@@ -90,10 +93,12 @@ Achievements [Not made]
 
 Credits [Not made]
 
-Cheat Codes [Not made]
+Cheat Codes [Functional]
+Spice it up
 
 
 character greenbox
+character funny :)
 missing idle anims
 Touchup spin maybe
 Touchup XT9 idle animations
