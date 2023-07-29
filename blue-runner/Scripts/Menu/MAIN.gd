@@ -51,6 +51,9 @@ func menu_ready(comming_from : String = ""):
 	
 	#call_deferred("set_buttons", MENU_TOP)
 
+func _physics_process(_delta):
+	$Disclaimer.visible = $sub/play.visible and $sub/play.current_button == 3 and !$mainAnim.is_playing()
+
 func menu_update():
 	var group : Node2D
 	match(current_menu):

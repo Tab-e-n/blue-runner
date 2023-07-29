@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=2]
+[gd_scene load_steps=33 format=2]
 
 [ext_resource path="res://Scripts/menu_shader.shader" type="Shader" id=1]
 [ext_resource path="res://Scripts/Menu/MAIN_group.gd" type="Script" id=2]
@@ -16,6 +16,7 @@
 [ext_resource path="res://Visual/Menu/button_options.png" type="Texture" id=14]
 [ext_resource path="res://Visual/Menu/button_back.png" type="Texture" id=15]
 [ext_resource path="res://Visual/Menu/button_level_select.png" type="Texture" id=16]
+[ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=17]
 
 [sub_resource type="Animation" id=1]
 resource_name = "enter_sub"
@@ -512,3 +513,16 @@ anims/move = SubResource( 14 )
 [node name="pulse" type="AnimationPlayer" parent="sub/extras"]
 autoplay = "pulse"
 anims/pulse = SubResource( 15 )
+
+[node name="Disclaimer" type="Label" parent="."]
+visible = false
+margin_left = -184.0
+margin_top = -32.0
+margin_right = 122.0
+margin_bottom = 35.0
+theme = ExtResource( 17 )
+text = "THIS WILL BE MADE
+IN A FUTURE UPDATE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
