@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=2]
+[gd_scene load_steps=36 format=2]
 
 [ext_resource path="res://Scripts/Menu/SELECT.gd" type="Script" id=1]
 [ext_resource path="res://Objects/Level.tscn" type="PackedScene" id=2]
@@ -18,6 +18,9 @@
 [ext_resource path="res://Visual/particle_circle.png" type="Texture" id=16]
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=17]
 [ext_resource path="res://Visual/Menu/no_character_found.png" type="Texture" id=18]
+[ext_resource path="res://Text/Shixel_Outlined.tres" type="DynamicFont" id=19]
+[ext_resource path="res://Text/Shixel.tres" type="DynamicFont" id=20]
+[ext_resource path="res://Text/Shixel_Small.tres" type="DynamicFont" id=21]
 
 [sub_resource type="Animation" id=1]
 resource_name = "CHARACTER -> LEVEL"
@@ -1172,18 +1175,28 @@ scale = Vector2( 0.75, 0.75 )
 
 [node name="stats" parent="level_select" instance=ExtResource( 12 )]
 margin_left = 568.0
-margin_top = -356.0
+margin_top = -360.0
 margin_right = 888.0
-margin_bottom = -100.0
+margin_bottom = -104.0
 rect_scale = Vector2( 0.5, 0.5 )
+custom_fonts/mono_font = ExtResource( 19 )
+custom_fonts/bold_italics_font = ExtResource( 19 )
+custom_fonts/italics_font = ExtResource( 19 )
+custom_fonts/bold_font = ExtResource( 19 )
+custom_fonts/normal_font = ExtResource( 19 )
 text = ""
 
 [node name="author" parent="level_select" instance=ExtResource( 12 )]
 margin_left = -152.0
-margin_top = -356.0
+margin_top = -360.0
 margin_right = 664.0
-margin_bottom = -228.0
+margin_bottom = -280.0
 rect_scale = Vector2( 0.5, 0.5 )
+custom_fonts/mono_font = ExtResource( 19 )
+custom_fonts/bold_italics_font = ExtResource( 19 )
+custom_fonts/italics_font = ExtResource( 19 )
+custom_fonts/bold_font = ExtResource( 19 )
+custom_fonts/normal_font = ExtResource( 19 )
 text = "By:"
 
 [node name="beatflag" type="Sprite" parent="level_select"]
@@ -1233,6 +1246,11 @@ anchor_bottom = 0.0
 margin_right = 400.0
 margin_bottom = 128.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_fonts/mono_font = ExtResource( 20 )
+custom_fonts/bold_italics_font = ExtResource( 20 )
+custom_fonts/italics_font = ExtResource( 20 )
+custom_fonts/bold_font = ExtResource( 20 )
+custom_fonts/normal_font = ExtResource( 20 )
 custom_colors/default_color = Color( 1, 1, 1, 1 )
 text = "TEXT
 TEXT
@@ -1258,6 +1276,11 @@ anchor_bottom = 0.0
 margin_right = 400.0
 margin_bottom = 64.0
 rect_scale = Vector2( 0.5, 0.5 )
+custom_fonts/mono_font = ExtResource( 20 )
+custom_fonts/bold_italics_font = ExtResource( 20 )
+custom_fonts/italics_font = ExtResource( 20 )
+custom_fonts/bold_font = ExtResource( 20 )
+custom_fonts/normal_font = ExtResource( 20 )
 custom_colors/default_color = Color( 1, 1, 1, 1 )
 
 [node name="par" type="Control" parent="level_select/level_data"]
@@ -1280,6 +1303,11 @@ anchor_bottom = 0.0
 margin_right = 400.0
 margin_bottom = 64.0
 rect_scale = Vector2( 0.5, 0.5 )
+custom_fonts/mono_font = ExtResource( 20 )
+custom_fonts/bold_italics_font = ExtResource( 20 )
+custom_fonts/italics_font = ExtResource( 20 )
+custom_fonts/bold_font = ExtResource( 20 )
+custom_fonts/normal_font = ExtResource( 20 )
 custom_colors/default_color = Color( 1, 1, 1, 1 )
 
 [node name="deaths" type="Control" parent="level_select/level_data"]
@@ -1302,6 +1330,11 @@ anchor_bottom = 0.0
 margin_right = 400.0
 margin_bottom = 64.0
 rect_scale = Vector2( 0.5, 0.5 )
+custom_fonts/mono_font = ExtResource( 20 )
+custom_fonts/bold_italics_font = ExtResource( 20 )
+custom_fonts/italics_font = ExtResource( 20 )
+custom_fonts/bold_font = ExtResource( 20 )
+custom_fonts/normal_font = ExtResource( 20 )
 custom_colors/default_color = Color( 1, 1, 1, 1 )
 
 [node name="creator" type="Control" parent="level_select/level_data"]
@@ -1325,6 +1358,11 @@ anchor_bottom = 0.0
 margin_right = 400.0
 margin_bottom = 128.0
 rect_scale = Vector2( 0.5, 0.5 )
+custom_fonts/mono_font = ExtResource( 20 )
+custom_fonts/bold_italics_font = ExtResource( 20 )
+custom_fonts/italics_font = ExtResource( 20 )
+custom_fonts/bold_font = ExtResource( 20 )
+custom_fonts/normal_font = ExtResource( 20 )
 custom_colors/default_color = Color( 1, 1, 1, 1 )
 
 [node name="fail" type="Label" parent="level_select"]
@@ -1333,6 +1371,7 @@ margin_top = -48.0
 margin_right = 451.0
 margin_bottom = -16.0
 theme = ExtResource( 17 )
+custom_fonts/font = ExtResource( 21 )
 text = "Failed to load this level, sorry."
 __meta__ = {
 "_edit_use_anchors_": false
@@ -1345,6 +1384,7 @@ margin_top = -48.0
 margin_right = 578.0
 margin_bottom = -16.0
 theme = ExtResource( 17 )
+custom_fonts/font = ExtResource( 21 )
 text = "This level requires mods you don't have installed"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -1357,6 +1397,7 @@ margin_top = 72.0
 margin_right = 420.0
 margin_bottom = 248.0
 theme = ExtResource( 17 )
+custom_fonts/font = ExtResource( 21 )
 text = "DISCLAIMER
 You are loading into a new
 version of SR. Some levels
@@ -1369,6 +1410,8 @@ __meta__ = {
 }
 
 [node name="bg" type="Polygon2D" parent="."]
+visible = false
+modulate = Color( 1, 1, 1, 0 )
 color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 polygon = PoolVector2Array( 640, -384, 640, 384, -640, 384, -640, -384 )
 

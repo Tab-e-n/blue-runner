@@ -282,7 +282,6 @@ margin_left = -576.0
 margin_top = 308.0
 margin_right = 64.0
 margin_bottom = 372.0
-custom_colors/default_color = Color( 0.25098, 0.74902, 0.74902, 1 )
 text = "BACK"
 
 [node name="cursor" type="Node2D" parent="."]

@@ -1,8 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Scripts/Menu/ACHIEVEMENTS.gd" type="Script" id=1]
 [ext_resource path="res://Visual/Menu/achieve_checkerboard.png" type="Texture" id=2]
 [ext_resource path="res://Visual/Achievement/selection.png" type="Texture" id=3]
+[ext_resource path="res://Visual/Menu/achieve_description.png" type="Texture" id=4]
+[ext_resource path="res://Text/Shixel_Small.tres" type="DynamicFont" id=5]
 
 [sub_resource type="Animation" id=1]
 resource_name = "move"
@@ -95,6 +97,18 @@ tracks/4/keys = {
 "update": 0,
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
 }
+tracks/5/type = "value"
+tracks/5/path = NodePath("achieve_description:modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.8, 1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
 
 [sub_resource type="Animation" id=3]
 resource_name = "Exit"
@@ -158,13 +172,25 @@ tracks/4/keys = {
 "update": 0,
 "values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
-tracks/5/type = "method"
-tracks/5/path = NodePath(".")
+tracks/5/type = "value"
+tracks/5/path = NodePath("achieve_description:modulate")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/imported = false
 tracks/5/enabled = true
 tracks/5/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/6/type = "method"
+tracks/6/path = NodePath(".")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
 "times": PoolRealArray( 1 ),
 "transitions": PoolRealArray( 1 ),
 "values": [ {
@@ -204,6 +230,24 @@ texture = ExtResource( 2 )
 texture = ExtResource( 3 )
 
 [node name="achivements" type="Node2D" parent="."]
+
+[node name="achieve_description" type="Sprite" parent="."]
+position = Vector2( 0, 288 )
+texture = ExtResource( 4 )
+
+[node name="description" type="Label" parent="achieve_description"]
+margin_left = -344.0
+margin_top = -56.0
+margin_right = 344.0
+margin_bottom = 56.0
+custom_fonts/font = ExtResource( 5 )
+custom_colors/font_color = Color( 0.25098, 0.74902, 0.501961, 1 )
+align = 1
+valign = 1
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="mainAnim" type="AnimationPlayer" parent="."]
 anims/Enter = SubResource( 2 )

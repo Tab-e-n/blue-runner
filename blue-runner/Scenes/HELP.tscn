@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://Scripts/Menu/HELP.gd" type="Script" id=1]
 [ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=2]
@@ -12,6 +12,7 @@
 [ext_resource path="res://Objects/Finish.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Objects/Collectible.tscn" type="PackedScene" id=11]
 [ext_resource path="res://Objects/Portal.tscn" type="PackedScene" id=12]
+[ext_resource path="res://Text/Shixel.tres" type="DynamicFont" id=13]
 
 [sub_resource type="Animation" id=1]
 resource_name = "Enter"
@@ -234,7 +235,7 @@ tracks/17/keys = {
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=2]
 resource_name = "Exit"
 length = 0.7
 step = 0.05
@@ -457,8 +458,7 @@ tracks/17/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=2]
-resource_name = "Hide Replay"
+[sub_resource type="Animation" id=3]
 length = 0.7
 step = 0.05
 tracks/0/type = "value"
@@ -498,8 +498,7 @@ tracks/2/keys = {
 "values": [ 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1 ]
 }
 
-[sub_resource type="Animation" id=3]
-resource_name = "Move"
+[sub_resource type="Animation" id=4]
 length = 0.3
 step = 0.05
 tracks/0/type = "value"
@@ -565,8 +564,7 @@ tracks/4/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=4]
-resource_name = "Reset"
+[sub_resource type="Animation" id=5]
 length = 0.1
 step = 0.05
 tracks/0/type = "value"
@@ -702,7 +700,7 @@ tracks/10/keys = {
 "values": [ true ]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=6]
 length = 6.0
 loop = true
 tracks/0/type = "value"
@@ -718,7 +716,7 @@ tracks/0/keys = {
 "values": [ Vector2( 320, 160 ), Vector2( 192, 160 ) ]
 }
 
-[sub_resource type="GDScript" id=6]
+[sub_resource type="GDScript" id=7]
 script/source = "extends Node2D
 
 func _ready():
@@ -742,10 +740,10 @@ __meta__ = {
 
 [node name="mainAnim" type="AnimationPlayer" parent="."]
 anims/Enter = SubResource( 1 )
-anims/Exit = SubResource( 7 )
-"anims/Hide Replay" = SubResource( 2 )
-anims/Move = SubResource( 3 )
-anims/Reset = SubResource( 4 )
+anims/Exit = SubResource( 2 )
+"anims/Hide Replay" = SubResource( 3 )
+anims/Move = SubResource( 4 )
+anims/Reset = SubResource( 5 )
 
 [node name="help_spiral_1" type="Sprite" parent="."]
 visible = false
@@ -802,7 +800,7 @@ texture = ExtResource( 4 )
 
 [node name="anim" type="AnimationPlayer" parent="Level/help_bg"]
 autoplay = "shift"
-anims/shift = SubResource( 5 )
+anims/shift = SubResource( 6 )
 
 [node name="Wall" type="Polygon2D" parent="Level"]
 visible = false
@@ -817,7 +815,7 @@ color = Color( 0.25098, 0.74902, 0.25098, 1 )
 polygon = PoolVector2Array( 64, 32, 256, 32, 256, 160, 64, 160 )
 
 [node name="PlayerLevelSetter" type="Node2D" parent="Level"]
-script = SubResource( 6 )
+script = SubResource( 7 )
 
 [node name="Player" parent="Level" instance=ExtResource( 2 )]
 character_name = "S1"
@@ -864,6 +862,8 @@ margin_top = 240.0
 margin_right = 1152.0
 margin_bottom = 496.0
 rect_scale = Vector2( 0.5, 0.5 )
+custom_fonts/mono_font = ExtResource( 13 )
+custom_fonts/normal_font = ExtResource( 13 )
 custom_colors/default_color = Color( 0.25098, 0.74902, 0.25098, 1 )
 bbcode_enabled = true
 text = ""

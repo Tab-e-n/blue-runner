@@ -242,7 +242,8 @@ func _physics_process(_delta):
 				#jump_buffer = 0
 		if !Input.is_action_pressed("jump") and !gravity_switch and !player.punted and sliding == 0:
 			gravity_switch = true
-			if player.momentum.y < -200: player.momentum.y = -200
+			if player.momentum.y < -200:
+				player.momentum.y = -200
 		
 		# COLLISION / MOVING
 		# warning-ignore:return_value_discarded

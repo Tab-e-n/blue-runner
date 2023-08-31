@@ -4,8 +4,8 @@ onready var parent : Node2D = get_parent()
 
 var achivements_definition : Dictionary = {
 	#"ID" : ["Achievement Name", "Achievement Description", is_hidden, unlock_type, parameter_1, parameter_2]
-	"beat_waterway" : ["Beat WaterWay", "", false, 3, "res://Scenes/waterway/", 100],
-	"code_missing" : ["missing", "", false, 5, "*character_missing", ""],
+	"complete_waterway" : ["Complete WaterWay", "Get 100% completion on WaterWay.", false, 3, "res://Scenes/waterway/", 100],
+	"code_missing" : ["missing", "code 0", false, 5, "*character_missing", ""],
 }
 var row_amount : int = 0
 var cursor_pos : Vector2 = Vector2(0, 0)
@@ -18,6 +18,7 @@ func _ready():
 	$achieve_checkerboard2.self_modulate.a = 0
 	$selection.self_modulate.a = 0
 	$achivements.modulate.a = 0
+	$achieve_description.modulate.a = 0
 	$mainAnim.play("Enter")
 
 func menu_update():
@@ -48,6 +49,9 @@ func move_cursor(movement : Vector2 = Vector2(0, 0)):
 	
 	$selection.position.x = -384 + 384 * cursor_pos.x
 	$achivements.position.y = -96 * cursor_pos.y
+	var ach_name = achivements_definition.keys()[cursor_pos.y * 3 + cursor_pos.x]
+	if not achivements_definition[ach_name][2]:
+		$achieve_description/description.text = achivements_definition[ach_name][1]
 
 func make_the_achivements():
 	var ach_amount = achivements_definition.size()
@@ -90,9 +94,8 @@ func create_achievement(ach_name : String, new_pos : Vector2):
 	
 	var label : Label = Label.new()
 	label.rect_position = Vector2(-104, -32)
-	label.rect_size = Vector2(560, 128)
-	label.rect_scale = Vector2(0.5, 0.5)
-	label.add_font_override("font", preload("res://Text/Lacrimae.tres"))
+	label.rect_size = Vector2(280, 64)
+	label.add_font_override("font", preload("res://Text/Shixel_Small.tres"))
 	if hidden and !completed:
 		label.text = "Hidden Achievement"
 	else:
@@ -103,4 +106,5 @@ func create_achievement(ach_name : String, new_pos : Vector2):
 		label.add_color_override("font_color", Color(0.24, 0.89, 0.57))
 	else:
 		label.add_color_override("font_color", Color(0.24, 0.35, 0.29))
+	label.autowrap = true
 	new_achivement.add_child(label)

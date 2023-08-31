@@ -28,6 +28,7 @@
 ### FIXES & CHANGES
 
  - The menu now has it's own seperate keys from gameplay.
+ - Fixed bug where a level groups completion percentage wouldn't save, leading to messy behaviour.
  - The level timer doesn't start until you start moving.
  - S1's default slide is now a bit slower. Dropslide is staying the same speed, however.
  - Shortend coyote time on S1 and it's derivates.
@@ -67,7 +68,7 @@
 	   and the interpreter will ignore them.
 	 - %\`% will put a \`, since otherwise it will be removed.
  - You can now set `tele_destination` of the portal and finish to `*Level_Next`, which will change the level to the next level in the level group.
- - You can now add the name of the author to a level group. You can choose to have it visible or you can just have it in the files.
+ - You can now add the name of the author to a level group. You can also make it so it doesn't display in the level select screen, if you don't like how it looks.
 
 ### VISUAL
 
@@ -79,14 +80,14 @@
 ### FIXES & CHANGES
 
  - Attachables should no longer have wacky behaviours when you do anything complex with them.
- - Fixed a bug where you could have multiple of the same tile in the place panel.
+ - Fixed a bug where you could have multiple of the same tile preset in the place panel.
  - Fixed playtested levels not reloading when you die or press reset.
  - Playtested levels no longer save as seperate levels.
- - Upon exiting a level when you are platesting it, you will also exit SR. You won't need to do some menuing to get back to the editor.
- - The official tag has been altered. Now when a level has the official tag:
+ - Upon exiting a level when you are platesting it, you will also exit SR. You won't need to go through the SR menu to get back to the editor.
+ - The "Is official" tag has been altered. Now when a level has the "Is official" tag:
 	 - If the level's author matches the level groups author, the level won't have the "Creator:" line, similary to how WaterWay doesn't have it.
 	 - If the level's author is different to the level groups author, it will show a thank you message.
- - The official tag now does nothing in UserUniverse.
- - The keybind for saving with a popup is now shown in full.
+ - The "Is official" tag now does nothing in UserUniverse.
+ - In the options menu, the keybind for saving with a popup didn't display properly. This is now fixed.
 
 </p></details>

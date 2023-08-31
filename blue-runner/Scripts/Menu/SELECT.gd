@@ -476,14 +476,14 @@ func reload_all_levels():
 			if Global.level_group["tags"].has("hide_author"):
 				$level_select/author.visible = false
 		
-		if Global.level_group.has("ui_color"):
-			color = Color(Global.level_group["ui_color"][0], Global.level_group["ui_color"][1], Global.level_group["ui_color"][2])
-		
 		if Global.level_group.has("author"):
 			if Global.level_group["author"] == "":
 				$level_select/author.text = ""
 			else:
 				$level_select/author.text = "By: " + Global.level_group["author"]
+		
+		if Global.level_group.has("ui_color"):
+			color = Color(Global.level_group["ui_color"][0], Global.level_group["ui_color"][1], Global.level_group["ui_color"][2])
 	else:
 		$level_select/author.visible = true
 		$level_select/author.text = String(user_current_page + 1) + "/" + String(user_page_amount)
@@ -558,6 +558,8 @@ func set_level_data_text(is_in_user_universe : bool = false):
 			elif Global.level_group.has("author"):
 				if level_dat["creator"] != Global.level_group["author"]:
 					$level_select/level_data/creator.set_text("My thanks goes to " + level_dat["creator"] + " for making this!")
+				else:
+					$level_select/level_data/creator.set_text("")
 			elif level_dat["creator"] != "Tabin":
 				$level_select/level_data/creator.set_text("My thanks goes to " + level_dat["creator"] + " for making this!")
 	
