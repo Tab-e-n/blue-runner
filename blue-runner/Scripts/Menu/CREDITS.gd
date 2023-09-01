@@ -1,5 +1,7 @@
 extends Node2D
 
+onready var parent : Node2D = get_parent()
+
 func _ready():
 	$credits.text = """SONIC RUNNER
 	v2.0.0
@@ -49,10 +51,17 @@ func _ready():
 	
 	- Special Thanks -
 	Edmund McMillen
+	Hakita
 	
 	
 	
-	Thanks for playing!"""
+	Thanks for playing!
+	:D"""
+
+func _physics_process(delta):
+	$credits.rect_position.y -= 0.5
 
 func menu_update():
-	$credits.rect_position.y -= 0.5
+	if Input.is_action_just_pressed("deny"):
+		parent.switch_menu("MAIN", "CREDITS")
+		$mainAnim.play("exit")

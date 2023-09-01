@@ -343,6 +343,7 @@ margin_top = 16.0
 margin_right = -296.0
 margin_bottom = -213.0
 rect_scale = Vector2( 0.75, 0.75 )
+custom_colors/default_color = Color( 0.454902, 0.54902, 0.662745, 1 )
 text = "INSTRUCTIONS"
 
 [node name="Text" parent="GUI/instructions" instance=ExtResource( 1 )]

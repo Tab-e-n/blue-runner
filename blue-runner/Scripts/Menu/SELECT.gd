@@ -143,6 +143,7 @@ func menu_update():
 			Global.current_character_location = unlocked_characters[selected_character][1]
 			Global.select_menu = true
 			if Global.change_level("", true) != OK:
+				$level_select/fail.visible = true
 				is_selecting_characters = false
 				$mainAnim.play("CHARACTER -> LEVEL")
 		
