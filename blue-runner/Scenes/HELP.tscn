@@ -827,10 +827,6 @@ automatic_set_level_node = false
 [node name="Finish" parent="Level" instance=ExtResource( 10 )]
 visible = false
 position = Vector2( 416, 192 )
-tele_destination = "*Menu_Level_Select"
-par = 0.0
-type = 0
-unlock = ""
 automatic_set_level_node = false
 
 [node name="Collectible" parent="Level" instance=ExtResource( 11 )]

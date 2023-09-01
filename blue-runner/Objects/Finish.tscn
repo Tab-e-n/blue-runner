@@ -36,13 +36,13 @@
 [ext_resource path="res://Visual/XT9/leg2B.png" type="Texture" id=34]
 [ext_resource path="res://Scripts/single_color.shader" type="Shader" id=35]
 
-[sub_resource type="ShaderMaterial" id=5]
+[sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 35 )
 shader_param/color = null
 shader_param/active = false
 shader_param/blend = 1.0
 
-[sub_resource type="RectangleShape2D" id=1]
+[sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 8, 8 )
 
 [sub_resource type="Animation" id=3]
@@ -966,19 +966,15 @@ tracks/37/keys = {
 }
 
 [node name="Finish" type="StaticBody2D"]
-material = SubResource( 5 )
+material = SubResource( 1 )
 collision_layer = 24
 collision_mask = 24
 script = ExtResource( 4 )
-tele_destination = null
-par = null
-type = null
-unlock = null
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -56 )
 scale = Vector2( 1.5, 7 )
-shape = SubResource( 1 )
+shape = SubResource( 2 )
 
 [node name="Visual_XT9" type="Node2D" parent="."]
 visible = false

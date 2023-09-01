@@ -153,7 +153,9 @@ func accept(group : Node2D):
 			$mainAnim.stop()
 			$mainAnim.play("exit_sub")
 		BUTTON_CREDITS:
-			print("incomplete")
+			parent.switch_menu("CREDITS", "MAIN")
+			$mainAnim.stop()
+			$mainAnim.play("exit_sub")
 		BUTTON_CHEATCODES:
 			parent.switch_menu("CHEAT_CODES", "MAIN")
 			$mainAnim.stop()

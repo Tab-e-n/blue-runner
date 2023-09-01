@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Text/Shixel_Small.tres" type="DynamicFont" id=1]
+[ext_resource path="res://Scripts/Menu/CREDITS.gd" type="Script" id=2]
+
+[node name="CREDITS" type="Node2D"]
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_horizontal_guides_": [ 384.0, -384.0 ],
+"_edit_vertical_guides_": [ -640.0, 640.0 ]
+}
+
+[node name="credits" type="Label" parent="."]
+margin_left = -448.0
+margin_top = 384.0
+margin_right = 448.0
+margin_bottom = 768.0
+custom_fonts/font = ExtResource( 1 )
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}

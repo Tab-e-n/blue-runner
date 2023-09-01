@@ -51,7 +51,7 @@ editor_properties = {
 "rect": Rect2( 0, -32, 64, 64 ),
 "unchangeable_properties": {
 "color": false,
-"order": true,
+"order": false,
 "rotation": true,
 "scale": false,
 "z_index": false

@@ -1,4 +1,4 @@
-# 2.0.0 SMALL UPDATE ? NO !!!!
+# 2.0.0 SMALL UPDATE ? NO !!! BIG BREAK !!!
 
 <details><summary><h2>GENERAL</h2></summary><p>
 
@@ -81,6 +81,7 @@
 
  - Attachables should no longer have wacky behaviours when you do anything complex with them.
  - Fixed a bug where you could have multiple of the same tile preset in the place panel.
+ - You can now edit the order of portals.
  - Fixed playtested levels not reloading when you die or press reset.
  - Playtested levels no longer save as seperate levels.
  - Upon exiting a level when you are platesting it, you will also exit SR. You won't need to go through the SR menu to get back to the editor.
