@@ -38,7 +38,3 @@ I když dokážu nají spousty bugů sám, všechno najít nedokážu.
 
 Pokud vymyslíte něco, co by podle vás zlepšilo hru, klidně o tom napište v sekci "Issues", a pokud se mi váš nápad bude líbit, může se i officiálně dostat do hry.  
 Tohle pravidlo také platí pokud něco sami vytvoříte a chtěli by jste, abych to přidal do hry, jako třeba vlastní levely nebo objekty.
-
-Prosím vás ale, abyste nepsali nic, co už mám naplánované udělat. 
-V sekci "Projects" nebo ve souboru todo.txt mužete najít, co plánuji a na čem právě pracuji, takže se na to podívejte před tím,
-než uděláte feature request.
