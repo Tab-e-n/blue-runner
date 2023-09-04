@@ -58,6 +58,7 @@ func teleport(timer : float, collectible : Array, collectible_unlock : Array, re
 		Global.unlock(i)
 	
 	if name == "Portal":
+		Audio.play_sound("ZoopAway")
 		Global.save_game()
 		
 		if !Global.race_mode:

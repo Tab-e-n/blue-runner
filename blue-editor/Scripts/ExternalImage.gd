@@ -1,7 +1,7 @@
 extends Node2D
 
 var editor_properties : Dictionary = {
-	"description" : "An external image.",
+	"description" : "An object that loads an external image that isn't native to Sonic Runner. Only works when the level is in a level group.",
 	"object_path" : "res://Objects/ExternalImage.tscn",
 	"object_type" : "normal",
 	"layer" : "selected",
@@ -41,14 +41,14 @@ func reload():
 	var level_location : String = get_tree().current_scene.level_path
 	level_location = level_location.substr(0, level_location.find_last("/") + 1)
 	
-	print(level_location)
+#	print(level_location)
 	
 	if level_location == "user://SRLevels/" or level_location == "":
 		sprite.texture = preload("res://Visual/no_image.png")
 		add_child(sprite)
 		return
 	
-	print(level_location + "Sprites/" + texture_filename)
+#	print(level_location + "Sprites/" + texture_filename)
 	
 	var pngf = File.new()
 	if not pngf.file_exists(level_location + "Sprites/" + texture_filename):
@@ -61,7 +61,7 @@ func reload():
 	var pngdata = pngf.get_buffer(pnglen)
 	pngf.close()
 	
-# warning-ignore:return_value_discarded
+	# warning-ignore:return_value_discarded
 	image.load_png_from_buffer(pngdata)
 	var image_texture : ImageTexture = ImageTexture.new()
 	image_texture.create_from_image(image.get_rect(image.get_used_rect()))

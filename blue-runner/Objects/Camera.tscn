@@ -98,6 +98,7 @@ color = Color( 0.258824, 0.258824, 0.258824, 1 )
 polygon = PoolVector2Array( 0, 8, 8, 0, 0, -8, -128, -8, -136, 0, -128, 8 )
 
 [node name="info" type="Node2D" parent="."]
+visible = false
 scale = Vector2( 2, 2 )
 z_index = 100
 

@@ -24,23 +24,6 @@ func reload():
 		add_child(sprite)
 		return
 	
-	var pngf = File.new()
-	if not pngf.file_exists(level_location + "Sprites/" + texture_filename):
-		sprite.texture = preload("res://Visual/no_image.png")
-		add_child(sprite)
-		return
+	Global.load_external_picture(level_location + "Sprites/" + texture_filename, sprite)
 	
-	pngf.open(level_location + "Sprites/" + texture_filename, File.READ)
-	var pnglen = pngf.get_len()
-	var pngdata = pngf.get_buffer(pnglen)
-	pngf.close()
-	
-	image.load_png_from_buffer(pngdata)
-	var image_texture : ImageTexture = ImageTexture.new()
-	image_texture.create_from_image(image.get_rect(image.get_used_rect()))
-	
-	sprite.texture = image_texture
-	
-	if sprite.texture == null:
-		sprite.texture = preload("res://Visual/no_image.png")
 	add_child(sprite)

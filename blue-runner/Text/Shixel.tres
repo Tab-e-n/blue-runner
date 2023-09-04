@@ -3,6 +3,6 @@
 [ext_resource path="res://Text/Shixel.ttf" type="DynamicFontData" id=1]
 
 [resource]
-size = 63
+size = 62
 use_mipmaps = true
 font_data = ExtResource( 1 )

@@ -403,7 +403,6 @@ func _process(_delta):
 	$GUI/tint.scale.x = window.x / 1024 + 1
 	$GUI/tint.scale.y = window.y / 768 + 1
 	
-	
 	var mouse_pos : Vector2 = get_viewport().get_mouse_position()
 	level_mouse_position.x = stepify((-level.position.x + mouse_pos.x - window.x / 2) / level.scale.x, 1)
 	level_mouse_position.y = stepify((-level.position.y + mouse_pos.y - window.y / 2) / level.scale.y, 1)
@@ -446,6 +445,7 @@ func _process(_delta):
 		place_attach_mode = !place_attach_mode
 	
 	var edit_mode : bool = Input.is_action_pressed(\"15\") and shortcuts and place_current_tab == PLACE_OBJECTS
+	var bucket_mode : bool = Input.is_action_pressed(\"15\") and shortcuts and place_current_tab == PLACE_TILES
 	
 	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"21\") and shortcuts:
 		get_node(\"GUI/Place/Panel/layer_0\").pressed = true
@@ -563,6 +563,10 @@ func _process(_delta):
 					edit_node.call(\"edit_right_released\", mouse_pos, $GUI/cursor.position, level.scale)
 			if edit_node.has_method(\"edit_right_pressed\"):
 				edit_node.call(\"edit_right_pressed\", mouse_pos, mouse_hinge)
+	elif bucket_mode:
+		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
+			if Input.is_action_just_pressed(\"mouse_left\"):
+				level_bucket_fill_tiles(place_selected_tile)
 	elif transform_mode:
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\") and $GUI/Edit_Items/Panel/other/scale_y.editable:
 			if Input.is_action_just_pressed(\"mouse_left\"):
@@ -734,6 +738,9 @@ func _process(_delta):
 	if edit_mode:
 		$GUI/Place/Panel/mode.bbcode_text += \"[color=#c837af]EDIT[/color]\"
 		$GUI/border.default_color = Color(0.78, 0.22, 0.69, 0.53)
+	elif bucket_mode:
+		$GUI/Place/Panel/mode.bbcode_text += \"[color=#06e6a1]BUCKET[/color]\"
+		$GUI/border.default_color = Color(0.02, 0.9, 0.63, 0.53)
 	elif transform_mode:
 		$GUI/Place/Panel/mode.bbcode_text += \"[color=#c837af]TRANSFORM[/color]\"
 		$GUI/border.default_color = Color(0.78, 0.22, 0.69, 0.53)
@@ -1372,7 +1379,83 @@ func level_recieved_input(_button_pressed):
 
 func level_draw_tile(tile : int):
 	var tile_pos : Vector2 = place_current_tilemap.world_to_map(level_mouse_position / place_current_tilemap.scale)
-	place_current_tilemap.set_cellv(tile_pos, tile, place_tile_mods[0], place_tile_mods[1], place_tile_mods[2])
+	set_cell(tile_pos, tile)
+
+func level_bucket_fill_tiles(tile : int):
+	var starting_position : Vector2 = place_current_tilemap.world_to_map(level_mouse_position / place_current_tilemap.scale)
+	var replacing : int = place_current_tilemap.get_cell(starting_position.x, starting_position.y)
+	if replacing == tile:
+		done_action(\"tile is already the same as the selected tile\", \"#5d1f31\", true)
+		return
+	
+	var used_cells : Array = place_current_tilemap.get_used_cells()
+	
+	var farthest_left : int = used_cells[used_cells.size() - 1].x
+	var farthest_right : int = used_cells[used_cells.size() - 1].x
+	var farthest_up : int = used_cells[used_cells.size() - 1].y
+	var farthest_down : int = used_cells[used_cells.size() - 1].y
+	
+	used_cells.pop_back()
+	
+	for i in place_current_tilemap.get_used_cells():
+		if i.x < farthest_left:
+			farthest_left = i.x
+		if i.x > farthest_right:
+			farthest_right = i.x
+		if i.y < farthest_up:
+			farthest_up = i.y
+		if i.y > farthest_down:
+			farthest_down = i.y
+	
+	print(starting_position, \" \", farthest_left, \" \", farthest_right, \" \", farthest_up, \" \", farthest_down)
+	
+	if (starting_position.x > farthest_right or starting_position.x < farthest_left or
+	starting_position.y > farthest_down or starting_position.y < farthest_up):
+		done_action(\"can only fill tiles where other tiles are\", \"#5d1f31\", true)
+		return
+	
+	var i : int = 0
+	var x : int = starting_position.x
+	var y : int = starting_position.y
+	var stack : Array = []
+	stack.append([x, x, y, 1])
+	stack.append([x, x, y - 1, -1])
+	var x1 : int
+	var x2 : int
+	var dy : int
+	while stack.size() > 0:
+		i += 1
+		if i == 32:
+			breakpoint
+		x1 = stack[0][0]
+		x2 = stack[0][1]
+		y = stack[0][2]
+		dy = stack[0][3]
+		stack.pop_front()
+		x = x1
+		if place_current_tilemap.get_cell(x, y) == replacing:
+			while place_current_tilemap.get_cell(x - 1, y) == replacing and x - 1 >= farthest_left:
+				set_cell(Vector2(x - 1, y), tile)
+				x -= 1
+			if x < x1 and y - dy <= farthest_down and y - dy >= farthest_up:
+				stack.append([x, x1 - 1, y - dy, -dy])
+		while x1 <= x2:
+			while place_current_tilemap.get_cell(x1, y) == replacing and x1 <= farthest_right:
+				set_cell(Vector2(x1, y), tile)
+				x1 += 1
+			if x1 > x and y + dy <= farthest_down and y + dy >= farthest_up:
+				stack.append([x, x1 - 1, y + dy, dy])
+			if x1 - 1 > x2 and y - dy <= farthest_down and y - dy >= farthest_up:
+				stack.append([x2 + 1, x1 - 1, y - dy, -dy])
+			x1 += 1
+			while x1 < x2 and not place_current_tilemap.get_cell(x1, y) == replacing and x1 <= farthest_right:
+				x1 += 1
+			x = x1
+
+func set_cell(pos : Vector2, tile : int):
+	if place_current_tilemap.get_cell(pos.x, pos.y) == tile:
+		return
+	place_current_tilemap.set_cellv(pos, tile, place_tile_mods[0], place_tile_mods[1], place_tile_mods[2])
 
 func level_add_decor():
 	var new_decor : Sprite = Sprite.new()
@@ -1621,11 +1704,15 @@ func level_pick_closest_item():
 		if place_current_tab == PLACE_OBJECTS:
 			object_select(\"\", node, node == level_objects[\"bg\"])
 		
-		if node != level_objects[\"bg\"]: node.queue_free()
-	if place_current_tab == PLACE_DECOR: done_action(\"pick decor\", \"#e4a712\")
-	if place_current_tab == PLACE_OBJECTS: done_action(\"pick object\", \"#e4a712\")
+		if node != level_objects[\"bg\"]:
+			node.queue_free()
+	if place_current_tab == PLACE_DECOR:
+		done_action(\"pick decor\", \"#e4a712\")
+	if place_current_tab == PLACE_OBJECTS:
+		done_action(\"pick object\", \"#e4a712\")
 	
-	if attachable != null: attachable.detached(node)
+	if attachable != null:
+		attachable.detached(node)
 
 # PLACE FUNCTIONS
 func place_update_tiles(tileset_name : String):
@@ -2740,7 +2827,6 @@ format = 1
 margin_left = 8.0
 margin_right = 56.0
 margin_bottom = 64.0
-mouse_filter = 0
 text = "2"
 
 [node name="cursor" type="Node2D" parent="GUI"]
@@ -2782,7 +2868,6 @@ anchor_right = 0.0
 margin_top = -32.0
 margin_right = 2048.0
 margin_bottom = 32.0
-mouse_filter = 0
 text = ""
 
 [node name="zoom" parent="GUI/Info" instance=ExtResource( 10 )]
@@ -2791,7 +2876,6 @@ anchor_right = 0.0
 margin_top = -64.0
 margin_right = 2048.0
 margin_bottom = 0.0
-mouse_filter = 0
 text = ""
 
 [node name="mouse" parent="GUI/Info" instance=ExtResource( 10 )]
@@ -2801,7 +2885,6 @@ anchor_right = 0.0
 margin_top = -96.0
 margin_right = 2048.0
 margin_bottom = -32.0
-mouse_filter = 0
 text = ""
 
 [node name="window" parent="GUI/Info" instance=ExtResource( 10 )]
@@ -2811,7 +2894,6 @@ anchor_right = 0.0
 margin_top = -128.0
 margin_right = 2048.0
 margin_bottom = -64.0
-mouse_filter = 0
 text = ""
 
 [node name="actual" parent="GUI/Info" instance=ExtResource( 10 )]
@@ -2821,7 +2903,6 @@ anchor_right = 0.0
 margin_top = -160.0
 margin_right = 2048.0
 margin_bottom = -96.0
-mouse_filter = 0
 text = ""
 
 [node name="action" parent="GUI/Info" instance=ExtResource( 10 )]
@@ -2831,7 +2912,6 @@ margin_left = -1024.0
 margin_top = -64.0
 margin_right = 1024.0
 margin_bottom = 0.0
-mouse_filter = 0
 custom_colors/default_color = Color( 1, 1, 1, 1 )
 bbcode_enabled = true
 text = ""
@@ -2854,7 +2934,6 @@ margin_left = -1024.0
 margin_top = -32.0
 margin_right = 960.0
 margin_bottom = 32.0
-mouse_filter = 0
 bbcode_enabled = true
 text = ""
 
@@ -3086,7 +3165,6 @@ __meta__ = {
 margin_left = 48.0
 margin_top = 24.0
 margin_bottom = -56.0
-mouse_filter = 0
 text = "Tiles"
 
 [node name="tab_left" type="TextureButton" parent="GUI/Place/Panel"]
@@ -3302,7 +3380,6 @@ margin_left = 40.0
 margin_top = 8.0
 margin_right = 88.0
 margin_bottom = -328.0
-mouse_filter = 0
 text = "Sublayer"
 
 [node name="sublayer_0" type="Button" parent="GUI/Edit_Tiles/Panel"]
@@ -3389,7 +3466,6 @@ margin_left = 16.0
 margin_top = 328.0
 margin_right = 256.0
 margin_bottom = 120.0
-mouse_filter = 0
 text = "Flip h:
 Flip v:"
 
@@ -3434,7 +3510,6 @@ __meta__ = {
 margin_left = 16.0
 margin_right = 448.0
 margin_bottom = 320.0
-mouse_filter = 0
 custom_fonts/mono_font = ExtResource( 51 )
 custom_fonts/bold_italics_font = ExtResource( 51 )
 custom_fonts/italics_font = ExtResource( 51 )
@@ -3598,7 +3673,6 @@ margin_left = 16.0
 margin_top = 40.0
 margin_right = 256.0
 margin_bottom = 408.0
-mouse_filter = 0
 text = "Unicolor:
 
 - FRONT -
@@ -3991,7 +4065,6 @@ margin_left = 56.0
 margin_top = 88.0
 margin_right = -312.0
 margin_bottom = -184.0
-mouse_filter = 0
 text = "Name"
 
 [node name="name_edit" type="LineEdit" parent="GUI/File/Panel"]
@@ -4017,7 +4090,6 @@ margin_left = 8.0
 margin_top = 136.0
 margin_right = -264.0
 margin_bottom = -136.0
-mouse_filter = 0
 text = "Creator"
 
 [node name="creator_edit" type="LineEdit" parent="GUI/File/Panel"]
@@ -4043,7 +4115,6 @@ margin_left = 16.0
 margin_top = 184.0
 margin_right = -272.0
 margin_bottom = -88.0
-mouse_filter = 0
 text = "Official"
 
 [node name="official_edit" type="CheckBox" parent="GUI/File/Panel"]
@@ -4067,7 +4138,6 @@ margin_left = 64.0
 margin_top = 232.0
 margin_right = -320.0
 margin_bottom = -40.0
-mouse_filter = 0
 text = "Icon"
 
 [node name="icon_edit" type="OptionButton" parent="GUI/File/Panel"]
@@ -4091,7 +4161,6 @@ margin_left = 64.0
 margin_top = 280.0
 margin_right = -320.0
 margin_bottom = 8.0
-mouse_filter = 0
 text = "Base"
 
 [node name="base_edit" type="OptionButton" parent="GUI/File/Panel"]
@@ -4115,7 +4184,6 @@ margin_left = 32.0
 margin_top = 328.0
 margin_right = -288.0
 margin_bottom = 56.0
-mouse_filter = 0
 text = "Tileset"
 
 [node name="tileset_edit" type="OptionButton" parent="GUI/File/Panel"]
@@ -4139,7 +4207,6 @@ margin_left = 96.0
 margin_top = 376.0
 margin_right = -352.0
 margin_bottom = 104.0
-mouse_filter = 0
 text = "BG"
 
 [node name="bg_edit" type="OptionButton" parent="GUI/File/Panel"]
@@ -4313,11 +4380,11 @@ text = "???"
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
@@ -4338,8 +4405,8 @@ text = "???"
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_back" to="." method="layer_color_changed" binds= [ 1 ]]
 [connection signal="value_changed" from="GUI/Edit_Layers/Panel/scale_background" to="." method="layer_scale_changed" binds= [ 0 ]]
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_background" to="." method="layer_color_changed" binds= [ 0 ]]
-[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
 [connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
+[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
 [connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
 [connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="items_scroll_scrolling"]
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]

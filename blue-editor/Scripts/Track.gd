@@ -1,7 +1,7 @@
 extends Line2D
 
 var editor_properties : Dictionary = {
-	"description" : "A track.\nOther objects can be attached to this one. They will move on path that the creator specifies. You can edit the path only through the edit mode.",
+	"description" : "A track.\nOther objects can be attached to this one. They will move on path that the creator specifies. You can edit the path only through edit mode.",
 	"object_path" : "res://Objects/Track.tscn",
 	"object_type" : "normal",
 	"layer" : "selected",

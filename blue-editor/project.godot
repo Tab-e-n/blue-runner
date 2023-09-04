@@ -28,7 +28,6 @@ data="*res://Scenes/data.tscn"
 [display]
 
 window/size/height=768
-window/size/fullscreen=true
 window/stretch/mode="2d"
 window/stretch/aspect="expand"
 

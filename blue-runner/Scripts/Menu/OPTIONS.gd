@@ -17,25 +17,39 @@ var buttons : Array = []
 var confirmation : bool = false
 var confirm_popup : bool = false
 var keybinds : bool = false
-var disabled : bool = false
+var disabled_popup : bool = false
+var slider : bool = false
 
-var main_buttons : Array = [
-	["GAME OPTIONS", "submenu", "game"],
+var starting_slider_pos : int = 0
+
+const main_buttons : Array = [
+	["GAME SETTINGS", "submenu", "game"],
 	["CONTROLS", "submenu", "controls"],
-	["AUDIO", "disabled", "audio"],
+	["AUDIO", "submenu", "audio"],
 	["", "label"],
 	["RESET OPTIONS", "globalaction", "reset_options", true],
 ]
 
-var game_buttons : Array = [
-	["OUTLINES", "checkbox", "*outlines_on"],
+const game_buttons : Array = [
+	["== GAME SETTINGS ==", "label"],
+	["", "label"],
+#	["OUTLINES", "checkbox", "*outlines_on"],
 	["GHOSTS", "checkbox", "*ghosts_on"],
 	["TIMER", "enum", "*timer_on", ["OFF", "ON", "LEVEL BEAT"]],
+	["", "label"],
 	["DELETE SAVE", "globalaction", "delete_save", true],
 ]
 
-var controls_buttons : Array = [
-	["=== LEVEL CONTROLS ===", "label"],
+const controls_buttons : Array = [
+	["== CONTROLS ==", "label"],
+	["", "label"],
+	["LEVEL CONTROLS", "submenu", "controls_level"],
+	["MENU CONTROLS", "submenu", "controls_menu"],
+	["META CONTROLS", "submenu", "controls_meta"],
+]
+const controls_level_buttons : Array = [
+	["== LEVEL CONTROLS ==", "label"],
+	["", "label"],
 	["LEFT", "keybind", 0],
 	["RIGHT", "keybind", 1],
 	["UP", "keybind", 2],
@@ -44,7 +58,10 @@ var controls_buttons : Array = [
 	["SPECIAL", "keybind", 5],
 	["RESET", "keybind", 6],
 	["RETURN", "keybind", 7],
-	["=== MENU CONTROLS ===", "label"],
+]
+const controls_menu_buttons : Array = [
+	["== MENU CONTROLS ==", "label"],
+	["", "label"],
 	["LEFT", "keybind", 8],
 	["RIGHT", "keybind", 9],
 	["UP", "keybind", 10],
@@ -52,12 +69,21 @@ var controls_buttons : Array = [
 	["ACCEPT", "keybind", 12],
 	["DENY", "keybind", 13],
 ]
-
-var audio_buttons : Array = [
-	["MAIN", "slider", ""],
-	["SFX", "slider", ""],
-	["MUSIC", "slider", ""],
+const controls_meta_buttons : Array = [
+	["== META CONTROLS ==", "label"],
+	["", "label"],
+	["SCREENSHOT", "keybind", 15],
+	["SAVE REPLAY", "keybind", 14],
 ]
+
+const audio_buttons : Array = [
+	["== AUDIO ==", "label"],
+	["", "label"],
+	["SFX", "slider", "*audio_sfx", [0, 100]],
+#	["MUSIC", "slider", "*audio_music", [0, 100]],
+]
+
+var where_to_go_back : String = "main"
 
 func make_options(menu_buttons : Array):
 	var section : int = 1
@@ -125,7 +151,15 @@ func make_options(menu_buttons : Array):
 				$buttons.add_child(new_checkbox)
 				buttons.append(["checkbox", new_checkbox, menu_buttons[i][2]])
 			"slider":
-				buttons.append(["slider"])
+				var new_slider = HSlider.new()
+				new_slider.rect_position = pos - Vector2(0, 8)
+				new_slider.rect_size = Vector2(128, 32)
+				new_slider.editable = false
+				new_slider.min_value = menu_buttons[i][3][0]
+				new_slider.max_value = menu_buttons[i][3][1]
+				new_slider.value = Global.options[menu_buttons[i][2]]
+				$buttons.add_child(new_slider)
+				buttons.append(["slider", new_slider, menu_buttons[i][2]])
 			"enum":
 				var new_text = text.instance()
 				new_text.rect_position = pos - Vector2(0, 4)
@@ -139,7 +173,7 @@ func make_options(menu_buttons : Array):
 				buttons.append(["globalaction", menu_buttons[i][2], menu_buttons[i][3]])
 			"keybind":
 				var new_text = text.instance()
-				new_text.rect_position = pos
+				new_text.rect_position = pos - Vector2(0, 4)
 				new_text.text = Global.key_names(menu_buttons[i][2])
 				$buttons.add_child(new_text)
 				
@@ -171,8 +205,8 @@ func _input(event):
 			confirmation = false
 		if event.pressed and confirm_popup and event.scancode != Global.options["*accept"]:
 			confirmation = false
-		if event.pressed and disabled:
-			disabled = false
+		if event.pressed and disabled_popup:
+			disabled_popup = false
 
 func menu_update():
 	for i in buttons:
@@ -189,12 +223,25 @@ func menu_update():
 		cursor_row += 1
 		$cursor/anim.stop()
 		$cursor/anim.play("Spin")
+	if Input.is_action_pressed("menu_left") and parent.move and slider:
+		if buttons[cursor_row][1].value != buttons[cursor_row][1].min_value:
+			buttons[cursor_row][1].value -= 1
+			$slider_value.text = String(buttons[cursor_row][1].value)
+	if Input.is_action_pressed("menu_right") and parent.move and slider:
+		if buttons[cursor_row][1].value != buttons[cursor_row][1].max_value:
+			buttons[cursor_row][1].value += 1
+			$slider_value.text = String(buttons[cursor_row][1].value)
 	if Input.is_action_just_pressed("accept") and !keybinds:
 		$cursor/anim.stop()
 		$cursor/anim.play("Select")
 		#select()
 	if Input.is_action_just_pressed("deny") and !keybinds and !confirm_popup:
-		if cursor_row != cursor_positions.size() - 1:
+		if slider:
+			buttons[cursor_row][1].value = starting_slider_pos
+			confirmation = false
+			slider = false
+			$slider_value.visible = false
+		elif cursor_row != cursor_positions.size() - 1:
 			$cursor/anim.stop()
 			$cursor/anim.play("Spin")
 			cursor_row = cursor_positions.size() - 1
@@ -212,7 +259,7 @@ func menu_update():
 	cursor.position = cursor_positions[cursor_row]
 	
 	$confirmation.visible = confirm_popup
-	$disabled.visible = disabled
+	$disabled.visible = disabled_popup
 	
 	material.set_shader_param("offset", pulse_time)
 
@@ -223,28 +270,51 @@ func change_menu(menu : String):
 			make_options(main_buttons)
 		"game":
 			make_options(game_buttons)
+			where_to_go_back = "main"
 		"controls":
 			make_options(controls_buttons)
+			where_to_go_back = "main"
 		"audio":
 			make_options(audio_buttons)
+			where_to_go_back = "main"
+		"controls_level":
+			make_options(controls_level_buttons)
+			where_to_go_back = "controls"
+		"controls_menu":
+			make_options(controls_menu_buttons)
+			where_to_go_back = "controls"
+		"controls_meta":
+			make_options(controls_meta_buttons)
+			where_to_go_back = "controls"
 
 func select():
 	match(buttons[cursor_row][0]):
 		"back":
 			if current_menu != "main":
-				change_menu("main")
+				change_menu(where_to_go_back)
 			else:
 				parent.switch_menu("MAIN", "OPTIONS")
 				$mainAnim.play("exit")
 		"submenu":
 			change_menu(buttons[cursor_row][1])
 		"disabled":
-			disabled = true
+			disabled_popup = true
 		"checkbox":
 			Global.options[buttons[cursor_row][2]] = !Global.options[buttons[cursor_row][2]]
 			buttons[cursor_row][1].pressed = Global.options[buttons[cursor_row][2]]
 		"slider":
-			pass
+			if slider == false:
+				confirmation = true
+				slider = true
+				starting_slider_pos = buttons[cursor_row][1].value
+				$slider_value.visible = true
+				$slider_value.rect_position = cursor.position + Vector2(352, -20)
+				$slider_value.text = String(buttons[cursor_row][1].value)
+			else:
+				confirmation = false
+				slider = false
+				Global.options[buttons[cursor_row][2]] = buttons[cursor_row][1].value
+				$slider_value.visible = false
 		"enum":
 			Global.options[buttons[cursor_row][2]] += 1
 			if Global.options[buttons[cursor_row][2]] == buttons[cursor_row][3].size():

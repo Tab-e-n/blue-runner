@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=20 format=2]
+[gd_resource type="Theme" load_steps=24 format=2]
 
 [ext_resource path="res://Control/style_hover.tres" type="StyleBox" id=1]
 [ext_resource path="res://Visual/Menu/menu_check_box_3.png" type="Texture" id=2]
@@ -19,6 +19,10 @@
 [ext_resource path="res://Visual/Editor/editor_point_dark.png" type="Texture" id=17]
 [ext_resource path="res://Control/style_label.tres" type="StyleBox" id=18]
 [ext_resource path="res://Control/style_scroll_horizontal.tres" type="StyleBox" id=19]
+[ext_resource path="res://Visual/Menu/slider_disabled.png" type="Texture" id=20]
+[ext_resource path="res://Visual/Menu/slider_normal.png" type="Texture" id=21]
+[ext_resource path="res://Visual/Menu/slider_enabled.png" type="Texture" id=22]
+[ext_resource path="res://Control/style_options_scroller.tres" type="StyleBox" id=23]
 
 [resource]
 default_font = ExtResource( 3 )
@@ -93,6 +97,13 @@ HScrollBar/styles/grabber_highlight = ExtResource( 15 )
 HScrollBar/styles/grabber_pressed = ExtResource( 9 )
 HScrollBar/styles/scroll = ExtResource( 19 )
 HScrollBar/styles/scroll_focus = null
+HSlider/icons/grabber = ExtResource( 21 )
+HSlider/icons/grabber_disabled = ExtResource( 20 )
+HSlider/icons/grabber_highlight = ExtResource( 22 )
+HSlider/icons/tick = null
+HSlider/styles/grabber_area = ExtResource( 7 )
+HSlider/styles/grabber_area_highlight = ExtResource( 7 )
+HSlider/styles/slider = ExtResource( 23 )
 ItemList/colors/font_color = Color( 0.917647, 0.933333, 0.952941, 1 )
 ItemList/colors/font_color_selected = Color( 0.917647, 0.933333, 0.952941, 1 )
 ItemList/colors/guide_color = Color( 0, 0, 0, 0.101961 )

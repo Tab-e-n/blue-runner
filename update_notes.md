@@ -12,6 +12,7 @@
  - The main menu got almost completely redesigned, with every menu that it had originaly either completely overhalled or at least changed in some way.
    There were no escapees. On top of that, there are now also new menus! And also a new inaccesable menu! God damn!
  - New timer setting, where it will only appear if you had beaten the level you are playing.
+ - You can now screenshot the game with F2.
  - You can now save replays while playing the level with F6. This will save a replay without you needing to finish the level.
  - You can now unlock missing legitimately.
 
@@ -43,12 +44,18 @@
 
 ### NEW ADDITIONS
 
+ - New__ bucket tool__! You can access it by pressing the edit mode key while
+   placing down tiles, and with a single left click it will allow you to fill
+   in any holes you may have in the ground.
  - Added new shortcuts to temporarely hide layers.
  - In the edit layers panel, there is now a new option:__ Unicolor__! Turning this
    on will make every layer only one color.
- - Added a new object:__ Boosters__! The act similarly to mushrooms, but just with
-   different theming.
- - Added a new object:__ Platforms__! The moving platforms are real!
+ - Added a new objects:
+    - __ Boosters__! The act similarly to mushrooms, but just with
+      different theming.
+    - __ Platforms__! The moving platforms are real!
+    - __ External Images__! It's the lite version of mods!
+    - __ Invisible Ground__! :)
  - You can now change the font of HoverText.
  - New text interpreter or something!
 	 - When typing text into HoverText, you can type some commands
@@ -69,12 +76,14 @@
 	 - %\`% will put a \`, since otherwise it will be removed.
  - You can now set `tele_destination` of the portal and finish to `*Level_Next`, which will change the level to the next level in the level group.
  - You can now add the name of the author to a level group. You can also make it so it doesn't display in the level select screen, if you don't like how it looks.
+ - A new tool to convert pngs to stex has been added. It has no use currently, but may come in handy once i tackle mod support.
 
 ### VISUAL
 
  - You can now specify the "ui color" for a level group.
  - There are now more variations of dirt tiles.
  - More Blurees! i love trees trees so cool
+ - New stalagmite and stalactite sprites added.
  - The .dat creator has been centralized.
 
 ### FIXES & CHANGES
@@ -84,7 +93,7 @@
  - You can now edit the order of portals.
  - Fixed playtested levels not reloading when you die or press reset.
  - Playtested levels no longer save as seperate levels.
- - Upon exiting a level when you are platesting it, you will also exit SR. You won't need to go through the SR menu to get back to the editor.
+ - Upon exiting a level when you are playtesting it, you will also exit SR. You won't need to go through the SR menu to get back to the editor.
  - The "Is official" tag has been altered. Now when a level has the "Is official" tag:
 	 - If the level's author matches the level groups author, the level won't have the "Creator:" line, similary to how WaterWay doesn't have it.
 	 - If the level's author is different to the level groups author, it will show a thank you message.

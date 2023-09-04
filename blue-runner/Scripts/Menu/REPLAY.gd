@@ -292,6 +292,7 @@ func rack_visuals():
 		
 		if next_replay != current_replay and !$rack/anim.is_playing():
 			$rack/anim.play("shift")
+			$rack/anim.playback_speed = 9 / float(9 - (parent.held_for_amount / 3))
 			rack_time = 0
 			# warning-ignore:narrowing_conversion
 			rack_anim_direction = sign(next_replay - current_replay)

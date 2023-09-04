@@ -12,7 +12,7 @@ var text = [
 	"CPU:",
 	" VVIDYA Jetstream Nano\n",
 	"Memory:",
-	" SD/CCMN 4096MB\n",
+	" SD/CCMN 48\n",
 	"WARNING: Machine has been tampered with\n\n",
 	
 	"Press F12 to reset motor settings.\n",
@@ -45,6 +45,8 @@ var text = [
 	"MENU DOWN - ",
 	"ACCEPT - ",
 	"DECLINE - ",
+	"SAVE REPLAY - ",
+	"SCREENSHOT - ",
 	
 	
 	"If you are unhappy with these, you can change them in the options.\n",

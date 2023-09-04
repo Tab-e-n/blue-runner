@@ -6,6 +6,8 @@ var current_menu : Node2D
 var hold : int = 0
 var move : bool = true
 
+var held_for_amount : int = 0
+
 var menu : String = "MAIN"
 
 var return_delay : int = 2
@@ -33,6 +35,7 @@ func _process(_delta):
 	# MENU INPUT
 	if Input.is_action_just_pressed("menu_left") or Input.is_action_just_pressed("menu_right") or Input.is_action_just_pressed("menu_up") or Input.is_action_just_pressed("menu_down"):
 		move = true
+		held_for_amount = 0
 	
 	if Input.is_action_pressed("menu_left") or Input.is_action_pressed("menu_right") or Input.is_action_pressed("menu_up") or Input.is_action_pressed("menu_down"):
 		hold += 1
@@ -43,8 +46,10 @@ func _process(_delta):
 		var hold_shift : int = 6
 		if menu == "REPLAY":
 			hold_shift = 9
-		hold -= hold_shift
+		hold -= hold_shift - held_for_amount / 3
 		move = true
+		if held_for_amount < 15:
+			held_for_amount += 1
 	
 	current_menu.menu_update()
 	
@@ -58,3 +63,5 @@ func switch_menu(menu_name : String, comming_from : String = ""):
 	
 	if current_menu.has_method("menu_ready"):
 		current_menu.menu_ready(comming_from)
+	
+	menu = menu_name

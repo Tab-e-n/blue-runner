@@ -685,7 +685,7 @@ Game camera
 Transform
 Reset transform
 Rng transform
-Edit
+Edit / Bucket
 Quick save level
 Save level
 Load level
@@ -1139,8 +1139,8 @@ margin_bottom = 768.0
 window_title = "Open a File"
 mode = 0
 access = 2
-current_dir = "/home/tabin/godot-projects/blue-runner-vanilla/blue-editor"
-current_path = "/home/tabin/godot-projects/blue-runner-vanilla/blue-editor/"
+current_dir = "/Project/Godot 3.2/sonic_runner_git/blue-editor"
+current_path = "/Project/Godot 3.2/sonic_runner_git/blue-editor/"
 
 [node name="HScrollBar" type="HScrollBar" parent="."]
 margin_top = 688.0

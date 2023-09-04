@@ -497,6 +497,7 @@ func reload_all_levels():
 	$level_select/keycollect.modulate = color
 	
 	$level_select/level_data.material.set_shader_param("color", color)
+	$level_select/level_data.material.set_shader_param("secondary_color", color * Color(0.2, 0.2, 0.3, 1))
 #	$level_select/level_data/level_name.modulate = color
 #	$level_select/level_data/best_time.modulate = color
 #	$level_select/level_data/par.modulate = color
@@ -538,7 +539,30 @@ func set_level_data_text(is_in_user_universe : bool = false):
 	if get_node("level_select/levels/" + String(selected_level)).locked == true:
 		$level_select/level_data/level_name.set_text("LOCKED")
 		$level_select/level_data/best_time.set_text("")
+		$level_select/level_data/level_picture.texture = null
+		$level_select/level_data/level_picture.visible = false
 		return
+	
+	# level picture
+	var picture_filepath : String = selected_level_location + selected_level_name + ".png"
+	var f : File = File.new()
+	if f.file_exists(picture_filepath):
+		Global.load_external_picture(picture_filepath, $level_select/level_data/level_picture)
+		Global.scale_down_sprite($level_select/level_data/level_picture, Vector2(1, 1), Vector2(0, 192))
+		$level_select/level_data/level_picture.visible = true
+		$level_select/level_data/level_name.rect_position.y = -216
+		$level_select/level_data/best_time.rect_position.y = 128
+		$level_select/level_data/par.rect_position.y = 160
+		$level_select/level_data/deaths.rect_position.y = 192
+		$level_select/level_data/creator.rect_position.y = 224
+	else:
+		$level_select/level_data/level_picture.texture = null
+		$level_select/level_data/level_picture.visible = false
+		$level_select/level_data/level_name.rect_position.y = -104
+		$level_select/level_data/best_time.rect_position.y = 0
+		$level_select/level_data/par.rect_position.y = 32
+		$level_select/level_data/deaths.rect_position.y = 64
+		$level_select/level_data/creator.rect_position.y = 96
 	
 	# Author and level name
 	if !level_dat.empty():

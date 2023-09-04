@@ -2,7 +2,7 @@ extends Node2D
 
 
 func set_color(color : Color):
-	$completion_filling.modulate = color * Color(0.5, 0.5, 0.5, 1)
+	$completion_filling.modulate = color * Color(0.2, 0.2, 0.3, 1)
 	$bar.modulate = color
 	$completion_outline.modulate = color
 

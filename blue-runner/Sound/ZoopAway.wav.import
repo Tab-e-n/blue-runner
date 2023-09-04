@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/ZoopAway.wav-1d382c74e3a1c3a94022b24e2d3eaef0.sample"
+
+[deps]
+
+source_file="res://Sound/ZoopAway.wav"
+dest_files=[ "res://.import/ZoopAway.wav-1d382c74e3a1c3a94022b24e2d3eaef0.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

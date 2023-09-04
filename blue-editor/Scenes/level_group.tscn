@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://Visual/Level/base_neutral.png" type="Texture" id=1]
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=2]
@@ -15,6 +15,11 @@
 [ext_resource path="res://Visual/Editor/editor_new.png" type="Texture" id=13]
 [ext_resource path="res://Visual/Editor/editor_refresh.png" type="Texture" id=14]
 [ext_resource path="res://Visual/Editor/editor_refresh_enabled.png" type="Texture" id=15]
+[ext_resource path="res://Visual/Editor/editor_paintbrush_enabled.png" type="Texture" id=16]
+[ext_resource path="res://Visual/Editor/editor_paintbrush.png" type="Texture" id=17]
+[ext_resource path="res://Visual/Editor/editor_eraser_enabled.png" type="Texture" id=18]
+[ext_resource path="res://Visual/Editor/editor_eraser.png" type="Texture" id=19]
+[ext_resource path="res://Visual/no_image.png" type="Texture" id=20]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
@@ -69,10 +74,33 @@ func _process(_delta):
 	if Input.is_action_just_pressed(\"25\"):
 		on_exit()
 	
-	$group/refresh.visible = !$settings_toggle.pressed
-	$title/picture.visible = !$settings_toggle.pressed
-	$title/logo.visible = !$settings_toggle.pressed
-	$settings.visible = $settings_toggle.pressed
+	if $settings_toggle.pressed:
+		$settings.visible = true
+		$sprites.visible = false
+		$group/refresh.visible = false
+		$title/picture.visible = false
+		$title/logo.visible = false
+	elif $sprites_toggle.pressed:
+		$sprites.visible = true
+		$settings.visible = false
+		$group/refresh.visible = false
+		$title/picture.visible = false
+		$title/logo.visible = false
+	else:
+		$group/refresh.visible = true
+		$title/picture.visible = true
+		$title/logo.visible = true
+		$settings.visible = false
+		$sprites.visible = false
+
+func _on_top_panel_changed(button_pressed, menu):
+	if !button_pressed:
+		return
+	if menu != 0:
+		$settings_toggle.pressed = false
+	if menu != 1:
+		$sprites_toggle.pressed = false
+	
 
 func load_level_visuals():
 	for i in range(20):
@@ -183,7 +211,7 @@ func load_group(dir):
 	
 	var file = File.new()
 	var temp = {}
-	var directory = Directory.new()
+	var directory : Directory = Directory.new()
 	
 	directory.open(dir)
 	directory.list_dir_begin(true)
@@ -251,6 +279,11 @@ func load_group(dir):
 			$\"settings/1_text\".editable = true
 			$\"settings/2_text\".editable = true
 			$\"settings/2_number\".editable = true
+			$settings/ui_color.disabled = false
+			$settings/hide_author.disabled = false
+			$sprites/sprites.disabled = false
+			$sprites/delete.disabled = false
+			$sprites/add.disabled = false
 		
 		for i in range($settings/bg.get_item_count()):
 			if $settings/bg.get_item_metadata(i) + \"/Objects/Backgrounds/\" + $settings/bg.get_item_text(i) == temp[\"bg\"]:
@@ -263,12 +296,17 @@ func load_group(dir):
 		$settings/ui_color.color.b = level_group_dat[\"ui_color\"][2]
 		$settings/hide_author.pressed = level_group_dat[\"tags\"].has(\"hide_author\")
 		
+		if not directory.dir_exists(dir + \"/Sprites\"):
+			directory.make_dir(dir + \"/Sprites\")
+		
 		current_group_path = dir
 		current_level = 0
 		levels_option_button()
 		load_level_visuals()
 		load_level_dat(current_level)
 		picture_changed()
+		sprites_option_button()
+		reset_sprite()
 	else:
 		$load_fail.popup()
 
@@ -495,6 +533,83 @@ func changed_unlock_type(index, connecting_from : String):
 		data.changed_unlock_type(index, $settings/text_edit, $settings/unlock_type, $\"settings/1_text\", $\"settings/2_text\", $\"settings/2_number\", \"\\n\")
 	if connecting_from == \"level_unlock\":
 		data.changed_unlock_type(index, $level_edits/text_level_unlocks, $level_edits/level_unlock_type, $\"level_edits/level_1_text\", $\"level_edits/level_2_text\", $\"level_edits/level_2_number\", \"\")
+
+func load_sprite(sprite_filename : String):
+	var level_location : String = current_group_path + \"/\"
+	
+	print(level_location)
+	
+	if level_location == \"user://SRLevels/\" or level_location == \"\":
+		$sprites/sprite.texture = preload(\"res://Visual/no_image.png\")
+		return
+	
+	print(level_location + \"Sprites/\" + sprite_filename)
+	
+	var pngf = File.new()
+	if not pngf.file_exists(level_location + \"Sprites/\" + sprite_filename):
+		$sprites/sprite.texture = preload(\"res://Visual/no_image.png\")
+		return
+	
+	pngf.open(level_location + \"Sprites/\" + sprite_filename, File.READ)
+	var pnglen = pngf.get_len()
+	var pngdata = pngf.get_buffer(pnglen)
+	pngf.close()
+	
+	var image : Image = Image.new()
+	# warning-ignore:return_value_discarded
+	image.load_png_from_buffer(pngdata)
+	var image_texture : ImageTexture = ImageTexture.new()
+	image_texture.create_from_image(image.get_rect(image.get_used_rect()))
+	
+	$sprites/sprite.texture = image_texture
+	
+	if $sprites/sprite.texture == null:
+		$sprites/sprite.texture = preload(\"res://Visual/no_image.png\")
+
+
+func reset_sprite():
+	$sprites/sprite.texture = preload(\"res://Visual/no_image.png\")
+	$sprites/sprite.scale = Vector2(1, 1)
+
+
+func sprites_option_button():
+	var directory = Directory.new()
+	
+	directory.open(current_group_path + \"/Sprites\")
+	directory.list_dir_begin(true)
+	var current_file = directory.get_next()
+	var sprite_names : Array = []
+	while current_file != \"\":
+		if current_file.ends_with(\".png\"):
+			sprite_names.append([current_file.substr(0, current_file.find_last(\".\")), \"Custom Sprites\"])
+		current_file = directory.get_next()
+	
+	$sprites/sprites.clear()
+	ready_optionbutton_setup($sprites/sprites, sprite_names)
+
+
+func sprite_selected(index : int):
+	load_sprite($sprites/sprites.get_item_text(index) + \".png\")
+	data.scale_down_sprite($sprites/sprite, Vector2(1, 1), Vector2(192, 192))
+
+
+func add_sprite_popup():
+	$add_sprite.popup()
+
+
+func add_sprite(dir : String):
+	var directory = Directory.new()
+	
+	directory.copy(dir, current_group_path + \"/Sprites/\" + dir.substr(dir.find_last(\"/\") + 1, dir.length() - 1))
+	
+	sprites_option_button()
+	
+	for i in range($sprites/sprites.get_item_count()):
+		if $sprites/sprites.get_item_text(i) == dir.substr(dir.find_last(\"/\") + 1, dir.find_last(\".\") - dir.find_last(\"/\") - 1):
+			$sprites/sprites.select(i)
+			sprite_selected(i)
+			break
+
 "
 
 [sub_resource type="GDScript" id=2]
@@ -523,6 +638,7 @@ margin_left = -520.0
 margin_top = -392.0
 margin_right = 520.0
 margin_bottom = -56.0
+mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -542,6 +658,7 @@ margin_left = -520.0
 margin_top = -40.0
 margin_right = 8.0
 margin_bottom = 392.0
+mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -764,6 +881,7 @@ margin_left = -512.0
 margin_top = -384.0
 margin_right = 512.0
 margin_bottom = -64.0
+mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -819,6 +937,7 @@ __meta__ = {
 }
 
 [node name="settings" type="Control" parent="."]
+visible = false
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -827,6 +946,7 @@ margin_left = -384.0
 margin_top = -384.0
 margin_right = 384.0
 margin_bottom = -64.0
+mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -857,6 +977,7 @@ margin_left = 24.0
 margin_top = 152.0
 margin_right = 72.0
 margin_bottom = 200.0
+disabled = true
 
 [node name="text_edit" parent="settings" instance=ExtResource( 5 )]
 margin_left = 288.0
@@ -943,8 +1064,68 @@ margin_left = 544.0
 margin_top = 160.0
 margin_right = 736.0
 margin_bottom = 192.0
+disabled = true
 color = Color( 0.0196078, 0.901961, 0.631373, 1 )
 edit_alpha = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="sprites" type="Control" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -384.0
+margin_right = 384.0
+margin_bottom = 320.0
+rect_clip_content = true
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="sprite" type="Sprite" parent="sprites"]
+position = Vector2( 384, 192 )
+texture = ExtResource( 20 )
+
+[node name="sprites" type="OptionButton" parent="sprites"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -272.0
+margin_top = 32.0
+margin_right = 272.0
+margin_bottom = 64.0
+disabled = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="delete" type="TextureButton" parent="sprites"]
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = 288.0
+margin_top = 32.0
+margin_right = 352.0
+margin_bottom = 96.0
+disabled = true
+texture_normal = ExtResource( 19 )
+texture_pressed = ExtResource( 18 )
+texture_disabled = ExtResource( 7 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="add" type="TextureButton" parent="sprites"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -352.0
+margin_top = 32.0
+margin_right = -288.0
+margin_bottom = 96.0
+disabled = true
+texture_normal = ExtResource( 13 )
+texture_pressed = ExtResource( 12 )
+texture_disabled = ExtResource( 7 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -961,6 +1142,22 @@ margin_bottom = -288.0
 toggle_mode = true
 texture_normal = ExtResource( 4 )
 texture_pressed = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="sprites_toggle" type="TextureButton" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 416.0
+margin_top = -256.0
+margin_right = 480.0
+margin_bottom = -192.0
+toggle_mode = true
+texture_normal = ExtResource( 17 )
+texture_pressed = ExtResource( 16 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -1052,6 +1249,25 @@ current_path = "user://SRLevels/SRLevel"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="add_sprite" type="FileDialog" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -392.0
+margin_top = -392.0
+margin_right = 384.0
+margin_bottom = 392.0
+window_title = "Open a File"
+mode = 0
+access = 2
+filters = PoolStringArray( "*.png ; Portable Network Graphics" )
+current_dir = "/Project/Godot 3.2/sonic_runner_git/blue-editor"
+current_path = "/Project/Godot 3.2/sonic_runner_git/blue-editor/"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="toggled" from="levels/0" to="." method="level_toggled" binds= [ 0 ]]
 [connection signal="item_selected" from="level_edits/filename" to="." method="filename_selected"]
 [connection signal="toggled" from="level_edits/locked" to="." method="locked_toggled"]
@@ -1066,6 +1282,11 @@ __meta__ = {
 [connection signal="pressed" from="group/load" to="." method="load_group_popup"]
 [connection signal="item_selected" from="settings/unlock_type" to="." method="changed_unlock_type" binds= [ "group_unlock" ]]
 [connection signal="item_selected" from="settings/bg" to="." method="bg_changed"]
+[connection signal="item_selected" from="sprites/sprites" to="." method="sprite_selected"]
+[connection signal="pressed" from="sprites/add" to="." method="add_sprite_popup"]
+[connection signal="toggled" from="settings_toggle" to="." method="_on_top_panel_changed" binds= [ 0 ]]
+[connection signal="toggled" from="sprites_toggle" to="." method="_on_top_panel_changed" binds= [ 1 ]]
 [connection signal="dir_selected" from="load" to="." method="load_group"]
 [connection signal="confirmed" from="new" to="." method="new_group"]
 [connection signal="file_selected" from="import" to="." method="import"]
+[connection signal="file_selected" from="add_sprite" to="." method="add_sprite"]

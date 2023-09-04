@@ -34,11 +34,14 @@ var options = {
 	"*accept" : KEY_SPACE,
 	"*deny" : KEY_BACKSPACE,
 	"*save_replay" : KEY_F6,
+	"*screenshot" : KEY_F2,
 	"*outlines_on" : false,
 	"*ghosts_on" : false,
 	"*timer_on" : 0,
 	"*first_time_load" : true,
 	"*last_level_location" : "res://Scenes/waterway/",
+	"*audio_sfx" : 60,
+	"*audio_music" : 60,
 }
 
 var default_options = {
@@ -58,13 +61,16 @@ var default_options = {
 	"*accept" : KEY_SPACE,
 	"*deny" : KEY_BACKSPACE,
 	"*save_replay" : KEY_F6,
+	"*screenshot" : KEY_F2,
 	"*outlines_on" : false,
 	"*ghosts_on" : false,
 	"*timer_on" : 0,
 	"*first_time_load" : true,
 	"*last_level_location" : "res://Scenes/waterway/",
+	"*audio_sfx" : 60,
+	"*audio_music" : 60,
 }
-var keybind_names : Array = ["*left", "*right", "*up", "*down", "*jump", "*special", "*reset", "*return", "*menu_left", "*menu_right", "*menu_up", "*menu_down", "*accept", "*deny"]
+var keybind_names : Array = ["*left", "*right", "*up", "*down", "*jump", "*special", "*reset", "*return", "*menu_left", "*menu_right", "*menu_up", "*menu_down", "*accept", "*deny", "*save_replay", "*screenshot"]
 var mods_installed = []
 
 var rand : RandomNumberGenerator = RandomNumberGenerator.new()
@@ -115,6 +121,8 @@ func _ready():
 		dir.make_dir("SRReplays/mods")
 	if !dir.dir_exists("SRReplays/user"):
 		dir.make_dir("SRReplays/user")
+	if !dir.dir_exists("SRScreenshots"):
+		dir.make_dir("SRScreenshots")
 	
 	# Load user levels
 	var directory : Directory = Directory.new()
@@ -155,6 +163,9 @@ func _physics_process(_delta):
 		change_level("*MENU") 
 	if Input.is_action_just_pressed("reset") and !(curr_scene == "MENU" or curr_scene == "Load"):
 		change_level("")
+	
+	if Input.is_action_just_pressed("screenshot"):
+		screenshot()
 
 func _exit_tree():
 	save_game()
@@ -470,6 +481,39 @@ func text_interpretor(text : String):
 	
 	return new_text
 
+func add_date_to_name(dname : String):
+	var date = OS.get_datetime()
+	dname = (dname +
+			"_" + String(date["year"]) +
+			"-" + String(date["month"]) +
+			"-" + String(date["day"]) +
+			"_" + String(date["hour"]) +
+			"-" + String(date["minute"]) +
+			"-" + String(date["second"]))
+	return dname
+
+func load_external_picture(picture_filename : String, sprite : Sprite):
+	var pngf = File.new()
+	if not pngf.file_exists(picture_filename):
+		sprite.texture = preload("res://Visual/no_image.png")
+		add_child(sprite)
+		return
+	
+	pngf.open(picture_filename, File.READ)
+	var pnglen = pngf.get_len()
+	var pngdata = pngf.get_buffer(pnglen)
+	pngf.close()
+	
+	var image = Image.new()
+	image.load_png_from_buffer(pngdata)
+	var image_texture : ImageTexture = ImageTexture.new()
+	image_texture.create_from_image(image.get_rect(image.get_used_rect()))
+	
+	sprite.texture = image_texture
+	
+	if sprite.texture == null:
+		sprite.texture = preload("res://Visual/no_image.png")
+
 func change_level(destination : String, return_value : bool = false, check_dependencies : bool = true):
 	compatibility_mode = false
 	
@@ -645,9 +689,21 @@ func convert_float_to_time(timer : float, limit_size : bool = true):
 		return "-"+String(minutes)+":"+String(seconds/10)+String(seconds%10)+"."+String(decimal/10)+String(decimal%10)
 
 func scale_down_sprite(sprite : Sprite, final_scale : Vector2 = Vector2(1, 1), desired_rect : Vector2 = Vector2(64, 64)):
+	if desired_rect.x == 0 and desired_rect.y == 0:
+		return
+	
 	sprite.scale = Vector2(1, 1)
 	var sprite_rect : Vector2 = sprite.get_rect().size
-	if sprite_rect.x > sprite_rect.y:
+	
+	var x_is_longer_side : bool = false
+	if desired_rect.y == 0:
+		x_is_longer_side = true
+	elif desired_rect.x == 0:
+		x_is_longer_side = false
+	elif sprite_rect.x > sprite_rect.y:
+		x_is_longer_side = true
+	
+	if x_is_longer_side:
 		sprite.scale.x = final_scale.x / (sprite_rect.x / desired_rect.x)
 	else:
 		sprite.scale.x = final_scale.y / (sprite_rect.y / desired_rect.y)
@@ -782,9 +838,11 @@ func console_arguments():
 				savefile_interaction = 3
 			"wr":
 				savefile_interaction = 3
-	if savefile_interaction % 2: print("read allowed")
+	if savefile_interaction % 2:
+		print("read allowed")
 	# warning-ignore:integer_division
-	if savefile_interaction / 2: print("write allowed")
+	if savefile_interaction / 2:
+		print("write allowed")
 
 func save_game(timer : float = 0, par : float = 0, collectible : Array = [], level = null, recording : Dictionary = {}):
 	print("saving game")
@@ -1015,15 +1073,8 @@ func condicional_save_replay(replay_name, recording : Dictionary):
 		save_replay(replay_name, recording.duplicate())
 
 func save_replay_with_date(new_name : String, recording : Dictionary):
-	var date = OS.get_datetime()
-	
-	Global.save_replay(new_name
-	+"_"+String(date["year"])
-	+"-"+String(date["month"])
-	+"-"+String(date["day"])
-	+"_"+String(date["hour"])
-	+"-"+String(date["minute"])
-	+"-"+String(date["second"]),
+	print("save replay")
+	Global.save_replay(add_date_to_name(new_name),
 	recording)
 
 func save_replay(new_name : String, recording : Dictionary, level : bool = true):
@@ -1262,3 +1313,11 @@ func scan_for_directories(main_directory : String, storage : Array, _file_descri
 				#print("found " + _file_descriptor + ": " + current_file)
 				storage.append([current_file, main_directory])
 			current_file = directory.get_next()
+
+func screenshot():
+	print("screenshot")
+	
+	var image : Image = get_viewport().get_texture().get_data()
+	image.flip_y()
+	image.save_png("user://SRScreenshots/" + add_date_to_name("screenshot") + ".png")
+	

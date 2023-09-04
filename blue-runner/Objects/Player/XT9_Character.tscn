@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=2]
+[gd_scene load_steps=36 format=2]
 
 [ext_resource path="res://Objects/Player/S1_Particle.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scripts/Player/S1_Character.gd" type="Script" id=2]
@@ -9,20 +9,14 @@
 [ext_resource path="res://Visual/XT9/leg1.png" type="Texture" id=8]
 [ext_resource path="res://Visual/XT9/head_hurt.png" type="Texture" id=9]
 [ext_resource path="res://Visual/XT9/arm1B.png" type="Texture" id=10]
-[ext_resource path="res://Sound/ding.wav" type="AudioStream" id=11]
 [ext_resource path="res://Visual/XT9/head.png" type="Texture" id=12]
-[ext_resource path="res://Sound/elExplose.wav" type="AudioStream" id=13]
-[ext_resource path="res://Sound/dropSlide.wav" type="AudioStream" id=14]
-[ext_resource path="res://Sound/jump.wav" type="AudioStream" id=15]
 [ext_resource path="res://Visual/XT9/leg2B.png" type="Texture" id=16]
 [ext_resource path="res://Visual/XT9/leg2.png" type="Texture" id=17]
-[ext_resource path="res://Sound/land.wav" type="AudioStream" id=18]
 [ext_resource path="res://Visual/XT9/backpack.png" type="Texture" id=19]
 [ext_resource path="res://Visual/XT9/arm2B.png" type="Texture" id=20]
 [ext_resource path="res://Visual/XT9/hand2.png" type="Texture" id=21]
 [ext_resource path="res://Visual/XT9/arm2.png" type="Texture" id=22]
 [ext_resource path="res://Visual/XT9/bodyM.png" type="Texture" id=23]
-[ext_resource path="res://Sound/dash.wav" type="AudioStream" id=24]
 [ext_resource path="res://Visual/XT9/bodyT.png" type="Texture" id=25]
 [ext_resource path="res://Visual/XT9/bodyB.png" type="Texture" id=26]
 [ext_resource path="res://Visual/XT9/neck.png" type="Texture" id=27]
@@ -7448,26 +7442,6 @@ particle_end = Color( 0.266667, 0.0980392, 0.109804, 1 )
 particle_star = Color( 0.8, 0.427451, 0.670588, 1 )
 trail_color = Color( 0.364706, 0.121569, 0.192157, 1 )
 unicolor_color = Color( 0.8, 0.427451, 0.670588, 1 )
-
-[node name="Sound" type="Node2D" parent="."]
-
-[node name="jump" type="AudioStreamPlayer" parent="Sound"]
-stream = ExtResource( 15 )
-
-[node name="land" type="AudioStreamPlayer" parent="Sound"]
-stream = ExtResource( 18 )
-
-[node name="dash" type="AudioStreamPlayer" parent="Sound"]
-stream = ExtResource( 24 )
-
-[node name="ding" type="AudioStreamPlayer" parent="Sound"]
-stream = ExtResource( 11 )
-
-[node name="dropSlide" type="AudioStreamPlayer" parent="Sound"]
-stream = ExtResource( 14 )
-
-[node name="explosion" type="AudioStreamPlayer" parent="Sound"]
-stream = ExtResource( 13 )
 
 [node name="Anim" type="AnimationPlayer" parent="."]
 playback_process_mode = 0

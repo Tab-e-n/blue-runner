@@ -31,10 +31,12 @@ func _on_Mushroom_body_entered(body):
 		body.punt(boost, overwrite_momentum)
 		$anim.stop()
 		$anim.play("Bounce")
+		Audio.play_sound("MushBounce", 0.8, 1.2)
 
 func bounce_start():
 	last_playback_speed = $anim.playback_speed
 	$anim.playback_speed = 1
+
 func bounce_end():
 	$anim.playback_speed = last_playback_speed
 	$anim.stop()

@@ -304,7 +304,7 @@ func punt(boost : Vector2, overwrite_momentum : bool):
 
 func play_sound(sound_name : String):
 	if sound_name != "" and !ghost:
-		get_node("Character/Sound/" + sound_name).play()
+		Audio.play_sound(sound_name)
 		current_sound = sound_name
 
 func record():
