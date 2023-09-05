@@ -17,6 +17,7 @@ func play_sound(soundname : String, pitch : float = 1, random_pitch_range : floa
 	
 	var sound : AudioStreamPlayer = AudioStreamPlayer.new()
 	sound.stream = load("res://Sound/" + soundname + ".wav")
+	# warning-ignore:return_value_discarded
 	sound.connect("finished", sound, "queue_free")
 	
 	if random_pitch_range != -1:

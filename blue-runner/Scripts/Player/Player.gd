@@ -43,6 +43,12 @@ var punted : bool = false
 var launched : bool = false
 var speeding : bool = false
 
+const JUMP_BUFFER_FRAMES : int = 4
+var jump_buffer : int = 0
+
+const GROUND_BUFFER_FRAMES : int = 4
+var ground_buffer : int = 0
+
 export var increment_timer : bool = true
 export var loop_replay : bool = false
 export var load_replay : bool = true
@@ -204,6 +210,18 @@ func _physics_process(delta):
 		death_wait += 1
 		if death_wait >= 20:
 			Global.change_level("")
+
+func is_jump_input_pressed():
+	var jump = Input.is_action_pressed("jump")
+	if Global.options["*up_key_jump"] and Input.is_action_pressed("up"):
+		jump = true
+	return jump
+
+func is_jump_input_just_pressed():
+	var jump = Input.is_action_just_pressed("jump")
+	if Global.options["*up_key_jump"] and Input.is_action_just_pressed("up"):
+		jump = true
+	return jump
 
 func move_player_character():
 	collision_mask = 1048575

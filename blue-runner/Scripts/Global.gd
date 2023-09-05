@@ -37,6 +37,7 @@ var options = {
 	"*screenshot" : KEY_F2,
 	"*outlines_on" : false,
 	"*ghosts_on" : false,
+	"*up_key_jump" : false,
 	"*timer_on" : 0,
 	"*first_time_load" : true,
 	"*last_level_location" : "res://Scenes/waterway/",
@@ -64,6 +65,7 @@ var default_options = {
 	"*screenshot" : KEY_F2,
 	"*outlines_on" : false,
 	"*ghosts_on" : false,
+	"*up_key_jump" : false,
 	"*timer_on" : 0,
 	"*first_time_load" : true,
 	"*last_level_location" : "res://Scenes/waterway/",
@@ -1319,5 +1321,6 @@ func screenshot():
 	
 	var image : Image = get_viewport().get_texture().get_data()
 	image.flip_y()
+	# warning-ignore:return_value_discarded
 	image.save_png("user://SRScreenshots/" + add_date_to_name("screenshot") + ".png")
 	

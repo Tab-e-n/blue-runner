@@ -46,6 +46,7 @@ func _process(_delta):
 		var hold_shift : int = 6
 		if menu == "REPLAY":
 			hold_shift = 9
+		# warning-ignore:integer_division
 		hold -= hold_shift - held_for_amount / 3
 		move = true
 		if held_for_amount < 15:

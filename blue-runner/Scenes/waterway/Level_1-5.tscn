@@ -23,6 +23,7 @@
 [node name="Level_1-5" type="Node2D"]
 
 [node name="Camera" parent="." instance=ExtResource( 1 )]
+zoom = Vector2( 2, 2 )
 limit_y = Vector2( -640, 640 )
 
 [node name="BG" parent="." instance=ExtResource( 4 )]
@@ -330,8 +331,6 @@ facing = "left"
 position = Vector2( 384, 1024 )
 tele_destination = "Level_1-6"
 par = 7.5
-type = 0
-unlock = ""
 
 [node name="Portal" parent="." instance=ExtResource( 20 )]
 position = Vector2( 864, 480 )

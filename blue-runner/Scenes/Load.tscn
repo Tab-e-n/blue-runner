@@ -40,6 +40,7 @@ script = ExtResource( 3 )
 [node name="CamTarget" type="Node2D" parent="."]
 
 [node name="Camera" parent="." instance=ExtResource( 1 )]
+zoom = Vector2( 2, 2 )
 
 [node name="bg" type="Polygon2D" parent="."]
 color = Color( 0.0156863, 0.0235294, 0.133333, 1 )

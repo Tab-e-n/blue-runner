@@ -23,12 +23,6 @@ var acceleration : int = 40
 var deceleration : int = 50
 var acc_dividor : int = 40
 
-const jump_buffer_constant : int = 3
-var jump_buffer : int = 0
-
-const ground_buffer_constant : int = 3
-var ground_buffer : int = 0
-
 var last_anim : String = "Default"
 var last_facing : String
 var wall_anim : int = 1
@@ -45,8 +39,12 @@ func _physics_process(_delta):
 	col_2.scale = $col_2.scale
 	col_2.disabled = !$col_2.visible
 	
-	if Input.is_action_just_pressed("jump"): jump_buffer = jump_buffer_constant
+	if player.is_jump_input_just_pressed():
+		player.jump_buffer = player.JUMP_BUFFER_FRAMES
 	
+	if player.start:
+		if player.jump_buffer > 0:
+			player.jump_buffer -= 1
 	if !player.deny_input:
 		# GRAVITY / DECELERATION
 		if player.is_on_ceiling(): player.momentum.y = 0
@@ -68,7 +66,7 @@ func _physics_process(_delta):
 			else:
 				player.momentum.y += gravity_wall_down
 		if player.state == "ground":
-			ground_buffer = ground_buffer_constant
+			player.ground_buffer = player.GROUND_BUFFER_FRAMES
 			jump_amount = jump_amount_max
 			if sign(player.momentum.x) != 0:
 				var temp_momentum = sign(player.momentum.x)
@@ -87,11 +85,15 @@ func _physics_process(_delta):
 		
 		# MOVEMENT
 		if Input.is_action_pressed("left"):
-			if player.momentum.x > -max_speed: player.momentum.x -= acceleration - round(player.momentum.x / acc_dividor)
-			if !on_wall: player.facing = "left"
+			if player.momentum.x > -max_speed:
+				player.momentum.x -= acceleration - round(player.momentum.x / acc_dividor)
+			if !on_wall:
+				player.facing = "left"
 		if Input.is_action_pressed("right"):
-			if player.momentum.x < max_speed: player.momentum.x += acceleration - round(player.momentum.x / acc_dividor)
-			if !on_wall: player.facing = "right"
+			if player.momentum.x < max_speed:
+				player.momentum.x += acceleration - round(player.momentum.x / acc_dividor)
+			if !on_wall:
+				player.facing = "right"
 		
 		# SPECIAL ABILITIES
 		if Input.is_action_just_pressed("special"):
@@ -100,21 +102,23 @@ func _physics_process(_delta):
 			pass
 		
 		# JUMPING
-		if ground_buffer != 0: ground_buffer -= 1
-		if ground_buffer == 1: jump_amount = jump_amount_max - 1
+		if player.ground_buffer != 0:
+			player.ground_buffer -= 1
+		if player.ground_buffer == 1:
+			jump_amount = jump_amount_max - 1
 		
 		if player.is_on_wall() and !player.punted:
 			player.momentum.x = 0
 			jump_amount = jump_amount_max - 1
 		
 		player.collision_mask = 3
-		if jump_buffer > 0:
-			jump_buffer -= 1
-			ground_buffer = 0
+		if player.jump_buffer > 0:
+			player.jump_buffer -= 1
+			player.ground_buffer = 0
 			if player.move_and_collide(Vector2(0,4), false, true, true):
 				jump_amount -= 1
 				jump(jump_power)
-				jump_buffer = 0
+				player.jump_buffer = 0
 			elif player.move_and_collide(Vector2(4,0), false, true, true):
 					jump_amount = jump_amount_max - 1
 					# warning-ignore:integer_division
@@ -122,7 +126,7 @@ func _physics_process(_delta):
 					player.facing = "left"
 					# warning-ignore:narrowing_conversion
 					jump(jump_power * 1.075)
-					jump_buffer = 0
+					player.jump_buffer = 0
 			elif player.move_and_collide(Vector2(-4,0), false, true, true):
 					jump_amount = jump_amount_max - 1
 					# warning-ignore:integer_division
@@ -130,25 +134,22 @@ func _physics_process(_delta):
 					player.facing = "right"
 					# warning-ignore:narrowing_conversion
 					jump(jump_power * 1.075)
-					jump_buffer = 0
-		if jump_amount > 0 and jump_buffer == 1:
+					player.jump_buffer = 0
+		if jump_amount > 0 and player.jump_buffer == 1:
 				jump_amount -= 1
 				jump(jump_power)
-				#jump_buffer = 0
-		if Input.is_action_just_released("jump") and !gravity_switch and !player.punted:
+				#player.jump_buffer = 0
+		if !player.is_jump_input_pressed() and !gravity_switch and !player.punted:
 			gravity_switch = true
-			if player.momentum.y < -200: player.momentum.y = -200
+			if player.momentum.y < -200:
+				player.momentum.y = -200
 		
 		# COLLISION / MOVING
 		# warning-ignore:return_value_discarded
-		player.collision_mask = 1048575
-		player.move_and_slide(player.momentum, Vector2(0, -1))
-		player.collision_mask = 1
+		player.move_player_character()
 		
-		player.break_just_happened = false
-		for i in player.get_slide_count(): player.collision_default_effects(player.get_slide_collision(i).collider.collision_layer, i)
-		
-		if player.is_on_floor() or player.move_and_collide(Vector2(0,1), false, true, true): player.state = "ground"
+		if player.is_on_floor() or player.move_and_collide(Vector2(0,1), false, true, true):
+			player.state = "ground"
 		
 		# ANIMATION
 		scale = Vector2(1, 1)
@@ -159,7 +160,7 @@ func _physics_process(_delta):
 				if (player.facing == "left" and on_wall_left) or (player.facing == "right" and on_wall_right):
 					wall_anim = -1
 				#$Anim.current_animation = "On_Wall"
-			elif Input.is_action_pressed("jump") and !gravity_switch:
+			elif player.is_jump_input_pressed() and !gravity_switch:
 				pass
 				#$Anim.current_animation = "Jump_Up"
 			elif last_anim != "Jump_Transition" and last_anim != "":
@@ -190,7 +191,8 @@ func _physics_process(_delta):
 		else:
 			scale = Vector2(1 * wall_anim, scale.y)
 		
-		if particle_disable != 0: particle_disable -= 1
+		if particle_disable != 0:
+			particle_disable -= 1
 		
 		player.record()
 	
@@ -203,7 +205,8 @@ func _physics_process(_delta):
 	# - - - DEATH STATE - - -
 	elif player.dead:
 		scale = Vector2(scale.x, 1)
-		if $Anim.current_animation!="Death": player.play_sound("example")
+		if $Anim.current_animation!="Death":
+			player.play_sound("example")
 		$Anim.play("Death")
 	
 	# - - - IM DONE FOR STATE - - -
@@ -215,8 +218,8 @@ func _physics_process(_delta):
 			pass
 			#$Anim.current_animation = "Concern"
 	elif player.deny_input:
-		if jump_buffer > 0:
-			jump_buffer -= 1
+		if player.jump_buffer > 0:
+			player.jump_buffer -= 1
 		player.record()
 	
 
@@ -241,4 +244,5 @@ func particle_summon(particle_position : Vector2, particle_rotation : float, typ
 
 func enter_anim_end():
 	if !player.replay:
+		player.start = false
 		player.deny_input = false

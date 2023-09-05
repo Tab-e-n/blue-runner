@@ -128,8 +128,6 @@ position = Vector2( 2208, 0 )
 z_index = 40
 tele_destination = "*Menu_Level_Select.tscn"
 par = 10.0
-type = 0
-unlock = ""
 
 [node name="Player" parent="." instance=ExtResource( 10 )]
 use_parent_material = true
@@ -139,6 +137,7 @@ z_index = 20
 [node name="Camera" parent="." instance=ExtResource( 8 )]
 position = Vector2( 0, 768 )
 z_index = 100
+zoom = Vector2( 2, 2 )
 limit_x = Vector2( 0, 2048 )
 
 [node name="objects_background" type="Node2D" parent="."]

@@ -14,6 +14,6 @@ func _ready():
 func get_player():
 	player = get_tree().current_scene.player
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if not completely_invisible:
 		$Control/light.position = (player.position - position) / scale + Vector2(32, 32)

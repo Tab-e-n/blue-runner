@@ -34,6 +34,7 @@ func _physics_process(_delta):
 			$booster.position.x = float(disabled_timer) / 30 * 160 * flip
 		
 		if (DISABLED_TIME - disabled_timer) < 20:
+			# warning-ignore:integer_division
 			$booster_effect.frame = (DISABLED_TIME - disabled_timer) / 2
 		else:
 			$booster_effect.frame = 0

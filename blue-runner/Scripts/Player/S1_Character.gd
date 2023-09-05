@@ -33,12 +33,6 @@ var super_slide : bool = false
 var dropping : int = 0
 var saved_momentum : float = 0
 
-const jump_buffer_constant : int = 4
-var jump_buffer : int = 0
-
-const ground_buffer_constant : int = 4
-var ground_buffer : int = 0
-
 var last_anim : String = "Default"
 var state_air : int = 0
 var wall_anim : int = 1
@@ -74,11 +68,12 @@ func _physics_process(_delta):
 	col_2.scale = $col_2.scale
 	col_2.disabled = !$col_2.visible
 	
-	if Input.is_action_just_pressed("jump"): jump_buffer = jump_buffer_constant
+	if player.is_jump_input_just_pressed():
+		player.jump_buffer = player.JUMP_BUFFER_FRAMES
 	
 	if player.start:
-		if jump_buffer > 0:
-			jump_buffer -= 1
+		if player.jump_buffer > 0:
+			player.jump_buffer -= 1
 		if Input.is_action_just_pressed("special"):
 			sliding = 15
 			player.play_sound("dash")
@@ -103,7 +98,7 @@ func _physics_process(_delta):
 			else:
 				player.momentum.y += gravity_wall_down
 		if player.state == "ground":
-			ground_buffer = ground_buffer_constant
+			player.ground_buffer = player.GROUND_BUFFER_FRAMES
 			jump_amount = jump_amount_max
 			if sign(player.momentum.x) != 0:
 				var temp_momentum = sign(player.momentum.x)
@@ -202,21 +197,23 @@ func _physics_process(_delta):
 			player.momentum.y += gravity_down
 		
 		# JUMPING
-		if ground_buffer != 0: ground_buffer -= 1
-		if ground_buffer == 1: jump_amount = jump_amount_max - 1
+		if player.ground_buffer != 0:
+			player.ground_buffer -= 1
+		if player.ground_buffer == 1:
+			jump_amount = jump_amount_max - 1
 		
 		if player.is_on_wall() and !player.punted:
 			player.momentum.x = 0
 			jump_amount = jump_amount_max - 1
 		
 		player.collision_mask = 3
-		if jump_buffer > 0 and !force_slide:
-			jump_buffer -= 1
-			ground_buffer = 0
+		if player.jump_buffer > 0 and !force_slide:
+			player.jump_buffer -= 1
+			player.ground_buffer = 0
 			if player.move_and_collide(Vector2(0,4), false, true, true) or sliding > 0:
 				jump_amount -= 1
 				jump(jump_power)
-				jump_buffer = 0
+				player.jump_buffer = 0
 				particle_summon(Vector2(0, 0), 0)
 			elif player.move_and_collide(Vector2(4,0), false, true, true):
 					jump_amount = jump_amount_max - 1
@@ -225,7 +222,7 @@ func _physics_process(_delta):
 					player.facing = "left"
 					# warning-ignore:narrowing_conversion
 					jump(jump_power * 1.075)
-					jump_buffer = 0
+					player.jump_buffer = 0
 					particle_summon(Vector2(12, -64), -1.6)
 			elif player.move_and_collide(Vector2(-4,0), false, true, true):
 					jump_amount = jump_amount_max - 1
@@ -234,13 +231,13 @@ func _physics_process(_delta):
 					player.facing = "right"
 					# warning-ignore:narrowing_conversion
 					jump(jump_power * 1.075)
-					jump_buffer = 0
+					player.jump_buffer = 0
 					particle_summon(Vector2(-12, -64), 1.6)
-		if jump_amount > 0 and jump_buffer == 1:
+		if jump_amount > 0 and player.jump_buffer == 1:
 				jump_amount -= 1
 				jump(jump_power)
-				#jump_buffer = 0
-		if !Input.is_action_pressed("jump") and !gravity_switch and !player.punted and sliding == 0:
+				#player.jump_buffer = 0
+		if !player.is_jump_input_pressed() and !gravity_switch and !player.punted and sliding == 0:
 			gravity_switch = true
 			if player.momentum.y < -200:
 				player.momentum.y = -200
@@ -249,7 +246,8 @@ func _physics_process(_delta):
 		# warning-ignore:return_value_discarded
 		player.move_player_character()
 		
-		if player.is_on_floor() or player.move_and_collide(Vector2(0,1), false, true, true): player.state = "ground"
+		if player.is_on_floor() or player.move_and_collide(Vector2(0,1), false, true, true):
+			player.state = "ground"
 		
 		# ANIMATION
 		scale = Vector2(0.5, 0.5)
@@ -266,9 +264,9 @@ func _physics_process(_delta):
 				$Anim.current_animation = "On_Wall"
 			elif player.launched or $Anim.current_animation == "Jump_Spin":# or (last_anim == "Jump_Spin" and player.momentum.y < 0):
 				$Anim.current_animation = "Jump_Spin"
-			elif last_anim == "Jump_Spin" and $Anim.current_animation == "":#last_anim == "Jump_Up" or last_anim == "On_Wall" or ground_buffer > 0:
+			elif last_anim == "Jump_Spin" and $Anim.current_animation == "":#last_anim == "Jump_Up" or last_anim == "On_Wall" or player.ground_buffer > 0:
 				$Anim.play("Jump_Transition")
-			elif Input.is_action_pressed("jump") and !gravity_switch:
+			elif player.is_jump_input_pressed() and !gravity_switch:
 				$Anim.current_animation = "Jump_Up"
 			elif last_anim != "Jump_Transition" and last_anim != "" and last_anim != "Jump_Spin":
 				$Anim.play("Jump_Transition")
@@ -317,8 +315,10 @@ func _physics_process(_delta):
 		else:
 			scale = Vector2(0.5 * wall_anim, scale.y)
 		
-		if player.state == "air": state_air = 5
-		if particle_disable != 0: particle_disable -= 1
+		if player.state == "air":
+			state_air = 5
+		if particle_disable != 0:
+			particle_disable -= 1
 	
 	# - - - REPLAY STATE - - -
 	elif player.replay and player.timer > player.replay_timer:

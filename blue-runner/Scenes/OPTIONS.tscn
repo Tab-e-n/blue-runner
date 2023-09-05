@@ -246,6 +246,10 @@ tracks/4/keys = {
 [node name="OPTIONS" type="Node2D"]
 material = SubResource( 1 )
 script = ExtResource( 3 )
+__meta__ = {
+"_edit_horizontal_guides_": [ 384.0, -384.0 ],
+"_edit_vertical_guides_": [ -640.0, 640.0 ]
+}
 pulse_time = -0.875
 
 [node name="menu_circle_1" type="Sprite" parent="."]
@@ -285,7 +289,6 @@ margin_left = -576.0
 margin_top = 308.0
 margin_right = 64.0
 margin_bottom = 372.0
-custom_colors/default_color = Color( 0.25098, 0.74902, 0.74902, 1 )
 text = "BACK"
 
 [node name="cursor" type="Node2D" parent="."]

@@ -46,6 +46,8 @@ const controls_buttons : Array = [
 	["LEVEL CONTROLS", "submenu", "controls_level"],
 	["MENU CONTROLS", "submenu", "controls_menu"],
 	["META CONTROLS", "submenu", "controls_meta"],
+	["", "label"],
+	["UP FOR JUMP", "checkbox", "*up_key_jump"],
 ]
 const controls_level_buttons : Array = [
 	["== LEVEL CONTROLS ==", "label"],

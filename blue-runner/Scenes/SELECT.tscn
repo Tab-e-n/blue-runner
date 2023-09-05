@@ -276,7 +276,7 @@ resource_name = "LEVEL -> CHARACTER"
 length = 0.6
 step = 0.025
 tracks/0/type = "value"
-tracks/0/path = NodePath("character_select/bg:position")
+tracks/0/path = NodePath("character_select/options_rectangle:position")
 tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -285,115 +285,115 @@ tracks/0/keys = {
 "times": PoolRealArray( 0, 0.5 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Vector2( -1024, -1024 ), Vector2( 0, 0 ) ]
+"values": [ Vector2( 800, -1792 ), Vector2( 352, 7.31647e-06 ) ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("character_select/options_rectangle:position")
+tracks/1/path = NodePath("character_select/character_render:position")
 tracks/1/interp = 2
 tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.5 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ Vector2( 800, -1792 ), Vector2( 352, 7.31647e-06 ) ]
-}
-tracks/2/type = "value"
-tracks/2/path = NodePath("character_select/character_render:position")
-tracks/2/interp = 2
-tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/keys = {
 "times": PoolRealArray( 0, 0.25, 0.5, 0.55 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
 "values": [ Vector2( 384, -128 ), Vector2( 384, -128 ), Vector2( -384, -128 ), Vector2( -320, -128 ) ]
 }
-tracks/3/type = "value"
-tracks/3/path = NodePath("character_select/character_render:visible")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/keys = {
+tracks/2/type = "value"
+tracks/2/path = NodePath("character_select/character_render:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
 "times": PoolRealArray( 0, 0.25 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ false, true ]
 }
-tracks/4/type = "value"
-tracks/4/path = NodePath("character_select/name:rect_position")
-tracks/4/interp = 2
-tracks/4/loop_wrap = true
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/keys = {
+tracks/3/type = "value"
+tracks/3/path = NodePath("character_select/name:rect_position")
+tracks/3/interp = 2
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
 "times": PoolRealArray( 0, 0.275, 0.525, 0.575 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
 "values": [ Vector2( 96, 72 ), Vector2( 96, 72 ), Vector2( -640, 72 ), Vector2( -576, 72 ) ]
 }
-tracks/5/type = "value"
-tracks/5/path = NodePath("character_select/name:visible")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/keys = {
+tracks/4/type = "value"
+tracks/4/path = NodePath("character_select/name:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
 "times": PoolRealArray( 0, 0.275 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ false, true ]
 }
-tracks/6/type = "value"
-tracks/6/path = NodePath("character_select/description:rect_position")
-tracks/6/interp = 2
-tracks/6/loop_wrap = true
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/keys = {
+tracks/5/type = "value"
+tracks/5/path = NodePath("character_select/description:rect_position")
+tracks/5/interp = 2
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
 "times": PoolRealArray( 0, 0.3, 0.55, 0.6 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
 "values": [ Vector2( 64, 128 ), Vector2( 64, 128 ), Vector2( -664, 128 ), Vector2( -600, 128 ) ]
 }
-tracks/7/type = "value"
-tracks/7/path = NodePath("character_select/description:visible")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/keys = {
+tracks/6/type = "value"
+tracks/6/path = NodePath("character_select/description:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
 "times": PoolRealArray( 0, 0.3 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ false, true ]
 }
-tracks/8/type = "value"
-tracks/8/path = NodePath("character_select:visible")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/keys = {
+tracks/7/type = "value"
+tracks/7/path = NodePath("character_select:visible")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
 "times": PoolRealArray( 0, 0.6 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ true, true ]
 }
+tracks/8/type = "value"
+tracks/8/path = NodePath("level_select:visible")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
 tracks/9/type = "value"
-tracks/9/path = NodePath("level_select:visible")
+tracks/9/path = NodePath("character_select/characters:modulate")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/imported = false
 tracks/9/enabled = true
 tracks/9/keys = {
-"times": PoolRealArray( 0, 0.5 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ true, false ]
+"times": PoolRealArray( 0, 0.325, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
 }
 tracks/10/type = "value"
 tracks/10/path = NodePath("group_select:visible")
@@ -408,16 +408,16 @@ tracks/10/keys = {
 "values": [ false, false ]
 }
 tracks/11/type = "value"
-tracks/11/path = NodePath("character_select/characters:modulate")
-tracks/11/interp = 1
+tracks/11/path = NodePath("character_select/bg:position")
+tracks/11/interp = 2
 tracks/11/loop_wrap = true
 tracks/11/imported = false
 tracks/11/enabled = true
 tracks/11/keys = {
-"times": PoolRealArray( 0, 0.325, 0.6 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+"values": [ Vector2( -1024, -1024 ), Vector2( 0, 0 ) ]
 }
 
 [sub_resource type="Animation" id=4]
@@ -519,6 +519,30 @@ tracks/7/keys = {
 "args": [  ],
 "method": "remove_bg"
 } ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("bg:visible")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("character_select:visible")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
 }
 
 [sub_resource type="Animation" id=5]
@@ -1418,8 +1442,6 @@ __meta__ = {
 }
 
 [node name="bg" type="Polygon2D" parent="."]
-visible = false
-modulate = Color( 1, 1, 1, 0 )
 color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 polygon = PoolVector2Array( 640, -384, 640, 384, -640, 384, -640, -384 )
 
@@ -1482,26 +1504,30 @@ end_cap_mode = 1
 visible = false
 
 [node name="bg" type="Polygon2D" parent="character_select"]
+position = Vector2( -1024, -1024 )
 color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 polygon = PoolVector2Array( 640, -384, 1024, 0, 0, 1024, -640, 384, -640, -384 )
 
 [node name="character_render" type="Sprite" parent="character_select"]
-position = Vector2( -320, -128 )
+visible = false
+position = Vector2( 384, -128 )
 texture = ExtResource( 18 )
 
 [node name="name" parent="character_select" instance=ExtResource( 7 )]
-margin_left = -576.0
+visible = false
+margin_left = 96.0
 margin_top = 72.0
-margin_right = 107.0
+margin_right = 779.0
 margin_bottom = 136.0
 rect_scale = Vector2( 0.75, 0.75 )
 bbcode_enabled = true
 text = ""
 
 [node name="description" parent="character_select" instance=ExtResource( 7 )]
-margin_left = -600.0
+visible = false
+margin_left = 64.0
 margin_top = 128.0
-margin_right = 520.0
+margin_right = 1184.0
 margin_bottom = 512.0
 rect_scale = Vector2( 0.5, 0.5 )
 bbcode_enabled = true
@@ -1509,7 +1535,7 @@ text = ""
 
 [node name="options_rectangle" type="Sprite" parent="character_select"]
 material = SubResource( 13 )
-position = Vector2( 352, 7.31647e-06 )
+position = Vector2( 800, -1792 )
 rotation = 1.8158
 scale = Vector2( 2, 1.52326 )
 texture = ExtResource( 6 )
@@ -1519,6 +1545,7 @@ autoplay = "shift"
 anims/shift = SubResource( 14 )
 
 [node name="characters" type="Node2D" parent="character_select"]
+modulate = Color( 1, 1, 1, 0 )
 position = Vector2( 160, 0 )
 
 [node name="cursor" type="Polygon2D" parent="character_select/characters"]

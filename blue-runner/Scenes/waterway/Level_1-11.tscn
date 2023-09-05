@@ -24,6 +24,7 @@
 [node name="Level_1-11" type="Node2D"]
 
 [node name="Camera" parent="." instance=ExtResource( 1 )]
+zoom = Vector2( 2, 2 )
 limit_y = Vector2( 384, 1536 )
 
 [node name="BG" parent="." instance=ExtResource( 8 )]
@@ -433,8 +434,6 @@ position = Vector2( -800, 256 )
 position = Vector2( -224, 1984 )
 tele_destination = "Level_1-12"
 par = 6.5
-type = 0
-unlock = ""
 
 [node name="Collectible" parent="." instance=ExtResource( 5 )]
 position = Vector2( -704, 1824 )

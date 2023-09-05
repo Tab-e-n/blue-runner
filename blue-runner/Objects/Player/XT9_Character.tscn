@@ -7436,6 +7436,10 @@ tracks/44/keys = {
 use_parent_material = true
 scale = Vector2( 0.5, 0.5 )
 script = ExtResource( 2 )
+__meta__ = {
+"_edit_horizontal_guides_": [ -131.0, -15.0 ],
+"_edit_vertical_guides_": [ -38.0, 78.0 ]
+}
 particle = ExtResource( 1 )
 particle_start = Color( 0.8, 0.427451, 0.670588, 1 )
 particle_end = Color( 0.266667, 0.0980392, 0.109804, 1 )
