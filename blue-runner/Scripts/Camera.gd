@@ -26,6 +26,7 @@ var visible_timer : bool = false
 func _ready():
 	$Fade.visible = true
 	$border.visible = true
+	$border_thing.visible = false
 	if $"/root/Global".options["*timer_on"] == 1:
 		visible_timer = true
 	elif $"/root/Global".options["*timer_on"] == 2:
@@ -42,20 +43,28 @@ func _ready():
 	if cam_target == null:
 		cam_target = self
 	
-	if speedometer_active: visible_timer = false
+	if speedometer_active:
+		visible_timer = false
 	$info.visible = speedometer_active or visible_timer
 	$speed.visible = speedometer_active
 	
-	$camera_inputs/continue.text = $"/root/Global".key_names(4)
-	$camera_inputs/reset.text = $"/root/Global".key_names(6)
+	$border_thing/continue.text = $"/root/Global".key_names(4)
+	$border_thing/reset.text = $"/root/Global".key_names(6)
 	
-	if Global.compatibility_mode: compatibility_mode = true
+	if Global.compatibility_mode:
+		compatibility_mode = true
 	
 	if compatibility_mode:
 		$border.polygon[0].x = -512
 		$border.polygon[1].x = 512
 		$border.polygon[2].x = 512
 		$border.polygon[7].x = -512
+		
+		$border_thing/camera_input_continue.position.x = 480
+		$border_thing/camera_input_reset.position.x = -480
+		$border_thing/continue.rect_size.x = 512
+		$border_thing/reset.rect_size.x = 512
+		$border_thing/reset.rect_position.x = -416
 
 func _physics_process(_delta):
 	if color_timer < 12:
@@ -63,7 +72,8 @@ func _physics_process(_delta):
 		$Fade.color = Color(color.r,color.g,color.b,(10-color_timer)/10)
 		
 		color_timer += 1
-		if color_timer == 11: $Fade.visible = false
+		if color_timer == 11:
+			$Fade.visible = false
 	if color_timer > 13:
 		var color = $Fade.color
 		color_timer -= 1
@@ -101,9 +111,9 @@ func _physics_process(_delta):
 		$border_thing.scale.x = zoom.x + (zoom.x * 0.5) / end_timer_const * end_timer
 		$border_thing.scale.y = zoom.y + (zoom.y * 0.5) / end_timer_const * end_timer
 		
-		$camera_inputs.scale = $border_thing.scale
+#		$camera_inputs.scale = $border_thing.scale
 		
-		$camera_inputs.position.y = 80.0 / end_timer_const * end_timer
+#		$camera_inputs.position.y = 80.0 / end_timer_const * end_timer
 		
 		position.x = cam_target.position.x + (end_pos_begin.x - cam_target.position.x) / end_timer_const * end_timer
 		position.y = cam_target.position.y + (end_pos_begin.y - cam_target.position.y) / end_timer_const * end_timer
@@ -137,15 +147,17 @@ func end_zoom_in(target : Node2D, tele, timer : float, par : float):
 	end_zoom_begin = zoom.x
 	end_pos_begin = position
 	$border_thing.visible = true
-	$camera_inputs.visible = true
+#	$camera_inputs.visible = true
 	$border_thing.scale = zoom * 4
-	$camera_inputs.scale = zoom * 4
+#	$camera_inputs.scale = zoom * 4
 	
 	$border_thing/replay.text = "SAVE REPLAY - " + Global.key_names(5)
 	
-	$border_thing/camera_square/timer.text = Global.convert_float_to_time(timer)
+	$border_thing/timer.text = Global.convert_float_to_time(timer)
 	if par == 0:
-		$border_thing/camera_square/par.text = "no par\ntime"
+		$border_thing/par.text = "no par time"
 	else:
-		$border_thing/camera_square/par.text = "par\n" + Global.convert_float_to_time(par)
+		$border_thing/par.text = "par " + Global.convert_float_to_time(par)
 	
+	$anim.play("end_zoom_in")
+	$border_thing/anim.play("shift")
