@@ -15,14 +15,16 @@ var dat : Dictionary = {
 	"tags" : ["official"]
 }
 
-var current_tutorial : int = 0
-const tutorials : Array = ["MOVING", "JUMPING", "SPECIAL", "GOAL", "BONUS"]
+var current_tutorial : int = 1
+const tutorials : Array = ["EXIT", "MOVING", "JUMPING", "SPECIAL", "GOAL", "BONUS", "TUTORIAL"]
 const tutorial_text : Dictionary = {
+	"EXIT" : "Press\n%deny%\nto leave this menu.",
 	"MOVING" : "To move, use\n%left%\nand %right%.", 
 	"JUMPING" : "To jump, use\n%jump%.\nYou can jump off of walls.", 
 	"SPECIAL" : "To perform other actions, use\n%special%.", 
 	"GOAL" : "You need to reach the other robot\nto win.", 
 	"BONUS" : "There are bonus objectives on the way.\nThey aren't required to finish.",
+	"TUTORIAL" : "Replay the tutorial?\n(%accept%)",
 }
 
 func _ready():
@@ -55,6 +57,9 @@ func menu_update():
 			$Title.bbcode_text = "[center]" + tutorials[current_tutorial] + "[/center]"
 			$mainAnim.stop()
 			$mainAnim.play("Move")
+		if Input.is_action_pressed("accept") and tutorials[current_tutorial] == "TUTORIAL":
+			# make it animate and change to actual tutorial level
+			Global.change_level("*res://Scenes/waterway/Level_1-0.tscn")
 	$arrow_left.visible = current_tutorial != 0
 	$arrow_right.visible = current_tutorial != tutorials.size() - 1
 
@@ -80,6 +85,11 @@ func set_tutorial():
 		"BONUS":
 			$Level/Collectible.visible = true
 			$Level/Portal.visible = true
+	
+	if tut_name == "EXIT" or tut_name == "TUTORIAL":
+		$mainAnim.play("Static")
+		$Level.visible = false
+		$help_tv/help_static.visible = true
 	
 	if Global.load_replay(tut_name, true, false, true):
 		

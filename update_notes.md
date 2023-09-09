@@ -14,7 +14,7 @@
  - New timer setting, where it will only appear if you had beaten the level you are playing.
  - You can now screenshot the game with F2.
  - You can now save replays while playing the level with F6. This will save a replay without you needing to finish the level.
- - You can now unlock missing legitimately.
+ - You can now unlock "missing" legitimately.
 
 ### VISUAL
 
@@ -61,8 +61,9 @@
 	 - When typing text into HoverText, you can type some commands
 	   inbetween %% and they will be replaced by game info.
 	 - `%left%`, `%right%`, `%up%`, `%down%`, `%jump%`, `%special%`,
-	   `%reset%`, `%return%` will be replaced by the users keybinds for
-	   those actions.
+	   `%reset%`, `%return%`, `%menu_left%`, `%menu_right%`, `%menu_up%`,
+           `%menu_down%`, `%accept%`, `%deny%`, `%save_replay%`, `%screenshot%`
+	   will be replaced by the users keybinds for those actions.
 	 - `%unlock [unlock]%` will be replaced by a YES or NO depending on if
 	   `[unlock]` is unlocked.
 	 - `%level [level_data]%` will be replaced by info from the level .dat file.

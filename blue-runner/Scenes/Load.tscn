@@ -1,65 +1,121 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Text/ModernDOS.tres" type="DynamicFont" id=2]
-[ext_resource path="res://Scripts/Load.gd" type="Script" id=3]
-[ext_resource path="res://Text/Text_Editor.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Text/ModernDOS.tres" type="DynamicFont" id=1]
+[ext_resource path="res://Scripts/Menu/LOAD.gd" type="Script" id=2]
+[ext_resource path="res://Visual/light_point_small.png" type="Texture" id=3]
 
-[sub_resource type="Animation" id=1]
-length = 0.4
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 1, 1, 1, 1 )
+border_color = Color( 0.454902, 0.54902, 0.662745, 1 )
+
+[sub_resource type="Animation" id=2]
+resource_name = "exit"
+length = 0.5
+step = 0.05
 tracks/0/type = "value"
-tracks/0/path = NodePath(".:scale")
-tracks/0/interp = 2
+tracks/0/path = NodePath("console/Panel:modulate")
+tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Vector2( 1, 1 ), Vector2( 1, 1.5 ), Vector2( 1.5, 0.5 ), Vector2( 0, 0 ) ]
+"values": [ Color( 0.0156863, 0.0235294, 0.133333, 1 ), Color( 1, 1, 1, 1 ) ]
 }
-tracks/1/type = "method"
-tracks/1/path = NodePath("..")
-tracks/1/interp = 1
+tracks/1/type = "value"
+tracks/1/path = NodePath("console:rect_scale")
+tracks/1/interp = 2
 tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0.4 ),
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1, 0.5 ), Vector2( 1, 0.01 ), Vector2( 0, 0.01 ) ]
+}
+tracks/2/type = "method"
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0.5 ),
 "transitions": PoolRealArray( 1 ),
 "values": [ {
 "args": [  ],
-"method": "anim_end"
+"method": "change_scene_to_menu"
 } ]
 }
+tracks/3/type = "value"
+tracks/3/path = NodePath("light_point_small:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("light_point_small:scale")
+tracks/4/interp = 2
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0.2, 0.3, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 1, 1 ), Vector2( 0, 0 ) ]
+}
 
-[node name="Load" type="Node2D"]
-script = ExtResource( 3 )
+[node name="LOAD" type="Node2D"]
+script = ExtResource( 2 )
 
-[node name="CamTarget" type="Node2D" parent="."]
+[node name="console" type="Control" parent="."]
+margin_left = 640.0
+margin_top = 384.0
+margin_right = 704.0
+margin_bottom = 448.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="Camera" parent="." instance=ExtResource( 1 )]
-zoom = Vector2( 2, 2 )
+[node name="Panel" type="Panel" parent="console"]
+modulate = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+margin_left = -640.0
+margin_top = -384.0
+margin_right = 640.0
+margin_bottom = 384.0
+custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="bg" type="Polygon2D" parent="."]
-color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
-polygon = PoolVector2Array( -1024, -768, 1024, -768, 1024, 768, -1024, 768 )
+[node name="lines" type="Label" parent="console"]
+light_mask = -2147483647
+margin_left = -320.0
+margin_top = -384.0
+margin_right = 960.0
+margin_bottom = 1152.0
+rect_scale = Vector2( 0.5, 0.5 )
+custom_fonts/font = ExtResource( 1 )
+text = "Loading"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="t" type="Node2D" parent="."]
+[node name="light_point_small" type="Sprite" parent="."]
+visible = false
+position = Vector2( 640, 384 )
+scale = Vector2( 1e-05, 1e-05 )
+texture = ExtResource( 3 )
 
-[node name="anim" type="AnimationPlayer" parent="t"]
-anims/out = SubResource( 1 )
-
-[node name="boot" parent="t" instance=ExtResource( 4 )]
-margin_left = -1024.0
-margin_top = -768.0
-margin_right = 1707.0
-margin_bottom = 1280.0
-rect_scale = Vector2( 0.75, 0.75 )
-custom_fonts/mono_font = ExtResource( 2 )
-custom_fonts/bold_italics_font = ExtResource( 2 )
-custom_fonts/italics_font = ExtResource( 2 )
-custom_fonts/bold_font = ExtResource( 2 )
-custom_fonts/normal_font = ExtResource( 2 )
-text = ""
+[node name="anim" type="AnimationPlayer" parent="."]
+anims/exit = SubResource( 2 )

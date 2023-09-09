@@ -161,9 +161,9 @@ func _ready():
 
 func _physics_process(_delta):
 	var curr_scene = get_tree().current_scene.name
-	if Input.is_action_just_pressed("return") and !(curr_scene == "MENU" or curr_scene == "Load"):
+	if Input.is_action_just_pressed("return") and !(curr_scene == "MENU" or curr_scene == "LOAD"):
 		change_level("*MENU") 
-	if Input.is_action_just_pressed("reset") and !(curr_scene == "MENU" or curr_scene == "Load"):
+	if Input.is_action_just_pressed("reset") and !(curr_scene == "MENU" or curr_scene == "LOAD"):
 		change_level("")
 	
 	if Input.is_action_just_pressed("screenshot"):
@@ -443,40 +443,27 @@ func text_interpretor(text : String):
 		#print("op_text  :",op_text)
 		if interpret == "`":
 			new_text += op_text
-		if interpret == "%": match op_text:
-			"left":
-				new_text += key_names(0)
-			"right":
-				new_text += key_names(1)
-			"up":
-				new_text += key_names(2)
-			"down":
-				new_text += key_names(3)
-			"jump":
-				new_text += key_names(4)
-			"special":
-				new_text += key_names(5)
-			"reset":
-				new_text += key_names(6)
-			"return":
-				new_text += key_names(7)
-			"`":
-				new_text += "`"
-			_: # bruh
-				if op_text.begins_with("unlock"):
-					if check_unlock(op_text.substr(7, op_text.length() - 7)):
-						new_text += "YES"
-					else:
-						new_text += "NO"
-				if op_text.begins_with("level"):
-					var level : Node2D = get_tree().current_scene
-					var data : String = op_text.substr(6, op_text.length() - 6)
-					if !level.dat.has(data): continue
-					if data == "dependencies" or data == "tags": continue
-					if data == "level_base" or data == "level_icon":
-						new_text += level.dat[data][0] + " from " + level.dat[data][1]
-						continue
-					new_text += level.dat[data]
+		if interpret == "%":
+			if "*" + op_text in keybind_names:
+				new_text += key_names(keybind_names.find("*" + op_text))
+			else: match op_text:
+				"`":
+					new_text += "`"
+				_: # bruh
+					if op_text.begins_with("unlock"):
+						if check_unlock(op_text.substr(7, op_text.length() - 7)):
+							new_text += "YES"
+						else:
+							new_text += "NO"
+					if op_text.begins_with("level"):
+						var level : Node2D = get_tree().current_scene
+						var data : String = op_text.substr(6, op_text.length() - 6)
+						if !level.dat.has(data): continue
+						if data == "dependencies" or data == "tags": continue
+						if data == "level_base" or data == "level_icon":
+							new_text += level.dat[data][0] + " from " + level.dat[data][1]
+							continue
+						new_text += level.dat[data]
 		#print("next     :",next_text)
 	#print("return   :",new_text)
 	#breakpoint
@@ -498,7 +485,6 @@ func load_external_picture(picture_filename : String, sprite : Sprite):
 	var pngf = File.new()
 	if not pngf.file_exists(picture_filename):
 		sprite.texture = preload("res://Visual/no_image.png")
-		add_child(sprite)
 		return
 	
 	pngf.open(picture_filename, File.READ)
@@ -571,20 +557,22 @@ func change_level(destination : String, return_value : bool = false, check_depen
 #		print(current_level)
 #		print(current_level_location)
 	if error == OK:
-		error = change_scene_level(destination_new)
+		error = change_scene_level(destination_new, return_value)
 	if return_value:
 		return error
 	elif error != OK:
 		# warning-ignore:return_value_discarded
 		get_tree().change_scene("res://Scenes/MENU.tscn")
 
-func change_scene_level(file : String):
+func change_scene_level(file : String, return_only : bool = false):
 	var packed_scene : PackedScene = load(file)
 	if packed_scene == null:
 		return ERR_CANT_OPEN
 	var current_scene = packed_scene.instance()
 	if current_scene == null:
 		return ERR_CANT_CREATE
+	if return_only:
+		return OK
 	
 #	print(current_scene.name)
 #	print(current_scene.get_script())

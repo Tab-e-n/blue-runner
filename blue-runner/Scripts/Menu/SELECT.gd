@@ -146,6 +146,8 @@ func menu_update():
 				$level_select/fail.visible = true
 				is_selecting_characters = false
 				$mainAnim.play("CHARACTER -> LEVEL")
+			else:
+				parent.get_node("Camera").fade_out("")
 		
 		if Input.is_action_pressed("menu_left") and parent.move:
 			character_move_cursor(-1)
@@ -158,14 +160,14 @@ func menu_update():
 		
 		$character_select/options_rectangle.material.set_shader_param("offset", character_pulse)
 	else:
-		if Input.is_action_just_pressed("deny"):
+		if Input.is_action_just_pressed("deny") and not has_selected_level:
 			is_selecting_groups = true
 			if groups_first_time:
 				make_group_icons()
 				groups_first_time = false
 			group_move_cursor()
 			$mainAnim.play("LEVEL -> GROUP")
-		if Input.is_action_just_pressed("accept"):
+		if Input.is_action_just_pressed("accept") and not has_selected_level:
 			if not get_node("level_select/levels/" + String(selected_level)).locked:
 				get_node("level_select/levels/" + String(selected_level)).get_node("Anim").play("Bump")
 				$level_select/levels/selected_level/anim.play("Bump")
@@ -641,6 +643,11 @@ func level_selected():
 		get_node("level_select/levels/" + String(selected_level)).get_node("Anim").play("Refuse")
 		$level_select/levels/selected_level/anim.play("Refuse")
 		has_selected_level = false
+	elif Global.change_level("", true, false) != OK:
+		get_node("level_select/levels/" + String(selected_level)).get_node("Anim").play("Refuse")
+		$level_select/levels/selected_level/anim.play("Refuse")
+		$level_select/fail.visible = true
+		has_selected_level = false
 	elif activate_char_select:
 		if characters_first_time:
 			make_character_icons()
@@ -651,11 +658,7 @@ func level_selected():
 		has_selected_level = false
 	else:
 		Global.select_menu = true
-		if Global.change_level("", true, false) != OK:
-			get_node("level_select/levels/" + String(selected_level)).get_node("Anim").play("Refuse")
-			$level_select/levels/selected_level/anim.play("Refuse")
-			$level_select/fail.visible = true
-			has_selected_level = false
+		parent.get_node("Camera").fade_out("")
 
 func check_character_unlocks():
 	

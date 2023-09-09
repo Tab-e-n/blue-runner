@@ -70,6 +70,10 @@ const controls_menu_buttons : Array = [
 	["DOWN", "keybind", 11],
 	["ACCEPT", "keybind", 12],
 	["DENY", "keybind", 13],
+	["", "label"],
+	["If you can't access this menu for some reason,", "label"],
+	["remember that you can change these keybinds", "label"],
+	["by pressing F12 when loading into Sonic Runner.", "label"],
 ]
 const controls_meta_buttons : Array = [
 	["== META CONTROLS ==", "label"],

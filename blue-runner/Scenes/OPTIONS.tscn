@@ -14,6 +14,7 @@
 shader = ExtResource( 4 )
 shader_param/color = Plane( 0.25, 0.75, 0.75, 1 )
 shader_param/replacing = Plane( 1, 1, 1, 1 )
+shader_param/enable_second_color = false
 shader_param/secondary_color = Plane( 1, 1, 1, 1 )
 shader_param/secondary_replacing = Plane( 1, 1, 1, 1 )
 shader_param/offset_enabled = true

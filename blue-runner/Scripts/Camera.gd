@@ -67,25 +67,29 @@ func _ready():
 		$border_thing/reset.rect_position.x = -416
 
 func _physics_process(_delta):
+	if has_node("complete_dark"):
+		$complete_dark.call_deferred("queue_free")
 	if color_timer < 12:
-		var color = $Fade.color
-		$Fade.color = Color(color.r,color.g,color.b,(10-color_timer)/10)
-		
 		color_timer += 1
-		if color_timer == 11:
+		if color_timer == 12:
 			$Fade.visible = false
-	if color_timer > 13:
-		var color = $Fade.color
-		color_timer -= 1
+		else:
+			var color = $Fade.color
+			$Fade.color = Color(color.r,color.g,color.b,(10-color_timer)/10)
+			
 		
-		# warning-ignore:return_value_discarded
+	if color_timer > 13:
+		color_timer -= 1
 		if color_timer == 13: 
 			if Global.race_mode:
-				Global.change_level("*Menu_Level_Select")
+				Global.change_level("*MENU")
 			else: 
 				Global.change_level(tele_destination)
 		else:
+			var color = $Fade.color
 			$Fade.color = Color(color.r,color.g,color.b,(24-color_timer)/10)
+			
+		# warning-ignore:return_value_discarded
 	
 	if !end_zoom:
 		position.x = int(cam_target.position.x / 2) * 2
@@ -119,13 +123,14 @@ func _physics_process(_delta):
 		position.y = cam_target.position.y + (end_pos_begin.y - cam_target.position.y) / end_timer_const * end_timer
 		
 		
-		if end_timer > 0: end_timer -= end_timer / 20
-		if end_timer < 0.1: end_timer = 0
+		if end_timer > 0:
+			end_timer -= end_timer / 20
+		if end_timer < 0.1:
+			end_timer = 0
 		
 		if end_timer < 10 and color_timer < 13:
 			if Input.is_action_pressed("jump"):
-				color_timer = 24
-				$Fade.visible = true
+				fade_out(tele_destination)
 			if Input.is_action_just_pressed("special") and replay_saved:
 				Global.save_replay_with_date(get_parent().name, get_parent().get_node("Player").recording.duplicate())
 				
@@ -161,3 +166,9 @@ func end_zoom_in(target : Node2D, tele, timer : float, par : float):
 	
 	$anim.play("end_zoom_in")
 	$border_thing/anim.play("shift")
+
+func fade_out(tele : String = "*MENU"):
+	color_timer = 24
+	$Fade.visible = true
+	tele_destination = tele
+	$info.visible = false

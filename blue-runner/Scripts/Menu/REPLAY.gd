@@ -39,7 +39,7 @@ func _ready():
 		current_mode = Global.replay_save[1]
 		
 		current_directory = Global.replay_save[2]
-		selected_directory = directories.bsearch(current_directory)
+		selected_directory = directories.find(current_directory)
 		
 		is_selecting_replay = true
 		is_selecting_directory = false
@@ -196,6 +196,10 @@ func directory_inputs():
 		is_selecting_replay = true
 		is_selecting_directory = false
 		$mainAnim.play("Directory Selected")
+		for i in range(3):
+			get_node("directories/other_directories/-" + String(i + 1)).rect_position.x = -464
+			get_node("directories/other_directories/+" + String(i + 1)).rect_position.x = -464
+		$"directories/directory".rect_position.x = -464
 	if Input.is_action_just_pressed("deny"):
 		parent.switch_menu("MAIN", "REPLAY")
 		$mainAnim.play("Exit")

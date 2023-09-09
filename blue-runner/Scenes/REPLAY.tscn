@@ -16,6 +16,7 @@
 shader = ExtResource( 5 )
 shader_param/color = Plane( 0.25, 0.5, 0.75, 1 )
 shader_param/replacing = Plane( 1, 1, 1, 1 )
+shader_param/enable_second_color = false
 shader_param/secondary_color = Plane( 1, 1, 1, 1 )
 shader_param/secondary_replacing = Plane( 1, 1, 1, 1 )
 shader_param/offset_enabled = false
@@ -26,6 +27,7 @@ shader_param/only_replaced = false
 shader = ExtResource( 5 )
 shader_param/color = Plane( 0.12, 0.25, 0.32, 1 )
 shader_param/replacing = Plane( 1, 1, 1, 1 )
+shader_param/enable_second_color = false
 shader_param/secondary_color = Plane( 1, 1, 1, 1 )
 shader_param/secondary_replacing = Plane( 1, 1, 1, 1 )
 shader_param/offset_enabled = false
@@ -53,6 +55,7 @@ tracks/0/keys = {
 shader = ExtResource( 5 )
 shader_param/color = Plane( 0.13, 0.08, 0.2, 1 )
 shader_param/replacing = Plane( 1, 1, 1, 1 )
+shader_param/enable_second_color = false
 shader_param/secondary_color = Plane( 1, 1, 1, 1 )
 shader_param/secondary_replacing = Plane( 1, 1, 1, 1 )
 shader_param/offset_enabled = false
@@ -578,16 +581,64 @@ tracks/8/keys = {
 "method": "queue_free"
 } ]
 }
+tracks/9/type = "value"
+tracks/9/path = NodePath("bottom:visible")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("rack:visible")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/11/type = "value"
+tracks/11/path = NodePath("directories/directory:rect_scale")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 2, 2 ) ]
+}
+tracks/12/type = "value"
+tracks/12/path = NodePath("directories/curdir:visible")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
 
 [node name="REPLAY" type="Node2D"]
 material = SubResource( 1 )
 script = ExtResource( 3 )
-directory_animation_ongoing = true
 rack_time = 0.0
 
 [node name="rack" type="Node2D" parent="."]
 visible = false
 use_parent_material = true
+position = Vector2( 0, 768 )
 
 [node name="replay_rack" type="Sprite" parent="rack"]
 material = SubResource( 2 )
@@ -972,7 +1023,9 @@ text = "There isn't anything here
 anims/shift = SubResource( 3 )
 
 [node name="bottom" type="Node2D" parent="."]
+visible = false
 use_parent_material = true
+position = Vector2( 0, 256 )
 
 [node name="options_rectangle" type="Sprite" parent="bottom"]
 use_parent_material = true
@@ -1147,18 +1200,17 @@ anims/to_interactions = SubResource( 6 )
 [node name="directories" type="Node2D" parent="."]
 
 [node name="curdir" parent="directories" instance=ExtResource( 1 )]
-margin_left = -608.0
+margin_left = -928.0
 margin_top = -376.0
-margin_right = -32.0
+margin_right = -352.0
 margin_bottom = -312.0
 custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 text = "Current Directory:"
 
 [node name="directory" type="Control" parent="directories"]
-margin_left = -320.0
-margin_top = -376.0
-margin_right = 144.0
-margin_bottom = -344.0
+margin_left = -464.0
+margin_top = -32.0
+rect_scale = Vector2( 2, 2 )
 rect_clip_content = true
 script = ExtResource( 10 )
 __meta__ = {
@@ -1172,12 +1224,10 @@ custom_colors/default_color = Color( 0.25098, 0.501961, 0.74902, 1 )
 text = "DIR"
 
 [node name="other_directories" type="Node2D" parent="directories"]
-modulate = Color( 1, 1, 1, 0 )
 
 [node name="-3" type="Control" parent="directories/other_directories"]
-margin_left = -1568.0
+margin_left = -464.0
 margin_top = -368.0
-margin_right = -1104.0
 margin_bottom = -336.0
 rect_scale = Vector2( 2, 2 )
 rect_clip_content = true
@@ -1194,9 +1244,8 @@ custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
 [node name="-2" type="Control" parent="directories/other_directories"]
-margin_left = -1568.0
+margin_left = -464.0
 margin_top = -256.0
-margin_right = -1104.0
 margin_bottom = -224.0
 rect_scale = Vector2( 2, 2 )
 rect_clip_content = true
@@ -1213,9 +1262,8 @@ custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
 [node name="-1" type="Control" parent="directories/other_directories"]
-margin_left = -1568.0
+margin_left = -464.0
 margin_top = -144.0
-margin_right = -1104.0
 margin_bottom = -112.0
 rect_scale = Vector2( 2, 2 )
 rect_clip_content = true
@@ -1232,9 +1280,8 @@ custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
 [node name="+1" type="Control" parent="directories/other_directories"]
-margin_left = -1568.0
+margin_left = -464.0
 margin_top = 80.0
-margin_right = -1104.0
 margin_bottom = 112.0
 rect_scale = Vector2( 2, 2 )
 rect_clip_content = true
@@ -1251,9 +1298,8 @@ custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
 [node name="+2" type="Control" parent="directories/other_directories"]
-margin_left = -1568.0
+margin_left = -464.0
 margin_top = 192.0
-margin_right = -1104.0
 margin_bottom = 224.0
 rect_scale = Vector2( 2, 2 )
 rect_clip_content = true
@@ -1270,9 +1316,8 @@ custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
 [node name="+3" type="Control" parent="directories/other_directories"]
-margin_left = -1568.0
+margin_left = -464.0
 margin_top = 304.0
-margin_right = -1104.0
 margin_bottom = 336.0
 rect_scale = Vector2( 2, 2 )
 rect_clip_content = true
@@ -1289,7 +1334,6 @@ custom_colors/default_color = Color( 0.12549, 0.207843, 0.384314, 1 )
 text = "DIR"
 
 [node name="walls" type="Node2D" parent="directories"]
-scale = Vector2( 1.25, 1.25 )
 
 [node name="wall_left" type="Sprite" parent="directories/walls"]
 modulate = Color( 0.25098, 0.501961, 0.74902, 1 )

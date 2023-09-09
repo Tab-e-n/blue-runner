@@ -118,7 +118,7 @@ func _physics_process(_delta):
 			else:
 				$t/boot.text += text[sentence]
 		else:
-			global.options["*first_time_load"] = false
+			Global.options["*first_time_load"] = false
 			$t/anim.play("out")
 		sentence += 1
 
@@ -158,8 +158,8 @@ func _input(event):
 				section += 1
 		elif !booting:
 			if current_key < Global.keybind_names.size():
-				global.change_input(current_key, event)
-				$t/boot.text += global.key_names(current_key)
+				Global.change_input(current_key, event)
+				$t/boot.text += Global.key_names(current_key)
 				current_key += 1
 				$t/boot.text += "\n"
 				if current_key == Global.keybind_names.size():
