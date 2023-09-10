@@ -58,7 +58,7 @@ func menu_update():
 			$mainAnim.stop()
 			$mainAnim.play("Move")
 		if Input.is_action_pressed("accept") and tutorials[current_tutorial] == "TUTORIAL":
-			# make it animate and change to actual tutorial level
+			# *TUTORIAL* make it animate and change to actual tutorial level
 			Global.change_level("*res://Scenes/waterway/Level_1-0.tscn")
 	$arrow_left.visible = current_tutorial != 0
 	$arrow_right.visible = current_tutorial != tutorials.size() - 1

@@ -2,8 +2,10 @@ extends Node2D
 
 onready var parent : Node2D = get_parent()
 
+var line_lenght : int
+
 func _ready():
-	$credits.text = """SONIC RUNNER
+	var credits = """SONIC RUNNER
 	v2.0.0
 	
 	
@@ -27,6 +29,8 @@ func _ready():
 	- Art Advisor -
 	Lux
 	
+	- UI Roaster - 
+	honestAndrew
 	
 	
 	- Development Tools -
@@ -42,6 +46,7 @@ func _ready():
 	- Playtesters -
 	Lumir
 	honestAndrew
+	Lena
 	(More to be added since i def forgot some)
 	
 	- Blue Runner Best Fan -
@@ -57,9 +62,15 @@ func _ready():
 	
 	Thanks for playing!
 	:D"""
+	
+	line_lenght = (63 * credits.count("\n")) / 2
+	
+	$credits.text = credits
 
 func _physics_process(delta):
 	$credits.rect_position.y -= 0.5
+	if $credits.rect_position.y < -384 - line_lenght:
+		$credits.rect_position.y = 384
 
 func menu_update():
 	if Input.is_action_just_pressed("deny"):

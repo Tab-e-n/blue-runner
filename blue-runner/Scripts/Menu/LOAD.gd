@@ -21,17 +21,41 @@ var lore_text = [
 	"AUDIO CALIBRATION",
 ]
 
+var tut_text = [
+	"",
+	"\n\n\n\n\n\n\n\n\nStarting Motors",
+	".",
+	".",
+	".",
+	"Done.",
+	"\nStarting Visual",
+	".",
+	".",
+	".",
+	"Done.",
+	"",
+	"",
+	"",
+]
+
 var delay_timer_is_going : bool = true
 var delay_timer : int = 0
 var current_line_delay = 30
 
-enum {SECTION_LOADING, SECTION_REBIND, SECTION_FIRST_TIME}
+enum {SECTION_LOADING, SECTION_REBIND, SECTION_FIRST_TIME, SECTION_GOING_TO_TUTORIAL}
 var current_section : int = 0
 var text_current_line : int = 0
 
 var user_wants_to_rebind : bool = false
 var avaiting_keybind_press : bool = false
 var current_key : int = 7
+
+var is_changing_audio : bool = false
+var hold : int = 0
+var move : bool = true
+var held_for_amount : int = 0
+
+var current_audio : int = 0
 
 func _ready():
 	if Global.options["*first_time_load"]:
@@ -61,6 +85,8 @@ func _physics_process(delta):
 			$console/lines.text += String(6 - text_current_line) + "..."
 		if current_section == SECTION_FIRST_TIME and text_current_line < lore_text.size():
 			$console/lines.text += lore_text[text_current_line]
+		if current_section == SECTION_GOING_TO_TUTORIAL and text_current_line < tut_text.size():
+			$console/lines.text += tut_text[text_current_line]
 	
 	if current_section == SECTION_LOADING and text_current_line == 4:
 		if user_wants_to_rebind:
@@ -73,6 +99,71 @@ func _physics_process(delta):
 			$anim.play("exit")
 	if current_section == SECTION_REBIND and text_current_line == 6:
 		$anim.play("exit")
+	if current_section == SECTION_FIRST_TIME and text_current_line == lore_text.size():
+		$audio_text.visible = true
+		$sfx.visible = true
+		$music.visible = true
+		$cursor.visible = true
+		is_changing_audio = true
+		audio_cursor()
+	if current_section == SECTION_GOING_TO_TUTORIAL and text_current_line == tut_text.size():
+		# *TUTORIAL*
+		Global.options["*first_time_load"] = false # Move this to the tutorial level
+		Global.change_level("*res://Scenes/waterway/Level_1-0.tscn")
+	
+	if is_changing_audio:
+		if Input.is_action_just_pressed("accept"):
+			is_changing_audio = false
+			current_section = SECTION_GOING_TO_TUTORIAL
+			text_current_line = 0
+			delay_timer_is_going = true
+			$cursor.visible = false
+		if Input.is_action_just_pressed("menu_left") or Input.is_action_just_pressed("menu_right") or Input.is_action_just_pressed("menu_up") or Input.is_action_just_pressed("menu_down"):
+			move = true
+			held_for_amount = 0
+		
+		if Input.is_action_pressed("menu_left") or Input.is_action_pressed("menu_right") or Input.is_action_pressed("menu_up") or Input.is_action_pressed("menu_down"):
+			hold += 1
+		else:
+			hold = 0
+		
+		if hold >= 20:
+			var hold_shift : int = 6
+			# warning-ignore:integer_division
+			hold -= hold_shift - held_for_amount / 3
+			move = true
+			if held_for_amount < 15:
+				held_for_amount += 1
+		
+		var slider : HSlider
+		var slider_text : String
+		match current_audio:
+			0:
+				slider = $sfx
+				slider_text = "SFX   "
+			1:
+				slider = $music
+				slider_text = "MUSIC "
+		
+		if Input.is_action_pressed("menu_left") and move:
+			if slider.value != slider.min_value:
+				slider.value -= 1
+				slider.get_node("text").text = slider_text + String(slider.value)
+		if Input.is_action_pressed("menu_right") and move:
+			if slider.value != slider.max_value:
+				slider.value += 1
+				slider.get_node("text").text = slider_text + String(slider.value)
+		if Input.is_action_just_pressed("menu_up") and current_audio != 0:
+			current_audio -= 1
+			audio_cursor()
+		if Input.is_action_just_pressed("menu_down") and current_audio != 1:
+			current_audio += 1
+			audio_cursor()
+		
+		move = false
+
+func audio_cursor():
+	$cursor.position = Vector2(392, 208 + current_audio * 32)
 
 func change_scene_to_menu():
 #	get_tree().reload_current_scene()

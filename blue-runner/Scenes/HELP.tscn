@@ -700,7 +700,7 @@ tracks/10/keys = {
 "values": [ true ]
 }
 
-[sub_resource type="Animation" id=8]
+[sub_resource type="Animation" id=6]
 resource_name = "Static"
 length = 0.3
 loop = true
@@ -742,7 +742,7 @@ tracks/2/keys = {
 "values": [ false, true ]
 }
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=7]
 length = 6.0
 loop = true
 tracks/0/type = "value"
@@ -758,7 +758,7 @@ tracks/0/keys = {
 "values": [ Vector2( 320, 160 ), Vector2( 192, 160 ) ]
 }
 
-[sub_resource type="GDScript" id=7]
+[sub_resource type="GDScript" id=8]
 script/source = "extends Node2D
 
 func _ready():
@@ -786,7 +786,7 @@ anims/Exit = SubResource( 2 )
 "anims/Hide Replay" = SubResource( 3 )
 anims/Move = SubResource( 4 )
 anims/Reset = SubResource( 5 )
-anims/Static = SubResource( 8 )
+anims/Static = SubResource( 6 )
 
 [node name="help_spiral_1" type="Sprite" parent="."]
 visible = false
@@ -840,7 +840,7 @@ texture = ExtResource( 4 )
 
 [node name="anim" type="AnimationPlayer" parent="Level/help_bg"]
 autoplay = "shift"
-anims/shift = SubResource( 6 )
+anims/shift = SubResource( 7 )
 
 [node name="Wall" type="Polygon2D" parent="Level"]
 visible = false
@@ -855,7 +855,7 @@ color = Color( 0.25098, 0.74902, 0.25098, 1 )
 polygon = PoolVector2Array( 64, 32, 256, 32, 256, 160, 64, 160 )
 
 [node name="PlayerLevelSetter" type="Node2D" parent="Level"]
-script = SubResource( 7 )
+script = SubResource( 8 )
 
 [node name="Player" parent="Level" instance=ExtResource( 2 )]
 character_name = "S1"
