@@ -73,7 +73,7 @@ func _input(event):
 			avaiting_keybind_press = false
 			new_keybind()
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if delay_timer_is_going:
 		delay_timer += 1
 	if delay_timer > current_line_delay:

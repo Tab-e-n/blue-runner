@@ -1,6 +1,6 @@
 extends Node2D
 
-export var unicolor_active : bool
+export var unicolor_active : bool = false
 var timers_active : bool = false
 var player : Node2D
 

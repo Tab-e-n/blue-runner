@@ -20,6 +20,10 @@ var dat : Dictionary
 func _init():
 	dat = Global.load_dat_file(Global.current_level_location + Global.current_level)
 
+func _ready():
+	# this temporary
+	start_replays()
+
 func menu_ready(comming_from : String = ""):
 	$top.position.x = 736
 	$sub.position.x = 736
@@ -189,17 +193,18 @@ func set_available_replays():
 	for i in range(10):
 		available_replays.append("S1_" + String(i))
 
-func _on_replay_looped(player : Node2D = null):
+func _on_replay_looped(_player : Node2D = null):
 	if !$Level/anim.is_playing():
 		$Level/anim.play("shift")
-	load_replay("Main/" + available_replays[Global.rand.randi_range(0, available_replays.size() - 1)], player)
+	if available_replays.size() != 0:
+		load_replay("Main/" + available_replays[Global.rand.randi_range(0, available_replays.size() - 1)], _player)
 
-func load_replay(replay_name : String = "", player : Node2D = null):
+func load_replay(replay_name : String = "", _player : Node2D = null):
 	if Global.load_replay(replay_name, true, false, true):
 		
 		# Switching to new character stuff here
 		
 		var recording : Dictionary = Global.load_replay(replay_name, false, false, true)
-		player.recording = recording.duplicate()
-		player.replay_timer = recording["timer"]
-		player.timer = 0
+		_player.recording = recording.duplicate()
+		_player.replay_timer = recording["timer"]
+		_player.timer = 0
