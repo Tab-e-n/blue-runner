@@ -791,26 +791,29 @@ anims/Static = SubResource( 6 )
 [node name="help_spiral_1" type="Sprite" parent="."]
 visible = false
 modulate = Color( 0.105882, 0.415686, 0.180392, 1 )
-scale = Vector2( 1e-05, 1e-05 )
+rotation = 1.5708
+scale = Vector2( 4, 4 )
 texture = ExtResource( 5 )
 
 [node name="help_spiral_2" type="Sprite" parent="."]
 visible = false
 modulate = Color( 0.0431373, 0.196078, 0.0980392, 1 )
-scale = Vector2( 1e-05, 1e-05 )
+rotation = 1.5708
+scale = Vector2( 4, 4 )
 texture = ExtResource( 5 )
 
 [node name="help_spiral_3" type="Sprite" parent="."]
 modulate = Color( 0.0117647, 0.0941176, 0.0117647, 1 )
-scale = Vector2( 1e-05, 1e-05 )
+rotation = 1.5708
+scale = Vector2( 4, 4 )
 texture = ExtResource( 5 )
 
 [node name="help_tv" type="Sprite" parent="."]
 position = Vector2( 0.000396729, -32 )
-rotation = -1.5708
 texture = ExtResource( 3 )
 
 [node name="help_static" type="Sprite" parent="help_tv"]
+visible = false
 position = Vector2( 0, 32 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 7 )
@@ -819,11 +822,11 @@ hframes = 2
 frame = 2
 
 [node name="off" type="Polygon2D" parent="help_tv"]
+visible = false
 color = Color( 0.0117647, 0.0941176, 0.0117647, 1 )
 polygon = PoolVector2Array( -256, -160, 256, -160, 256, 224, -256, 224 )
 
 [node name="Level" type="Panel" parent="."]
-visible = false
 self_modulate = Color( 1, 1, 1, 0 )
 margin_left = -256.0
 margin_top = -192.0
@@ -880,7 +883,6 @@ position = Vector2( 384, 96 )
 
 [node name="arrow_left" type="Sprite" parent="."]
 modulate = Color( 0.25098, 0.74902, 0.25098, 1 )
-self_modulate = Color( 1, 1, 1, 0 )
 position = Vector2( -384, 0 )
 rotation = 1.57079
 scale = Vector2( 2, 2 )
@@ -888,14 +890,12 @@ texture = ExtResource( 6 )
 
 [node name="arrow_right" type="Sprite" parent="."]
 modulate = Color( 0.25098, 0.74902, 0.25098, 1 )
-self_modulate = Color( 1, 1, 1, 0 )
 position = Vector2( 384, 0 )
 rotation = -1.57079
 scale = Vector2( 2, 2 )
 texture = ExtResource( 6 )
 
 [node name="Text" parent="." instance=ExtResource( 8 )]
-modulate = Color( 1, 1, 1, 0 )
 margin_left = -384.0
 margin_top = 240.0
 margin_right = 1152.0
@@ -908,7 +908,6 @@ bbcode_enabled = true
 text = ""
 
 [node name="Title" parent="." instance=ExtResource( 9 )]
-modulate = Color( 1, 1, 1, 0 )
 margin_left = -512.0
 margin_top = -368.0
 margin_right = 1536.0

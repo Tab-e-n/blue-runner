@@ -80,6 +80,8 @@ var rand : RandomNumberGenerator = RandomNumberGenerator.new()
 var current_character : String = "S1"
 var current_character_location : String = "res:/"
 
+var in_load_previously : bool = false
+
 var replay : bool = false
 var current_recording = {}
 var replay_menu : bool = false
@@ -517,6 +519,8 @@ func change_level(destination : String, return_value : bool = false, check_depen
 		destination_new = "res://Scenes/Level_Missing.tscn"
 	elif destination == "*Level_Next" and current_level_location == "user://SRLevels/":
 		destination_new = "res://Scenes/MENU.tscn"
+	elif destination == "*Level_Next" and not level_group.has("levels"):
+		destination_new = "res://Scenes/MENU.tscn"
 	elif destination == "*Level_Next":
 		var level : int = 0
 		for i in range(19):
@@ -579,16 +583,15 @@ func change_scene_level(file : String, return_only : bool = false):
 	if current_scene.get_script() == null:
 		compatibility_mode = true
 		current_scene.set_script(load("res://Scripts/Level_Control.gd"))
-#	print(current_scene.get_script())
-	
-	# warning-ignore:return_value_discarded
-	packed_scene.pack(current_scene)
+#		print(current_scene.get_script())
+		
+		# warning-ignore:return_value_discarded
+		packed_scene.pack(current_scene)
 	
 	current_scene.free()
 	
 	# warning-ignore:return_value_discarded
 	get_tree().change_scene_to(packed_scene)
-	
 	
 	return OK
 

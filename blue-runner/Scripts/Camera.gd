@@ -27,6 +27,7 @@ func _ready():
 	$Fade.visible = true
 	$border.visible = true
 	$border_thing.visible = false
+	$complete_dark.visible = true
 	if $"/root/Global".options["*timer_on"] == 1:
 		visible_timer = true
 	elif $"/root/Global".options["*timer_on"] == 2:

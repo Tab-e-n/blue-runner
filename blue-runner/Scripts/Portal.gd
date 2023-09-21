@@ -8,6 +8,8 @@ export var par : float = 0
 export(int, "XT9", "S1") var type = 0
 export var unlock : String = ""
 
+export var silent_portal : bool = false
+
 export var automatic_set_level_node : bool = true
 
 var zoopaway : bool = false
@@ -72,22 +74,28 @@ func teleport(timer : float, collectible : Array, collectible_unlock : Array, re
 		Global.unlock(i)
 	
 	if name == "Portal":
-		Audio.play_sound("ZoopAway")
+		if not silent_portal:
+			Audio.play_sound("ZoopAway")
 		Global.save_game()
 		
 		level.player.deny_input = true
-		zoopaway = true
 		
-		var new_sprite : Sprite = Sprite.new()
-		
-		new_sprite.name = "darkner"
-		new_sprite.texture = load("res://Visual/Menu/help_spiral.png")
-		new_sprite.scale = Vector2(0, 0)
-		new_sprite.modulate = Color(0.2, 0.06, 0.03)
-		new_sprite.z_as_relative = false
-		new_sprite.z_index = 99
-		
-		add_child(new_sprite)
+		if silent_portal:
+			zoopaway = false
+			level.get_node("Camera").fade_out(tele_destination)
+		else:
+			zoopaway = true
+			
+			var new_sprite : Sprite = Sprite.new()
+			
+			new_sprite.name = "darkner"
+			new_sprite.texture = load("res://Visual/Menu/help_spiral.png")
+			new_sprite.scale = Vector2(0, 0)
+			new_sprite.modulate = Color(0.2, 0.06, 0.03)
+			new_sprite.z_as_relative = false
+			new_sprite.z_index = 99
+			
+			add_child(new_sprite)
 	
 	if name == "Finish":
 		Global.save_game(timer, par, collectible, level.name, recording)

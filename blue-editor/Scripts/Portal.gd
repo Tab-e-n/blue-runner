@@ -28,6 +28,8 @@ export var par : float = 0
 export(int, "XT9", "S1") var type = 0
 export var unlock : String = ""
 
+export var silent_portal : bool = false
+
 func _ready():
 	if editor_properties["object_type"] == "normal":
 		$AnimationPlayer.current_animation = "Speen"

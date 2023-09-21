@@ -22,6 +22,8 @@ func _ready():
 		menu = "SELECT"
 	elif Global.replay_menu:
 		menu = "REPLAY"
+	elif Global.in_load_previously:
+		menu = "TITLE"
 	else: #if _start:
 		menu = "MAIN"
 	

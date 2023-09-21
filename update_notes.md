@@ -76,6 +76,7 @@
 	   and the interpreter will ignore them.
 	 - %\`% will put a \`, since otherwise it will be removed.
  - You can now set `tele_destination` of the portal and finish to `*Level_Next`, which will change the level to the next level in the level group.
+ - There is now a shortcut to start playtesting the level
  - You can now add the name of the author to a level group. You can also make it so it doesn't display in the level select screen, if you don't like how it looks.
  - A new tool to convert pngs to stex has been added. It has no use currently, but may come in handy once i tackle mod support.
 

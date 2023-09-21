@@ -53,6 +53,7 @@ export var increment_timer : bool = true
 export var loop_replay : bool = false
 export var load_replay : bool = true
 export var automatic_set_level_node : bool = true
+export var silent : bool = false
 
 func _ready():
 	for i in range(8):
@@ -96,6 +97,7 @@ func _ready():
 		collision_layer = 0
 		collision_mask = 0
 		
+		silent = true
 	elif replay: 
 		timer = -1
 		if load_replay:
@@ -191,7 +193,7 @@ func _physics_process(delta):
 					if character.get_node("Anim").has_animation("_RESET"):
 						character.get_node("Anim").current_animation = "_RESET"
 					if level.has_method("_on_replay_looped"):
-						level._on_replay_looped()
+						level._on_replay_looped(self)
 				else:
 					Global.change_level("*Menu_Level_Select")
 	# - - - DEATH STATE - - -
@@ -321,7 +323,7 @@ func punt(boost : Vector2, overwrite_momentum : bool):
 		launched = true
 
 func play_sound(sound_name : String):
-	if sound_name != "" and !ghost:
+	if sound_name != "" and !silent:
 		Audio.play_sound(sound_name)
 		current_sound = sound_name
 

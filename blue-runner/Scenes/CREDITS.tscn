@@ -51,5 +51,19 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="back" type="Label" parent="."]
+margin_left = 344.0
+margin_top = 360.0
+margin_right = 1304.0
+margin_bottom = 423.0
+rect_scale = Vector2( 0.3, 0.3 )
+custom_fonts/font = ExtResource( 1 )
+align = 2
+valign = 2
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="mainAnim" type="AnimationPlayer" parent="."]
 anims/exit = SubResource( 1 )

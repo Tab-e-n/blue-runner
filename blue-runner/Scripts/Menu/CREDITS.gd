@@ -66,6 +66,7 @@ func _ready():
 	line_lenght = (63 * credits.count("\n")) / 2
 	
 	$credits.text = credits
+	$back.text = "GO BACK - " + Global.key_names(13)
 
 func _physics_process(delta):
 	$credits.rect_position.y -= 0.5

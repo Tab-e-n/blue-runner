@@ -102,13 +102,12 @@ func _physics_process(delta):
 	if current_section == SECTION_FIRST_TIME and text_current_line == lore_text.size():
 		$audio_text.visible = true
 		$sfx.visible = true
-		$music.visible = true
-		$cursor.visible = true
+#		$music.visible = true
+#		$cursor.visible = true
 		is_changing_audio = true
-		audio_cursor()
+#		audio_cursor()
 	if current_section == SECTION_GOING_TO_TUTORIAL and text_current_line == tut_text.size():
 		# *TUTORIAL*
-		Global.options["*first_time_load"] = false # Move this to the tutorial level
 		Global.change_level("*res://Scenes/waterway/Level_1-0.tscn")
 	
 	if is_changing_audio:
@@ -118,6 +117,8 @@ func _physics_process(delta):
 			text_current_line = 0
 			delay_timer_is_going = true
 			$cursor.visible = false
+			Global.options["*audio_sfx"] = $sfx.value
+			Global.options["*audio_music"] = $music.value
 		if Input.is_action_just_pressed("menu_left") or Input.is_action_just_pressed("menu_right") or Input.is_action_just_pressed("menu_up") or Input.is_action_just_pressed("menu_down"):
 			move = true
 			held_for_amount = 0
@@ -153,12 +154,12 @@ func _physics_process(delta):
 			if slider.value != slider.max_value:
 				slider.value += 1
 				slider.get_node("text").text = slider_text + String(slider.value)
-		if Input.is_action_just_pressed("menu_up") and current_audio != 0:
-			current_audio -= 1
-			audio_cursor()
-		if Input.is_action_just_pressed("menu_down") and current_audio != 1:
-			current_audio += 1
-			audio_cursor()
+#		if Input.is_action_just_pressed("menu_up") and current_audio != 0:
+#			current_audio -= 1
+#			audio_cursor()
+#		if Input.is_action_just_pressed("menu_down") and current_audio != 1:
+#			current_audio += 1
+#			audio_cursor()
 		
 		move = false
 
@@ -167,6 +168,7 @@ func audio_cursor():
 
 func change_scene_to_menu():
 #	get_tree().reload_current_scene()
+	Global.in_load_previously = true
 	Global.change_level("*MENU")
 
 func new_keybind():

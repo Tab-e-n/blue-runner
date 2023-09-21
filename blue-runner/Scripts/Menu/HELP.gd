@@ -63,7 +63,7 @@ func menu_update():
 	$arrow_left.visible = current_tutorial != 0
 	$arrow_right.visible = current_tutorial != tutorials.size() - 1
 
-func _on_replay_looped():
+func _on_replay_looped(_player : Node2D = null):
 	if not $mainAnim.is_playing():
 		$mainAnim.play("Hide Replay")
 

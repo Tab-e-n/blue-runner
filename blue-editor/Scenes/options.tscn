@@ -21,7 +21,7 @@ const options_span : int = 3136
 var current_keybind : Button
 var current_key : int
 
-const KEYBIND_AMOUNT : int = 26
+const KEYBIND_AMOUNT : int = 27
 var last_input_events : Array = range(KEYBIND_AMOUNT)
 
 func _ready():
@@ -733,6 +733,7 @@ Layer back
 Layer center
 Layer front
 Hide layers by pressing Alt instead of Ctrl
+Playtest
 
 Return (General)"
 
@@ -754,6 +755,7 @@ Ctrl +
 Ctrl +
 Ctrl +
 
+Ctrl + Shift +
 
 Press"
 
@@ -1068,9 +1070,21 @@ __meta__ = {
 
 [node name="return" type="Button" parent="GUI/keysbinds/buttons"]
 margin_left = 2792.0
-margin_top = 544.0
+margin_top = 576.0
 margin_right = 3064.0
-margin_bottom = 576.0
+margin_bottom = 608.0
+toggle_mode = true
+clip_text = true
+align = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="playtest" type="Button" parent="GUI/keysbinds/buttons"]
+margin_left = 2912.0
+margin_top = 512.0
+margin_right = 3064.0
+margin_bottom = 544.0
 toggle_mode = true
 clip_text = true
 align = 0
@@ -1245,6 +1259,7 @@ __meta__ = {
 [connection signal="toggled" from="GUI/keysbinds/buttons/layer_2" to="." method="start_keybind_check" binds= [ 20 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/layer_3" to="." method="start_keybind_check" binds= [ 20 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/return" to="." method="start_keybind_check" binds= [ 20 ]]
+[connection signal="toggled" from="GUI/keysbinds/buttons/playtest" to="." method="start_keybind_check" binds= [ 20 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/reset_transform" to="." method="start_keybind_check" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/random_transform" to="." method="start_keybind_check" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/game_camera" to="." method="start_keybind_check" binds= [ 3 ]]

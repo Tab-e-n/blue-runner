@@ -240,17 +240,20 @@ __meta__ = {
 }
 
 [node name="Fade" type="Polygon2D" parent="."]
+visible = false
 z_index = 100
 color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 polygon = PoolVector2Array( -640, 384, 640, 384, 640, -384, -640, -384 )
 
 [node name="border" type="Polygon2D" parent="."]
+visible = false
 position = Vector2( 0, -8 )
 z_index = 100
 color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 polygon = PoolVector2Array( -640, -384, 640, -384, 640, 392, 1280, 392, 1280, -412, -1280, -412, -1280, 392, -640, 392 )
 
 [node name="complete_dark" type="Polygon2D" parent="."]
+visible = false
 scale = Vector2( 20, 20 )
 z_index = 110
 color = Color( 0.0156863, 0.0235294, 0.133333, 1 )

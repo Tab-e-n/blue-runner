@@ -287,7 +287,7 @@ func setup_rack(reset_selection : bool = true):
 	$rack/replay_cassette_next.visible = replay_amount > 0
 	$rack/replay_rack.visible = replay_amount > 0
 	
-	set_cassette_labes()
+	set_cassette_labes(true)
 
 func rack_visuals():
 	if replay_amount > 0:
@@ -332,7 +332,7 @@ func rack_visuals():
 		pass
 	$rack/no_replays.visible = replay_amount == 0
 
-func set_cassette_labes():
+func set_cassette_labes(reset : bool = false):
 	if replays[current_directory].size() > 0:
 		var recording : Dictionary = Global.load_replay(current_directory + replays[current_directory][current_replay])
 		#print(current_directory + replays[current_directory][current_replay])
@@ -367,7 +367,7 @@ func set_cassette_labes():
 			cassettes_replay = i - 8 + current_replay
 		
 		if cassettes_replay >= 0 and cassettes_replay < replay_amount:
-			if i == 16 or rack_anim_direction == 0:
+			if i == 16 or rack_anim_direction == 0 or reset:
 				current_cassette.set_text(replays[current_directory][cassettes_replay])
 			else:
 				var last_cassette : Control

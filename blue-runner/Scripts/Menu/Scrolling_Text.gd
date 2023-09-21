@@ -25,6 +25,9 @@ func _physics_process(_delta):
 	if paused_timer > 0:
 		paused_timer -= 1
 
+func reset_pos():
+	$text.rect_position.x = 0
+
 func set_text(text, rect_pos = 0, paused = pause_time, new_direction = -1):
 	$text.text = text
 	$text.rect_size.x = $text.get_font("normal_font").get_string_size($text.text).x

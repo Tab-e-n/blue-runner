@@ -19,7 +19,7 @@ var user_directory : String = \"user://sonicRunnerEditor\"
 var mods_installed : Array
 var mods_enabled : Dictionary
 
-const INPUT_AMOUNT : int = 26
+const INPUT_AMOUNT : int = 27
 var last_input_events : Array = range(INPUT_AMOUNT)
 
 var default_settings : Dictionary = {}
@@ -69,27 +69,33 @@ var settings : Dictionary = {
 		KEY_G, #grid snap toggle
 		KEY_Z, #camera mode (camera zoom, game camera snap)
 		KEY_J, #attach
+		
 		KEY_T, #change tab to tiles
 		KEY_D, #change tab to decor
 		KEY_O, #change tab to objects
 		KEY_M, #change mode move
 		KEY_A, #change mode paint
+		
 		KEY_X, #change mode erasor
 		KEY_C, #change mode cog
 		KEY_S, #save level
 		KEY_L, #load level
 		KEY_N, #create new level
+		
 		KEY_E, #edit items
 		KEY_F, #focus file panel
 		KEY_L, #focus layer panel
 		KEY_I, #focus items panel
 		KEY_E, #focus edit panel
+		
 		KEY_P, #focus place panel
 		KEY_1,
 		KEY_2,
 		KEY_3,
 		KEY_4,
+		
 		KEY_ESCAPE, # RETURN
+		KEY_P, # Playtest
 	],
 	
 	\"editor_random_scale_range\" : [0.5, 3],

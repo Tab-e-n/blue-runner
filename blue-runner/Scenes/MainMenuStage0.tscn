@@ -1,0 +1,391 @@
+[gd_scene load_steps=32 format=2]
+
+[ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scripts/Level_Control.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/single_color.shader" type="Shader" id=3]
+[ext_resource path="res://Objects/Tilesets/WaterWay.tres" type="TileSet" id=4]
+[ext_resource path="res://Scripts/Player/Player.gd" type="Script" id=5]
+[ext_resource path="res://Scripts/Camera.gd" type="Script" id=6]
+[ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Objects/Spike.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Scripts/Track.gd" type="Script" id=9]
+[ext_resource path="res://Scripts/Spike.gd" type="Script" id=10]
+[ext_resource path="res://Objects/Track.tscn" type="PackedScene" id=11]
+
+[sub_resource type="ShaderMaterial" id=1]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=3]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=4]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=5]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=6]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=7]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=8]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=9]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=10]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=11]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=12]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=13]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=14]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=15]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=16]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=17]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=18]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=19]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=20]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[node name="MainMenuStage0" type="Node2D"]
+script = ExtResource( 2 )
+unicolor_active = false
+
+[node name="Player" type="Node2D" parent="." instance=ExtResource( 7 )]
+position = Vector2( -192, 128 )
+z_index = 60
+script = ExtResource( 5 )
+editor_properties = {
+"attachable": false,
+"description": "The player.
+This objects position is where the player starts. With the character properties you can specify which character the player plays as. if character_name is left blank, the player will choose the character they want for the level.",
+"editable_properties": {
+"character_location": [ 4, 0, 0, 0 ],
+"character_name": [ 4, 0, 0, 0 ],
+"facing": [ 4, 0, 0, 0 ]
+},
+"layer": "special",
+"object_path": "res://Objects/Player/Player.tscn",
+"object_type": "player",
+"rect": Rect2( 0, -32, 64, 64 ),
+"unchangeable_properties": {
+"color": false,
+"order": true,
+"rotation": true,
+"scale": true,
+"z_index": true
+}
+}
+character_name = ""
+character_location = "res:/"
+facing = "right"
+deny_input = true
+ghost = false
+
+[node name="Camera" type="Node2D" parent="." instance=ExtResource( 1 )]
+position = Vector2( -1344, 160 )
+z_index = 100
+script = ExtResource( 6 )
+limit_x = Vector2( 0, 10240 )
+limit_y = Vector2( 0, 0 )
+zoom = Vector2( 2, 2 )
+compatibility_mode = false
+
+[node name="objects_background" type="Node2D" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 1 )
+z_index = -40
+
+[node name="decor_background" type="Node2D" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 2 )
+z_index = -40
+
+[node name="tiles_background_0" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 3 )
+z_index = -30
+tile_set = ExtResource( 4 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_background_1" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 4 )
+z_index = -30
+tile_set = ExtResource( 4 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_background_2" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 5 )
+z_index = -30
+tile_set = ExtResource( 4 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="objects_back" type="Node2D" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 6 )
+z_index = -20
+
+[node name="decor_back" type="Node2D" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 7 )
+z_index = -20
+
+[node name="tiles_back_0" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 8 )
+z_index = -10
+tile_set = ExtResource( 4 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_back_1" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 9 )
+z_index = -10
+tile_set = ExtResource( 4 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_back_2" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 10 )
+z_index = -10
+tile_set = ExtResource( 4 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="objects_center" type="Node2D" parent="."]
+material = SubResource( 11 )
+
+[node name="Spike" type="StaticBody2D" parent="objects_center" instance=ExtResource( 8 )]
+use_parent_material = true
+position = Vector2( 2368, -16 )
+scale = Vector2( 2.25, 2.25 )
+script = ExtResource( 10 )
+
+[node name="@Spike@433" type="StaticBody2D" parent="objects_center" instance=ExtResource( 8 )]
+use_parent_material = true
+position = Vector2( 6256, 0 )
+scale = Vector2( 1.95, 1.95 )
+script = ExtResource( 10 )
+
+[node name="@Spike@434" type="StaticBody2D" parent="objects_center" instance=ExtResource( 8 )]
+use_parent_material = true
+position = Vector2( 6096, -128 )
+scale = Vector2( 1.95, 1.95 )
+script = ExtResource( 10 )
+
+[node name="@Spike@415" type="StaticBody2D" parent="objects_center" instance=ExtResource( 8 )]
+use_parent_material = true
+position = Vector2( 4192, 80 )
+scale = Vector2( 1.25, 1.25 )
+script = ExtResource( 10 )
+
+[node name="Track" type="Line2D" parent="objects_center" instance=ExtResource( 11 )]
+use_parent_material = true
+position = Vector2( 4864, 128 )
+points = PoolVector2Array( 0, 0, 640, 0 )
+width = 0.0
+default_color = Color( 0, 0, 0, 0 )
+script = ExtResource( 9 )
+time = 120
+is_a_loop = false
+time_internal = 0
+time_direction = true
+auto_pos = true
+pre_pos = {
+
+}
+attached_nodes = [ null, Object(StaticBody2D,"_import_path":NodePath(""),"pause_mode":0,"process_priority":0,"visible":true,"modulate":Color( 1, 1, 1, 1 ),"self_modulate":Color( 1, 1, 1, 1 ),"show_behind_parent":false,"light_mask":1,"material":null,"use_parent_material":true,"position":Vector2( 0, 0 ),"rotation":0.0,"scale":Vector2( 2, 2 ),"z_index":0,"z_as_relative":true,"input_pickable":false,"collision_layer":1,"collision_mask":1,"constant_linear_velocity":Vector2( 0, 0 ),"constant_angular_velocity":0.0,"physics_material_override":null,"script":ExtResource( 10 ),"editor_properties":{
+"attachable": false,
+"description": "A sawblade.
+It hurts to touch. However, with precise spacing, you are able to jump off of it.",
+"editable_properties": {
+
+},
+"layer": "selected",
+"object_path": "res://Objects/Spike.tscn",
+"object_type": "normal",
+"rect": Rect2( 0, 0, 64, 64 ),
+"unchangeable_properties": {
+"color": false,
+"order": false,
+"rotation": true,
+"scale": false,
+"z_index": false
+}
+})
+ ]
+
+[node name="Spike" type="StaticBody2D" parent="objects_center/Track" instance=ExtResource( 8 )]
+use_parent_material = true
+scale = Vector2( 2, 2 )
+script = ExtResource( 10 )
+
+[node name="@Spike@414" type="StaticBody2D" parent="objects_center" instance=ExtResource( 8 )]
+use_parent_material = true
+position = Vector2( 4192, -144 )
+scale = Vector2( 1.25, 1.25 )
+script = ExtResource( 10 )
+
+[node name="@Spike@406" type="StaticBody2D" parent="objects_center" instance=ExtResource( 8 )]
+use_parent_material = true
+position = Vector2( 3472, 112 )
+scale = Vector2( 2.5, 2.5 )
+script = ExtResource( 10 )
+
+[node name="@Spike@407" type="StaticBody2D" parent="objects_center" instance=ExtResource( 8 )]
+use_parent_material = true
+position = Vector2( 3552, 112 )
+scale = Vector2( 1.8, 1.8 )
+script = ExtResource( 10 )
+
+[node name="decor_center" type="Node2D" parent="."]
+material = SubResource( 12 )
+
+[node name="tiles_center_0" type="TileMap" parent="."]
+material = SubResource( 13 )
+z_index = 10
+tile_set = ExtResource( 4 )
+format = 1
+
+[node name="tiles_center_1" type="TileMap" parent="."]
+material = SubResource( 14 )
+z_index = 10
+tile_set = ExtResource( 4 )
+format = 1
+tile_data = PoolIntArray( -262144, 1, 0, -262143, 1, 0, -262142, 1, 0, -262141, 1, 0, -262140, 1, 0, -262139, 1, 0, -262138, 1, 0, -262137, 1, 0, -262136, 1, 0, -262135, 1, 0, -262134, 1, 0, -262133, 1, 0, -262132, 1, 0, -262131, 1, 0, -262130, 1, 0, -262129, 1, 0, -262128, 1, 0, -262127, 1, 0, -262126, 1, 0, -262125, 1, 0, -262124, 1, 0, -262123, 1, 0, -262122, 1, 0, -262121, 1, 0, -262120, 1, 0, -262119, 1, 0, -262118, 1, 0, -262117, 1, 0, -262116, 1, 0, -262115, 1, 0, -262114, 1, 0, -262113, 1, 0, -262112, 1, 0, -262111, 1, 0, -262110, 1, 0, -262109, 1, 0, -262108, 1, 0, -262107, 1, 0, -262106, 1, 0, -262105, 1, 0, -262104, 1, 0, -262103, 1, 0, -262102, 1, 0, -262101, 1, 0, -262100, 1, 0, -262099, 1, 0, -262098, 1, 0, -262097, 1, 0, -262096, 1, 0, -262095, 1, 0, -262094, 1, 0, -262093, 1, 0, -262092, 1, 0, -262091, 1, 0, -262090, 1, 0, -262089, 1, 0, -262088, 1, 0, -262087, 1, 0, -262086, 1, 0, -262085, 1, 0, -262084, 1, 0, -262083, 1, 0, -262082, 1, 0, -262081, 1, 0, -262080, 1, 0, -262079, 1, 0, -262078, 1, 0, -262077, 1, 0, -262076, 1, 0, -262075, 1, 0, -262074, 1, 0, -262073, 1, 0, -262072, 1, 0, -262071, 1, 0, -262070, 1, 0, -262069, 1, 0, -262068, 1, 0, -262067, 1, 0, -262066, 1, 0, -262065, 1, 0, -262064, 1, 0, -262063, 1, 0, -262062, 1, 0, -262061, 1, 0, -262060, 1, 0, -262059, 1, 0, -262058, 1, 0, -262057, 1, 0, -262056, 1, 0, -262055, 1, 0, -262054, 1, 0, -262053, 1, 0, -262052, 1, 0, -262051, 1, 0, -262050, 1, 0, -262049, 1, 0, -262048, 1, 0, -262047, 1, 0, -262046, 1, 0, -262045, 1, 0, -262044, 1, 0, -262043, 1, 0, -262042, 1, 0, -262041, 1, 0, -262040, 1, 0, -262039, 1, 0, -262038, 1, 0, -262037, 1, 0, -262036, 1, 0, -262035, 1, 0, -262034, 1, 0, -262033, 1, 0, -262032, 1, 0, -262031, 1, 0, -262030, 1, 0, -262029, 1, 0, -262028, 1, 0, -262027, 1, 0, -262026, 1, 0, -262025, 1, 0, -196580, 27, 0, -196579, 27, 0, -196543, 1073741870, 0, -196529, 43, 0, -196528, 1073741842, 0, -196527, 1073741842, 0, -196526, 22, 0, -196514, -2147483602, 0, -196513, 18, 0, -131044, 27, 0, -131043, 27, 0, -130993, 43, 0, -130992, 1073741842, 0, -130991, 1073741842, 0, -130990, 22, 0, -65508, 27, 0, -65507, 27, 0, 20, 18, 0, 21, 18, 0, 36, 22, 0, 37, 22, 0, 52, 22, 0, 53, 22, 0, 97, 22, 0, 98, -1610612690, 0, 65556, 18, 0, 65557, 18, 0, 65582, 22, 0, 65583, 22, 0, 65588, 22, 0, 65589, 22, 0, 65601, 46, 0, 65610, 1073741842, 0, 65611, 1073741842, 0, 65622, 22, 0, 65623, 22, 0, 65629, 46, 0, 65630, 46, 0, 196588, 1, 0, 196589, 1, 0, 196590, 1, 0, 196591, 1, 0, 196592, 1, 0, 196593, 1, 0, 196594, 1, 0, 196595, 1, 0, 196596, 1, 0, 196597, 1, 0, 196598, 1, 0, 196599, 1, 0, 196600, 1, 0, 196601, 1, 0, 196602, 1, 0, 196603, 1, 0, 196604, 1, 0, 196605, 1, 0, 196606, 1, 0, 196607, 1, 0, 131072, 18, 0, 131073, 18, 0, 131074, 22, 0, 131075, 22, 0, 131076, 18, 0, 131077, 18, 0, 131078, 22, 0, 131079, 22, 0, 131080, 27, 0, 131081, 27, 0, 131082, 18, 0, 131083, 18, 0, 131084, 22, 0, 131085, 22, 0, 131086, 18, 0, 131087, 18, 0, 131088, 22, 0, 131089, 22, 0, 131090, 43, 0, 131091, 43, 0, 131092, 18, 0, 131093, 18, 0, 131094, 22, 0, 131095, 22, 0, 131096, 18, 0, 131097, 18, 0, 131098, 22, 0, 131099, 22, 0, 131100, 27, 0, 131101, 27, 0, 131102, 18, 0, 131103, 18, 0, 131104, 22, 0, 131105, 22, 0, 131106, 18, 0, 131107, 18, 0, 131108, 22, 0, 131109, 22, 0, 131110, 43, 0, 131111, 43, 0, 131112, 18, 0, 131113, 18, 0, 131114, 22, 0, 131115, 22, 0, 131116, 18, 0, 131117, 18, 0, 131118, 22, 0, 131119, 22, 0, 131120, 27, 0, 131121, 27, 0, 131122, 18, 0, 131123, 18, 0, 131124, 22, 0, 131125, 22, 0, 131126, 18, 0, 131127, 18, 0, 131128, 22, 0, 131129, 22, 0, 131130, 43, 0, 131131, 43, 0, 131132, 18, 0, 131133, 18, 0, 131134, 22, 0, 131135, 22, 0, 131136, 18, 0, 131137, 18, 0, 131138, 22, 0, 131139, 22, 0, 131140, 27, 0, 131141, 27, 0, 131142, 18, 0, 131143, 18, 0, 131144, 22, 0, 131145, 22, 0, 131146, 18, 0, 131147, 18, 0, 131148, 22, 0, 131149, 22, 0, 131150, 43, 0, 131151, 43, 0, 131152, 18, 0, 131153, 18, 0, 131154, 22, 0, 131155, 22, 0, 131156, 18, 0, 131157, 18, 0, 131158, 22, 0, 131159, 22, 0, 131160, 27, 0, 131161, 27, 0, 131162, 18, 0, 131163, 18, 0, 131164, 22, 0, 131165, 22, 0, 131166, 18, 0, 131167, 18, 0, 131168, 22, 0, 131169, 22, 0, 131170, 43, 0, 131171, 43, 0, 131172, 18, 0, 131173, 18, 0, 131174, 22, 0, 131175, 22, 0, 131176, 18, 0, 131177, 18, 0, 131178, 22, 0, 131179, 22, 0, 131180, 27, 0, 131181, 27, 0, 131182, 18, 0, 131183, 18, 0, 131184, 22, 0, 131185, 22, 0, 131186, 18, 0, 131187, 18, 0, 131188, 22, 0, 131189, 22, 0, 131190, 43, 0, 131191, 43, 0, 131192, 1, 0, 131193, 1, 0, 131194, 1, 0, 131195, 1, 0, 131196, 1, 0, 131197, 1, 0, 131198, 1, 0, 131199, 1, 0, 131200, 1, 0, 131201, 1, 0, 131202, 1, 0 )
+
+[node name="tiles_center_2" type="TileMap" parent="."]
+material = SubResource( 15 )
+z_index = 10
+tile_set = ExtResource( 4 )
+format = 1
+
+[node name="objects_front" type="Node2D" parent="."]
+material = SubResource( 16 )
+z_index = 40
+
+[node name="decor_front" type="Node2D" parent="."]
+material = SubResource( 17 )
+z_index = 40
+
+[node name="tiles_front_0" type="TileMap" parent="."]
+material = SubResource( 18 )
+z_index = 50
+tile_set = ExtResource( 4 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_front_1" type="TileMap" parent="."]
+material = SubResource( 19 )
+z_index = 50
+tile_set = ExtResource( 4 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_front_2" type="TileMap" parent="."]
+material = SubResource( 20 )
+z_index = 50
+tile_set = ExtResource( 4 )
+collision_layer = 0
+collision_mask = 0
+format = 1

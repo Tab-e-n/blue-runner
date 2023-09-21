@@ -9,12 +9,23 @@ export var switch_time : float = 1
 
 onready var submenus : Array = [$top, $sub/play, $sub/extras]
 
+var available_replays = []
+
+var unicolor_active : bool = true
+var timers_active : bool = false
+var player : Node2D
+
+var dat : Dictionary
+
+func _init():
+	dat = Global.load_dat_file(Global.current_level_location + Global.current_level)
+
 func menu_ready(comming_from : String = ""):
 	$top.position.x = 736
 	$sub.position.x = 736
 	
 	match(comming_from):
-		"", "OPTIONS", "HELP":
+		"", "OPTIONS", "HELP", "TITLE":
 			current_menu = MENU_TOP
 			$mainAnim.play("enter_top")
 		"SELECT", "VS", "REPLAY":
@@ -30,6 +41,8 @@ func menu_ready(comming_from : String = ""):
 			$top.reset(2)
 		"HELP":
 			$top.reset(4)
+		"TITLE":
+			$top.reset(1)
 		"SELECT":
 			$top.reset(1)
 			$sub/play.reset(1)
@@ -53,6 +66,8 @@ func menu_ready(comming_from : String = ""):
 
 func _physics_process(_delta):
 	$Disclaimer.visible = $sub/play.visible and $sub/play.current_button == 3 and !$mainAnim.is_playing()
+	if $top/anim.is_playing():
+		$Level.color = $top.material.get_shader_param("color") * Color(0.5, 0.5, 0.5)
 
 func menu_update():
 	var group : Node2D
@@ -162,3 +177,29 @@ func accept(group : Node2D):
 			$mainAnim.play("exit_sub")
 		_:
 			print("undefined")
+
+func start_replays():
+	set_available_replays()
+	_on_replay_looped($Level/Player)
+	_on_replay_looped($Level/Player2)
+	$Level/Player2.timer = -5
+
+func set_available_replays():
+	available_replays = []
+	for i in range(10):
+		available_replays.append("S1_" + String(i))
+
+func _on_replay_looped(player : Node2D = null):
+	if !$Level/anim.is_playing():
+		$Level/anim.play("shift")
+	load_replay("Main/" + available_replays[Global.rand.randi_range(0, available_replays.size() - 1)], player)
+
+func load_replay(replay_name : String = "", player : Node2D = null):
+	if Global.load_replay(replay_name, true, false, true):
+		
+		# Switching to new character stuff here
+		
+		var recording : Dictionary = Global.load_replay(replay_name, false, false, true)
+		player.recording = recording.duplicate()
+		player.replay_timer = recording["timer"]
+		player.timer = 0

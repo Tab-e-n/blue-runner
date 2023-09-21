@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=2]
+[gd_scene load_steps=40 format=2]
 
 [ext_resource path="res://Scripts/menu_shader.shader" type="Shader" id=1]
 [ext_resource path="res://Scripts/Menu/MAIN_group.gd" type="Script" id=2]
@@ -17,6 +17,184 @@
 [ext_resource path="res://Visual/Menu/button_back.png" type="Texture" id=15]
 [ext_resource path="res://Visual/Menu/button_level_select.png" type="Texture" id=16]
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=17]
+[ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=18]
+[ext_resource path="res://Objects/Spike.tscn" type="PackedScene" id=20]
+[ext_resource path="res://Visual/Menu/main_pixel.png" type="Texture" id=22]
+[ext_resource path="res://Scripts/single_color.shader" type="Shader" id=23]
+
+[sub_resource type="GDScript" id=16]
+script/source = "extends Node2D
+
+func _ready():
+	var level = get_parent().get_parent()
+	var player = get_parent().get_node(\"Player\")
+	player.level = level
+	player.recording = {
+		\"timer\" : 0,
+		\"character\" : \"S1\",
+		\"character_location\" : \"res:/\",
+	}
+	player = get_parent().get_node(\"Player2\")
+	player.level = level
+	player.recording = {
+		\"timer\" : 0,
+		\"character\" : \"S1\",
+		\"character_location\" : \"res:/\",
+	}
+	queue_free()
+"
+
+[sub_resource type="ShaderMaterial" id=18]
+shader = ExtResource( 23 )
+shader_param/color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+shader_param/active = true
+shader_param/blend = 1.0
+
+[sub_resource type="Animation" id=17]
+resource_name = "shift"
+length = 40.0
+step = 1.0
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 40 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -640, 32 ), Vector2( -7040, 32 ) ]
+}
+
+[sub_resource type="ShaderMaterial" id=7]
+shader = ExtResource( 1 )
+shader_param/color = Plane( 0.25, 0.5, 0.75, 0.981 )
+shader_param/replacing = Plane( 1, 1, 1, 1 )
+shader_param/enable_second_color = false
+shader_param/secondary_color = Plane( 1, 1, 1, 1 )
+shader_param/secondary_replacing = Plane( 1, 1, 1, 1 )
+shader_param/offset_enabled = true
+shader_param/offset = 0.0
+shader_param/only_replaced = false
+
+[sub_resource type="Animation" id=8]
+length = 0.2
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[sub_resource type="Animation" id=9]
+length = 8.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:pulse_time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ -1.0, 1.0 ]
+}
+
+[sub_resource type="ShaderMaterial" id=10]
+shader = ExtResource( 1 )
+shader_param/color = Plane( 0.25, 0.5, 0.75, 0.981 )
+shader_param/replacing = Plane( 1, 1, 1, 1 )
+shader_param/enable_second_color = false
+shader_param/secondary_color = Plane( 1, 1, 1, 1 )
+shader_param/secondary_replacing = Plane( 1, 1, 1, 1 )
+shader_param/offset_enabled = true
+shader_param/offset = 0.0
+shader_param/only_replaced = false
+
+[sub_resource type="Animation" id=11]
+length = 0.2
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[sub_resource type="Animation" id=12]
+length = 8.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:pulse_time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ -1.0, 1.0 ]
+}
+
+[sub_resource type="ShaderMaterial" id=13]
+shader = ExtResource( 1 )
+shader_param/color = Plane( 0.25, 0.5, 0.75, 0.981 )
+shader_param/replacing = Plane( 1, 1, 1, 1 )
+shader_param/enable_second_color = false
+shader_param/secondary_color = Plane( 1, 1, 1, 1 )
+shader_param/secondary_replacing = Plane( 1, 1, 1, 1 )
+shader_param/offset_enabled = true
+shader_param/offset = 0.0
+shader_param/only_replaced = false
+
+[sub_resource type="Animation" id=14]
+length = 0.2
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[sub_resource type="Animation" id=15]
+length = 8.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:pulse_time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ -1.0, 1.0 ]
+}
 
 [sub_resource type="Animation" id=1]
 resource_name = "enter_sub"
@@ -212,151 +390,165 @@ tracks/2/keys = {
 "values": [ Vector2( 736, 0 ), Vector2( 0, 0 ) ]
 }
 
-[sub_resource type="ShaderMaterial" id=7]
-shader = ExtResource( 1 )
-shader_param/color = Plane( 0.25, 0.5, 0.75, 0.981 )
-shader_param/replacing = Plane( 1, 1, 1, 1 )
-shader_param/enable_second_color = false
-shader_param/secondary_color = Plane( 1, 1, 1, 1 )
-shader_param/secondary_replacing = Plane( 1, 1, 1, 1 )
-shader_param/offset_enabled = true
-shader_param/offset = 0.0
-shader_param/only_replaced = false
-
-[sub_resource type="Animation" id=8]
-length = 0.2
-step = 0.05
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:time")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ 0.0, 1.0 ]
-}
-
-[sub_resource type="Animation" id=9]
-length = 8.0
-loop = true
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:pulse_time")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 8 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ -1.0, 1.0 ]
-}
-
-[sub_resource type="ShaderMaterial" id=10]
-shader = ExtResource( 1 )
-shader_param/color = Plane( 0.25, 0.5, 0.75, 0.981 )
-shader_param/replacing = Plane( 1, 1, 1, 1 )
-shader_param/enable_second_color = false
-shader_param/secondary_color = Plane( 1, 1, 1, 1 )
-shader_param/secondary_replacing = Plane( 1, 1, 1, 1 )
-shader_param/offset_enabled = true
-shader_param/offset = 0.0
-shader_param/only_replaced = false
-
-[sub_resource type="Animation" id=11]
-length = 0.2
-step = 0.05
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:time")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ 0.0, 1.0 ]
-}
-
-[sub_resource type="Animation" id=12]
-length = 8.0
-loop = true
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:pulse_time")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 8 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ -1.0, 1.0 ]
-}
-
-[sub_resource type="ShaderMaterial" id=13]
-shader = ExtResource( 1 )
-shader_param/color = Plane( 0.25, 0.5, 0.75, 0.981 )
-shader_param/replacing = Plane( 1, 1, 1, 1 )
-shader_param/enable_second_color = false
-shader_param/secondary_color = Plane( 1, 1, 1, 1 )
-shader_param/secondary_replacing = Plane( 1, 1, 1, 1 )
-shader_param/offset_enabled = true
-shader_param/offset = 0.0
-shader_param/only_replaced = false
-
-[sub_resource type="Animation" id=14]
-length = 0.2
-step = 0.05
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:time")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ 0.0, 1.0 ]
-}
-
-[sub_resource type="Animation" id=15]
-length = 8.0
-loop = true
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:pulse_time")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 8 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ -1.0, 1.0 ]
-}
-
 [node name="MAIN" type="Node2D"]
 z_index = 10
 script = ExtResource( 3 )
+__meta__ = {
+"_edit_horizontal_guides_": [ 384.0, -384.0 ],
+"_edit_vertical_guides_": [ -640.0, 640.0 ]
+}
 switch_time = 0.0
 
-[node name="mainAnim" type="AnimationPlayer" parent="."]
-anims/enter_sub = SubResource( 1 )
-anims/enter_top = SubResource( 2 )
-anims/exit_sub = SubResource( 3 )
-anims/exit_top = SubResource( 4 )
-anims/move_back = SubResource( 5 )
-anims/move_next = SubResource( 6 )
+[node name="Level" type="Polygon2D" parent="."]
+position = Vector2( -640, 32 )
+color = Color( 0.12549, 0.25098, 0.376471, 1 )
+polygon = PoolVector2Array( 0, -192, 7680, -192, 7680, 128, 0, 128 )
+
+[node name="LevelSetter" type="Node2D" parent="Level"]
+script = SubResource( 16 )
+
+[node name="Player" parent="Level" instance=ExtResource( 18 )]
+position = Vector2( -128, 96 )
+character_name = "S1"
+replay = true
+loop_replay = true
+load_replay = false
+automatic_set_level_node = false
+silent = true
+
+[node name="Player2" parent="Level" instance=ExtResource( 18 )]
+position = Vector2( -128, 96 )
+character_name = "S1"
+replay = true
+loop_replay = true
+load_replay = false
+automatic_set_level_node = false
+silent = true
+
+[node name="objects" type="Node2D" parent="Level"]
+material = SubResource( 18 )
+
+[node name="Spike" parent="Level/objects" instance=ExtResource( 20 )]
+use_parent_material = true
+position = Vector2( 2368, -16 )
+scale = Vector2( 2.25, 2.25 )
+
+[node name="@Spike@433" parent="Level/objects" instance=ExtResource( 20 )]
+use_parent_material = true
+position = Vector2( 6256, 1.52588e-05 )
+scale = Vector2( 1.95, 1.95 )
+
+[node name="@Spike@434" parent="Level/objects" instance=ExtResource( 20 )]
+use_parent_material = true
+position = Vector2( 6096, -128 )
+scale = Vector2( 1.95, 1.95 )
+
+[node name="@Spike@415" parent="Level/objects" instance=ExtResource( 20 )]
+use_parent_material = true
+position = Vector2( 4192, 80 )
+scale = Vector2( 1.25, 1.25 )
+
+[node name="Spike2" parent="Level/objects" instance=ExtResource( 20 )]
+use_parent_material = true
+position = Vector2( 5184, 128 )
+scale = Vector2( 2, 2 )
+
+[node name="@Spike@414" parent="Level/objects" instance=ExtResource( 20 )]
+use_parent_material = true
+position = Vector2( 4192, -144 )
+scale = Vector2( 1.25, 1.25 )
+
+[node name="@Spike@406" parent="Level/objects" instance=ExtResource( 20 )]
+use_parent_material = true
+position = Vector2( 3472, 112 )
+scale = Vector2( 2.5, 2.5 )
+
+[node name="@Spike@407" parent="Level/objects" instance=ExtResource( 20 )]
+use_parent_material = true
+position = Vector2( 3552, 112 )
+scale = Vector2( 1.8, 1.8 )
+
+[node name="ground0" type="Sprite" parent="Level"]
+position = Vector2( 1344, 64 )
+scale = Vector2( 128, 128 )
+texture = ExtResource( 22 )
+
+[node name="ground1" type="Sprite" parent="Level"]
+position = Vector2( 1856, -96 )
+scale = Vector2( 128, 192 )
+texture = ExtResource( 22 )
+
+[node name="ground2" type="Sprite" parent="Level"]
+position = Vector2( 2368, 32 )
+scale = Vector2( 128, 64 )
+texture = ExtResource( 22 )
+
+[node name="ground3" type="Sprite" parent="Level"]
+position = Vector2( 3008, 96 )
+scale = Vector2( 128, 64 )
+texture = ExtResource( 22 )
+
+[node name="ground4" type="Sprite" parent="Level"]
+position = Vector2( 3392, 64 )
+scale = Vector2( 128, 128 )
+texture = ExtResource( 22 )
+
+[node name="ground13" type="Sprite" parent="Level"]
+position = Vector2( 3508, 164 )
+scale = Vector2( 232, 72 )
+texture = ExtResource( 22 )
+
+[node name="ground14" type="Sprite" parent="Level"]
+position = Vector2( 5184, 176 )
+scale = Vector2( 896, 96 )
+texture = ExtResource( 22 )
+
+[node name="ground5" type="Sprite" parent="Level"]
+position = Vector2( 4800, 96 )
+scale = Vector2( 128, 64 )
+texture = ExtResource( 22 )
+
+[node name="ground6" type="Sprite" parent="Level"]
+position = Vector2( 5568, 96 )
+scale = Vector2( 128, 64 )
+texture = ExtResource( 22 )
+
+[node name="ground7" type="Sprite" parent="Level"]
+position = Vector2( 5184, -128 )
+scale = Vector2( 256, 128 )
+texture = ExtResource( 22 )
+
+[node name="ground8" type="Sprite" parent="Level"]
+position = Vector2( 4192, -176 )
+scale = Vector2( 64, 32 )
+texture = ExtResource( 22 )
+
+[node name="ground9" type="Sprite" parent="Level"]
+position = Vector2( 4192, 112 )
+scale = Vector2( 64, 32 )
+texture = ExtResource( 22 )
+
+[node name="ground10" type="Sprite" parent="Level"]
+position = Vector2( 6016, 112 )
+scale = Vector2( 128, 32 )
+texture = ExtResource( 22 )
+
+[node name="ground11" type="Sprite" parent="Level"]
+position = Vector2( 6256, 32 )
+scale = Vector2( 95.9995, 64 )
+texture = ExtResource( 22 )
+
+[node name="ground12" type="Sprite" parent="Level"]
+position = Vector2( 6096, -160 )
+scale = Vector2( 95.9995, 64 )
+texture = ExtResource( 22 )
+
+[node name="anim" type="AnimationPlayer" parent="Level"]
+autoplay = "shift"
+anims/shift = SubResource( 17 )
 
 [node name="top" type="Node2D" parent="."]
 material = SubResource( 7 )
-position = Vector2( -24, 0 )
 script = ExtResource( 2 )
 menu_colors = [ Color( 0.25098, 0.25098, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.74902, 0.74902, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.25098, 1 ) ]
 submenu = [ 1, 3, 5, 4, 6 ]
@@ -535,3 +727,11 @@ IN A FUTURE UPDATE"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="mainAnim" type="AnimationPlayer" parent="."]
+anims/enter_sub = SubResource( 1 )
+anims/enter_top = SubResource( 2 )
+anims/exit_sub = SubResource( 3 )
+anims/exit_top = SubResource( 4 )
+anims/move_back = SubResource( 5 )
+anims/move_next = SubResource( 6 )

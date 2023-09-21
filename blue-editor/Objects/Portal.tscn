@@ -41,6 +41,7 @@ editor_properties = {
 "attachable": false,
 "description": "A portal.                                                    After the player touches it, they go to a the level specified in tele_destination. You can also specify what it unlocks.",
 "editable_properties": {
+"silent_portal": [ 1, 0, 0, 0 ],
 "tele_destination": [ 4, 0, 0, 0 ],
 "type": [ 2, 0, 1, 1 ],
 "unlock": [ 4, 0, 0, 0 ]
