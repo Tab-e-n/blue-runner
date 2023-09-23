@@ -1,0 +1,199 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Text/ModernDOS.tres" type="DynamicFont" id=1]
+[ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=2]
+[ext_resource path="res://Visual/Editor/editor_arrow.png" type="Texture" id=3]
+[ext_resource path="res://Visual/light_point_small.png" type="Texture" id=4]
+[ext_resource path="res://Scripts/Menu/LOAD.gd" type="Script" id=5]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 1, 1, 1, 1 )
+border_color = Color( 0.454902, 0.54902, 0.662745, 1 )
+
+[sub_resource type="Animation" id=2]
+resource_name = "exit"
+length = 0.5
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("console/Panel:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 0.0156863, 0.0235294, 0.133333, 1 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("console:rect_scale")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1, 0.5 ), Vector2( 1, 0.01 ), Vector2( 0, 0.01 ) ]
+}
+tracks/2/type = "method"
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0.5 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "change_scene_to_menu"
+} ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("light_point_small:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("light_point_small:scale")
+tracks/4/interp = 2
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0.2, 0.3, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 1, 1 ), Vector2( 0, 0 ) ]
+}
+
+[node name="LOAD" type="Node2D"]
+script = ExtResource( 5 )
+
+[node name="console" type="Control" parent="."]
+margin_left = 640.0
+margin_top = 384.0
+margin_right = 704.0
+margin_bottom = 448.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="console"]
+modulate = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+margin_left = -640.0
+margin_top = -384.0
+margin_right = 640.0
+margin_bottom = 384.0
+custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="lines" type="Label" parent="console"]
+light_mask = -2147483647
+margin_left = -320.0
+margin_top = -384.0
+margin_right = 960.0
+margin_bottom = 1152.0
+rect_scale = Vector2( 0.5, 0.5 )
+custom_fonts/font = ExtResource( 1 )
+text = "Loading"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="audio_text" type="Label" parent="."]
+visible = false
+margin_left = 400.0
+margin_top = 160.0
+margin_right = 1328.0
+margin_bottom = 224.0
+rect_scale = Vector2( 0.5, 0.5 )
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 0.25098, 0.74902, 0.74902, 1 )
+text = "Press SPACE once you are done."
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="cursor" type="Sprite" parent="."]
+visible = false
+modulate = Color( 0.25098, 0.74902, 0.74902, 1 )
+rotation = -1.57079
+texture = ExtResource( 3 )
+
+[node name="sfx" type="HSlider" parent="."]
+visible = false
+margin_left = 592.0
+margin_top = 192.0
+margin_right = 848.0
+margin_bottom = 224.0
+theme = ExtResource( 2 )
+value = 60.0
+editable = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" type="Label" parent="sfx"]
+margin_left = -168.0
+margin_right = 120.0
+margin_bottom = 64.0
+rect_scale = Vector2( 0.5, 0.5 )
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 0.25098, 0.74902, 0.74902, 1 )
+text = "SFX   60"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="music" type="HSlider" parent="."]
+visible = false
+margin_left = 592.0
+margin_top = 224.0
+margin_right = 848.0
+margin_bottom = 256.0
+theme = ExtResource( 2 )
+value = 60.0
+editable = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="text" type="Label" parent="music"]
+margin_left = -168.0
+margin_right = 120.0
+margin_bottom = 64.0
+rect_scale = Vector2( 0.5, 0.5 )
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 0.25098, 0.74902, 0.74902, 1 )
+text = "MUSIC 60"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="light_point_small" type="Sprite" parent="."]
+visible = false
+position = Vector2( 640, 384 )
+scale = Vector2( 1e-05, 1e-05 )
+texture = ExtResource( 4 )
+
+[node name="anim" type="AnimationPlayer" parent="."]
+anims/exit = SubResource( 2 )
