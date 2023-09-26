@@ -213,7 +213,9 @@ func load_group(dir):
 	var temp = {}
 	var directory : Directory = Directory.new()
 	
+# warning-ignore:return_value_discarded
 	directory.open(dir)
+# warning-ignore:return_value_discarded
 	directory.list_dir_begin(true)
 	if directory.get_next() == \"\":
 		save_current_group(dir, true)
@@ -297,6 +299,7 @@ func load_group(dir):
 		$settings/hide_author.pressed = level_group_dat[\"tags\"].has(\"hide_author\")
 		
 		if not directory.dir_exists(dir + \"/Sprites\"):
+# warning-ignore:return_value_discarded
 			directory.make_dir(dir + \"/Sprites\")
 		
 		current_group_path = dir
@@ -520,6 +523,7 @@ func locked_toggled(button_pressed, scripted : bool = false):
 func completion_changed(value):
 	return
 	#print(value)
+# warning-ignore:unreachable_code
 	level_group_dat[\"levels\"][current_level][2] = value
 
 func bg_changed(index):

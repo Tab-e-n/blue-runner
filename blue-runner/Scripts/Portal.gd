@@ -61,7 +61,7 @@ func _process(delta):
 		$darkner.rotation_degrees = -180 * portal_zoopaway_timer
 		if portal_zoopaway_timer > 1:
 			zoopaway = false
-			level.get_node("Camera").fade_out(tele_destination)
+			level.get_node("Camera").start_fade_out(tele_destination)
 #			if !Global.race_mode:
 #				Global.change_level(tele_destination)
 #			else:
@@ -82,7 +82,7 @@ func teleport(timer : float, collectible : Array, collectible_unlock : Array, re
 		
 		if silent_portal:
 			zoopaway = false
-			level.get_node("Camera").fade_out(tele_destination)
+			level.get_node("Camera").start_fade_out(tele_destination)
 		else:
 			zoopaway = true
 			

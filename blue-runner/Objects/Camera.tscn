@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Scripts/Camera.gd" type="Script" id=1]
 [ext_resource path="res://Visual/camera_black_border_thing.png" type="Texture" id=2]
+[ext_resource path="res://Visual/camera_pause.png" type="Texture" id=3]
 [ext_resource path="res://Visual/camera_input_continue.png" type="Texture" id=4]
 [ext_resource path="res://Text/Shixel.tres" type="DynamicFont" id=5]
 [ext_resource path="res://Visual/camera_input_reset.png" type="Texture" id=6]
@@ -214,18 +215,18 @@ texture = ExtResource( 4 )
 position = Vector2( -576, 336 )
 texture = ExtResource( 6 )
 
-[node name="speed" type="Polygon2D" parent="."]
+[node name="info" type="Node2D" parent="."]
+z_index = 95
+
+[node name="speed" type="Polygon2D" parent="info"]
 visible = false
 position = Vector2( 0, 768 )
 z_index = 95
 color = Color( 0.258824, 0.258824, 0.258824, 1 )
 polygon = PoolVector2Array( 0, 8, 8, 0, 0, -8, -128, -8, -136, 0, -128, 8 )
 
-[node name="info" type="Node2D" parent="."]
-visible = false
-z_index = 95
-
 [node name="text" type="Label" parent="info"]
+visible = false
 margin_left = -88.0
 margin_top = 320.0
 margin_right = 120.0
@@ -238,6 +239,11 @@ valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="camera_pause" type="Sprite" parent="info"]
+visible = false
+position = Vector2( 0, 288 )
+texture = ExtResource( 3 )
 
 [node name="Fade" type="Polygon2D" parent="."]
 visible = false

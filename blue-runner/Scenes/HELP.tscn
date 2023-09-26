@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://Scripts/Menu/HELP.gd" type="Script" id=1]
 [ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=2]
@@ -184,7 +184,7 @@ tracks/13/keys = {
 "times": PoolRealArray( 0, 0.8, 1.1 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
-"values": [ true, true, false ]
+"values": [ false, true, false ]
 }
 tracks/14/type = "value"
 tracks/14/path = NodePath("help_tv/help_static:frame")
@@ -743,6 +743,156 @@ tracks/2/keys = {
 }
 
 [sub_resource type="Animation" id=7]
+resource_name = "Tutorial"
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("arrow_left:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("arrow_right:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Title:self_modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Text:self_modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Level:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("help_tv/help_static:frame")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3 ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("help_tv:scale")
+tracks/6/interp = 2
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 2.5, 2.5 ) ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("help_tv/off:visible")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("help_tv/help_static:visible")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("help_tv/help_static:self_modulate")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/10/type = "value"
+tracks/10/path = NodePath("help_tv/off:color")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/keys = {
+"times": PoolRealArray( 0, 0.8, 1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 0.0117647, 0.0941176, 0.0117647, 1 ), Color( 0.0117647, 0.0941176, 0.0117647, 1 ), Color( 0.0156863, 0.0235294, 0.133333, 1 ) ]
+}
+tracks/11/type = "method"
+tracks/11/path = NodePath(".")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/keys = {
+"times": PoolRealArray( 1 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "go_to_tutorial_level"
+} ]
+}
+
+[sub_resource type="Animation" id=8]
 length = 6.0
 loop = true
 tracks/0/type = "value"
@@ -758,7 +908,7 @@ tracks/0/keys = {
 "values": [ Vector2( 320, 160 ), Vector2( 192, 160 ) ]
 }
 
-[sub_resource type="GDScript" id=8]
+[sub_resource type="GDScript" id=9]
 script/source = "extends Node2D
 
 func _ready():
@@ -787,30 +937,34 @@ anims/Exit = SubResource( 2 )
 anims/Move = SubResource( 4 )
 anims/Reset = SubResource( 5 )
 anims/Static = SubResource( 6 )
+anims/Tutorial = SubResource( 7 )
 
 [node name="help_spiral_1" type="Sprite" parent="."]
 visible = false
 modulate = Color( 0.105882, 0.415686, 0.180392, 1 )
-rotation = 1.5708
-scale = Vector2( 4, 4 )
+scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 5 )
 
 [node name="help_spiral_2" type="Sprite" parent="."]
 visible = false
 modulate = Color( 0.0431373, 0.196078, 0.0980392, 1 )
-rotation = 1.5708
-scale = Vector2( 4, 4 )
+scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 5 )
 
 [node name="help_spiral_3" type="Sprite" parent="."]
 modulate = Color( 0.0117647, 0.0941176, 0.0117647, 1 )
-rotation = 1.5708
-scale = Vector2( 4, 4 )
+scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 5 )
 
 [node name="help_tv" type="Sprite" parent="."]
 position = Vector2( 0.000396729, -32 )
+rotation = -1.5708
+scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 3 )
+
+[node name="off" type="Polygon2D" parent="help_tv"]
+color = Color( 0.0117647, 0.0941176, 0.0117647, 1 )
+polygon = PoolVector2Array( -256, -160, 256, -160, 256, 224, -256, 224 )
 
 [node name="help_static" type="Sprite" parent="help_tv"]
 visible = false
@@ -819,14 +973,9 @@ scale = Vector2( 2, 2 )
 texture = ExtResource( 7 )
 vframes = 2
 hframes = 2
-frame = 2
-
-[node name="off" type="Polygon2D" parent="help_tv"]
-visible = false
-color = Color( 0.0117647, 0.0941176, 0.0117647, 1 )
-polygon = PoolVector2Array( -256, -160, 256, -160, 256, 224, -256, 224 )
 
 [node name="Level" type="Panel" parent="."]
+visible = false
 self_modulate = Color( 1, 1, 1, 0 )
 margin_left = -256.0
 margin_top = -192.0
@@ -843,7 +992,7 @@ texture = ExtResource( 4 )
 
 [node name="anim" type="AnimationPlayer" parent="Level/help_bg"]
 autoplay = "shift"
-anims/shift = SubResource( 7 )
+anims/shift = SubResource( 8 )
 
 [node name="Wall" type="Polygon2D" parent="Level"]
 visible = false
@@ -858,7 +1007,7 @@ color = Color( 0.25098, 0.74902, 0.25098, 1 )
 polygon = PoolVector2Array( 64, 32, 256, 32, 256, 160, 64, 160 )
 
 [node name="PlayerLevelSetter" type="Node2D" parent="Level"]
-script = SubResource( 8 )
+script = SubResource( 9 )
 
 [node name="Player" parent="Level" instance=ExtResource( 2 )]
 character_name = "S1"
@@ -883,6 +1032,7 @@ position = Vector2( 384, 96 )
 
 [node name="arrow_left" type="Sprite" parent="."]
 modulate = Color( 0.25098, 0.74902, 0.25098, 1 )
+self_modulate = Color( 1, 1, 1, 0 )
 position = Vector2( -384, 0 )
 rotation = 1.57079
 scale = Vector2( 2, 2 )
@@ -890,12 +1040,14 @@ texture = ExtResource( 6 )
 
 [node name="arrow_right" type="Sprite" parent="."]
 modulate = Color( 0.25098, 0.74902, 0.25098, 1 )
+self_modulate = Color( 1, 1, 1, 0 )
 position = Vector2( 384, 0 )
 rotation = -1.57079
 scale = Vector2( 2, 2 )
 texture = ExtResource( 6 )
 
 [node name="Text" parent="." instance=ExtResource( 8 )]
+modulate = Color( 1, 1, 1, 0 )
 margin_left = -384.0
 margin_top = 240.0
 margin_right = 1152.0
@@ -908,6 +1060,7 @@ bbcode_enabled = true
 text = ""
 
 [node name="Title" parent="." instance=ExtResource( 9 )]
+modulate = Color( 1, 1, 1, 0 )
 margin_left = -512.0
 margin_top = -368.0
 margin_right = 1536.0

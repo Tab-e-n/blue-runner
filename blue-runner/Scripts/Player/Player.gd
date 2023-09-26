@@ -55,6 +55,11 @@ export var load_replay : bool = true
 export var automatic_set_level_node : bool = true
 export var silent : bool = false
 
+onready var trail : Line2D = get_node("trail")
+var trail_points : PoolVector2Array = []
+var trail_converted : PoolVector2Array = []
+
+
 func _ready():
 	for i in range(8):
 #		print(Global.keybind_names[i].trim_prefix("*"))
@@ -128,24 +133,36 @@ func _ready():
 	if automatic_set_level_node:
 		level = get_tree().current_scene
 	
+	material.set_shader_param("active", false)
 #	print(get_tree().current_scene)
 	if level.get_script() != null:
 		if level.unicolor_active and !ghost:
 			material.set_shader_param("active", true)
 		if !ghost:
 			level.player = self
+	
+	if !ghost:
+		shader_color()
 
 func shader_color():
 	material.set_shader_param("color", character.unicolor_color)
 
 func _input(event):
-	if event is InputEventKey and event.pressed and !replay:
-		if !start:
-			level.timers_active = true
-		else:
-			start_timer = true
+	if !replay:
+		if event is InputEventKey or event is InputEventJoypadButton:
+			if event.pressed:
+				if !start:
+					level.timers_active = true
+				else:
+					start_timer = true
+		if event is InputEventJoypadMotion:
+			if !start:
+				level.timers_active = true
+			else:
+				start_timer = true
 
 func _physics_process(delta):
+	
 	if level.get_script() == null:
 		if level.get_node("Player").replay and ghost:
 			queue_free()
@@ -158,7 +175,7 @@ func _physics_process(delta):
 		level.timers_active = true
 		start_timer = false
 	
-	if replay and timer >= 0 and !ghost:
+	if replay and timer >= 0 and !ghost and increment_timer:
 		level.timers_active = true
 	
 	if level.timers_active or (replay and !ghost):
@@ -185,6 +202,17 @@ func _physics_process(delta):
 				material.set_shader_param("blend", blend)
 	# - - - REPLAY STATE - - -
 	elif replay:
+		if Input.is_action_just_pressed("jump") and Global.replay_menu:
+			increment_timer = !increment_timer
+			level.timers_active = increment_timer
+			var camera = level.get_node("Camera")
+			if camera != null:
+				camera.get_node("info/camera_pause").visible = !increment_timer
+			if increment_timer:
+				character.get_node("Anim").playback_speed = 1
+			else:
+				character.get_node("Anim").playback_speed = 0
+		
 		if !play_loaded_recording(int(timer * 1000)):
 			if timer > replay_timer + 2 and !ghost:
 				if loop_replay:
@@ -194,6 +222,7 @@ func _physics_process(delta):
 						character.get_node("Anim").current_animation = "_RESET"
 					if level.has_method("_on_replay_looped"):
 						level._on_replay_looped(self)
+					clear_trail_history()
 				else:
 					Global.change_level("*Menu_Level_Select")
 	# - - - DEATH STATE - - -
@@ -355,3 +384,32 @@ func finish(collision):
 	deny_input = true
 	end = true
 	get_slide_collision(collision).collider.teleport(float(int(timer * 100)) / 100, collectible, unlock, recording.duplicate())
+
+func setup_trail(trail_color : Color, amount_of_points : int = 40):
+	trail.visible = true
+	trail.modulate = trail_color
+	trail_points.resize(amount_of_points)
+	trail_converted.resize(amount_of_points)
+	for i in range(trail_points.size()):
+		trail_points[i] = position
+
+func animate_trail(visual_offset : Vector2 = Vector2(0, 0), position_offset : Vector2 = Vector2(0, 0)):
+	for i in range(trail_points.size() - 1):
+		trail_points[i] = trail_points[i+1]
+	
+	trail_points[trail_points.size() - 1] = position + position_offset
+	trail.position = visual_offset
+	
+	trail_converted[trail_points.size() - 1] = Vector2(0, 0)
+	
+	for i in range(trail_points.size() - 1):
+		var temp = trail_points[trail_points.size() - 2 - i] - trail_points[trail_points.size() - 1 - i]
+		trail_converted[trail_points.size() - 2 - i] = trail_converted[trail_points.size() - 1 - i] + temp
+	
+	trail.points = trail_converted
+
+func clear_trail_history():
+	for i in range(trail_points.size()):
+		trail_points[i] = position
+		trail_converted[i] = Vector2(0, 0)
+	trail.points = trail_converted

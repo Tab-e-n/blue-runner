@@ -43,7 +43,7 @@ func _ready():
 	set_tutorial()
 
 func menu_update():
-	if $mainAnim.current_animation != "Enter":
+	if $mainAnim.current_animation != "Enter" and $mainAnim.current_animation != "Tutorial":
 		if Input.is_action_just_pressed("deny"):
 			parent.switch_menu("MAIN", "HELP")
 			$mainAnim.play("Exit")
@@ -59,13 +59,17 @@ func menu_update():
 			$mainAnim.play("Move")
 		if Input.is_action_pressed("accept") and tutorials[current_tutorial] == "TUTORIAL":
 			# *TUTORIAL* make it animate and change to actual tutorial level
-			Global.change_level("*res://Scenes/waterway/Level_1-0.tscn")
+			$mainAnim.play("Tutorial")
 	$arrow_left.visible = current_tutorial != 0
 	$arrow_right.visible = current_tutorial != tutorials.size() - 1
 
 func _on_replay_looped(_player : Node2D = null):
 	if not $mainAnim.is_playing():
 		$mainAnim.play("Hide Replay")
+
+func go_to_tutorial_level():
+	Global.doing_tutorial = true
+	Global.change_level("*res://Scenes/Tutorial.tscn")
 
 func set_tutorial():
 	var tut_name = tutorials[current_tutorial]
@@ -99,3 +103,4 @@ func set_tutorial():
 		$Level/Player.timer = 0
 	else:
 		pass
+	$Level/Player.clear_trail_history()

@@ -47,6 +47,8 @@ func _ready():
 	Lumir
 	honestAndrew
 	Lena
+	Sunny
+	My Dad
 	(More to be added since i def forgot some)
 	
 	- Blue Runner Best Fan -

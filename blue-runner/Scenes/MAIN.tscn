@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=2]
+[gd_scene load_steps=41 format=2]
 
 [ext_resource path="res://Scripts/menu_shader.shader" type="Shader" id=1]
 [ext_resource path="res://Scripts/Menu/MAIN_group.gd" type="Script" id=2]
@@ -22,11 +22,11 @@
 [ext_resource path="res://Visual/Menu/main_pixel.png" type="Texture" id=22]
 [ext_resource path="res://Scripts/single_color.shader" type="Shader" id=23]
 
-[sub_resource type="GDScript" id=16]
+[sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
 
 func _ready():
-	var level = get_parent().get_parent()
+	var level = get_parent().get_parent().get_parent()
 	var player = get_parent().get_node(\"Player\")
 	player.level = level
 	player.recording = {
@@ -44,13 +44,13 @@ func _ready():
 	queue_free()
 "
 
-[sub_resource type="ShaderMaterial" id=18]
+[sub_resource type="ShaderMaterial" id=2]
 shader = ExtResource( 23 )
 shader_param/color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 shader_param/active = true
 shader_param/blend = 1.0
 
-[sub_resource type="Animation" id=17]
+[sub_resource type="Animation" id=3]
 resource_name = "shift"
 length = 40.0
 step = 1.0
@@ -64,7 +64,50 @@ tracks/0/keys = {
 "times": PoolRealArray( 0, 40 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Vector2( -640, 32 ), Vector2( -7040, 32 ) ]
+"values": [ Vector2( 0, 192 ), Vector2( -6400, 192 ) ]
+}
+
+[sub_resource type="ShaderMaterial" id=4]
+shader = ExtResource( 1 )
+shader_param/color = Plane( 0.25, 0.5, 0.75, 0.981 )
+shader_param/replacing = Plane( 1, 1, 1, 1 )
+shader_param/enable_second_color = false
+shader_param/secondary_color = Plane( 1, 1, 1, 1 )
+shader_param/secondary_replacing = Plane( 1, 1, 1, 1 )
+shader_param/offset_enabled = true
+shader_param/offset = 0.0
+shader_param/only_replaced = false
+
+[sub_resource type="Animation" id=5]
+length = 0.2
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[sub_resource type="Animation" id=6]
+length = 8.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:pulse_time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ -1.0, 1.0 ]
 }
 
 [sub_resource type="ShaderMaterial" id=7]
@@ -153,51 +196,7 @@ tracks/0/keys = {
 "values": [ -1.0, 1.0 ]
 }
 
-[sub_resource type="ShaderMaterial" id=13]
-shader = ExtResource( 1 )
-shader_param/color = Plane( 0.25, 0.5, 0.75, 0.981 )
-shader_param/replacing = Plane( 1, 1, 1, 1 )
-shader_param/enable_second_color = false
-shader_param/secondary_color = Plane( 1, 1, 1, 1 )
-shader_param/secondary_replacing = Plane( 1, 1, 1, 1 )
-shader_param/offset_enabled = true
-shader_param/offset = 0.0
-shader_param/only_replaced = false
-
-[sub_resource type="Animation" id=14]
-length = 0.2
-step = 0.05
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:time")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ 0.0, 1.0 ]
-}
-
-[sub_resource type="Animation" id=15]
-length = 8.0
-loop = true
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:pulse_time")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 8 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ -1.0, 1.0 ]
-}
-
-[sub_resource type="Animation" id=1]
-resource_name = "enter_sub"
+[sub_resource type="Animation" id=13]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("top:position")
@@ -223,10 +222,48 @@ tracks/1/keys = {
 "update": 0,
 "values": [ Vector2( 736, 0 ), Vector2( -32, 0 ), Vector2( 0, 0 ) ]
 }
+tracks/2/type = "value"
+tracks/2/path = NodePath("Corridor:rect_position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -1920, -160 ), Vector2( -640, -160 ) ]
+}
 
-[sub_resource type="Animation" id=2]
-resource_name = "enter_top"
-length = 0.4
+[sub_resource type="Animation" id=19]
+resource_name = "enter_title"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/path = NodePath("top:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0.2, 0.4, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 736, 0 ), Vector2( -32, 0 ), Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Corridor:rect_position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.2, 0.6 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -1920, -160 ), Vector2( -640, -160 ) ]
+}
+
+[sub_resource type="Animation" id=14]
 tracks/0/type = "value"
 tracks/0/path = NodePath("top:position")
 tracks/0/interp = 2
@@ -239,9 +276,20 @@ tracks/0/keys = {
 "update": 0,
 "values": [ Vector2( 736, 0 ), Vector2( -32, 0 ), Vector2( 0, 0 ) ]
 }
+tracks/1/type = "value"
+tracks/1/path = NodePath("Corridor:rect_position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.6, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -1920, -160 ), Vector2( -640, -160 ) ]
+}
 
-[sub_resource type="Animation" id=3]
-resource_name = "exit_sub"
+[sub_resource type="Animation" id=15]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("top:position")
@@ -281,9 +329,20 @@ tracks/2/keys = {
 "update": 0,
 "values": [ Vector2( 0, 0 ), Vector2( -32, 0 ), Vector2( 736, 0 ) ]
 }
+tracks/3/type = "value"
+tracks/3/path = NodePath("Corridor:rect_position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -640, -160 ), Vector2( -1920, -160 ) ]
+}
 
-[sub_resource type="Animation" id=4]
-resource_name = "exit_top"
+[sub_resource type="Animation" id=16]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("top:position")
@@ -311,8 +370,20 @@ tracks/1/keys = {
 "method": "queue_free"
 } ]
 }
+tracks/2/type = "value"
+tracks/2/path = NodePath("Corridor:rect_position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -640, -160 ), Vector2( -1920, -160 ) ]
+}
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=17]
 length = 0.2
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:switch_time")
@@ -351,7 +422,7 @@ tracks/2/keys = {
 "values": [ Vector2( 0, 0 ), Vector2( 736, 0 ) ]
 }
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=18]
 length = 0.2
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:switch_time")
@@ -399,15 +470,25 @@ __meta__ = {
 }
 switch_time = 0.0
 
-[node name="Level" type="Polygon2D" parent="."]
-position = Vector2( -640, 32 )
+[node name="Corridor" type="Control" parent="."]
+margin_left = -1920.0
+margin_top = -160.0
+margin_right = -640.0
+margin_bottom = 160.0
+rect_clip_content = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Level" type="Polygon2D" parent="Corridor"]
+position = Vector2( 0, 192 )
 color = Color( 0.12549, 0.25098, 0.376471, 1 )
 polygon = PoolVector2Array( 0, -192, 7680, -192, 7680, 128, 0, 128 )
 
-[node name="LevelSetter" type="Node2D" parent="Level"]
-script = SubResource( 16 )
+[node name="LevelSetter" type="Node2D" parent="Corridor/Level"]
+script = SubResource( 1 )
 
-[node name="Player" parent="Level" instance=ExtResource( 18 )]
+[node name="Player" parent="Corridor/Level" instance=ExtResource( 18 )]
 position = Vector2( -128, 96 )
 character_name = "S1"
 replay = true
@@ -416,7 +497,7 @@ load_replay = false
 automatic_set_level_node = false
 silent = true
 
-[node name="Player2" parent="Level" instance=ExtResource( 18 )]
+[node name="Player2" parent="Corridor/Level" instance=ExtResource( 18 )]
 position = Vector2( -128, 96 )
 character_name = "S1"
 replay = true
@@ -425,130 +506,131 @@ load_replay = false
 automatic_set_level_node = false
 silent = true
 
-[node name="objects" type="Node2D" parent="Level"]
-material = SubResource( 18 )
+[node name="objects" type="Node2D" parent="Corridor/Level"]
+material = SubResource( 2 )
 
-[node name="Spike" parent="Level/objects" instance=ExtResource( 20 )]
+[node name="Spike" parent="Corridor/Level/objects" instance=ExtResource( 20 )]
 use_parent_material = true
 position = Vector2( 2368, -16 )
 scale = Vector2( 2.25, 2.25 )
 
-[node name="@Spike@433" parent="Level/objects" instance=ExtResource( 20 )]
+[node name="@Spike@433" parent="Corridor/Level/objects" instance=ExtResource( 20 )]
 use_parent_material = true
 position = Vector2( 6256, 1.52588e-05 )
 scale = Vector2( 1.95, 1.95 )
 
-[node name="@Spike@434" parent="Level/objects" instance=ExtResource( 20 )]
+[node name="@Spike@434" parent="Corridor/Level/objects" instance=ExtResource( 20 )]
 use_parent_material = true
 position = Vector2( 6096, -128 )
 scale = Vector2( 1.95, 1.95 )
 
-[node name="@Spike@415" parent="Level/objects" instance=ExtResource( 20 )]
+[node name="@Spike@415" parent="Corridor/Level/objects" instance=ExtResource( 20 )]
 use_parent_material = true
 position = Vector2( 4192, 80 )
 scale = Vector2( 1.25, 1.25 )
 
-[node name="Spike2" parent="Level/objects" instance=ExtResource( 20 )]
+[node name="Spike2" parent="Corridor/Level/objects" instance=ExtResource( 20 )]
 use_parent_material = true
 position = Vector2( 5184, 128 )
 scale = Vector2( 2, 2 )
 
-[node name="@Spike@414" parent="Level/objects" instance=ExtResource( 20 )]
+[node name="@Spike@414" parent="Corridor/Level/objects" instance=ExtResource( 20 )]
 use_parent_material = true
 position = Vector2( 4192, -144 )
 scale = Vector2( 1.25, 1.25 )
 
-[node name="@Spike@406" parent="Level/objects" instance=ExtResource( 20 )]
+[node name="@Spike@406" parent="Corridor/Level/objects" instance=ExtResource( 20 )]
 use_parent_material = true
 position = Vector2( 3472, 112 )
 scale = Vector2( 2.5, 2.5 )
 
-[node name="@Spike@407" parent="Level/objects" instance=ExtResource( 20 )]
+[node name="@Spike@407" parent="Corridor/Level/objects" instance=ExtResource( 20 )]
 use_parent_material = true
 position = Vector2( 3552, 112 )
 scale = Vector2( 1.8, 1.8 )
 
-[node name="ground0" type="Sprite" parent="Level"]
+[node name="ground0" type="Sprite" parent="Corridor/Level"]
 position = Vector2( 1344, 64 )
 scale = Vector2( 128, 128 )
 texture = ExtResource( 22 )
 
-[node name="ground1" type="Sprite" parent="Level"]
+[node name="ground1" type="Sprite" parent="Corridor/Level"]
 position = Vector2( 1856, -96 )
 scale = Vector2( 128, 192 )
 texture = ExtResource( 22 )
 
-[node name="ground2" type="Sprite" parent="Level"]
+[node name="ground2" type="Sprite" parent="Corridor/Level"]
 position = Vector2( 2368, 32 )
 scale = Vector2( 128, 64 )
 texture = ExtResource( 22 )
 
-[node name="ground3" type="Sprite" parent="Level"]
+[node name="ground3" type="Sprite" parent="Corridor/Level"]
 position = Vector2( 3008, 96 )
 scale = Vector2( 128, 64 )
 texture = ExtResource( 22 )
 
-[node name="ground4" type="Sprite" parent="Level"]
+[node name="ground4" type="Sprite" parent="Corridor/Level"]
 position = Vector2( 3392, 64 )
 scale = Vector2( 128, 128 )
 texture = ExtResource( 22 )
 
-[node name="ground13" type="Sprite" parent="Level"]
+[node name="ground13" type="Sprite" parent="Corridor/Level"]
 position = Vector2( 3508, 164 )
 scale = Vector2( 232, 72 )
 texture = ExtResource( 22 )
 
-[node name="ground14" type="Sprite" parent="Level"]
+[node name="ground14" type="Sprite" parent="Corridor/Level"]
 position = Vector2( 5184, 176 )
 scale = Vector2( 896, 96 )
 texture = ExtResource( 22 )
 
-[node name="ground5" type="Sprite" parent="Level"]
+[node name="ground5" type="Sprite" parent="Corridor/Level"]
 position = Vector2( 4800, 96 )
 scale = Vector2( 128, 64 )
 texture = ExtResource( 22 )
 
-[node name="ground6" type="Sprite" parent="Level"]
+[node name="ground6" type="Sprite" parent="Corridor/Level"]
 position = Vector2( 5568, 96 )
 scale = Vector2( 128, 64 )
 texture = ExtResource( 22 )
 
-[node name="ground7" type="Sprite" parent="Level"]
+[node name="ground7" type="Sprite" parent="Corridor/Level"]
 position = Vector2( 5184, -128 )
 scale = Vector2( 256, 128 )
 texture = ExtResource( 22 )
 
-[node name="ground8" type="Sprite" parent="Level"]
+[node name="ground8" type="Sprite" parent="Corridor/Level"]
 position = Vector2( 4192, -176 )
 scale = Vector2( 64, 32 )
 texture = ExtResource( 22 )
 
-[node name="ground9" type="Sprite" parent="Level"]
+[node name="ground9" type="Sprite" parent="Corridor/Level"]
 position = Vector2( 4192, 112 )
 scale = Vector2( 64, 32 )
 texture = ExtResource( 22 )
 
-[node name="ground10" type="Sprite" parent="Level"]
+[node name="ground10" type="Sprite" parent="Corridor/Level"]
 position = Vector2( 6016, 112 )
 scale = Vector2( 128, 32 )
 texture = ExtResource( 22 )
 
-[node name="ground11" type="Sprite" parent="Level"]
+[node name="ground11" type="Sprite" parent="Corridor/Level"]
 position = Vector2( 6256, 32 )
 scale = Vector2( 95.9995, 64 )
 texture = ExtResource( 22 )
 
-[node name="ground12" type="Sprite" parent="Level"]
+[node name="ground12" type="Sprite" parent="Corridor/Level"]
 position = Vector2( 6096, -160 )
 scale = Vector2( 95.9995, 64 )
 texture = ExtResource( 22 )
 
-[node name="anim" type="AnimationPlayer" parent="Level"]
+[node name="anim" type="AnimationPlayer" parent="Corridor/Level"]
 autoplay = "shift"
-anims/shift = SubResource( 17 )
+anims/shift = SubResource( 3 )
 
 [node name="top" type="Node2D" parent="."]
-material = SubResource( 7 )
+material = SubResource( 4 )
+position = Vector2( 736, 0 )
 script = ExtResource( 2 )
 menu_colors = [ Color( 0.25098, 0.25098, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.74902, 0.74902, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.25098, 1 ) ]
 submenu = [ 1, 3, 5, 4, 6 ]
@@ -599,17 +681,17 @@ scale = Vector2( 1.125, 1.125 )
 texture = ExtResource( 13 )
 
 [node name="anim" type="AnimationPlayer" parent="top"]
-anims/move = SubResource( 8 )
+anims/move = SubResource( 5 )
 
 [node name="pulse" type="AnimationPlayer" parent="top"]
 autoplay = "pulse"
-anims/pulse = SubResource( 9 )
+anims/pulse = SubResource( 6 )
 
 [node name="sub" type="Node2D" parent="."]
 
 [node name="play" type="Node2D" parent="sub"]
 visible = false
-material = SubResource( 10 )
+material = SubResource( 7 )
 script = ExtResource( 2 )
 node_buttons = [ "button1", "button2", "button3", "button_exit" ]
 menu_colors = [ Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ) ]
@@ -655,15 +737,15 @@ scale = Vector2( 1.125, 1.125 )
 texture = ExtResource( 15 )
 
 [node name="anim" type="AnimationPlayer" parent="sub/play"]
-anims/move = SubResource( 11 )
+anims/move = SubResource( 8 )
 
 [node name="pulse" type="AnimationPlayer" parent="sub/play"]
 autoplay = "pulse"
-anims/pulse = SubResource( 12 )
+anims/pulse = SubResource( 9 )
 
 [node name="extras" type="Node2D" parent="sub"]
 visible = false
-material = SubResource( 13 )
+material = SubResource( 10 )
 script = ExtResource( 2 )
 node_buttons = [ "button1", "button2", "button3", "button_exit" ]
 menu_colors = [ Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ) ]
@@ -709,11 +791,11 @@ scale = Vector2( 1.125, 1.125 )
 texture = ExtResource( 15 )
 
 [node name="anim" type="AnimationPlayer" parent="sub/extras"]
-anims/move = SubResource( 14 )
+anims/move = SubResource( 11 )
 
 [node name="pulse" type="AnimationPlayer" parent="sub/extras"]
 autoplay = "pulse"
-anims/pulse = SubResource( 15 )
+anims/pulse = SubResource( 12 )
 
 [node name="Disclaimer" type="Label" parent="."]
 visible = false
@@ -729,9 +811,10 @@ __meta__ = {
 }
 
 [node name="mainAnim" type="AnimationPlayer" parent="."]
-anims/enter_sub = SubResource( 1 )
-anims/enter_top = SubResource( 2 )
-anims/exit_sub = SubResource( 3 )
-anims/exit_top = SubResource( 4 )
-anims/move_back = SubResource( 5 )
-anims/move_next = SubResource( 6 )
+anims/enter_sub = SubResource( 13 )
+anims/enter_title = SubResource( 19 )
+anims/enter_top = SubResource( 14 )
+anims/exit_sub = SubResource( 15 )
+anims/exit_top = SubResource( 16 )
+anims/move_back = SubResource( 17 )
+anims/move_next = SubResource( 18 )

@@ -27,12 +27,12 @@ var tut_text = [
 	".",
 	".",
 	".",
-	"Done.",
+	" Done.",
 	"\nStarting Visual",
 	".",
 	".",
 	".",
-	"Done.",
+	" Done.",
 	"",
 	"",
 	"",
@@ -72,6 +72,10 @@ func _input(event):
 			$console/lines.text += Global.key_names(current_key)
 			avaiting_keybind_press = false
 			new_keybind()
+	if event is InputEventJoypadButton and event.pressed:
+		current_line_delay = 15
+	if event is InputEventJoypadMotion:
+		current_line_delay = 15
 
 func _physics_process(_delta):
 	if delay_timer_is_going:
@@ -108,7 +112,8 @@ func _physics_process(_delta):
 #		audio_cursor()
 	if current_section == SECTION_GOING_TO_TUTORIAL and text_current_line == tut_text.size():
 		# *TUTORIAL*
-		Global.change_level("*res://Scenes/waterway/Level_1-0.tscn")
+		Global.doing_tutorial = true
+		Global.change_level("*res://Scenes/Tutorial.tscn")
 	
 	if is_changing_audio:
 		if Input.is_action_just_pressed("accept"):
@@ -164,11 +169,10 @@ func _physics_process(_delta):
 		move = false
 
 func audio_cursor():
-	$cursor.position = Vector2(392, 208 + current_audio * 32)
+	$cursor.position = Vector2(392, 224 + current_audio * 32)
 
 func change_scene_to_menu():
 #	get_tree().reload_current_scene()
-	Global.in_load_previously = true
 	Global.change_level("*MENU")
 
 func new_keybind():

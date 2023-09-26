@@ -34,15 +34,16 @@ func _physics_process(_delta):
 		if delay_timer >= delay_until_appearing:
 			if visibility_timer < appear_time:
 				visibility_timer += 1
-		else:
+		if visibility_timer == 0:
 			delay_timer += 1
+		else:
+			delay_timer = delay_until_appearing
 	elif visibility_timer > 0:
 		visibility_timer -= 1
 	$Text.modulate = Color(text_color.r,text_color.b,text_color.g,float(visibility_timer) / appear_time)
 	
 	if follow_player and visibility_timer > 0 and following_body != null:
 		$Text.rect_position = following_body.position - position + offset
-
 
 func _on_HoverText_body_entered(body):
 	if body.name == "Player":

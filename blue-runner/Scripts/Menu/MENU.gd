@@ -24,8 +24,15 @@ func _ready():
 		menu = "REPLAY"
 	elif Global.in_load_previously:
 		menu = "TITLE"
+	elif Global.doing_tutorial:
+		menu = "HELP"
 	else: #if _start:
 		menu = "MAIN"
+	
+	if Global.doing_tutorial:
+		Global.current_level = ""
+		Global.current_level_location = "res://Scenes/waterway/"
+		Global.doing_tutorial = false
 	
 	switch_menu(menu)
 

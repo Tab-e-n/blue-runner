@@ -2,7 +2,6 @@ extends Node2D
 
 onready var g : Control = $"/root/Global"
 onready var player : KinematicBody2D = get_parent()
-onready var trail_node : Line2D = player.get_node("trail")
 onready var col_1 : Node2D = get_parent().get_node("col_1")
 onready var col_2 : Node2D = get_parent().get_node("col_2")
 
@@ -39,8 +38,6 @@ var wall_anim : int = 1
 var last_facing : String
 
 export var trail_color : Color = Color(1, 1, 1, 1)
-var trail : PoolVector2Array = []
-var trail_converted : PoolVector2Array = []
 export var unicolor_color : Color = Color(1, 1, 1, 1)
 
 export var idle_anim_timer : int = -1
@@ -50,14 +47,8 @@ func _ready():
 	
 	$Anim.current_animation = "Enter"
 	
-	trail_node.visible = true
-	trail_node.modulate = trail_color
-	trail.resize(40)
-	for i in range(trail.size()):
-		trail[i] = player.position
 	
-	if !player.ghost:
-		player.call_deferred("shader_color")
+	player.setup_trail(trail_color)
 
 func _physics_process(_delta):
 	col_1.position = $col_1.position
@@ -346,24 +337,10 @@ func _physics_process(_delta):
 			#$Anim.current_animation = "Concern"
 	
 	# Trail code
-	for i in range(trail.size() - 1):
-		trail[i] = trail[i+1]
 	if $Anim.current_animation != "Slide":
-		trail[trail.size() - 1] = player.position
-		trail_node.position.y = -88
+		player.animate_trail(Vector2(0, -88))
 	else:
-		trail[trail.size() - 1] = player.position + Vector2(0, 80)
-		trail_node.position.y = -8
-	
-	trail_converted.resize(trail.size())
-	
-	trail_converted[trail.size() - 1] = Vector2(0, 0)
-	
-	for i in range(trail.size() - 1):
-		var temp = trail[trail.size() - 2 - i] - trail[trail.size() - 1 - i]
-		trail_converted[trail.size() - 2 - i] = trail_converted[trail.size() - 1 - i] + temp
-	
-	trail_node.points = trail_converted
+		player.animate_trail(Vector2(0, -8), Vector2(0, 80))
 	
 	if $Anim.current_animation != "Enter":
 		position.y = 0

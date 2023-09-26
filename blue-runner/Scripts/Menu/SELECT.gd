@@ -147,7 +147,7 @@ func menu_update():
 				is_selecting_characters = false
 				$mainAnim.play("CHARACTER -> LEVEL")
 			else:
-				parent.get_node("Camera").fade_out("")
+				parent.get_node("Camera").start_fade_out("")
 		
 		if Input.is_action_pressed("menu_left") and parent.move:
 			character_move_cursor(-1)

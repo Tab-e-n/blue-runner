@@ -115,14 +115,15 @@ __meta__ = {
 
 [node name="audio_text" type="Label" parent="."]
 visible = false
-margin_left = 400.0
-margin_top = 160.0
-margin_right = 1328.0
-margin_bottom = 224.0
+margin_left = 320.0
+margin_top = 144.0
+margin_right = 1600.0
+margin_bottom = 272.0
 rect_scale = Vector2( 0.5, 0.5 )
 custom_fonts/font = ExtResource( 1 )
 custom_colors/font_color = Color( 0.25098, 0.74902, 0.74902, 1 )
-text = "Press SPACE once you are done."
+text = "Use ARROW KEYS to change the volume.
+Press SPACE once you are done."
 align = 1
 valign = 1
 __meta__ = {
@@ -132,15 +133,16 @@ __meta__ = {
 [node name="cursor" type="Sprite" parent="."]
 visible = false
 modulate = Color( 0.25098, 0.74902, 0.74902, 1 )
+position = Vector2( 392, 224 )
 rotation = -1.57079
 texture = ExtResource( 3 )
 
 [node name="sfx" type="HSlider" parent="."]
 visible = false
 margin_left = 592.0
-margin_top = 192.0
+margin_top = 208.0
 margin_right = 848.0
-margin_bottom = 224.0
+margin_bottom = 240.0
 theme = ExtResource( 2 )
 value = 60.0
 editable = false
@@ -165,9 +167,9 @@ __meta__ = {
 [node name="music" type="HSlider" parent="."]
 visible = false
 margin_left = 592.0
-margin_top = 224.0
+margin_top = 240.0
 margin_right = 848.0
-margin_bottom = 256.0
+margin_bottom = 272.0
 theme = ExtResource( 2 )
 value = 60.0
 editable = false

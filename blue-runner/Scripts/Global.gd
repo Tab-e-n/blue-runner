@@ -80,7 +80,7 @@ var rand : RandomNumberGenerator = RandomNumberGenerator.new()
 var current_character : String = "S1"
 var current_character_location : String = "res:/"
 
-var in_load_previously : bool = false
+var in_load_previously : bool = true
 
 var replay : bool = false
 var current_recording = {}
@@ -101,6 +101,8 @@ var level_group = {}
 var loaded_characters = {}
 
 var last_input_events : Array = []
+
+var doing_tutorial : bool = false
 
 func _ready():
 	console_arguments()
