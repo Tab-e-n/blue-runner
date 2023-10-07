@@ -658,7 +658,7 @@ func level_selected():
 		has_selected_level = false
 	else:
 		Global.select_menu = true
-		parent.get_node("Camera").fade_out("")
+		parent.get_node("Camera").start_fade_out("")
 
 func check_character_unlocks():
 	
