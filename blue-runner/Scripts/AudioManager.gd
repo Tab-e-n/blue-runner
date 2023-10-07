@@ -12,7 +12,7 @@ func play_sound(soundname : String, pitch : float = 1, random_pitch_range : floa
 	
 	var f : File = File.new()
 	
-	if not f.file_exists("res://Sound/" + soundname + ".wav"):
+	if not f.file_exists("res://Sound/" + soundname + ".wav.import"):
 		return
 	
 	var sound : AudioStreamPlayer = AudioStreamPlayer.new()

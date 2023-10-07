@@ -1,4 +1,4 @@
-[gd_scene load_steps=80 format=2]
+[gd_scene load_steps=67 format=2]
 
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=1]
 [ext_resource path="res://Visual/Editor/editor_paintbrush.png" type="Texture" id=2]
@@ -35,21 +35,8 @@
 [ext_resource path="res://Visual/Editor/editor_missing.png" type="Texture" id=33]
 [ext_resource path="res://Visual/Editor/editor_cross_small_enabled.png" type="Texture" id=34]
 [ext_resource path="res://Visual/Editor/editor_cross_small.png" type="Texture" id=35]
-[ext_resource path="res://Visual/Editor/editor_paintbrush_hover.png" type="Texture" id=36]
-[ext_resource path="res://Visual/Editor/editor_more_hover.png" type="Texture" id=37]
-[ext_resource path="res://Visual/Editor/editor_star_hover.png" type="Texture" id=38]
-[ext_resource path="res://Visual/Editor/editor_cog_hover.png" type="Texture" id=39]
-[ext_resource path="res://Visual/Editor/editor_eraser_hover.png" type="Texture" id=40]
-[ext_resource path="res://Visual/Editor/editor_load_hover.png" type="Texture" id=41]
-[ext_resource path="res://Visual/Editor/editor_left_hover.png" type="Texture" id=42]
-[ext_resource path="res://Visual/Editor/editor_cross_small_hover.png" type="Texture" id=43]
-[ext_resource path="res://Visual/Editor/editor_save_hover.png" type="Texture" id=44]
-[ext_resource path="res://Visual/Editor/editor_exit_hover.png" type="Texture" id=45]
-[ext_resource path="res://Visual/Editor/editor_right_hover.png" type="Texture" id=46]
-[ext_resource path="res://Visual/Editor/editor_cross_hover.png" type="Texture" id=47]
 [ext_resource path="res://Visual/Editor/editor_exit_enabled.png" type="Texture" id=48]
 [ext_resource path="res://Visual/Editor/editor_exit.png" type="Texture" id=49]
-[ext_resource path="res://Visual/Editor/editor_new_hover.png" type="Texture" id=50]
 [ext_resource path="res://Text/Lacrimae_Small_Spaced.tres" type="DynamicFont" id=51]
 [ext_resource path="res://Visual/Editor/editor_vector.png" type="Texture" id=52]
 [ext_resource path="res://Visual/Editor/editor_play.png" type="Texture" id=53]
@@ -1385,6 +1372,8 @@ func level_draw_tile(tile : int):
 
 func level_bucket_fill_tiles(tile : int):
 	var starting_position : Vector2 = place_current_tilemap.world_to_map(level_mouse_position / place_current_tilemap.scale)
+# warning-ignore:narrowing_conversion
+# warning-ignore:narrowing_conversion
 	var replacing : int = place_current_tilemap.get_cell(starting_position.x, starting_position.y)
 	if replacing == tile:
 		done_action(\"tile is already the same as the selected tile\", \"#5d1f31\", true)
@@ -1417,7 +1406,9 @@ func level_bucket_fill_tiles(tile : int):
 		return
 	
 	var i : int = 0
+# warning-ignore:narrowing_conversion
 	var x : int = starting_position.x
+# warning-ignore:narrowing_conversion
 	var y : int = starting_position.y
 	var stack : Array = []
 	stack.append([x, x, y, 1])
@@ -1455,8 +1446,20 @@ func level_bucket_fill_tiles(tile : int):
 			x = x1
 
 func set_cell(pos : Vector2, tile : int):
-	if place_current_tilemap.get_cell(pos.x, pos.y) == tile:
+# warning-ignore:narrowing_conversion
+# warning-ignore:narrowing_conversion
+	if (place_current_tilemap.get_cell(pos.x, pos.y) == tile and 
+# warning-ignore:narrowing_conversion
+# warning-ignore:narrowing_conversion
+			place_current_tilemap.is_cell_x_flipped(pos.x, pos.y) == place_tile_mods[0] and
+# warning-ignore:narrowing_conversion
+# warning-ignore:narrowing_conversion
+			place_current_tilemap.is_cell_y_flipped(pos.x, pos.y) == place_tile_mods[1] and
+# warning-ignore:narrowing_conversion
+# warning-ignore:narrowing_conversion
+			place_current_tilemap.is_cell_transposed(pos.x, pos.y) == place_tile_mods[2]):
 		return
+	print(\"Set Tile\")
 	place_current_tilemap.set_cellv(pos, tile, place_tile_mods[0], place_tile_mods[1], place_tile_mods[2])
 
 func level_add_decor():
@@ -3026,7 +3029,6 @@ focus_mode = 0
 toggle_mode = true
 texture_normal = ExtResource( 2 )
 texture_pressed = ExtResource( 3 )
-texture_focused = ExtResource( 36 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3046,7 +3048,6 @@ focus_mode = 0
 toggle_mode = true
 texture_normal = ExtResource( 5 )
 texture_pressed = ExtResource( 6 )
-texture_focused = ExtResource( 40 )
 
 [node name="cog" type="TextureButton" parent="GUI/Place/Panel"]
 margin_left = 136.0
@@ -3063,7 +3064,6 @@ focus_mode = 0
 toggle_mode = true
 texture_normal = ExtResource( 4 )
 texture_pressed = ExtResource( 7 )
-texture_focused = ExtResource( 39 )
 
 [node name="more" type="TextureButton" parent="GUI/Place/Panel"]
 margin_left = 840.0
@@ -3078,7 +3078,6 @@ focus_previous = NodePath("../favorite")
 toggle_mode = true
 texture_normal = ExtResource( 23 )
 texture_pressed = ExtResource( 24 )
-texture_focused = ExtResource( 37 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3095,7 +3094,6 @@ focus_next = NodePath("../more")
 toggle_mode = true
 texture_normal = ExtResource( 29 )
 texture_pressed = ExtResource( 27 )
-texture_focused = ExtResource( 38 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3182,7 +3180,6 @@ focus_next = NodePath("../tab_right")
 focus_previous = NodePath(".")
 texture_normal = ExtResource( 11 )
 texture_pressed = ExtResource( 12 )
-texture_focused = ExtResource( 42 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3200,7 +3197,6 @@ focus_next = NodePath("../layer_0")
 focus_previous = NodePath("../tab_left")
 texture_normal = ExtResource( 13 )
 texture_pressed = ExtResource( 14 )
-texture_focused = ExtResource( 46 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3638,7 +3634,6 @@ focus_previous = NodePath(".")
 toggle_mode = true
 texture_normal = ExtResource( 23 )
 texture_pressed = ExtResource( 24 )
-texture_focused = ExtResource( 37 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3820,7 +3815,6 @@ focus_next = NodePath("../color_front")
 focus_previous = NodePath(".")
 texture_normal = ExtResource( 35 )
 texture_pressed = ExtResource( 34 )
-texture_focused = ExtResource( 43 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3893,7 +3887,6 @@ focus_neighbour_right = NodePath(".")
 focus_previous = NodePath(".")
 texture_normal = ExtResource( 25 )
 texture_pressed = ExtResource( 28 )
-texture_focused = ExtResource( 47 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -3986,7 +3979,6 @@ focus_next = NodePath("../load")
 focus_previous = NodePath("../exit")
 texture_normal = ExtResource( 17 )
 texture_pressed = ExtResource( 20 )
-texture_focused = ExtResource( 50 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -4004,7 +3996,6 @@ focus_next = NodePath("../save")
 focus_previous = NodePath("../new")
 texture_normal = ExtResource( 19 )
 texture_pressed = ExtResource( 22 )
-texture_focused = ExtResource( 41 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -4022,7 +4013,6 @@ focus_next = NodePath("../name_edit")
 focus_previous = NodePath("../load")
 texture_normal = ExtResource( 21 )
 texture_pressed = ExtResource( 18 )
-texture_focused = ExtResource( 44 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -4057,7 +4047,6 @@ focus_next = NodePath("../new")
 focus_previous = NodePath(".")
 texture_normal = ExtResource( 49 )
 texture_pressed = ExtResource( 48 )
-texture_focused = ExtResource( 45 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -4294,6 +4283,7 @@ __meta__ = {
 }
 
 [node name="Exit" type="ConfirmationDialog" parent="GUI/File"]
+visible = true
 margin_left = 280.0
 margin_top = -72.0
 margin_right = 744.0
@@ -4383,9 +4373,9 @@ text = "???"
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]

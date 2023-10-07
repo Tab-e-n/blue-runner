@@ -92,6 +92,7 @@
 
 ### FIXES & CHANGES
 
+ - Buttons no longer turn blue after pressing them.
  - Attachables should no longer have wacky behaviours when you do anything complex with them.
  - Fixed a bug where you could have multiple of the same tile preset in the place panel.
  - You can now edit the order of portals.

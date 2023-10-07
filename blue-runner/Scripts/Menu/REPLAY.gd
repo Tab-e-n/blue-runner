@@ -52,12 +52,8 @@ func _ready():
 		$directories/walls.scale = Vector2(1.25, 1.25)
 		$directories/other_directories.modulate = Color(1, 1, 1, 0)
 		
-		$"directories/other_directories/-3".rect_position.x = -464
-		$"directories/other_directories/-2".rect_position.x = -464
-		$"directories/other_directories/-1".rect_position.x = -464
-		$"directories/other_directories/+1".rect_position.x = -464
-		$"directories/other_directories/+2".rect_position.x = -464
-		$"directories/other_directories/+3".rect_position.x = -464
+		for i in ["-3","-2","-1","+1","+2","+3"]:
+			get_node("directories/other_directories/" + i).rect_position.x = -464
 		
 		$rack.visible = true
 		$bottom.visible = true
@@ -70,12 +66,8 @@ func _ready():
 		$directories/walls.scale = Vector2(1.25, 1.25)
 		$directories/other_directories.modulate = Color(1, 1, 1, 1)
 		
-		$"directories/other_directories/-3".rect_position.x = -1568
-		$"directories/other_directories/-2".rect_position.x = -1568
-		$"directories/other_directories/-1".rect_position.x = -1568
-		$"directories/other_directories/+1".rect_position.x = -1568
-		$"directories/other_directories/+2".rect_position.x = -1568
-		$"directories/other_directories/+3".rect_position.x = -1568
+		for i in ["-3","-2","-1","+1","+2","+3"]:
+			get_node("directories/other_directories/" + i).rect_position.x = -1568
 		
 		$rack.visible = false
 		$bottom.visible = false
