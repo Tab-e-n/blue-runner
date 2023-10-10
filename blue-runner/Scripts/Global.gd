@@ -560,15 +560,27 @@ func change_level(destination : String, return_value : bool = false, check_depen
 	if destination_new != "res://Scenes/MENU.tscn":
 		current_level_location = destination_new.substr(0, destination_new.find_last("/") + 1)
 		current_level = destination_new.substr(destination_new.find_last("/") + 1, destination_new.find_last(".tscn") - destination_new.find_last("/") - 1)
-#		print(current_level)
-#		print(current_level_location)
+		
+#		print("CL " + current_level)
+#		print("CLL " + current_level_location)
 	if error == OK:
+#		print(destination_new)
 		error = change_scene_level(destination_new, return_value)
 	if return_value:
 		return error
 	elif error != OK:
+		if playtesting:
+			get_tree().quit()
 		# warning-ignore:return_value_discarded
 		get_tree().change_scene("res://Scenes/MENU.tscn")
+#		call_deferred("make_text_debug", String(destination_new), String(error))
+
+func make_text_debug(one, two):
+		var text = RichTextLabel.new()
+		text.rect_size = Vector2(1024, 1024)
+		text.text = ":" + one + " " + two + ":"
+		get_tree().current_scene.add_child(text)
+		print(get_tree().current_scene.name)
 
 func change_scene_level(file : String, return_only : bool = false):
 	var packed_scene : PackedScene = load(file)
@@ -817,9 +829,9 @@ func console_arguments():
 	
 	#--level=res://Scenes/waterway/Level_1-0.tscn
 	if arguments.has("level"):
-		change_level("*" + arguments["level"])
+		call_deferred("change_level", "*" + arguments["level"])
 	if arguments.has("playtest"):
-		change_level("*" + arguments["playtest"])
+		call_deferred("change_level", "*" + arguments["playtest"])
 		playtesting = true
 	if arguments.has("save_interaction"):
 		match(arguments["save_interaction"]):

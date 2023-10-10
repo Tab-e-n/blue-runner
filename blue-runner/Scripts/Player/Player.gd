@@ -75,7 +75,8 @@ func _ready():
 	if load_replay:
 		replay = Global.replay
 	
-	if facing != "right" and facing != "left": facing = "right"
+	if facing != "right" and facing != "left":
+		facing = "right"
 	
 	if ghost:
 		if !Global.race_mode:
@@ -133,16 +134,20 @@ func _ready():
 	if automatic_set_level_node:
 		level = get_tree().current_scene
 	
+	if level.get_script() == null:
+		level.set_script(load("res://Scripts/Level_Control.gd"))
+	
 	material.set_shader_param("active", false)
 #	print(get_tree().current_scene)
-	if level.get_script() != null:
-		if level.unicolor_active and !ghost:
-			material.set_shader_param("active", true)
-		if !ghost:
-			level.player = self
+	if level.unicolor_active and !ghost:
+		material.set_shader_param("active", true)
+	if !ghost:
+		level.player = self
 	
 	if !ghost:
 		shader_color()
+	
+#	print("R " + name)
 
 func shader_color():
 	material.set_shader_param("color", character.unicolor_color)
@@ -162,14 +167,8 @@ func _input(event):
 				start_timer = true
 
 func _physics_process(delta):
-	
-	if level.get_script() == null:
-		if level.get_node("Player").replay and ghost:
-			queue_free()
-	else:
-		if level.player.replay and ghost:
-			queue_free()
-	
+	if level.player.replay and ghost:
+		queue_free()
 	
 	if !start and start_timer and !ghost:
 		level.timers_active = true
