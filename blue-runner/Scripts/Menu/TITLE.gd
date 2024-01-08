@@ -20,6 +20,6 @@ func menu_update():
 func start_move_anim():
 	$moveAnim.play("move")
 
-func _on_moveAnim_animation_finished(anim_name):
+func _on_moveAnim_animation_finished(_anim_name):
 	if !is_leaving:
 		$moveAnim.play("move")

@@ -590,10 +590,10 @@ func change_scene_level(file : String, return_only : bool = false):
 		# warning-ignore:return_value_discarded
 		packed_scene.pack(current_scene)
 	
-	current_scene.free()
-	
 	# warning-ignore:return_value_discarded
 	get_tree().change_scene_to(packed_scene)
+	
+	current_scene.free()
 	
 	return OK
 

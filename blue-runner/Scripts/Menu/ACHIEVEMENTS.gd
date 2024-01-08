@@ -59,6 +59,7 @@ func make_the_achivements():
 	
 	var ach_names : Array = achivements_definition.keys()
 	for i in range(achivements_definition.size()):
+		# warning-ignore:integer_division
 		var new_pos : Vector2 = Vector2((-1 + (i % 3)) * 384, ((i) / 3) * 96)
 		create_achievement(ach_names[i], new_pos)
 

@@ -65,12 +65,13 @@ func _ready():
 	Thanks for playing!
 	:D"""
 	
-	line_lenght = (63 * credits.count("\n")) / 2
+	line_lenght = 32 * credits.count("\n")
+#	print(line_lenght)
 	
 	$credits.text = credits
 	$back.text = "GO BACK - " + Global.key_names(13)
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	$credits.rect_position.y -= 0.5
 	if $credits.rect_position.y < -384 - line_lenght:
 		$credits.rect_position.y = 384
