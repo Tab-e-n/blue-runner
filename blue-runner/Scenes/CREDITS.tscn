@@ -40,10 +40,10 @@ __meta__ = {
 }
 
 [node name="credits" type="Label" parent="."]
-margin_left = -288.0
+margin_left = -296.0
 margin_top = 384.0
-margin_right = 896.0
-margin_bottom = 3945.0
+margin_right = 888.0
+margin_bottom = 4341.0
 rect_scale = Vector2( 0.5, 0.5 )
 custom_fonts/font = ExtResource( 1 )
 align = 1

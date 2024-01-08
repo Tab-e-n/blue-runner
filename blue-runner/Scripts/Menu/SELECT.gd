@@ -62,7 +62,7 @@ func _ready():
 		# warning-ignore:integer_division
 	user_page_amount = user_levels.size() / 20 + 1
 	
-#	print(user_levels)
+	print(user_levels)
 	if Global.current_level_location == "user://SRLevels/":
 		for i in range(user_levels.size()):
 			if user_levels[i] == Global.current_level:
@@ -80,9 +80,8 @@ func _ready():
 				selected_level = i
 				break
 	
-#	reload_all_levels()
 	set_level_data_text(false)
-#	print(Global.current_level_location)
+	print(Global.current_level_location)
 	level_move_cursor()
 	
 #	group_move_cursor()
@@ -98,11 +97,14 @@ func _ready():
 	
 	$mainAnim.play("enter")
 
-func menu_update():
+
+func _physics_process(_delta):
 	if $mainAnim.is_playing() and bg != null:
 		bg.update_self(cam_target)
 		bg.position = Vector2(0, 0)
-	
+
+
+func menu_update():
 	if parent.move:
 		$level_select/dependency.visible = false
 		$level_select/fail.visible = false
@@ -161,12 +163,17 @@ func menu_update():
 		$character_select/options_rectangle.material.set_shader_param("offset", character_pulse)
 	else:
 		if Input.is_action_just_pressed("deny") and not has_selected_level:
-			is_selecting_groups = true
-			if groups_first_time:
-				make_group_icons()
-				groups_first_time = false
-			group_move_cursor()
-			$mainAnim.play("LEVEL -> GROUP")
+			if unlocked_level_groups.size() > 1:
+				is_selecting_groups = true
+				if groups_first_time:
+					make_group_icons()
+					groups_first_time = false
+				group_move_cursor()
+				$mainAnim.play("LEVEL -> GROUP")
+			else:
+				parent.switch_menu("MAIN", "SELECT")
+				$mainAnim.play("exit_alt")
+				return
 		if Input.is_action_just_pressed("accept") and not has_selected_level:
 			if not get_node("level_select/levels/" + String(selected_level)).locked:
 				get_node("level_select/levels/" + String(selected_level)).get_node("Anim").play("Bump")

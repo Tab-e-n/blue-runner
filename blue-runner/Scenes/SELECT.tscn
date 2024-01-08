@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=2]
+[gd_scene load_steps=38 format=2]
 
 [ext_resource path="res://Scripts/Menu/SELECT.gd" type="Script" id=1]
 [ext_resource path="res://Objects/Level.tscn" type="PackedScene" id=2]
@@ -808,6 +808,120 @@ tracks/4/keys = {
 "values": [ false, true ]
 }
 
+[sub_resource type="Animation" id=15]
+resource_name = "exit_alt"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("bg:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("bg:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, true ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("level_select:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, true ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath(".:cam_target")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( -320, -160 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("level_select/levels:position")
+tracks/4/interp = 2
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 224, 160 ), Vector2( 1024, 160 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("level_select/level_data:position")
+tracks/5/interp = 2
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( -800, 0 ) ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("group_select:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("character_select:visible")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/8/type = "method"
+tracks/8/path = NodePath(".")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0.5 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "queue_free"
+} ]
+}
+
 [sub_resource type="Animation" id=8]
 length = 0.5
 step = 0.05
@@ -1094,6 +1208,7 @@ character_pulse = -1.0
 anims/_reset = SubResource( 5 )
 anims/enter = SubResource( 6 )
 anims/exit = SubResource( 7 )
+anims/exit_alt = SubResource( 15 )
 
 [node name="level_select" type="Node2D" parent="."]
 
@@ -1444,12 +1559,12 @@ __meta__ = {
 }
 
 [node name="bg" type="Polygon2D" parent="."]
+modulate = Color( 1, 1, 1, 0 )
 color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 polygon = PoolVector2Array( 640, -384, 640, 384, -640, 384, -640, -384 )
 
 [node name="group_select" type="Node2D" parent="."]
 visible = false
-modulate = Color( 1, 1, 1, 0 )
 
 [node name="bg" type="Polygon2D" parent="group_select"]
 color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
@@ -1488,7 +1603,6 @@ texture = ExtResource( 5 )
 flip_h = true
 
 [node name="groups" type="Node2D" parent="group_select"]
-position = Vector2( -1280, 0 )
 
 [node name="cursor" type="Polygon2D" parent="group_select/groups"]
 color = Color( 0.12549, 0.0823529, 0.2, 1 )
