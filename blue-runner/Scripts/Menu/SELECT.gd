@@ -62,7 +62,7 @@ func _ready():
 		# warning-ignore:integer_division
 	user_page_amount = user_levels.size() / 20 + 1
 	
-	print(user_levels)
+#	print(user_levels)
 	if Global.current_level_location == "user://SRLevels/":
 		for i in range(user_levels.size()):
 			if user_levels[i] == Global.current_level:
@@ -81,7 +81,7 @@ func _ready():
 				break
 	
 	set_level_data_text(false)
-	print(Global.current_level_location)
+#	print(Global.current_level_location)
 	level_move_cursor()
 	
 #	group_move_cursor()
@@ -340,6 +340,18 @@ func character_move_cursor(move_amount : int = 0):
 	if selected_character >= unlocked_characters.size():
 		selected_character = unlocked_characters.size() - 1
 	
+	update_character_visuals()
+
+
+func find_current_character():
+	for i in range(unlocked_characters.size()):
+		if unlocked_characters[i][0] == Global.current_character and unlocked_characters[i][1] == Global.current_character_location:
+			selected_character = i
+			return
+	selected_character = 0
+
+
+func update_character_visuals():
 	# warning-ignore:integer_division
 	# warning-ignore:integer_division
 	$character_select/characters.position = Vector2(160 - (selected_character / 4) * 32, (selected_character / 4) * 128)
@@ -352,6 +364,7 @@ func character_move_cursor(move_amount : int = 0):
 	else:
 		$character_select/name.bbcode_text = "[center]" + unlocked_characters[selected_character][0] + "[/center]"
 		$character_select/description.bbcode_text = ""
+
 
 func make_group_icons():
 	var repetitions : int = unlocked_level_groups.size()
@@ -657,9 +670,10 @@ func level_selected():
 		has_selected_level = false
 	elif activate_char_select:
 		if characters_first_time:
+			find_current_character()
 			make_character_icons()
 			characters_first_time = false
-		character_move_cursor()
+		update_character_visuals()
 		$mainAnim.play("LEVEL -> CHARACTER")
 		is_selecting_characters = true
 		has_selected_level = false
@@ -688,7 +702,8 @@ func check_character_unlocks():
 			if check:
 				unlocked_characters.append([character, place, "", ""])
 				
-				if unlocked_characters.size() > 1: Global.unlock("*char_select_active")
+				if unlocked_characters.size() > 1:
+					Global.unlock("*char_select_active")
 
 func make_character_icons():
 	var repetitions : int = unlocked_characters.size()

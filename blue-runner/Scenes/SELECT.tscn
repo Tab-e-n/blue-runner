@@ -808,7 +808,7 @@ tracks/4/keys = {
 "values": [ false, true ]
 }
 
-[sub_resource type="Animation" id=15]
+[sub_resource type="Animation" id=8]
 resource_name = "exit_alt"
 length = 0.5
 tracks/0/type = "value"
@@ -922,7 +922,7 @@ tracks/8/keys = {
 } ]
 }
 
-[sub_resource type="Animation" id=8]
+[sub_resource type="Animation" id=9]
 length = 0.5
 step = 0.05
 tracks/0/type = "value"
@@ -986,7 +986,7 @@ tracks/4/keys = {
 "values": [ Color( 1, 1, 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=9]
+[sub_resource type="Animation" id=10]
 length = 0.5
 step = 0.05
 tracks/0/type = "value"
@@ -1026,7 +1026,7 @@ tracks/2/keys = {
 "values": [ Vector2( 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=10]
+[sub_resource type="Animation" id=11]
 length = 0.02
 tracks/0/type = "value"
 tracks/0/path = NodePath("sprit:scale")
@@ -1089,7 +1089,7 @@ tracks/4/keys = {
 "values": [ Color( 1, 1, 1, 1 ) ]
 }
 
-[sub_resource type="ShaderMaterial" id=11]
+[sub_resource type="ShaderMaterial" id=12]
 shader = ExtResource( 3 )
 shader_param/color = Plane( 1, 1, 1, 1 )
 shader_param/replacing = Plane( 1, 1, 1, 1 )
@@ -1100,7 +1100,7 @@ shader_param/offset_enabled = false
 shader_param/offset = 0.0
 shader_param/only_replaced = false
 
-[sub_resource type="Animation" id=12]
+[sub_resource type="Animation" id=13]
 length = 12.0
 loop = true
 tracks/0/type = "value"
@@ -1164,7 +1164,7 @@ tracks/4/keys = {
 "values": [ Vector2( 448, 64 ), Vector2( 448, -64 ) ]
 }
 
-[sub_resource type="ShaderMaterial" id=13]
+[sub_resource type="ShaderMaterial" id=14]
 shader = ExtResource( 3 )
 shader_param/color = Plane( 0.25, 0.25, 0.75, 1 )
 shader_param/replacing = Plane( 1, 1, 1, 1 )
@@ -1175,8 +1175,7 @@ shader_param/offset_enabled = true
 shader_param/offset = 0.0
 shader_param/only_replaced = false
 
-[sub_resource type="Animation" id=14]
-resource_name = "shift"
+[sub_resource type="Animation" id=15]
 length = 8.0
 loop = true
 tracks/0/type = "value"
@@ -1208,7 +1207,7 @@ character_pulse = -1.0
 anims/_reset = SubResource( 5 )
 anims/enter = SubResource( 6 )
 anims/exit = SubResource( 7 )
-anims/exit_alt = SubResource( 15 )
+anims/exit_alt = SubResource( 8 )
 
 [node name="level_select" type="Node2D" parent="."]
 
@@ -1227,9 +1226,9 @@ scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 16 )
 
 [node name="anim" type="AnimationPlayer" parent="level_select/levels/selected_level"]
-anims/Bump = SubResource( 8 )
-anims/Refuse = SubResource( 9 )
-anims/Reset = SubResource( 10 )
+anims/Bump = SubResource( 9 )
+anims/Refuse = SubResource( 10 )
+anims/Reset = SubResource( 11 )
 
 [node name="0" parent="level_select/levels" instance=ExtResource( 2 )]
 position = Vector2( -288, -144 )
@@ -1362,7 +1361,7 @@ position = Vector2( 548, -248 )
 texture = ExtResource( 13 )
 
 [node name="level_data" type="Node2D" parent="level_select"]
-material = SubResource( 11 )
+material = SubResource( 12 )
 
 [node name="select_rectangle" type="Sprite" parent="level_select/level_data"]
 use_parent_material = true
@@ -1572,7 +1571,7 @@ polygon = PoolVector2Array( 640, -448, 640, 384, 480, 384, 480, -384, -480, -384
 
 [node name="anim" type="AnimationPlayer" parent="group_select"]
 autoplay = "move"
-anims/move = SubResource( 12 )
+anims/move = SubResource( 13 )
 
 [node name="play_wiggles" type="Sprite" parent="group_select"]
 modulate = Color( 0.0588235, 0.0588235, 0.25098, 1 )
@@ -1650,7 +1649,7 @@ bbcode_enabled = true
 text = ""
 
 [node name="options_rectangle" type="Sprite" parent="character_select"]
-material = SubResource( 13 )
+material = SubResource( 14 )
 position = Vector2( 800, -1792 )
 rotation = 1.8158
 scale = Vector2( 2, 1.52326 )
@@ -1658,7 +1657,7 @@ texture = ExtResource( 6 )
 
 [node name="anim" type="AnimationPlayer" parent="character_select/options_rectangle"]
 autoplay = "shift"
-anims/shift = SubResource( 14 )
+anims/shift = SubResource( 15 )
 
 [node name="characters" type="Node2D" parent="character_select"]
 modulate = Color( 1, 1, 1, 0 )

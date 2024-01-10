@@ -172,6 +172,7 @@ tracks/11/keys = {
 
 [sub_resource type="Animation" id=4]
 resource_name = "Exit"
+length = 0.8
 step = 0.05
 tracks/0/type = "value"
 tracks/0/path = NodePath("bg:modulate")
@@ -180,10 +181,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.4, 0.8 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.2, 0.6, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Color( 0.141176, 0.282353, 0.529412, 1 ), Color( 0.141176, 0.282353, 0.529412, 1 ), Color( 0.141176, 0.282353, 0.529412, 0 ) ]
+"values": [ Color( 0.141176, 0.282353, 0.529412, 1 ), Color( 0.141176, 0.282353, 0.529412, 1 ), Color( 0.141176, 0.282353, 0.529412, 0 ), Color( 0.141176, 0.282353, 0.529412, 0 ) ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("bg_checker:modulate")
@@ -192,10 +193,10 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.4, 0.8 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.2, 0.6, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Color( 0.12549, 0.207843, 0.384314, 1 ), Color( 0.12549, 0.207843, 0.384314, 1 ), Color( 0.12549, 0.207843, 0.384314, 0 ) ]
+"values": [ Color( 0.12549, 0.207843, 0.384314, 1 ), Color( 0.12549, 0.207843, 0.384314, 1 ), Color( 0.12549, 0.207843, 0.384314, 0 ), Color( 0.12549, 0.207843, 0.384314, 0 ) ]
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath("back_checker_bottom:position")
@@ -204,10 +205,10 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.4, 0.55, 0.8 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.2, 0.35, 0.6, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Vector2( 0, 368 ), Vector2( 0, 368 ), Vector2( 0, 352 ), Vector2( 0, 608 ) ]
+"values": [ Vector2( 0, 368 ), Vector2( 0, 368 ), Vector2( 0, 352 ), Vector2( 0, 608 ), Vector2( 0, 608 ) ]
 }
 tracks/3/type = "value"
 tracks/3/path = NodePath("mid_checker_bottom:position")
@@ -216,10 +217,10 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.5, 0.65, 0.9 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.3, 0.45, 0.7, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Vector2( 0, 416 ), Vector2( 0, 416 ), Vector2( 0, 392 ), Vector2( 0, 672 ) ]
+"values": [ Vector2( 0, 416 ), Vector2( 0, 416 ), Vector2( 0, 392 ), Vector2( 0, 672 ), Vector2( 0, 672 ) ]
 }
 tracks/4/type = "value"
 tracks/4/path = NodePath("front_checker_bottom:position")
@@ -228,10 +229,10 @@ tracks/4/loop_wrap = true
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/keys = {
-"times": PoolRealArray( 0, 0.6, 0.75, 1 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.4, 0.55, 0.8, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Vector2( 0, 512 ), Vector2( 0, 512 ), Vector2( 0, 480 ), Vector2( 0, 736 ) ]
+"values": [ Vector2( 0, 512 ), Vector2( 0, 512 ), Vector2( 0, 480 ), Vector2( 0, 736 ), Vector2( 0, 736 ) ]
 }
 tracks/5/type = "value"
 tracks/5/path = NodePath("back_checker_top:position")
@@ -240,10 +241,10 @@ tracks/5/loop_wrap = true
 tracks/5/imported = false
 tracks/5/enabled = true
 tracks/5/keys = {
-"times": PoolRealArray( 0, 0.4, 0.55, 0.8 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.2, 0.35, 0.6, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Vector2( 0, -368 ), Vector2( 0, -368 ), Vector2( 0, -352 ), Vector2( 0, -608 ) ]
+"values": [ Vector2( 0, -368 ), Vector2( 0, -368 ), Vector2( 0, -352 ), Vector2( 0, -608 ), Vector2( 0, -608 ) ]
 }
 tracks/6/type = "value"
 tracks/6/path = NodePath("mid_checker_top:position")
@@ -252,10 +253,10 @@ tracks/6/loop_wrap = true
 tracks/6/imported = false
 tracks/6/enabled = true
 tracks/6/keys = {
-"times": PoolRealArray( 0, 0.5, 0.65, 0.9 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.3, 0.45, 0.7, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Vector2( 0, -416 ), Vector2( 0, -416 ), Vector2( 0, -392 ), Vector2( 0, -672 ) ]
+"values": [ Vector2( 0, -416 ), Vector2( 0, -416 ), Vector2( 0, -392 ), Vector2( 0, -672 ), Vector2( 0, -672 ) ]
 }
 tracks/7/type = "value"
 tracks/7/path = NodePath("front_checker_top:position")
@@ -264,10 +265,10 @@ tracks/7/loop_wrap = true
 tracks/7/imported = false
 tracks/7/enabled = true
 tracks/7/keys = {
-"times": PoolRealArray( 0, 0.6, 0.75, 1 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.4, 0.55, 0.8, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Vector2( 0, -512 ), Vector2( 0, -512 ), Vector2( 0, -480 ), Vector2( 0, -736 ) ]
+"values": [ Vector2( 0, -512 ), Vector2( 0, -512 ), Vector2( 0, -480 ), Vector2( 0, -736 ), Vector2( 0, -736 ) ]
 }
 tracks/8/type = "method"
 tracks/8/path = NodePath(".")
@@ -276,7 +277,7 @@ tracks/8/loop_wrap = true
 tracks/8/imported = false
 tracks/8/enabled = true
 tracks/8/keys = {
-"times": PoolRealArray( 0.25, 1 ),
+"times": PoolRealArray( 0.2, 0.8 ),
 "transitions": PoolRealArray( 1, 1 ),
 "values": [ {
 "args": [  ],
@@ -293,10 +294,10 @@ tracks/9/loop_wrap = true
 tracks/9/imported = false
 tracks/9/enabled = true
 tracks/9/keys = {
-"times": PoolRealArray( 0, 0.05, 0.25 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.05, 0.25, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
-"values": [ 0.0, 1.0, 1.0 ]
+"values": [ 0.0, 1.0, 1.0, 1.0 ]
 }
 tracks/10/type = "value"
 tracks/10/path = NodePath("game_logo:modulate")
@@ -305,10 +306,10 @@ tracks/10/loop_wrap = true
 tracks/10/imported = false
 tracks/10/enabled = true
 tracks/10/keys = {
-"times": PoolRealArray( 0, 0.05, 0.25 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.05, 0.25, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
-"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ) ]
 }
 tracks/11/type = "value"
 tracks/11/path = NodePath("prompt:visible")

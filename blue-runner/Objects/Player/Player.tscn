@@ -1,13 +1,6 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://Scripts/single_color.shader" type="Shader" id=1]
 [ext_resource path="res://Scripts/Player/Player.gd" type="Script" id=18]
-
-[sub_resource type="ShaderMaterial" id=1]
-shader = ExtResource( 1 )
-shader_param/color = Color( 0, 0, 0, 1 )
-shader_param/active = false
-shader_param/blend = 1.0
 
 [sub_resource type="Curve" id=2]
 _data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
@@ -19,7 +12,6 @@ extents = Vector2( 8, 8 )
 extents = Vector2( 8, 8 )
 
 [node name="Player" type="KinematicBody2D"]
-material = SubResource( 1 )
 script = ExtResource( 18 )
 
 [node name="trail" type="Line2D" parent="."]

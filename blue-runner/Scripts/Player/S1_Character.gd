@@ -365,6 +365,7 @@ func particle_summon(particle_position : Vector2, particle_rotation : float, typ
 		node_creator.color_start = particle_start
 		node_creator.color_end = particle_end
 		node_creator.color_star = particle_star
+		node_creator.z_index = player.z_index + 1
 		node_creator.start(type)
 		particle_disable = 6
 

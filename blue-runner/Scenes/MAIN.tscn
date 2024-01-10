@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=2]
+[gd_scene load_steps=42 format=2]
 
 [ext_resource path="res://Scripts/menu_shader.shader" type="Shader" id=1]
 [ext_resource path="res://Scripts/Menu/MAIN_group.gd" type="Script" id=2]
@@ -23,6 +23,66 @@
 [ext_resource path="res://Scripts/single_color.shader" type="Shader" id=23]
 
 [sub_resource type="GDScript" id=1]
+script/source = "extends Control
+
+var available_replays = []
+
+
+func _ready():
+	set_available_replays()
+	_on_replay_looped($Level/Player)
+	_on_replay_looped($Level/Player2)
+	$Level/Player2.timer = -5
+
+
+func set_available_replays():
+	available_replays = []
+	load_character_replays(\"S1\", 10)
+	if check_character_unlock(\"XT9\"):
+		load_character_replays(\"XT9\", 10)
+	if check_character_unlock(\"missing\"):
+		load_character_replays(\"missing\", 3)
+
+
+func load_character_replays(character : String, amount : int):
+	for i in range(amount):
+		available_replays.append(character + \"_\" + String(i))
+
+
+func check_character_unlock(character : String):
+	var unlock_type : int = Global.loaded_characters[\"res:/\"][character][0]
+	var parameter_1 = Global.loaded_characters[\"res:/\"][character][1]
+	var parameter_2 = Global.loaded_characters[\"res:/\"][character][2]
+	
+	if unlock_type == 5:
+		return Global.check_unlock_requirements(unlock_type, parameter_1, \"res:/\")
+	else:
+		return Global.check_unlock_requirements(unlock_type, parameter_1, parameter_2)
+	
+
+
+func _on_replay_looped(_player : Node2D = null):
+	if !$Level/anim.is_playing():
+		$Level/anim.play(\"shift\")
+	if available_replays.size() != 0:
+		load_replay(\"Main/\" + available_replays[Global.rand.randi_range(0, available_replays.size() - 1)], _player)
+
+
+func load_replay(replay_name : String = \"\", _player : Node2D = null):
+	if Global.load_replay(replay_name, true, false, true):
+		
+		var recording : Dictionary = Global.load_replay(replay_name, false, false, true)
+		
+		_player.character_name = recording[\"character\"]
+		_player.character_location = recording[\"character_location\"]
+		_player.load_current_character()
+		
+		_player.recording = recording.duplicate()
+		_player.replay_timer = recording[\"timer\"]
+		_player.timer = 0
+"
+
+[sub_resource type="GDScript" id=2]
 script/source = "extends Node2D
 
 func _ready():
@@ -44,14 +104,13 @@ func _ready():
 	queue_free()
 "
 
-[sub_resource type="ShaderMaterial" id=2]
+[sub_resource type="ShaderMaterial" id=3]
 shader = ExtResource( 23 )
 shader_param/color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 shader_param/active = true
 shader_param/blend = 1.0
 
-[sub_resource type="Animation" id=3]
-resource_name = "shift"
+[sub_resource type="Animation" id=4]
 length = 40.0
 step = 1.0
 tracks/0/type = "value"
@@ -67,7 +126,7 @@ tracks/0/keys = {
 "values": [ Vector2( 0, 192 ), Vector2( -6400, 192 ) ]
 }
 
-[sub_resource type="ShaderMaterial" id=4]
+[sub_resource type="ShaderMaterial" id=5]
 shader = ExtResource( 1 )
 shader_param/color = Plane( 0.25, 0.5, 0.75, 0.981 )
 shader_param/replacing = Plane( 1, 1, 1, 1 )
@@ -77,24 +136,24 @@ shader_param/secondary_replacing = Plane( 1, 1, 1, 1 )
 shader_param/offset_enabled = true
 shader_param/offset = 0.0
 shader_param/only_replaced = false
-
-[sub_resource type="Animation" id=5]
-length = 0.2
-step = 0.05
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:time")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ 0.0, 1.0 ]
-}
 
 [sub_resource type="Animation" id=6]
+length = 0.2
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[sub_resource type="Animation" id=7]
 length = 8.0
 loop = true
 tracks/0/type = "value"
@@ -110,7 +169,7 @@ tracks/0/keys = {
 "values": [ -1.0, 1.0 ]
 }
 
-[sub_resource type="ShaderMaterial" id=7]
+[sub_resource type="ShaderMaterial" id=8]
 shader = ExtResource( 1 )
 shader_param/color = Plane( 0.25, 0.5, 0.75, 0.981 )
 shader_param/replacing = Plane( 1, 1, 1, 1 )
@@ -120,51 +179,8 @@ shader_param/secondary_replacing = Plane( 1, 1, 1, 1 )
 shader_param/offset_enabled = true
 shader_param/offset = 0.0
 shader_param/only_replaced = false
-
-[sub_resource type="Animation" id=8]
-length = 0.2
-step = 0.05
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:time")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ 0.0, 1.0 ]
-}
 
 [sub_resource type="Animation" id=9]
-length = 8.0
-loop = true
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:pulse_time")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 8 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ -1.0, 1.0 ]
-}
-
-[sub_resource type="ShaderMaterial" id=10]
-shader = ExtResource( 1 )
-shader_param/color = Plane( 0.25, 0.5, 0.75, 0.981 )
-shader_param/replacing = Plane( 1, 1, 1, 1 )
-shader_param/enable_second_color = false
-shader_param/secondary_color = Plane( 1, 1, 1, 1 )
-shader_param/secondary_replacing = Plane( 1, 1, 1, 1 )
-shader_param/offset_enabled = true
-shader_param/offset = 0.0
-shader_param/only_replaced = false
-
-[sub_resource type="Animation" id=11]
 length = 0.2
 step = 0.05
 tracks/0/type = "value"
@@ -180,7 +196,7 @@ tracks/0/keys = {
 "values": [ 0.0, 1.0 ]
 }
 
-[sub_resource type="Animation" id=12]
+[sub_resource type="Animation" id=10]
 length = 8.0
 loop = true
 tracks/0/type = "value"
@@ -194,9 +210,52 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ -1.0, 1.0 ]
+}
+
+[sub_resource type="ShaderMaterial" id=11]
+shader = ExtResource( 1 )
+shader_param/color = Plane( 0.25, 0.5, 0.75, 0.981 )
+shader_param/replacing = Plane( 1, 1, 1, 1 )
+shader_param/enable_second_color = false
+shader_param/secondary_color = Plane( 1, 1, 1, 1 )
+shader_param/secondary_replacing = Plane( 1, 1, 1, 1 )
+shader_param/offset_enabled = true
+shader_param/offset = 0.0
+shader_param/only_replaced = false
+
+[sub_resource type="Animation" id=12]
+length = 0.2
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
 }
 
 [sub_resource type="Animation" id=13]
+length = 8.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:pulse_time")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ -1.0, 1.0 ]
+}
+
+[sub_resource type="Animation" id=14]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("top:position")
@@ -235,8 +294,7 @@ tracks/2/keys = {
 "values": [ Vector2( -1920, -160 ), Vector2( -640, -160 ) ]
 }
 
-[sub_resource type="Animation" id=19]
-resource_name = "enter_title"
+[sub_resource type="Animation" id=15]
 length = 0.6
 tracks/0/type = "value"
 tracks/0/path = NodePath("top:position")
@@ -263,7 +321,7 @@ tracks/1/keys = {
 "values": [ Vector2( -1920, -160 ), Vector2( -640, -160 ) ]
 }
 
-[sub_resource type="Animation" id=14]
+[sub_resource type="Animation" id=16]
 tracks/0/type = "value"
 tracks/0/path = NodePath("top:position")
 tracks/0/interp = 2
@@ -289,7 +347,7 @@ tracks/1/keys = {
 "values": [ Vector2( -1920, -160 ), Vector2( -640, -160 ) ]
 }
 
-[sub_resource type="Animation" id=15]
+[sub_resource type="Animation" id=17]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("top:position")
@@ -342,7 +400,7 @@ tracks/3/keys = {
 "values": [ Vector2( -640, -160 ), Vector2( -1920, -160 ) ]
 }
 
-[sub_resource type="Animation" id=16]
+[sub_resource type="Animation" id=18]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("top:position")
@@ -383,7 +441,7 @@ tracks/2/keys = {
 "values": [ Vector2( -640, -160 ), Vector2( -1920, -160 ) ]
 }
 
-[sub_resource type="Animation" id=17]
+[sub_resource type="Animation" id=19]
 length = 0.2
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:switch_time")
@@ -421,8 +479,20 @@ tracks/2/keys = {
 "update": 0,
 "values": [ Vector2( 0, 0 ), Vector2( 736, 0 ) ]
 }
+tracks/3/type = "value"
+tracks/3/path = NodePath("Corridor:rect_position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -640, -160 ), Vector2( -640, -160 ) ]
+}
 
-[sub_resource type="Animation" id=18]
+[sub_resource type="Animation" id=20]
 length = 0.2
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:switch_time")
@@ -460,6 +530,18 @@ tracks/2/keys = {
 "update": 0,
 "values": [ Vector2( 736, 0 ), Vector2( 0, 0 ) ]
 }
+tracks/3/type = "value"
+tracks/3/path = NodePath("Corridor:rect_position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -640, -160 ), Vector2( -640, -160 ) ]
+}
 
 [node name="MAIN" type="Node2D"]
 z_index = 10
@@ -476,6 +558,7 @@ margin_top = -160.0
 margin_right = -640.0
 margin_bottom = 160.0
 rect_clip_content = true
+script = SubResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -486,7 +569,7 @@ color = Color( 0.12549, 0.25098, 0.376471, 1 )
 polygon = PoolVector2Array( 0, -192, 7680, -192, 7680, 128, 0, 128 )
 
 [node name="LevelSetter" type="Node2D" parent="Corridor/Level"]
-script = SubResource( 1 )
+script = SubResource( 2 )
 
 [node name="Player" parent="Corridor/Level" instance=ExtResource( 18 )]
 position = Vector2( -128, 96 )
@@ -507,7 +590,7 @@ automatic_set_level_node = false
 silent = true
 
 [node name="objects" type="Node2D" parent="Corridor/Level"]
-material = SubResource( 2 )
+material = SubResource( 3 )
 
 [node name="Spike" parent="Corridor/Level/objects" instance=ExtResource( 20 )]
 use_parent_material = true
@@ -626,11 +709,11 @@ texture = ExtResource( 22 )
 
 [node name="anim" type="AnimationPlayer" parent="Corridor/Level"]
 autoplay = "shift"
-anims/shift = SubResource( 3 )
+anims/shift = SubResource( 4 )
 
 [node name="top" type="Node2D" parent="."]
-material = SubResource( 4 )
-position = Vector2( 736, 0 )
+material = SubResource( 5 )
+position = Vector2( 712, 0 )
 script = ExtResource( 2 )
 menu_colors = [ Color( 0.25098, 0.25098, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.74902, 0.74902, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.25098, 1 ) ]
 submenu = [ 1, 3, 5, 4, 6 ]
@@ -681,17 +764,18 @@ scale = Vector2( 1.125, 1.125 )
 texture = ExtResource( 13 )
 
 [node name="anim" type="AnimationPlayer" parent="top"]
-anims/move = SubResource( 5 )
+anims/move = SubResource( 6 )
 
 [node name="pulse" type="AnimationPlayer" parent="top"]
 autoplay = "pulse"
-anims/pulse = SubResource( 6 )
+anims/pulse = SubResource( 7 )
 
 [node name="sub" type="Node2D" parent="."]
+position = Vector2( 736, 0 )
 
 [node name="play" type="Node2D" parent="sub"]
 visible = false
-material = SubResource( 7 )
+material = SubResource( 8 )
 script = ExtResource( 2 )
 node_buttons = [ "button1", "button2", "button3", "button_exit" ]
 menu_colors = [ Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ) ]
@@ -737,15 +821,15 @@ scale = Vector2( 1.125, 1.125 )
 texture = ExtResource( 15 )
 
 [node name="anim" type="AnimationPlayer" parent="sub/play"]
-anims/move = SubResource( 8 )
+anims/move = SubResource( 9 )
 
 [node name="pulse" type="AnimationPlayer" parent="sub/play"]
 autoplay = "pulse"
-anims/pulse = SubResource( 9 )
+anims/pulse = SubResource( 10 )
 
 [node name="extras" type="Node2D" parent="sub"]
 visible = false
-material = SubResource( 10 )
+material = SubResource( 11 )
 script = ExtResource( 2 )
 node_buttons = [ "button1", "button2", "button3", "button_exit" ]
 menu_colors = [ Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902, 0.501961, 1 ) ]
@@ -791,11 +875,11 @@ scale = Vector2( 1.125, 1.125 )
 texture = ExtResource( 15 )
 
 [node name="anim" type="AnimationPlayer" parent="sub/extras"]
-anims/move = SubResource( 11 )
+anims/move = SubResource( 12 )
 
 [node name="pulse" type="AnimationPlayer" parent="sub/extras"]
 autoplay = "pulse"
-anims/pulse = SubResource( 12 )
+anims/pulse = SubResource( 13 )
 
 [node name="Disclaimer" type="Label" parent="."]
 visible = false
@@ -811,10 +895,10 @@ __meta__ = {
 }
 
 [node name="mainAnim" type="AnimationPlayer" parent="."]
-anims/enter_sub = SubResource( 13 )
-anims/enter_title = SubResource( 19 )
-anims/enter_top = SubResource( 14 )
-anims/exit_sub = SubResource( 15 )
-anims/exit_top = SubResource( 16 )
-anims/move_back = SubResource( 17 )
-anims/move_next = SubResource( 18 )
+anims/enter_sub = SubResource( 14 )
+anims/enter_title = SubResource( 15 )
+anims/enter_top = SubResource( 16 )
+anims/exit_sub = SubResource( 17 )
+anims/exit_top = SubResource( 18 )
+anims/move_back = SubResource( 19 )
+anims/move_next = SubResource( 20 )

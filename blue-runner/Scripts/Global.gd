@@ -594,6 +594,7 @@ func change_scene_level(file : String, return_only : bool = false):
 	
 #	print(current_scene.name)
 #	print(current_scene.get_script())
+	
 	if current_scene.get_script() == null:
 		compatibility_mode = true
 		current_scene.set_script(load("res://Scripts/Level_Control.gd"))
@@ -602,10 +603,11 @@ func change_scene_level(file : String, return_only : bool = false):
 		# warning-ignore:return_value_discarded
 		packed_scene.pack(current_scene)
 	
-	# warning-ignore:return_value_discarded
-	get_tree().change_scene_to(packed_scene)
 	
 	current_scene.free()
+	
+	# warning-ignore:return_value_discarded
+	get_tree().change_scene_to(packed_scene)
 	
 	return OK
 
@@ -1103,7 +1105,8 @@ func save_replay(new_name : String, recording : Dictionary, level : bool = true)
 
 func load_replay(new_name, existance_check : bool = false, level : bool = true, built_in : bool = false):
 	var replay_name : String = new_name
-	if level: replay_name = replay_filename(new_name, false)
+	if level:
+		replay_name = replay_filename(new_name, false)
 	
 	if built_in:
 		replay_name = "res://Replays/" + replay_name
@@ -1130,7 +1133,7 @@ func load_replay(new_name, existance_check : bool = false, level : bool = true, 
 			temp = parsedData
 		loadfile.close()
 		
-		#print("load: ", temp)
+#		print("load: ", temp)
 		
 		if !temp.has("character"):
 			temp["character"] = "S1"
@@ -1164,19 +1167,22 @@ func replay_filename(new_name : String, create_dir : bool):
 				folder_name = ""
 			replay_name = "res/" + folder_name + replay_name
 			# warning-ignore:return_value_discarded
-			if create_dir: directory.make_dir_recursive("user://SRReplays/res/" + folder_name)
+			if create_dir:
+				directory.make_dir_recursive("user://SRReplays/res/" + folder_name)
 		"user:":
 			if folder_path == "user://SRLevels":
 				folder_name = ""
 			replay_name = "user/" + folder_name + replay_name
 			# warning-ignore:return_value_discarded
-			if create_dir: directory.make_dir_recursive("user://SRReplays/user/" + folder_name)
+			if create_dir:
+				directory.make_dir_recursive("user://SRReplays/user/" + folder_name)
 		"Mods":
 			folder_path = folder_path.replace("/Scenes/", "/")
 			folder_path = folder_path.substr(folder_path.find("/") + 1, folder_path.length() - folder_path.find("/")) + "/"
 			replay_name = "mods/" + folder_path + replay_name
 			# warning-ignore:return_value_discarded
-			if create_dir: directory.make_dir_recursive("user://SRReplays/mods/" + folder_path)
+			if create_dir:
+				directory.make_dir_recursive("user://SRReplays/mods/" + folder_path)
 	
 	return replay_name
 

@@ -61,6 +61,9 @@ var trail_converted : PoolVector2Array = []
 
 
 func _ready():
+#	print("Player")
+	
+	# I don't like this for loop. It is not bad coding however, it is bad game design.
 	for i in range(8):
 #		print(Global.keybind_names[i].trim_prefix("*"))
 #		print(Input.is_action_pressed(Global.keybind_names[i].trim_prefix("*")))
@@ -69,6 +72,9 @@ func _ready():
 	
 	visible = true
 	Global.current_level = get_parent().name
+	
+	material = ShaderMaterial.new()
+	material.shader = preload("res://Scripts/single_color.shader")
 	
 	#recording.clear()
 	
@@ -117,19 +123,7 @@ func _ready():
 			character_name = Global.current_character
 			character_location = Global.current_character_location
 	
-	var char_load : PackedScene = load(character_location + "/Objects/Player/" + character_name + "_Character.tscn")
-	if char_load == null: char_load = preload("res://Objects/Player/missing_Character.tscn")
-	var char_node = char_load.instance()
-	add_child(char_node)
-	character = char_node
-	
-	if replay:
-		play_loaded_recording(0)
-		if character.get_node("Anim").has_animation("_RESET"):
-			character.get_node("Anim").current_animation = "_RESET"
-	else:
-		if character.get_node("Anim").has_animation("Enter"):
-			character.get_node("Anim").current_animation = "Enter"
+	load_current_character()
 	
 	if automatic_set_level_node:
 		level = get_tree().current_scene
@@ -144,10 +138,32 @@ func _ready():
 	if !ghost:
 		level.player = self
 	
-	if !ghost:
-		shader_color()
 	
 #	print("R " + name)
+
+
+func load_current_character(change_unicolor : bool = true):
+	if character != null:
+		character.queue_free()
+	
+	var char_load : PackedScene = load(character_location + "/Objects/Player/" + character_name + "_Character.tscn")
+	if char_load == null:
+		char_load = preload("res://Objects/Player/missing_Character.tscn")
+	var char_node = char_load.instance()
+	add_child(char_node)
+	character = char_node
+	
+	if replay:
+		play_loaded_recording(0)
+		if character.get_node("Anim").has_animation("_RESET"):
+			character.get_node("Anim").current_animation = "_RESET"
+	else:
+		if character.get_node("Anim").has_animation("Enter"):
+			character.get_node("Anim").current_animation = "Enter"
+	
+	if !ghost and change_unicolor:
+		shader_color()
+
 
 func shader_color():
 	material.set_shader_param("color", character.unicolor_color)
@@ -201,7 +217,7 @@ func _physics_process(delta):
 				material.set_shader_param("blend", blend)
 	# - - - REPLAY STATE - - -
 	elif replay:
-		if Input.is_action_just_pressed("jump") and Global.replay_menu:
+		if Input.is_action_just_pressed("jump") and Global.replay_menu and not Global.race_mode:
 			increment_timer = !increment_timer
 			level.timers_active = increment_timer
 			var camera = level.get_node("Camera")
@@ -356,7 +372,7 @@ func play_sound(sound_name : String):
 		current_sound = sound_name
 
 func record():
-	recording[int(timer * 1000)] = [position.x, position.y, character.scale.x, character.scale.y, $Character/Anim.current_animation, current_sound]
+	recording[int(timer * 1000)] = [position.x, position.y, character.scale.x, character.scale.y, character.get_node("Anim").current_animation, current_sound]
 	current_sound = ""
 
 func add_recording_data():

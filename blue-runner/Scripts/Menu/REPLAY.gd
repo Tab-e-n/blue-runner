@@ -229,6 +229,16 @@ func play_replay_level():
 	#print(current_directory + replays[current_directory][next_replay])
 	Global.current_recording = Global.load_replay(current_directory + replays[current_directory][next_replay], false, false)
 	
+	if Global.current_recording.has("character"):
+		Global.current_character = Global.current_recording["character"]
+	else:
+		Global.current_character = "S1"
+	
+	if Global.current_recording.has("character_location"):
+		Global.current_character_location = Global.current_recording["character_location"]
+	else:
+		Global.current_character_location = "res:/"
+	
 	if Global.current_recording.has("level"): 
 		if current_mode == 1:
 			Global.replay = true
@@ -326,7 +336,7 @@ func rack_visuals():
 
 func set_cassette_labes(reset : bool = false):
 	if replays[current_directory].size() > 0:
-		var recording : Dictionary = Global.load_replay(current_directory + replays[current_directory][current_replay])
+		var recording : Dictionary = Global.load_replay(current_directory + replays[current_directory][current_replay], false, false)
 		#print(current_directory + replays[current_directory][current_replay])
 		$bottom/replay_name.set_text(replays[current_directory][current_replay])
 		if recording.has("timer"):
@@ -384,13 +394,14 @@ func load_replays():
 	var directories_to_visit = ["user://SRReplays/"]
 	while directories_to_visit.size() > 0:
 		dir.open(directories_to_visit[0])
-		replays[directories_to_visit[0].trim_prefix("user://SRReplays/")] = []
-		directories.append(directories_to_visit[0].trim_prefix("user://SRReplays/"))
+		var current_dir_name = directories_to_visit[0].trim_prefix("user://SRReplays/")
+		replays[current_dir_name] = []
 		
 		dir.list_dir_begin(true, false)
 		var _last_replay : String = "*"
 		
 		_last_replay = dir.get_next()
+		var dir_empty : bool = true
 		while _last_replay != "":
 			if dir.current_is_dir():
 				var dont_skip : bool = true
@@ -409,8 +420,11 @@ func load_replays():
 				if dont_skip:
 					directories_to_visit.append(directory)
 			else:
-				replays[directories_to_visit[0].trim_prefix("user://SRReplays/")].append(_last_replay)
+				replays[current_dir_name].append(_last_replay)
 			_last_replay = dir.get_next()
+		
+		if replays[current_dir_name] or current_dir_name == "":
+			directories.append(current_dir_name)
 		
 		directories_to_visit.pop_front()
 	

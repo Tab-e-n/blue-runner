@@ -9,8 +9,6 @@ export var switch_time : float = 1
 
 onready var submenus : Array = [$top, $sub/play, $sub/extras]
 
-var available_replays = []
-
 var unicolor_active : bool = true
 var timers_active : bool = false
 var player : Node2D
@@ -21,8 +19,7 @@ func _init():
 	dat = Global.load_dat_file(Global.current_level_location + Global.current_level)
 
 func _ready():
-	# this temporary
-	start_replays()
+	pass
 
 func menu_ready(comming_from : String = ""):
 	$top.position.x = 736
@@ -186,29 +183,6 @@ func accept(group : Node2D):
 		_:
 			print("undefined")
 
-func start_replays():
-	set_available_replays()
-	_on_replay_looped($Corridor/Level/Player)
-	_on_replay_looped($Corridor/Level/Player2)
-	$Corridor/Level/Player2.timer = -5
-
-func set_available_replays():
-	available_replays = []
-	for i in range(10):
-		available_replays.append("S1_" + String(i))
 
 func _on_replay_looped(_player : Node2D = null):
-	if !$Corridor/Level/anim.is_playing():
-		$Corridor/Level/anim.play("shift")
-	if available_replays.size() != 0:
-		load_replay("Main/" + available_replays[Global.rand.randi_range(0, available_replays.size() - 1)], _player)
-
-func load_replay(replay_name : String = "", _player : Node2D = null):
-	if Global.load_replay(replay_name, true, false, true):
-		
-		# Switching to new character stuff here
-		
-		var recording : Dictionary = Global.load_replay(replay_name, false, false, true)
-		_player.recording = recording.duplicate()
-		_player.replay_timer = recording["timer"]
-		_player.timer = 0
+	$Corridor._on_replay_looped(_player)
