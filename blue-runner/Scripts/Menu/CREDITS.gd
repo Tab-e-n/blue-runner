@@ -63,7 +63,8 @@ func _ready():
 	
 	
 	Thanks for playing!
-	:D"""
+	:D
+	"""
 	
 	line_lenght = 32 * credits.count("\n")
 #	print(line_lenght)
@@ -73,6 +74,9 @@ func _ready():
 
 func _physics_process(_delta):
 	$credits.rect_position.y -= 0.5
+	if Input.is_action_pressed("menu_down"):
+		$credits.rect_position.y -= 1.5
+	
 	if $credits.rect_position.y < -384 - line_lenght:
 		$credits.rect_position.y = 384
 
