@@ -77,14 +77,20 @@ func code_interpretor():
 		"GRANDDAD":
 			$did_it.text = "GRANDDAD????????"
 		"NULL":
-			if !Global.check_unlock("*character_missing"):
-				$did_it.text = "YOU GOT SOMETHING"
-				Global.unlock("*character_missing")
-			else:
-				$did_it.text = "ALREADY GOT THIS"
+			show_unlock("*character_missing")
 		_:
 			$Anim.stop()
 			$Anim.play("Fail")
+
+
+func show_unlock(unlock : String, first_text : String = "YOU GOT SOMETHING", after_text : String = "ALREADY GOT THIS"):
+	if !Global.check_unlock(unlock):
+		$did_it.text = first_text
+		Global.unlock(unlock)
+	else:
+		$did_it.text = after_text
+	
+
 
 func keyboard_anim():
 	for i in range($keyboard.get_child_count() - 1):

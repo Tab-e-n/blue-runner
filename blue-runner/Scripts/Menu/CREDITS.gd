@@ -46,7 +46,7 @@ func _ready():
 	- Playtesters -
 	Lumir
 	honestAndrew
-	Lena
+	Lena-hal
 	Sunny
 	My Dad
 	(More to be added since i def forgot some)

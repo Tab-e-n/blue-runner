@@ -833,6 +833,7 @@ func console_arguments():
 	if arguments.has("level"):
 		call_deferred("change_level", "*" + arguments["level"])
 	if arguments.has("playtest"):
+		print(arguments["playtest"])
 		call_deferred("change_level", "*" + arguments["playtest"])
 		playtesting = true
 	if arguments.has("save_interaction"):
