@@ -34,7 +34,7 @@ export var fade_out_end : int = 12
 func _ready():
 	$Fade.visible = true
 	$border.visible = true
-	$border_thing.visible = false
+	$finish.visible = false
 	$complete_dark.visible = true
 	if $"/root/Global".options["*timer_on"] == 1:
 		visible_timer = true
@@ -57,8 +57,8 @@ func _ready():
 	$info/text.visible = speedometer_active or visible_timer
 	$info/speed.visible = speedometer_active
 	
-	$border_thing/continue.text = $"/root/Global".key_names(4)
-	$border_thing/reset.text = $"/root/Global".key_names(6)
+	$finish/continue.text = $"/root/Global".key_names(4)
+	$finish/reset.text = $"/root/Global".key_names(6)
 	
 	if Global.compatibility_mode:
 		compatibility_mode = true
@@ -69,11 +69,11 @@ func _ready():
 		$border.polygon[2].x = 512
 		$border.polygon[7].x = -512
 		
-		$border_thing/camera_input_continue.position.x = 480
-		$border_thing/camera_input_reset.position.x = -480
-		$border_thing/continue.rect_size.x = 512
-		$border_thing/reset.rect_size.x = 512
-		$border_thing/reset.rect_position.x = -416
+		$finish/camera_input_continue.position.x = 480
+		$finish/camera_input_reset.position.x = -480
+		$finish/continue.rect_size.x = 512
+		$finish/reset.rect_size.x = 512
+		$finish/reset.rect_position.x = -416
 
 func _physics_process(_delta):
 	if has_node("complete_dark"):
@@ -123,10 +123,10 @@ func _physics_process(_delta):
 		zoom.x = 1 + (end_zoom_begin - 1) / end_timer_const * end_timer
 		zoom.y = 1 + (end_zoom_begin - 1) / end_timer_const * end_timer
 		
-		$border_thing.scale.x = zoom.x + (zoom.x * 0.5) / end_timer_const * end_timer
-		$border_thing.scale.y = zoom.y + (zoom.y * 0.5) / end_timer_const * end_timer
+		$finish.scale.x = zoom.x + (zoom.x * 0.5) / end_timer_const * end_timer
+		$finish.scale.y = zoom.y + (zoom.y * 0.5) / end_timer_const * end_timer
 		
-#		$camera_inputs.scale = $border_thing.scale
+#		$camera_inputs.scale = $finish.scale
 		
 #		$camera_inputs.position.y = 80.0 / end_timer_const * end_timer
 		
@@ -145,7 +145,7 @@ func _physics_process(_delta):
 			if Input.is_action_just_pressed("special") and replay_saved:
 				Global.save_replay_with_date(get_parent().name, get_parent().get_node("Player").recording.duplicate())
 				
-				$border_thing/replay.text = "REPLAY SAVED"
+				$finish/replay.text = "REPLAY SAVED"
 				replay_saved = false
 				
 	if scrolling_objects != []:
@@ -162,21 +162,21 @@ func end_zoom_in(target : Node2D, tele, timer : float, par : float):
 	tele_destination = tele
 	end_zoom_begin = zoom.x
 	end_pos_begin = position
-	$border_thing.visible = true
+	$finish.visible = true
 #	$camera_inputs.visible = true
-	$border_thing.scale = zoom * 4
+	$finish.scale = zoom * 4
 #	$camera_inputs.scale = zoom * 4
 	
-	$border_thing/replay.text = "SAVE REPLAY - " + Global.key_names(5)
+	$finish/replay.text = "SAVE REPLAY - " + Global.key_names(5)
 	
-	$border_thing/timer.text = Global.convert_float_to_time(timer)
+	$finish/timer.text = Global.convert_float_to_time(timer)
 	if par == 0:
-		$border_thing/par.text = "no par time"
+		$finish/par.text = "no par time"
 	else:
-		$border_thing/par.text = "par " + Global.convert_float_to_time(par)
+		$finish/par.text = "par " + Global.convert_float_to_time(par)
 	
 	$anim.play("end_zoom_in")
-	$border_thing/anim.play("shift")
+	$finish/anim.play("shift")
 
 func start_fade_out(tele : String = "*MENU"):
 	fade_out = true

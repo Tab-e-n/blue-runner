@@ -723,9 +723,15 @@ position = Vector2( -8, 0 )
 color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 polygon = PoolVector2Array( 64, 384, 320, -384, 768, -384, 768, 384 )
 
-[node name="pillar" type="Sprite" parent="top"]
+[node name="pillar_bottom" type="Sprite" parent="top"]
 use_parent_material = true
-position = Vector2( 200, 0 )
+position = Vector2( 88, 288 )
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 10 )
+
+[node name="pillar_top" type="Sprite" parent="top"]
+use_parent_material = true
+position = Vector2( 280, -288 )
 scale = Vector2( 1.5, 1.5 )
 texture = ExtResource( 10 )
 
@@ -773,6 +779,11 @@ anims/pulse = SubResource( 7 )
 [node name="sub" type="Node2D" parent="."]
 position = Vector2( 736, 0 )
 
+[node name="back" type="Polygon2D" parent="sub"]
+position = Vector2( -8, 0 )
+color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
+polygon = PoolVector2Array( 64, 384, 320, -384, 768, -384, 768, 384 )
+
 [node name="play" type="Node2D" parent="sub"]
 visible = false
 material = SubResource( 8 )
@@ -782,14 +793,15 @@ menu_colors = [ Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961
 buttons_amount = 3
 submenu = [ 2, 7, 9, 8 ]
 
-[node name="back" type="Polygon2D" parent="sub/play"]
-position = Vector2( -8, 0 )
-color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
-polygon = PoolVector2Array( 64, 384, 320, -384, 768, -384, 768, 384 )
-
-[node name="pillar" type="Sprite" parent="sub/play"]
+[node name="pillar_bottom" type="Sprite" parent="sub/play"]
 use_parent_material = true
-position = Vector2( 200, 0 )
+position = Vector2( 88.0001, 288 )
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 10 )
+
+[node name="pillar_top" type="Sprite" parent="sub/play"]
+use_parent_material = true
+position = Vector2( 280, -288 )
 scale = Vector2( 1.5, 1.5 )
 texture = ExtResource( 10 )
 
@@ -836,14 +848,15 @@ menu_colors = [ Color( 0.25098, 0.74902, 0.501961, 1 ), Color( 0.25098, 0.74902,
 buttons_amount = 3
 submenu = [ 2, 10, 11, 12 ]
 
-[node name="back" type="Polygon2D" parent="sub/extras"]
-position = Vector2( -8, 0 )
-color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
-polygon = PoolVector2Array( 64, 384, 320, -384, 768, -384, 768, 384 )
-
-[node name="pillar" type="Sprite" parent="sub/extras"]
+[node name="pillar_bottom" type="Sprite" parent="sub/extras"]
 use_parent_material = true
-position = Vector2( 200, 0 )
+position = Vector2( 88.0001, 288 )
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 10 )
+
+[node name="pillar_top" type="Sprite" parent="sub/extras"]
+use_parent_material = true
+position = Vector2( 280, -288 )
 scale = Vector2( 1.5, 1.5 )
 texture = ExtResource( 10 )
 

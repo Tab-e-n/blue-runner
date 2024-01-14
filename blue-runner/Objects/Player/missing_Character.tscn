@@ -7367,8 +7367,8 @@ particle = ExtResource( 1 )
 particle_start = Color( 0.572549, 0.192157, 0.333333, 1 )
 particle_end = Color( 0.266667, 0.0980392, 0.109804, 1 )
 particle_star = Color( 0.572549, 0.192157, 0.333333, 1 )
-trail_color = Color( 0.572549, 0.192157, 0.333333, 1 )
-unicolor_color = Color( 0.572549, 0.192157, 0.333333, 1 )
+trail_color = Color( 0.364706, 0.121569, 0.192157, 1 )
+UNICOLOR_COLOR = Color( 0.364706, 0.121569, 0.192157, 1 )
 
 [node name="Anim" type="AnimationPlayer" parent="."]
 playback_process_mode = 0

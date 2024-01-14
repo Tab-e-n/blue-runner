@@ -2,6 +2,8 @@ extends KinematicBody2D
 
 onready var level : Node2D
 onready var character : Node2D
+onready var col_1 : Node2D = $col_1
+onready var col_2 : Node2D = $col_2
 
 export var character_name : String = ""
 export var character_location : String = "res:/"
@@ -43,8 +45,9 @@ var punted : bool = false
 var launched : bool = false
 var speeding : bool = false
 
-const JUMP_BUFFER_FRAMES : int = 4
+const INPUT_BUFFER_FRAMES : int = 4
 var jump_buffer : int = 0
+var special_buffer : int = 0
 
 const GROUND_BUFFER_FRAMES : int = 4
 var ground_buffer : int = 0
@@ -160,13 +163,16 @@ func load_current_character(change_unicolor : bool = true):
 	else:
 		if character.get_node("Anim").has_animation("Enter"):
 			character.get_node("Anim").current_animation = "Enter"
+		else:
+			enter_anim_end()
 	
 	if !ghost and change_unicolor:
 		shader_color()
 
 
 func shader_color():
-	material.set_shader_param("color", character.unicolor_color)
+	material.set_shader_param("color", character.UNICOLOR_COLOR)
+
 
 func _input(event):
 	if !replay:
@@ -278,7 +284,8 @@ func move_player_character():
 	break_just_happened = false
 	on_moving_ground = false
 	set_deferred("launched", false)
-	for i in get_slide_count(): collision_default_effects(get_slide_collision(i).collider.collision_layer, i)
+	for i in get_slide_count():
+		collision_default_effects(get_slide_collision(i).collider.collision_layer, i)
 	if on_moving_ground != _last_on_moving_ground and on_moving_ground == false:
 		momentum += extra_momentum
 		extra_momentum = Vector2(0, 0)
@@ -370,6 +377,13 @@ func play_sound(sound_name : String):
 	if sound_name != "" and !silent:
 		Audio.play_sound(sound_name)
 		current_sound = sound_name
+
+
+func enter_anim_end():
+	if !replay:
+		start = false
+		deny_input = false
+
 
 func record():
 	recording[int(timer * 1000)] = [position.x, position.y, character.scale.x, character.scale.y, character.get_node("Anim").current_animation, current_sound]

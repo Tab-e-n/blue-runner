@@ -354,7 +354,7 @@ func find_current_character():
 func update_character_visuals():
 	# warning-ignore:integer_division
 	# warning-ignore:integer_division
-	$character_select/characters.position = Vector2(160 - (selected_character / 4) * 32, (selected_character / 4) * 128)
+	$character_select/characters.position = Vector2(160 + (selected_character / 4) * 32, -(selected_character / 4) * 128)
 	$character_select/characters/cursor.position = get_node("character_select/characters/" + String(selected_character)).position
 	load_render(selected_character)
 	

@@ -7017,7 +7017,7 @@ script = ExtResource( 2 )
 particle = ExtResource( 1 )
 particle_star = Color( 0.0509804, 0.901961, 0.94902, 1 )
 trail_color = Color( 0.117647, 0.341176, 0.611765, 1 )
-unicolor_color = Color( 0.0509804, 0.901961, 0.94902, 1 )
+UNICOLOR_COLOR = Color( 0.0509804, 0.901961, 0.94902, 1 )
 
 [node name="Anim" type="AnimationPlayer" parent="."]
 playback_process_mode = 0
