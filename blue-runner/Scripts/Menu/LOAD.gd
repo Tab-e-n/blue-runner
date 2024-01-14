@@ -1,6 +1,6 @@
 extends Node2D
 
-var text = [
+const KEYBIND_TEXT = [
 	"\nMENU LEFT - ",
 	"\nMENU RIGHT - ",
 	"\nMENU UP - ",
@@ -9,7 +9,7 @@ var text = [
 	"\nDECLINE - ",
 ]
 
-var lore_text = [
+const LORE_TEXT = [
 	"starting machine...\n",
 	"MOTRBIOS (C) 2022 Luke Adams\n",
 	"BIOS date 29/2/00 14:10:32\n",
@@ -21,7 +21,7 @@ var lore_text = [
 	"AUDIO CALIBRATION",
 ]
 
-var tut_text = [
+const TUTORIAL_TEXT = [
 	"",
 	"\n\n\n\n\n\n\n\n\nStarting Motors",
 	".",
@@ -57,10 +57,12 @@ var held_for_amount : int = 0
 
 var current_audio : int = 0
 
+
 func _ready():
 	if Global.options["*first_time_load"]:
 		current_section = SECTION_FIRST_TIME
-		$console/lines.text = lore_text[0]
+		$console/lines.text = LORE_TEXT[0]
+
 
 func _input(event):
 	if event is InputEventKey and event.pressed:
@@ -77,6 +79,7 @@ func _input(event):
 	if event is InputEventJoypadMotion:
 		current_line_delay = 15
 
+
 func _physics_process(_delta):
 	if delay_timer_is_going:
 		delay_timer += 1
@@ -87,10 +90,10 @@ func _physics_process(_delta):
 			$console/lines.text += "."
 		if current_section == SECTION_REBIND and text_current_line < 6:
 			$console/lines.text += String(6 - text_current_line) + "..."
-		if current_section == SECTION_FIRST_TIME and text_current_line < lore_text.size():
-			$console/lines.text += lore_text[text_current_line]
-		if current_section == SECTION_GOING_TO_TUTORIAL and text_current_line < tut_text.size():
-			$console/lines.text += tut_text[text_current_line]
+		if current_section == SECTION_FIRST_TIME and text_current_line < LORE_TEXT.size():
+			$console/lines.text += LORE_TEXT[text_current_line]
+		if current_section == SECTION_GOING_TO_TUTORIAL and text_current_line < TUTORIAL_TEXT.size():
+			$console/lines.text += TUTORIAL_TEXT[text_current_line]
 	
 	if current_section == SECTION_LOADING and text_current_line == 4:
 		if user_wants_to_rebind:
@@ -103,14 +106,14 @@ func _physics_process(_delta):
 			$anim.play("exit")
 	if current_section == SECTION_REBIND and text_current_line == 6:
 		$anim.play("exit")
-	if current_section == SECTION_FIRST_TIME and text_current_line == lore_text.size():
+	if current_section == SECTION_FIRST_TIME and text_current_line == LORE_TEXT.size():
 		$audio_text.visible = true
 		$sfx.visible = true
 #		$music.visible = true
 #		$cursor.visible = true
 		is_changing_audio = true
 #		audio_cursor()
-	if current_section == SECTION_GOING_TO_TUTORIAL and text_current_line == tut_text.size():
+	if current_section == SECTION_GOING_TO_TUTORIAL and text_current_line == TUTORIAL_TEXT.size():
 		# *TUTORIAL*
 		Global.doing_tutorial = true
 		Global.change_level("*res://Scenes/Tutorial.tscn")
@@ -168,17 +171,20 @@ func _physics_process(_delta):
 		
 		move = false
 
+
 func audio_cursor():
 	$cursor.position = Vector2(392, 224 + current_audio * 32)
+
 
 func change_scene_to_menu():
 #	get_tree().reload_current_scene()
 	Global.change_level("*MENU")
 
+
 func new_keybind():
 	current_key += 1
 	if current_key <= 13:
-		$console/lines.text += text[current_key - 8]
+		$console/lines.text += KEYBIND_TEXT[current_key - 8]
 		avaiting_keybind_press = true
 	else:
 		$console/lines.text += "\n\nOther keybinds can be changed in the options.\n\nGoing to menu in..."

@@ -122,6 +122,7 @@ script = ExtResource( 1 )
 anims/end_zoom_in = SubResource( 1 )
 
 [node name="finish" type="Node2D" parent="."]
+visible = false
 material = SubResource( 2 )
 z_index = 100
 

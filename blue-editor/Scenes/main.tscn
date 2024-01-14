@@ -1,4 +1,4 @@
-[gd_scene load_steps=67 format=2]
+[gd_scene load_steps=68 format=2]
 
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=1]
 [ext_resource path="res://Visual/Editor/editor_paintbrush.png" type="Texture" id=2]
@@ -35,6 +35,7 @@
 [ext_resource path="res://Visual/Editor/editor_missing.png" type="Texture" id=33]
 [ext_resource path="res://Visual/Editor/editor_cross_small_enabled.png" type="Texture" id=34]
 [ext_resource path="res://Visual/Editor/editor_cross_small.png" type="Texture" id=35]
+[ext_resource path="res://Visual/Editor/editor_empty.png" type="Texture" id=36]
 [ext_resource path="res://Visual/Editor/editor_exit_enabled.png" type="Texture" id=48]
 [ext_resource path="res://Visual/Editor/editor_exit.png" type="Texture" id=49]
 [ext_resource path="res://Text/Lacrimae_Small_Spaced.tres" type="DynamicFont" id=51]
@@ -1828,17 +1829,19 @@ func place_mode_toggled(button_pressed, mode, scripted : bool = false):
 		if scripted: $GUI/Place/Panel/cog.pressed = true
 
 func place_tab_move(direction : int = 0, tab : int = -1):
-	place_current_tab += direction
-	if place_current_tab < PLACE_TILES:
-		place_current_tab = PLACE_DECOR
-	if place_current_tab > PLACE_DECOR:
-		place_current_tab = PLACE_TILES
+	if tab != -1:
+		place_current_tab = tab
+	else:
+		place_current_tab += direction
+		if place_current_tab < PLACE_TILES:
+			place_current_tab = PLACE_DECOR
+		if place_current_tab > PLACE_DECOR:
+			place_current_tab = PLACE_TILES
 	
-	if tab != -1: place_current_tab = tab
 	
 	match(place_current_tab):
 		PLACE_TILES:
-			$GUI/Place/Panel/tab_text.text = \"Tiles\"
+			$GUI/Place/Panel/tab_text.select(0)
 			place_tiles.visible = true
 			$GUI/Place/Panel/tab_decor.visible = false
 			$GUI/Place/Panel/tab_objects.visible = false
@@ -1861,7 +1864,7 @@ func place_tab_move(direction : int = 0, tab : int = -1):
 			change_filepath_text(\"tile \" + String(place_selected_tile))
 			place_update_tiles(tilesets.get_item_text(tilesets.selected))
 		PLACE_OBJECTS:
-			$GUI/Place/Panel/tab_text.text = \"Objects\"
+			$GUI/Place/Panel/tab_text.select(1)
 			place_tiles.visible = false
 			$GUI/Place/Panel/tab_decor.visible = false
 			$GUI/Place/Panel/tab_objects.visible = true
@@ -1899,7 +1902,7 @@ func place_tab_move(direction : int = 0, tab : int = -1):
 				get_node(\"GUI/Items/Panel/buttons/\" + String(i)).focus_neighbour_top = NodePath(\"/root/main/GUI/Items/Panel/objects_directory\")
 			$\"GUI/Items/Panel/buttons/0\".focus_previous = NodePath(\"/root/main/GUI/Items/Panel/objects_directory\")
 		PLACE_DECOR:
-			$GUI/Place/Panel/tab_text.text = \"Decor\"
+			$GUI/Place/Panel/tab_text.select(2)
 			place_tiles.visible = false
 			$GUI/Place/Panel/tab_decor.visible = true
 			$GUI/Place/Panel/tab_objects.visible = false
@@ -1945,6 +1948,13 @@ func place_tab_move(direction : int = 0, tab : int = -1):
 	else:
 		$GUI/Edit_Tiles.focus_toggle(false)
 		$GUI/Edit_Items.focus_toggle(true)
+
+
+
+func place_tab_selected(index):
+	if place_current_tab != index:
+		place_tab_move(0, index)
+
 
 func place_item_selected(index):
 	match(place_current_tab):
@@ -2310,6 +2320,7 @@ func hint_object_change(edit_props : Dictionary):
 			$GUI/Hint/hint_obj/description.text = edit_props[\"description\"]
 	else:
 		$GUI/Hint/hint_obj/description.text = missing_text
+
 
 func object_hint_toggled(button_pressed):
 	pause_level_input = button_pressed
@@ -3161,11 +3172,20 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="tab_text" parent="GUI/Place/Panel" instance=ExtResource( 10 )]
-margin_left = 48.0
+[node name="tab_text" type="OptionButton" parent="GUI/Place/Panel"]
+margin_left = 37.0
 margin_top = 24.0
-margin_bottom = -56.0
-text = "Tiles"
+margin_right = 171.0
+margin_bottom = 56.0
+custom_icons/arrow = ExtResource( 36 )
+custom_colors/font_color = Color( 0.454902, 0.54902, 0.662745, 1 )
+text = "Objects"
+flat = true
+items = [ "Tiles", null, false, 0, null, "Objects", null, false, 1, null, "Decor", null, false, 2, null ]
+selected = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="tab_left" type="TextureButton" parent="GUI/Place/Panel"]
 margin_left = 8.0
@@ -4372,15 +4392,16 @@ text = "???"
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_2" to="." method="layer_changed" binds= [ 2 ]]
+[connection signal="item_selected" from="GUI/Place/Panel/tab_text" to="." method="place_tab_selected"]
 [connection signal="pressed" from="GUI/Place/Panel/tab_left" to="." method="place_tab_move" binds= [ -1 ]]
 [connection signal="pressed" from="GUI/Place/Panel/tab_right" to="." method="place_tab_move" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Edit_Tiles/Panel/sublayer_0" to="." method="sublayer_changed" binds= [ 0 ]]

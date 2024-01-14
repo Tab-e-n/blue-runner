@@ -100,7 +100,7 @@ func _physics_process(delta):
 			
 			if player.move_and_collide(Vector2(0,1), false, true, true): # ground check
 				player.ground_buffer = player.GROUND_BUFFER_FRAMES
-				can_attack = false
+				can_attack = true
 			
 			if player.move_and_collide(Vector2(3,0), false, true, true): # check for walls, if there are walls near, enable wall jumping
 				air_break = 6
@@ -119,7 +119,7 @@ func _physics_process(delta):
 					momentum.y = -JUMP_STRENGH # Jump
 					attack_timer = 0
 					can_attack = true
-		#			sound_play(snd_Jump)
+					player.play_sound("GreenboxJump")
 					player.ground_buffer = 0
 					player.jump_buffer = 0
 					jumping = true
@@ -129,11 +129,11 @@ func _physics_process(delta):
 						momentum.x = MAX_SPEED * 0.75 * sign(wall_jump)
 						attack_timer = 0
 						can_attack = true
-		#				sound_play(snd_Jump)
+						player.play_sound("GreenboxJump")
 						player.ground_buffer = 0
 						player.jump_buffer = 0
 						jumping = true
-			if player.special_buffer > 0 and can_attack: # else if you can, attack.
+			if player.special_buffer > 0 and can_attack and player.ground_buffer == 0: # else if you can, attack.
 				player.special_buffer = 0
 				attack_timer = 4
 				can_attack = false
@@ -154,8 +154,7 @@ func _physics_process(delta):
 						$Anim.play("Attack_D")
 				else:
 					$Anim.play("Attack_N")
-						
-		#				sound_play(snd_Attack)
+				player.play_sound("GreenboxAttack")
 			# Collision Test vertical
 			if !player.is_jump_input_pressed() and jumping and !player.punted:
 				jumping = false
@@ -168,9 +167,10 @@ func _physics_process(delta):
 			if player.move_and_collide(Vector2(0,momentum.y), false, true, true):
 				momentum.y = 0
 			
-			# MOVING PLATFORMS : DO LATER
-			#momentum.x = round(player.momentum.x / 120)
-			#momentum.y = round(player.momentum.y / 120)
+			print(momentum)
+#			momentum.x = player.momentum.x / 60
+#			momentum.y = round(player.momentum.y / 60)
+			print(Vector2(player.momentum.x / 60, round(player.momentum.y / 60)))
 			
 			# Variables needing to be after something
 			air_break = 0
@@ -186,6 +186,7 @@ func _physics_process(delta):
 	elif player.dead:
 		if $Anim.current_animation != "Dead":
 			$Anim.play("Dead")
+			player.play_sound("GreenboxHit")
 			player.momentum.y -= BOUNCE_STRENGH / delta
 		player.momentum.y += 1 / delta
 		position += player.momentum * delta

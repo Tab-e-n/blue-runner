@@ -259,7 +259,7 @@ tracks/5/keys = {
 }
 
 [sub_resource type="Animation" id=7]
-length = 1.2
+length = 2.0
 tracks/0/type = "value"
 tracks/0/path = NodePath("bg:visible")
 tracks/0/interp = 1
@@ -267,7 +267,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 1.2 ),
+"times": PoolRealArray( 0, 2 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ true, false ]
@@ -279,7 +279,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.2, 1, 1.2 ),
+"times": PoolRealArray( 0, 0.3, 1.7, 2 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0.498039 ), Color( 1, 1, 1, 0.498039 ), Color( 1, 1, 1, 0 ) ]
@@ -291,7 +291,7 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.2, 1, 1.2 ),
+"times": PoolRealArray( 0, 0.3, 1.7, 2 ),
 "transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 0,
 "values": [ Vector2( 640, -64 ), Vector2( -640, -64 ), Vector2( -640, -64 ), Vector2( -1920, -64 ) ]
@@ -303,7 +303,7 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0, 1.2 ),
+"times": PoolRealArray( 0, 2 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ true, false ]
@@ -315,7 +315,7 @@ tracks/4/loop_wrap = true
 tracks/4/imported = false
 tracks/4/enabled = true
 tracks/4/keys = {
-"times": PoolRealArray( 1.2 ),
+"times": PoolRealArray( 2 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ "" ]
@@ -327,7 +327,7 @@ tracks/5/loop_wrap = true
 tracks/5/imported = false
 tracks/5/enabled = true
 tracks/5/keys = {
-"times": PoolRealArray( 1.2 ),
+"times": PoolRealArray( 2 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ "" ]
@@ -851,12 +851,12 @@ polygon = PoolVector2Array( -640, -384, 640, -384, 640, 384, -640, 384 )
 visible = false
 margin_left = -1920.0
 margin_top = -64.0
-margin_right = 640.0
-margin_bottom = 192.0
-rect_scale = Vector2( 0.5, 0.5 )
+margin_right = 1493.0
+margin_bottom = 277.0
+rect_scale = Vector2( 0.375, 0.375 )
 custom_styles/normal = ExtResource( 5 )
 custom_fonts/font = ExtResource( 4 )
-custom_colors/font_color = Color( 0.25098, 0.74902, 0.501961, 1 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
 text = "YOU GOT SOMETHING"
 align = 1
 valign = 1

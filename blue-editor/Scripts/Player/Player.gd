@@ -47,14 +47,16 @@ func _process(_delta):
 
 func new_texture():
 	var tcl = character_location
-	if tcl == "res:/": tcl = " "
+	if tcl == "res:/":
+		tcl = " "
 	get_child(0).name = tcl + character_name
-	if data.characters.has([character_name,character_location]):
+	if data.characters.has([character_name, character_location]):
 		get_child(0).texture = load(character_location + "/Visual/Objects/character_" + character_name + ".png")
 	elif character_name == "":
 		get_child(0).texture = load("res://Visual/Objects/Player.tscn.png")
 	else:
 		get_child(0).texture = load("res://Visual/Objects/character_missing.png")
+
 
 func edit_left_just_pressed(_mouse_pos, _cursor_pos, _level_scale):
 	if facing == "left":

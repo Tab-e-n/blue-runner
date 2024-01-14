@@ -66,12 +66,9 @@ var trail_converted : PoolVector2Array = []
 func _ready():
 #	print("Player")
 	
-	# I don't like this for loop. It is not bad coding however, it is bad game design.
 	for i in range(8):
-#		print(Global.keybind_names[i].trim_prefix("*"))
-#		print(Input.is_action_pressed(Global.keybind_names[i].trim_prefix("*")))
-		Input.action_release(Global.keybind_names[i].trim_prefix("*"))
-#		print(Input.is_action_pressed(Global.keybind_names[i].trim_prefix("*")))
+		if Input.is_action_pressed(Global.keybind_names[i].trim_prefix("*")):
+			start_timer = true
 	
 	visible = true
 	Global.current_level = get_parent().name
@@ -178,15 +175,16 @@ func _input(event):
 	if !replay:
 		if event is InputEventKey or event is InputEventJoypadButton:
 			if event.pressed:
-				if !start:
-					level.timers_active = true
-				else:
+				if start:
 					start_timer = true
+				else:
+					level.timers_active = true
 		if event is InputEventJoypadMotion:
-			if !start:
-				level.timers_active = true
-			else:
+			if start:
 				start_timer = true
+			else:
+				level.timers_active = true
+
 
 func _physics_process(delta):
 	if level.player.replay and ghost:
@@ -263,17 +261,20 @@ func _physics_process(delta):
 		if death_wait >= 20:
 			Global.change_level("")
 
+
 func is_jump_input_pressed():
 	var jump = Input.is_action_pressed("jump")
 	if Global.options["*up_key_jump"] and Input.is_action_pressed("up"):
 		jump = true
 	return jump
 
+
 func is_jump_input_just_pressed():
 	var jump = Input.is_action_just_pressed("jump")
 	if Global.options["*up_key_jump"] and Input.is_action_just_pressed("up"):
 		jump = true
 	return jump
+
 
 func move_player_character():
 	collision_mask = 1048575
@@ -290,6 +291,7 @@ func move_player_character():
 		momentum += extra_momentum
 		extra_momentum = Vector2(0, 0)
 	_last_on_moving_ground = on_moving_ground
+
 
 func collision_default_effects(collider_type : int, collider):
 	punted = false
@@ -335,6 +337,7 @@ func collision_default_effects(collider_type : int, collider):
 		if Layers[4]:
 			finish(collider)
 
+
 func punt(boost : Vector2, overwrite_momentum : bool):
 	#var sign_ = sign(boost.x)
 	#if boost.x * sign_ > momentum.x * sign_:
@@ -373,6 +376,7 @@ func punt(boost : Vector2, overwrite_momentum : bool):
 	if momentum.y < -1500:
 		launched = true
 
+
 func play_sound(sound_name : String):
 	if sound_name != "" and !silent:
 		Audio.play_sound(sound_name)
@@ -389,12 +393,14 @@ func record():
 	recording[int(timer * 1000)] = [position.x, position.y, character.scale.x, character.scale.y, character.get_node("Anim").current_animation, current_sound]
 	current_sound = ""
 
+
 func add_recording_data():
 	recording["timer"] = timer
 	recording["character"] = character_name
 	recording["character_location"] = character_location
 	recording["level"] = Global.current_level_location + get_parent().name
 	#Global.current_recording = recording.duplicate()
+
 
 func play_loaded_recording(time : int):
 	if recording.has(String(time)):
@@ -408,11 +414,13 @@ func play_loaded_recording(time : int):
 	else:
 		return false
 
+
 func finish(collision):
 	add_recording_data()
 	deny_input = true
 	end = true
 	get_slide_collision(collision).collider.teleport(float(int(timer * 100)) / 100, collectible, unlock, recording.duplicate())
+
 
 func setup_trail(trail_color : Color, amount_of_points : int = 40):
 	trail.visible = true
@@ -421,6 +429,7 @@ func setup_trail(trail_color : Color, amount_of_points : int = 40):
 	trail_converted.resize(amount_of_points)
 	for i in range(trail_points.size()):
 		trail_points[i] = position
+
 
 func animate_trail(visual_offset : Vector2 = Vector2(0, 0), position_offset : Vector2 = Vector2(0, 0)):
 	for i in range(trail_points.size() - 1):
@@ -436,6 +445,7 @@ func animate_trail(visual_offset : Vector2 = Vector2(0, 0), position_offset : Ve
 		trail_converted[trail_points.size() - 2 - i] = trail_converted[trail_points.size() - 1 - i] + temp
 	
 	trail.points = trail_converted
+
 
 func clear_trail_history():
 	for i in range(trail_points.size()):

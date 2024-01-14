@@ -176,7 +176,7 @@ func _physics_process(_delta):
 				if $Anim.current_animation != "Walk" or last_facing != player.facing:
 					"Walk"
 			else:
-				"Default" or "Standing"
+				"Standing"
 		
 		last_anim = $Anim.current_animation
 		last_facing = player.facing

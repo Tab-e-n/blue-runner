@@ -9,7 +9,7 @@
 [sub_resource type="CircleShape2D" id=1]
 radius = 64.0
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=2]
 resource_name = "Attack_D"
 length = 0.1
 tracks/0/type = "value"
@@ -61,7 +61,7 @@ tracks/3/keys = {
 "values": [ Vector2( 0, 4 ) ]
 }
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=3]
 resource_name = "Attack_DH"
 length = 0.1
 tracks/0/type = "value"
@@ -113,7 +113,7 @@ tracks/3/keys = {
 "values": [ Vector2( 32, 4 ) ]
 }
 
-[sub_resource type="Animation" id=8]
+[sub_resource type="Animation" id=4]
 resource_name = "Attack_H"
 length = 0.1
 tracks/0/type = "value"
@@ -165,7 +165,7 @@ tracks/3/keys = {
 "values": [ Vector2( 32, -28 ) ]
 }
 
-[sub_resource type="Animation" id=9]
+[sub_resource type="Animation" id=5]
 resource_name = "Attack_N"
 length = 0.1
 tracks/0/type = "value"
@@ -217,7 +217,7 @@ tracks/3/keys = {
 "values": [ Vector2( 0, -28 ) ]
 }
 
-[sub_resource type="Animation" id=10]
+[sub_resource type="Animation" id=6]
 resource_name = "Attack_U"
 length = 0.1
 tracks/0/type = "value"
@@ -269,7 +269,7 @@ tracks/3/keys = {
 "values": [ Vector2( 0, -60 ) ]
 }
 
-[sub_resource type="Animation" id=11]
+[sub_resource type="Animation" id=7]
 resource_name = "Attack_UH"
 length = 0.1
 tracks/0/type = "value"
@@ -321,8 +321,7 @@ tracks/3/keys = {
 "values": [ Vector2( 32, -60 ) ]
 }
 
-[sub_resource type="Animation" id=2]
-resource_name = "Dead"
+[sub_resource type="Animation" id=8]
 length = 0.1
 loop = true
 tracks/0/type = "value"
@@ -362,7 +361,7 @@ tracks/2/keys = {
 "values": [ false ]
 }
 
-[sub_resource type="Animation" id=3]
+[sub_resource type="Animation" id=9]
 length = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("normal:visible")
@@ -389,7 +388,7 @@ tracks/1/keys = {
 "values": [ false ]
 }
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=10]
 length = 0.2
 loop = true
 step = 0.05
@@ -430,7 +429,7 @@ tracks/2/keys = {
 "values": [ 0, 1, 2, 3 ]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=11]
 length = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("normal:visible")
@@ -545,14 +544,14 @@ position = Vector2( 0, -28 )
 scale = Vector2( 3.5, 3.5 )
 
 [node name="Anim" type="AnimationPlayer" parent="."]
-anims/Attack_D = SubResource( 6 )
-anims/Attack_DH = SubResource( 7 )
-anims/Attack_H = SubResource( 8 )
-anims/Attack_N = SubResource( 9 )
-anims/Attack_U = SubResource( 10 )
-anims/Attack_UH = SubResource( 11 )
-anims/Dead = SubResource( 2 )
-anims/Move = SubResource( 3 )
-anims/SpeedMove = SubResource( 4 )
-anims/_RESET = SubResource( 5 )
+anims/Attack_D = SubResource( 2 )
+anims/Attack_DH = SubResource( 3 )
+anims/Attack_H = SubResource( 4 )
+anims/Attack_N = SubResource( 5 )
+anims/Attack_U = SubResource( 6 )
+anims/Attack_UH = SubResource( 7 )
+anims/Dead = SubResource( 8 )
+anims/Move = SubResource( 9 )
+anims/SpeedMove = SubResource( 10 )
+anims/_RESET = SubResource( 11 )
 [connection signal="body_entered" from="attack" to="." method="_on_attack_connected"]

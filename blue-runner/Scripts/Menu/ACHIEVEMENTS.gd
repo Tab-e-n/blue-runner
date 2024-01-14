@@ -6,6 +6,7 @@ var achivements_definition : Dictionary = {
 	#"ID" : ["Achievement Name", "Achievement Description", is_hidden, unlock_type, parameter_1, parameter_2]
 	"complete_waterway" : ["Complete WaterWay", "Get 100% completion on WaterWay.", false, 3, "res://Scenes/waterway/", 100],
 	"code_missing" : ["missing", "code nothing", false, 5, "*character_missing", ""],
+	"greenbox" : ["Simple fun plat-", "This ain`t no kat!", false, 5, "*character_greenbox", ""],
 }
 var row_amount : int = 0
 var cursor_pos : Vector2 = Vector2(0, 0)
@@ -37,13 +38,14 @@ func menu_update():
 		move_cursor(Vector2(0, 1))
 
 func move_cursor(movement : Vector2 = Vector2(0, 0)):
+	print(cursor_pos)
 	if movement.x != 0:
 		if cursor_pos.x + movement.x >= 0 and cursor_pos.x + movement.x < 3:
 			cursor_pos.x += movement.x
 	if movement.y != 0:
 		if cursor_pos.y + movement.y >= 0 and cursor_pos.y + movement.y < row_amount:
 			cursor_pos.y += movement.y
-	if cursor_pos.y == row_amount - 1:
+	if cursor_pos.y == row_amount - 1 and achivements_definition.size() % 3:
 		if cursor_pos.x >= achivements_definition.size() % 3:
 			cursor_pos.x = achivements_definition.size() % 3 - 1
 	
