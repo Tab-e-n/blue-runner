@@ -5,7 +5,7 @@ onready var parent : Node2D = get_parent()
 var achivements_definition : Dictionary = {
 	#"ID" : ["Achievement Name", "Achievement Description", is_hidden, unlock_type, parameter_1, parameter_2]
 	"complete_waterway" : ["Complete WaterWay", "Get 100% completion on WaterWay.", false, 3, "res://Scenes/waterway/", 100],
-	"code_missing" : ["missing", "code 0", false, 5, "*character_missing", ""],
+	"code_missing" : ["missing", "code nothing", false, 5, "*character_missing", ""],
 }
 var row_amount : int = 0
 var cursor_pos : Vector2 = Vector2(0, 0)
