@@ -49,13 +49,13 @@ func _ready():
 	player.setup_trail(trail_color)
 
 func _physics_process(_delta):
-	player.col_1.position = $col_1.position
-	player.col_1.scale = $col_1.scale
-	player.col_1.disabled = !$col_1.visible
+	player.collisions[1].position = $col_1.position
+	player.collisions[1].scale = $col_1.scale
+	player.collisions[1].disabled = !$col_1.visible
 	
-	player.col_2.position = $col_2.position
-	player.col_2.scale = $col_2.scale
-	player.col_2.disabled = !$col_2.visible
+	player.collisions[2].position = $col_2.position
+	player.collisions[2].scale = $col_2.scale
+	player.collisions[2].disabled = !$col_2.visible
 	
 	if player.is_jump_input_just_pressed():
 		player.jump_buffer = player.INPUT_BUFFER_FRAMES
@@ -133,9 +133,12 @@ func _physics_process(_delta):
 				player.facing = "right"
 		
 		# SPECIAL ABILITIES
-		if sliding > 0: sliding -= 1
-		else: super_slide = false
-		if dropping > 2: dropping -= 1
+		if sliding > 0:
+			sliding -= 1
+		else:
+			super_slide = false
+		if dropping > 2:
+			dropping -= 1
 		
 		if Input.is_action_just_pressed("special"):
 			if player.state == "ground":
@@ -146,7 +149,8 @@ func _physics_process(_delta):
 				saved_momentum = abs(player.momentum.x)
 		if Input.is_action_pressed("special"):
 			if player.state == "ground" and !on_wall:
-				if sliding == 1: sliding = 2
+				if sliding == 1:
+					sliding = 2
 			elif player.state == "air":
 				if dropping == 2:
 					player.play_sound("ding")
@@ -197,37 +201,35 @@ func _physics_process(_delta):
 			player.momentum.x = 0
 			jump_amount = MAX_JUMP_AMOUNT - 1
 		
-		player.collision_mask = 3
+		player.collision_mask = 0b11
+		
 		if player.jump_buffer > 0 and !force_slide:
 			player.jump_buffer -= 1
 			player.ground_buffer = 0
 			if player.move_and_collide(Vector2(0,4), false, true, true) or sliding > 0:
-				jump_amount -= 1
+				jump_amount = MAX_JUMP_AMOUNT - 1
 				jump(JUMP_POWER)
-				player.jump_buffer = 0
 				particle_summon(Vector2(0, 0), 0)
 			elif player.move_and_collide(Vector2(4,0), false, true, true):
-					jump_amount = MAX_JUMP_AMOUNT - 1
-					# warning-ignore:integer_division
-					player.momentum.x = -MAX_SPEED / 1.5
-					player.facing = "left"
-					# warning-ignore:narrowing_conversion
-					jump(JUMP_POWER * 1.075)
-					player.jump_buffer = 0
-					particle_summon(Vector2(12, -64), -1.6)
+				jump_amount = MAX_JUMP_AMOUNT - 1
+				# warning-ignore:integer_division
+				player.momentum.x = -MAX_SPEED / 1.5
+				player.facing = "left"
+				# warning-ignore:narrowing_conversion
+				jump(JUMP_POWER * 1.075)
+				particle_summon(Vector2(12, -64), -1.6)
 			elif player.move_and_collide(Vector2(-4,0), false, true, true):
-					jump_amount = MAX_JUMP_AMOUNT - 1
-					# warning-ignore:integer_division
-					player.momentum.x = MAX_SPEED / 1.5
-					player.facing = "right"
-					# warning-ignore:narrowing_conversion
-					jump(JUMP_POWER * 1.075)
-					player.jump_buffer = 0
-					particle_summon(Vector2(-12, -64), 1.6)
+				jump_amount = MAX_JUMP_AMOUNT - 1
+				# warning-ignore:integer_division
+				player.momentum.x = MAX_SPEED / 1.5
+				player.facing = "right"
+				# warning-ignore:narrowing_conversion
+				jump(JUMP_POWER * 1.075)
+				particle_summon(Vector2(-12, -64), 1.6)
 		if jump_amount > 0 and player.jump_buffer == 1:
-				jump_amount -= 1
-				jump(JUMP_POWER)
-				#player.jump_buffer = 0
+			jump_amount -= 1
+			jump(JUMP_POWER)
+			#player.jump_buffer = 0
 		if !player.is_jump_input_pressed() and jumping and !player.punted and sliding == 0:
 			jumping = false
 			if player.momentum.y < -200:
@@ -351,6 +353,7 @@ func _physics_process(_delta):
 func jump(local_jump_power : int):
 	player.momentum.y = -local_jump_power
 	player.state = "air"
+	player.jump_buffer = 0
 	jumping = true
 	dropping = 0
 	player.play_sound("jump")

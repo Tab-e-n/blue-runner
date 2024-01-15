@@ -10,14 +10,14 @@ var playtesting : bool = false
 var user_directory : String = "user://sonicRunner"
 var mod_user_directory : String = "user://sonicRunnerMods"
 
-var level_completion = {
+var level_completion : Dictionary = {
 	"*collectibles" : {},
 }
-var unlocked = {
+var unlocked : Dictionary = {
 	"*char_select_active" : false,
 	"completion_percentages" : {},
 }
-var options = {
+const DEFAULT_OPTIONS : Dictionary = {
 	"*version" : VERSION,
 	"*left" : KEY_LEFT,
 	"*right" : KEY_RIGHT,
@@ -44,34 +44,8 @@ var options = {
 	"*audio_sfx" : 60,
 	"*audio_music" : 60,
 }
+var options : Dictionary = {}
 
-var default_options = {
-	"*version" : VERSION,
-	"*left" : KEY_LEFT,
-	"*right" : KEY_RIGHT,
-	"*up" : KEY_UP,
-	"*down" : KEY_DOWN,
-	"*jump" : KEY_SPACE,
-	"*special" : KEY_CONTROL,
-	"*reset" : KEY_ENTER,
-	"*return" : KEY_ESCAPE,
-	"*menu_left" : KEY_LEFT,
-	"*menu_right" : KEY_RIGHT,
-	"*menu_up" : KEY_UP,
-	"*menu_down" : KEY_DOWN,
-	"*accept" : KEY_SPACE,
-	"*deny" : KEY_BACKSPACE,
-	"*save_replay" : KEY_F6,
-	"*screenshot" : KEY_F2,
-	"*outlines_on" : false,
-	"*ghosts_on" : false,
-	"*up_key_jump" : false,
-	"*timer_on" : 0,
-	"*first_time_load" : true,
-	"*last_level_location" : "res://Scenes/waterway/",
-	"*audio_sfx" : 60,
-	"*audio_music" : 60,
-}
 var keybind_names : Array = ["*left", "*right", "*up", "*down", "*jump", "*special", "*reset", "*return", "*menu_left", "*menu_right", "*menu_up", "*menu_down", "*accept", "*deny", "*save_replay", "*screenshot"]
 var mods_installed = []
 
@@ -103,6 +77,7 @@ var loaded_characters = {}
 var last_input_events : Array = []
 
 var doing_tutorial : bool = false
+
 
 func _ready():
 	console_arguments()
@@ -155,13 +130,14 @@ func _ready():
 		if options[inputs] != null:
 			new_key.scancode = options[inputs]
 		else:
-			new_key.scancode = default_options[inputs]
+			new_key.scancode = DEFAULT_OPTIONS[inputs]
 		last_input_events.append(new_key)
 	
 	for i in range(last_input_events.size()):
 		change_input(i, last_input_events[i])
 	
 	current_level_location = options["*last_level_location"]
+
 
 func _physics_process(_delta):
 	var curr_scene = get_tree().current_scene.name
@@ -173,8 +149,10 @@ func _physics_process(_delta):
 	if Input.is_action_just_pressed("screenshot"):
 		screenshot()
 
+
 func _exit_tree():
 	save_game()
+
 
 func change_input(input_id : int, new_input):
 	var input_string : String = keybind_names[input_id].trim_prefix("*")
@@ -186,239 +164,127 @@ func change_input(input_id : int, new_input):
 	last_input_events[input_id] = new_input
 	options["*" + input_string] = new_input.scancode
 
+
+const NAMES : Dictionary = {
+	KEY_SPACE : "SPACE",
+	KEY_ESCAPE : "ESCAPE",
+	KEY_TAB : "TAB",
+	KEY_BACKTAB : "BACKTAB",
+	KEY_BACKSPACE : "BACKSPACE",
+	KEY_ENTER : "ENTER",
+	KEY_KP_ENTER : "KEYPAD ENTER",
+	KEY_INSERT : "INSERT",
+	KEY_DELETE : "DELETE",
+	KEY_PAUSE : "PAUSE",
+	KEY_PRINT : "SCREENSHOT",
+	KEY_SYSREQ : "SYSTEM REQUEST",
+	KEY_CLEAR : "CLEAR",
+	KEY_HOME : "S1 COME HOME",
+	KEY_END : "THE END",
+	KEY_LEFT : "LEFT ARROW",
+	KEY_UP : "UP ARROW",
+	KEY_RIGHT : "RIGHT ARROW",
+	KEY_DOWN : "DOWN ARROW",
+	KEY_PAGEUP : "PAGE UP",
+	KEY_PAGEDOWN : "PAGE DOWN",
+	KEY_SHIFT : "SHIFT",
+	KEY_CONTROL : "CONTROL",
+	KEY_META : "THIS KEY IS THE META",
+	KEY_ALT : "ALT",
+	KEY_CAPSLOCK : "SCREAM LOCK",
+	KEY_NUMLOCK : "ALWAYS ON LOCK",
+	KEY_SCROLLLOCK : "SOMETHING LOCK",
+	KEY_F1 : "F1",
+	KEY_F2 : "F2",
+	KEY_F3 : "F3",
+	KEY_F4 : "F4",
+	KEY_F5 : "F5",
+	KEY_F6 : "F6",
+	KEY_F7 : "F7",
+	KEY_F8 : "F8",
+	KEY_F9 : "F9",
+	KEY_F10 : "F10",
+	KEY_F11 : "F11",
+	KEY_F12 : "F12",
+	KEY_F13 : "F13",
+	KEY_F14 : "F14",
+	KEY_F15 : "F15",
+	KEY_F16 : "F16",
+	KEY_KP_MULTIPLY : "KEYPAD *",
+	KEY_KP_DIVIDE : "KEYPAD /",
+	KEY_KP_SUBTRACT : "KEYPAD -",
+	KEY_KP_PERIOD : "KEYPAD .",
+	KEY_KP_ADD : "KEYPAD +",
+	KEY_KP_0 : "KEYPAD 0",
+	KEY_KP_1 : "KEYPAD 1",
+	KEY_KP_2 : "KEYPAD 2",
+	KEY_KP_3 : "KEYPAD 3",
+	KEY_KP_4 : "KEYPAD 4",
+	KEY_KP_5 : "KEYPAD 5",
+	KEY_KP_6 : "KEYPAD 6",
+	KEY_KP_7 : "KEYPAD 7",
+	KEY_KP_8 : "KEYPAD 8",
+	KEY_KP_9 : "KEYPAD 9",
+	KEY_SUPER_L : "SUPER LEFT",
+	KEY_SUPER_R : "SUPER RIGHT",
+	KEY_MENU : "GIVE THE CONTEXT",
+	KEY_HYPER_L : "HYPER LEFT",
+	KEY_HYPER_R : "HYPER RIGHT",
+	KEY_HELP : "HELP THEM GOD",
+	KEY_DIRECTION_L : "DIRECTIONAL LEFT",
+	KEY_DIRECTION_R : "DIRECTIONAL RIGHT",
+	KEY_BACK : "BACK TO THE MARK",
+	KEY_FORWARD : "FOWARD TO THE FUTURE",
+	KEY_STOP : "STOP IT",
+	KEY_REFRESH : "REFRESHING",
+	KEY_VOLUMEDOWN : "TURN IT DOWN",
+	KEY_VOLUMEMUTE : "MUTE IT PLEASE",
+	KEY_VOLUMEUP : "TURN IT UP",
+	KEY_BASSBOOST : "LOUD EQUALS FUNNY",
+	KEY_BASSUP : "BASS UP",
+	KEY_BASSDOWN : "BASS DOWN",
+	KEY_TREBLEUP : "TREBLE UP",
+	KEY_TREBLEDOWN : "TREBLE DOWN",
+	KEY_MEDIAPLAY : "PLAY THAT SONG AGAIN",
+	KEY_MEDIASTOP : "STOP THE MUSIC",
+	KEY_MEDIAPREVIOUS : "CLASSICAL ART",
+	KEY_MEDIANEXT : "ART OF THE FUTURE",
+	KEY_MEDIARECORD : "CAUGHT ON CAMERA",
+	KEY_HOMEPAGE : "HOME WITH PAGE",
+	KEY_FAVORITES : "MY JAM",
+	KEY_SEARCH : "FIND THEM",
+	KEY_STANDBY : "HALT",
+	KEY_OPENURL : "BROWSER TIME",
+	KEY_LAUNCHMAIL : "MAIL TIME",
+	KEY_LAUNCHMEDIA : "MEDIA TIME",
+	KEY_LAUNCH0 : "SHORTCUT 0",
+	KEY_LAUNCH1 : "SHORTCUT 1",
+	KEY_LAUNCH2 : "SHORTCUT 2",
+	KEY_LAUNCH3 : "SHORTCUT 3",
+	KEY_LAUNCH4 : "SHORTCUT 4",
+	KEY_LAUNCH5 : "SHORTCUT 5",
+	KEY_LAUNCH6 : "SHORTCUT 6",
+	KEY_LAUNCH7 : "SHORTCUT 7",
+	KEY_LAUNCH8 : "SHORTCUT 8",
+	KEY_LAUNCH9 : "SHORTCUT 9",
+	KEY_LAUNCHA : "SHORTCUT A",
+	KEY_LAUNCHB : "SHORTCUT B",
+	KEY_LAUNCHC : "SHORTCUT C",
+	KEY_LAUNCHD : "SHORTCUT D",
+	KEY_LAUNCHE : "SHORTCUT E",
+	KEY_LAUNCHF : "SHORTCUT F",
+	KEY_UNKNOWN : "???",
+}
 func key_names(key : int):
 	var key_number = options[keybind_names[key]]
-	#match key:
-	#	0: key_number = options["*left"]
-	#	1: key_number = options["*right"]
-	#	2: key_number = options["*up"]
-	#	3: key_number = options["*down"]
-	#	4: key_number = options["*jump"]
-	#	5: key_number = options["*special"]
-	#	6: key_number = options["*reset"]
-	#	7: key_number = options["*return"]
-	
 	if key_number >= 33 and key_number <= 255:
 		return char(key_number)
 	else:
-		match(key_number):
-			KEY_SPACE:
-				return "SPACE"
-			KEY_ESCAPE:
-				return "ESCAPE"
-			KEY_TAB:
-				return "TAB"
-			KEY_BACKTAB:
-				return "SPICY TAB"
-			KEY_BACKSPACE:
-				return "BACKSPACE"
-			KEY_ENTER:
-				return "ENTER"
-			KEY_KP_ENTER:
-				return "KEYPAD ENTER"
-			KEY_INSERT:
-				return "INSERT"
-			KEY_DELETE:
-				return "DELETE"
-			KEY_PAUSE:
-				return "PAUSE"
-			KEY_PRINT:
-				return "SCREENSHOT"
-			KEY_SYSREQ:
-				return "SYSTEM REQUEST"
-			KEY_CLEAR:
-				return "CLEAR"
-			KEY_HOME:
-				return "COME BACK HOME"
-			KEY_END:
-				return "THE END"
-			KEY_LEFT:
-				return "LEFT ARROW"
-			KEY_UP:
-				return "UP ARROW"
-			KEY_RIGHT:
-				return "RIGHT ARROW"
-			KEY_DOWN:
-				return "DOWN ARROW"
-			KEY_PAGEUP:
-				return "PAGE UP"
-			KEY_PAGEDOWN:
-				return "PAGE DOWN"
-			KEY_SHIFT:
-				return "SHIFT"
-			KEY_CONTROL:
-				return "CONTROL"
-			KEY_META:
-				return "THIS KEY IS THE META"
-			KEY_ALT:
-				return "ALT"
-			KEY_CAPSLOCK:
-				return "SCREAM LOCK"
-			KEY_NUMLOCK:
-				return "ALWAYS ON LOCK"
-			KEY_SCROLLLOCK:
-				return "SOMETHING LOCK"
-			KEY_F1:
-				return "F1"
-			KEY_F2:
-				return "F2"
-			KEY_F3:
-				return "F3"
-			KEY_F4:
-				return "F4"
-			KEY_F5:
-				return "F5"
-			KEY_F6:
-				return "F6"
-			KEY_F7:
-				return "F7"
-			KEY_F8:
-				return "F8"
-			KEY_F9:
-				return "F9"
-			KEY_F10:
-				return "F10"
-			KEY_F11:
-				return "F11"
-			KEY_F12:
-				return "F12"
-			KEY_F13:
-				return "F13"
-			KEY_F14:
-				return "F14"
-			KEY_F15:
-				return "F15"
-			KEY_F16:
-				return "F16"
-			KEY_KP_MULTIPLY:
-				return "KEYPAD *"
-			KEY_KP_DIVIDE:
-				return "KEYPAD /"
-			KEY_KP_SUBTRACT:
-				return "KEYPAD -"
-			KEY_KP_PERIOD:
-				return "KEYPAD ."
-			KEY_KP_ADD:
-				return "KEYPAD +"
-			KEY_KP_0:
-				return "KEYPAD 0"
-			KEY_KP_1:
-				return "KEYPAD 1"
-			KEY_KP_2:
-				return "KEYPAD 2"
-			KEY_KP_3:
-				return "KEYPAD 3"
-			KEY_KP_4:
-				return "KEYPAD 4"
-			KEY_KP_5:
-				return "KEYPAD 5"
-			KEY_KP_6:
-				return "KEYPAD 6"
-			KEY_KP_7:
-				return "KEYPAD 7"
-			KEY_KP_8:
-				return "KEYPAD 8"
-			KEY_KP_9:
-				return "KEYPAD 9"
-			KEY_SUPER_L:
-				return "SUPER LEFT"
-			KEY_SUPER_R:
-				return "SUPER RIGHT"
-			KEY_MENU:
-				return "GIVE THE CONTEXT"
-			KEY_HYPER_L:
-				return "HYPER LEFT"
-			KEY_HYPER_R:
-				return "HYPER RIGHT"
-			KEY_HELP:
-				return "HELP ME GOD"
-			KEY_DIRECTION_L:
-				return "DIRECTIONAL LEFT"
-			KEY_DIRECTION_R:
-				return "DIRECTIONAL RIGHT"
-			KEY_BACK:
-				return "BACK TO THE MARK"
-			KEY_FORWARD:
-				return "FOWARD TO THE FUTURE"
-			KEY_STOP:
-				return "STOP IT"
-			KEY_REFRESH:
-				return "REFRESHING"
-			KEY_VOLUMEDOWN:
-				return "TURN IT DOWN"
-			KEY_VOLUMEMUTE:
-				return "MUTE IT PLEASE"
-			KEY_VOLUMEUP:
-				return "TURN IT UP"
-			KEY_BASSBOOST:
-				return "LOUD EQUALS FUNNY"
-			KEY_BASSUP:
-				return "BASS UP"
-			KEY_BASSDOWN:
-				return "BASS DOWN"
-			KEY_TREBLEUP:
-				return "TREBLE UP"
-			KEY_TREBLEDOWN:
-				return "TREBLE DOWN"
-			KEY_MEDIAPLAY:
-				return "PLAY THAT SONG AGAIN"
-			KEY_MEDIASTOP:
-				return "STOP THE MUSIC"
-			KEY_MEDIAPREVIOUS:
-				return "CLASSICAL ART"
-			KEY_MEDIANEXT:
-				return "ART OF THE FUTURE"
-			KEY_MEDIARECORD:
-				return "CAUGHT ON CAMERA"
-			KEY_HOMEPAGE:
-				return "HOME WITH PAGE"
-			KEY_FAVORITES:
-				return "MY JAM"
-			KEY_SEARCH:
-				return "FIND THEM"
-			KEY_STANDBY:
-				return "HALT"
-			KEY_OPENURL:
-				return "BROWSER TIME"
-			KEY_LAUNCHMAIL:
-				return "MAIL TIME"
-			KEY_LAUNCHMEDIA:
-				return "MEDIA TIME"
-			KEY_LAUNCH0:
-				return "SHORTCUT 0"
-			KEY_LAUNCH1:
-				return "SHORTCUT 1"
-			KEY_LAUNCH2:
-				return "SHORTCUT 2"
-			KEY_LAUNCH3:
-				return "SHORTCUT 3"
-			KEY_LAUNCH4:
-				return "SHORTCUT 4"
-			KEY_LAUNCH5:
-				return "SHORTCUT 5"
-			KEY_LAUNCH6:
-				return "SHORTCUT 6"
-			KEY_LAUNCH7:
-				return "SHORTCUT 7"
-			KEY_LAUNCH8:
-				return "SHORTCUT 8"
-			KEY_LAUNCH9:
-				return "SHORTCUT 9"
-			KEY_LAUNCHA:
-				return "SHORTCUT A"
-			KEY_LAUNCHB:
-				return "SHORTCUT B"
-			KEY_LAUNCHC:
-				return "SHORTCUT C"
-			KEY_LAUNCHD:
-				return "SHORTCUT D"
-			KEY_LAUNCHE:
-				return "SHORTCUT E"
-			KEY_LAUNCHF:
-				return "SHORTCUT F"
-			KEY_UNKNOWN:
-				return "???"
-	return "WHAT IS THIS?"
+		if NAMES.has(key_number):
+			return NAMES[key_number]
+		else:
+			return "WHAT IS THIS?"
+
 
 func text_interpretor(text : String):
 	var next_text : String = text
@@ -474,6 +340,7 @@ func text_interpretor(text : String):
 	
 	return new_text
 
+
 func add_date_to_name(dname : String):
 	var date = OS.get_datetime()
 	dname = (dname +
@@ -484,6 +351,7 @@ func add_date_to_name(dname : String):
 			"-" + String(date["minute"]) +
 			"-" + String(date["second"]))
 	return dname
+
 
 func load_external_picture(picture_filename : String, sprite : Sprite):
 	var pngf = File.new()
@@ -505,6 +373,7 @@ func load_external_picture(picture_filename : String, sprite : Sprite):
 	
 	if sprite.texture == null:
 		sprite.texture = preload("res://Visual/no_image.png")
+
 
 func change_level(destination : String, return_value : bool = false, check_dependencies : bool = true):
 	compatibility_mode = false
@@ -575,12 +444,14 @@ func change_level(destination : String, return_value : bool = false, check_depen
 		get_tree().change_scene("res://Scenes/MENU.tscn")
 #		call_deferred("make_text_debug", String(destination_new), String(error))
 
+
 func make_text_debug(one, two):
 		var text = RichTextLabel.new()
 		text.rect_size = Vector2(1024, 1024)
 		text.text = ":" + one + " " + two + ":"
 		get_tree().current_scene.add_child(text)
 		print(get_tree().current_scene.name)
+
 
 func change_scene_level(file : String, return_only : bool = false):
 	var packed_scene : PackedScene = load(file)
@@ -621,6 +492,7 @@ func unlock(unlock):
 				unlocked[current_level_location] = []
 			unlocked[current_level_location][unlock] = true
 
+
 func check_unlock(unlock):
 	if unlock != "":
 		if unlock.begins_with("*"):
@@ -633,6 +505,7 @@ func check_unlock(unlock):
 			if !unlocked[current_level_location].has(unlock):
 				unlocked[current_level_location][unlock] = false
 			return unlocked[current_level_location][unlock]
+
 
 enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
 func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
@@ -679,6 +552,7 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
 	
 	return true
 
+
 func convert_float_to_time(timer : float, limit_size : bool = true):
 	# warning-ignore:narrowing_conversion
 	var minutes : int = int(abs(floor(timer) / 60))
@@ -696,6 +570,7 @@ func convert_float_to_time(timer : float, limit_size : bool = true):
 		# warning-ignore:integer_division
 		# warning-ignore:integer_division
 		return "-"+String(minutes)+":"+String(seconds/10)+String(seconds%10)+"."+String(decimal/10)+String(decimal%10)
+
 
 func scale_down_sprite(sprite : Sprite, final_scale : Vector2 = Vector2(1, 1), desired_rect : Vector2 = Vector2(64, 64)):
 	if desired_rect.x == 0 and desired_rect.y == 0:
@@ -717,6 +592,7 @@ func scale_down_sprite(sprite : Sprite, final_scale : Vector2 = Vector2(1, 1), d
 	else:
 		sprite.scale.x = final_scale.y / (sprite_rect.y / desired_rect.y)
 	sprite.scale.y = sprite.scale.x
+
 
 func load_texture_from_png(path : String = ""):
 	if path == "": return null
@@ -742,6 +618,7 @@ func load_texture_from_png(path : String = ""):
 		return texture
 	return null
 
+
 func update_level_group_save():
 	var is_user_group : bool = current_level_location == "user://SRLevels/"
 	
@@ -764,6 +641,7 @@ func update_level_group_save():
 				continue
 			if level_group["levels"][i][1]:
 				unlocked[current_level_location][level_group["levels"][i][0]] = false
+
 
 func completion_percentage(is_user_group : bool, user_current_page : int):
 	var full : float = 0
@@ -817,6 +695,7 @@ func completion_percentage(is_user_group : bool, user_current_page : int):
 		stats[0] =  0
 	return stats.duplicate()
 
+
 func console_arguments():
 	var arguments = {}
 	for arg in OS.get_cmdline_args():
@@ -854,6 +733,7 @@ func console_arguments():
 	if savefile_interaction / 2:
 		print("write allowed")
 
+
 func save_game(timer : float = 0, par : float = 0, collectible : Array = [], level = null, recording : Dictionary = {}):
 	print("saving game")
 	
@@ -883,7 +763,7 @@ func save_game(timer : float = 0, par : float = 0, collectible : Array = [], lev
 	
 	options["*last_level_location"] = current_level_location
 	
-# warning-ignore:integer_division
+	# warning-ignore:integer_division
 	if !savefile_interaction / 2:
 		print("saving disabled")
 	else:
@@ -906,6 +786,7 @@ func save_game(timer : float = 0, par : float = 0, collectible : Array = [], lev
 		
 		if level != null:
 			condicional_save_replay(current_level_location + level + "_Best", recording)
+
 
 func load_game():
 	
@@ -967,14 +848,17 @@ func load_game():
 	mods_installed = temp["*mods"].duplicate()
 	#print(mods_installed)
 
+
 func delete_save(): 
 	level_completion.clear()
 	unlocked.clear()
 	save_game()
 
+
 func reset_options():
-	options = default_options.duplicate()
+	options = DEFAULT_OPTIONS.duplicate()
 	save_game()
+
 
 func update_old_save(version : String, save : Dictionary):
 	var settings : Dictionary = {}
@@ -987,13 +871,13 @@ func update_old_save(version : String, save : Dictionary):
 		settings = {}
 		levels = {}
 		
-		for i in default_options.keys():
+		for i in DEFAULT_OPTIONS.keys():
 			if save.has(i):
 				settings[i] = save[i]
 				# warning-ignore:return_value_discarded
 				save.erase(i)
 			else:
-				settings[i] = default_options[i]
+				settings[i] = DEFAULT_OPTIONS[i]
 		
 		levels = save.duplicate()
 		
@@ -1031,7 +915,7 @@ func update_old_save(version : String, save : Dictionary):
 		for i in levels["*collectibles"]:
 			var level_name = i.substr(i.find_last("/") + 1, i.length() - i.find_last("/"))
 			var level_location = i.substr(0, i.find_last("/") + 1)
-			if !save["level_completion"]["*collectibles"].has(level_location):
+			if not save["level_completion"]["*collectibles"].has(level_location):
 				save["level_completion"]["*collectibles"][level_location] = []
 			save["level_completion"]["*collectibles"][level_location].append(level_name)
 		# warning-ignore:return_value_discarded
@@ -1040,7 +924,7 @@ func update_old_save(version : String, save : Dictionary):
 		for i in levels.keys():
 			var level_name = i.substr(i.find_last("/") + 1, i.length() - i.find_last("/"))
 			var level_location = i.substr(0, i.find_last("/") + 1)
-			if !save["level_completion"].has(level_location):
+			if not save["level_completion"].has(level_location):
 				save["level_completion"][level_location] = {}
 			save["level_completion"][level_location][level_name] = levels[i]
 		
@@ -1053,19 +937,21 @@ func update_old_save(version : String, save : Dictionary):
 		else:
 			save["options"]["*timer_on"] = 0
 		
-		if !save["unlocked"].has("completion_percentages"):
+		if not save["unlocked"].has("completion_percentages"):
 			save["unlocked"]["completion_percentages"] = {}
 		
 		version = "2.0.0"
 	if version == "1.2.0-dev":
 		if !save["unlocked"].has("completion_percentages"):
 			save["unlocked"]["completion_percentages"] = {}
+	if version == "2.0.0-dev":
+		version = "2.0.0"
 	
-	if !save["unlocked"].has("*char_select_active"):
+	if not save["unlocked"].has("*char_select_active"):
 		save["unlocked"]["*char_select_active"] = false
-	for i in default_options.keys():
+	for i in DEFAULT_OPTIONS.keys():
 		if !save["options"].has(i):
-			save["options"][i] = default_options[i]
+			save["options"][i] = DEFAULT_OPTIONS[i]
 			#print(i)
 	if !save["level_completion"].has("*collectibles"):
 		save["level_completion"]["*collectibles"] = []
@@ -1073,6 +959,7 @@ func update_old_save(version : String, save : Dictionary):
 	save["options"]["*version"] = VERSION
 	
 	return save
+
 
 func condicional_save_replay(replay_name, recording : Dictionary):
 	if load_replay(replay_name, true):
@@ -1082,10 +969,12 @@ func condicional_save_replay(replay_name, recording : Dictionary):
 	else:
 		save_replay(replay_name, recording.duplicate())
 
+
 func save_replay_with_date(new_name : String, recording : Dictionary):
 	print("save replay")
 	Global.save_replay(add_date_to_name(new_name),
 	recording)
+
 
 func save_replay(new_name : String, recording : Dictionary, level : bool = true):
 	var replay_name : String = new_name
@@ -1103,6 +992,7 @@ func save_replay(new_name : String, recording : Dictionary, level : bool = true)
 	savefile.open(replay_name, File.WRITE) #res://Visual/bg_hills.png
 	savefile.store_line(to_json(temp))
 	savefile.close()
+
 
 func load_replay(new_name, existance_check : bool = false, level : bool = true, built_in : bool = false):
 	var replay_name : String = new_name
@@ -1143,6 +1033,7 @@ func load_replay(new_name, existance_check : bool = false, level : bool = true, 
 	else:
 		return true
 
+
 func delete_replay(new_name, level : bool = true):
 	var replay_name : String = new_name
 	if level: replay_name = replay_filename(new_name, false)
@@ -1153,6 +1044,7 @@ func delete_replay(new_name, level : bool = true):
 	var deletefile = Directory.new()
 	
 	deletefile.remove(replay_name)
+
 
 func replay_filename(new_name : String, create_dir : bool):
 	var replay_name
@@ -1187,9 +1079,11 @@ func replay_filename(new_name : String, create_dir : bool):
 	
 	return replay_name
 
+
 func load_level_dat_file(filename_ : String, _official : bool = true):
 	print(get_stack())
 	return load_dat_file(filename_)
+
 
 func load_dat_file(filename_ : String):
 	
@@ -1213,6 +1107,7 @@ func load_dat_file(filename_ : String):
 	#print("load: ", temp)
 	
 	return temp.duplicate()
+
 
 func load_level_group():
 	var loadfile = File.new()
@@ -1238,6 +1133,7 @@ func load_level_group():
 	
 	level_group = temp.duplicate()
 	return true
+
 
 func load_data():
 	loaded_level_groups.append(["SRLevels","user://"])
@@ -1296,6 +1192,7 @@ func load_data():
 	
 	#print(loaded_characters)
 
+
 func scan_single_directory(main_directory : String, sub_directory : String, storage : Array, file_type : String, _file_descriptor : String):
 	var directory : Directory = Directory.new()
 	var check_exist = directory.open(main_directory + sub_directory)
@@ -1311,6 +1208,7 @@ func scan_single_directory(main_directory : String, sub_directory : String, stor
 				#print("found " + _file_descriptor + ": " + current_file)
 				storage.append([current_file, main_directory])
 			current_file = directory.get_next()
+
 
 func scan_for_directories(main_directory : String, storage : Array, _file_descriptor : String):
 	var directory : Directory = Directory.new()
@@ -1328,6 +1226,7 @@ func scan_for_directories(main_directory : String, storage : Array, _file_descri
 				storage.append([current_file, main_directory])
 			current_file = directory.get_next()
 
+
 func screenshot():
 	print("screenshot")
 	
@@ -1335,4 +1234,3 @@ func screenshot():
 	image.flip_y()
 	# warning-ignore:return_value_discarded
 	image.save_png("user://SRScreenshots/" + add_date_to_name("screenshot") + ".png")
-	

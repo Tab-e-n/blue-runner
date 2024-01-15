@@ -31,13 +31,13 @@ func _ready():
 	last_facing = player.facing
 
 func _physics_process(_delta):
-	player.col_1.position = $col_1.position
-	player.col_1.scale = $col_1.scale
-	player.col_1.disabled = !$col_1.visible
+	player.collisions[1].position = $col_1.position
+	player.collisions[1].scale = $col_1.scale
+	player.collisions[1].disabled = !$col_1.visible
 	
-	player.col_2.position = $col_2.position
-	player.col_2.scale = $col_2.scale
-	player.col_2.disabled = !$col_2.visible
+	player.collisions[2].position = $col_2.position
+	player.collisions[2].scale = $col_2.scale
+	player.collisions[2].disabled = !$col_2.visible
 	
 	if player.is_jump_input_just_pressed():
 		player.jump_buffer = player.INPUT_BUFFER_FRAMES
@@ -111,7 +111,8 @@ func _physics_process(_delta):
 			player.momentum.x = 0
 			jump_amount = MAX_JUMP_AMOUNT - 1
 		
-		player.collision_mask = 3
+		player.collision_mask = 0b11
+		
 		if player.jump_buffer > 0:
 			player.jump_buffer -= 1
 			player.ground_buffer = 0

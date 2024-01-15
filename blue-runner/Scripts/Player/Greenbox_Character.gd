@@ -21,13 +21,15 @@ var punted : bool = false
 const UNICOLOR_COLOR : Color = Color(0, 0.75, 0, 1)
 
 func _ready():
-	player.col_1.position = $col_1.position
-	player.col_1.scale = $col_1.scale
+	player.collisions[1].position = $col_1.position
+	player.collisions[1].scale = $col_1.scale
+	player.collisions[1].disabled = false
 
 
 func _physics_process(delta):
 	if player.boosted:
 		punted = true
+		can_attack = true
 	frame_skip = not frame_skip
 	
 	if player.is_jump_input_just_pressed(): # Check Jump Key

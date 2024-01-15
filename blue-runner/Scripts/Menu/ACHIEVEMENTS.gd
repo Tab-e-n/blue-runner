@@ -38,7 +38,7 @@ func menu_update():
 		move_cursor(Vector2(0, 1))
 
 func move_cursor(movement : Vector2 = Vector2(0, 0)):
-	print(cursor_pos)
+#	print(cursor_pos)
 	if movement.x != 0:
 		if cursor_pos.x + movement.x >= 0 and cursor_pos.x + movement.x < 3:
 			cursor_pos.x += movement.x

@@ -2,8 +2,7 @@ extends KinematicBody2D
 
 onready var level : Node2D
 onready var character : Node2D
-onready var col_1 : Node2D = $col_1
-onready var col_2 : Node2D = $col_2
+onready var collisions : Array = [$col_0, $col_1, $col_2]
 
 export var character_name : String = ""
 export var character_location : String = "res:/"
@@ -14,11 +13,6 @@ export var facing : String = "right"
 
 var momentum : Vector2 = Vector2(0, 0)
 
-var _last_on_moving_ground : bool = false
-var on_moving_ground : bool = false
-var moving_ground : Node2D = null
-var extra_momentum : Vector2 = Vector2(0, 0)
-
 var deny_input : bool = true
 var start : bool = true
 var end : bool = false
@@ -27,8 +21,8 @@ var death_wait : int = 0
 
 var start_timer : bool = false
 var timer : float = 0
-var collectible : Array = []
-var unlock : Array = []
+var collectibles : Array = []
+var unlocks : Array = []
 
 export var replay : bool = false
 var replay_timer : float = 3
@@ -45,7 +39,9 @@ var break_just_happened : bool = false
 var punted : bool = false
 var boosted : bool = false
 var launched : bool = false
-var speeding : bool = false
+#var speeding : bool = false
+
+var moving_ground : Node2D = null
 
 const INPUT_BUFFER_FRAMES : int = 4
 var jump_buffer : int = 0
@@ -278,72 +274,84 @@ func is_jump_input_just_pressed():
 	return jump
 
 
+func is_jump_input_just_released():
+	var jump = Input.is_action_just_released("jump")
+	if Global.options["*up_key_jump"] and Input.is_action_just_released("up"):
+		jump = true
+	return jump
+
+
 func move_player_character():
-	collision_mask = 1048575
+	collision_mask = 0b1111_1111_1111_1111_1111
 	# warning-ignore:return_value_discarded
-	var ground_momentum : Vector2 = Vector2(0, 0)
-	if on_moving_ground:
-		ground_momentum = moving_ground.momentum
-	move_and_slide(momentum + extra_momentum + ground_momentum, Vector2(0, -1))
-	collision_mask = 1
+	move_and_slide(momentum, Vector2(0, -1))
+	collision_mask = 0b1
 	
 	break_just_happened = false
-	on_moving_ground = false
-#	punted = false
-#	boosted = false
 	set_deferred("punted", false)
 	set_deferred("boosted", false)
 	set_deferred("launched", false)
+	
+	var collision = move_and_collide(Vector2(0, 2), false, true, true)
+	if collision:
+		var platform = collision.collider
+		if moving_ground != platform:
+			exit_moving_ground()
+	else:
+		exit_moving_ground()
+	
+	
 	for i in get_slide_count():
 		collision_default_effects(get_slide_collision(i).collider.collision_layer, i)
-	if on_moving_ground != _last_on_moving_ground and on_moving_ground == false:
+
+
+func exit_moving_ground():
+	if moving_ground:
 		momentum += moving_ground.momentum
 		moving_ground = null
-	_last_on_moving_ground = on_moving_ground
 
 
-func collision_default_effects(collider_type : int, collider):
-	var Layers : Array = []
-	Layers.resize(20)
-	var l : int = 0
-	while collider_type > 0:
-		Layers[l] = collider_type % 2 == 1
-		# warning-ignore:integer_division
-		collider_type = collider_type / 2
-		l += 1
-	while l < 20:
-		Layers[l] = false
-		l += 1
+func collision_default_effects(type : int, collider):
 	# SHARED PROPERTIES
-	# Layers[0] / GROUND
+	# 0b0001 / GROUND
 	# Solid thing you can stand on and wall jump off of
-	# Layers[1] / SEMI-SOLID
+	# 0b0010 / SEMI-SOLID
 	# thing you can wall jump off of but not stand on
-	# Layers[2] / HURT
+	# 0b0100 / HURT
 	# it hurts
-	# Layers[3] / EFFECT
+	# 0b1000 / EFFECT
 	# it do shit
 	
-	# other layers are for specifications on what thing the collider is
+	# other layers are specifing what the collider is
 	
-	if Layers[0] and Layers[1] and break_breakables:
+	# Hurt
+	if bit_include(type, 0b0100):
+		dead = true
+		deny_input = true
+	
+	# Breakable
+	if bit_include(type, 0b0011) and break_breakables:
 		var object = instance_from_id(get_slide_collision(collider).collider_id)
 		object.break_active = true
 		object.break_position = position
 		break_just_happened = true
 	
-	if Layers[0] and Layers[3]:
-		on_moving_ground = true
+	# Moving Ground
+	if bit_include(type, 0b1001):
 		moving_ground = get_slide_collision(collider).collider
-		momentum -= moving_ground.momentum
+		moving_ground.player = self
 	
-	if Layers[2]:
-		dead = true
-		deny_input = true
-	
-	if Layers[3]:
-		if Layers[4]:
-			finish(collider)
+	# Teleporter
+	if bit_match(type, 0b11000):
+		finish(get_slide_collision(collider).collider)
+
+
+func bit_match(num : int, pattern : int) -> bool:
+	return num ^ pattern == 0
+
+
+func bit_include(num : int, pattern : int) -> bool:
+	return num & pattern == pattern
 
 
 func punt(boost : Vector2, overwrite_momentum : bool, make_airborn : bool = true):
@@ -425,11 +433,16 @@ func play_loaded_recording(time : int):
 		return false
 
 
-func finish(collision):
+func finish(collider):
 	add_recording_data()
 	deny_input = true
 	end = true
-	get_slide_collision(collision).collider.teleport(float(int(timer * 100)) / 100, collectible, unlock, recording.duplicate())
+	collider.teleport(
+			stepify(timer, 0.01),
+			collectibles,
+			unlocks,
+			recording.duplicate()
+	)
 
 
 func setup_trail(trail_color : Color, amount_of_points : int = 40):

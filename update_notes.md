@@ -11,11 +11,13 @@
 
  - The main menu got almost completely redesigned, with every menu that it had originaly either completely overhalled or at least changed in some way.
    There were no escapees. On top of that, there are now also new menus! And also a new inaccesable menu! God damn!
+ - Achievements!
+ - Cheat Codes!
  - New timer setting, where it will only appear if you had beaten the level you are playing.
  - You can now screenshot the game with F2.
  - You can now save replays while playing the level with F6. This will save a replay without you needing to finish the level.
  - While looking at a replay, you can now pause it by pressing the jump button.
- - You can now unlock "missing" legitimately.
+
 
 ### VISUAL
 
@@ -49,7 +51,6 @@
    placing down tiles, and with a single left click it will allow you to fill
    in any holes you may have in the ground.
  - Added new shortcuts to temporarely hide layers.
- - There is now a shortcut to start playtesting the level.
  - In the edit layers panel, there is now a new option:__ Unicolor__! Turning this
    on will make every layer only one color.
  - Added a new objects:
@@ -84,6 +85,7 @@
 
 ### VISUAL
 
+ - Buttons no longer turn blue after pressing them.
  - You can now specify the "ui color" for a level group.
  - There are now more variations of dirt tiles.
  - More Blurees! i love trees trees so cool
@@ -92,10 +94,12 @@
 
 ### FIXES & CHANGES
 
- - Buttons no longer turn blue after pressing them.
+ - There is now a shortcut to start playtesting the level.
+ - Added a new dropdown menu for selecting a tab.
  - Attachables should no longer have wacky behaviours when you do anything complex with them.
  - Fixed a bug where you could have multiple of the same tile preset in the place panel.
  - You can now edit the order of portals.
+ - Portals nolonger break when multiple are placed.
  - Fixed playtested levels not reloading when you die or press reset.
  - Playtested levels no longer save as seperate levels.
  - Upon exiting a level when you are playtesting it, you will also exit SR. You won't need to go through the SR menu to get back to the editor.

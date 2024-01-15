@@ -538,9 +538,6 @@ func _process(_delta):
 				mouse_hinge = mouse_pos
 				if edit_node.has_method(\"edit_left_just_pressed\"):
 					edit_node.call(\"edit_left_just_pressed\", mouse_pos, $GUI/cursor.position, level.scale)
-			if Input.is_action_just_released(\"mouse_left\"):
-				if edit_node.has_method(\"edit_left_released\"):
-					edit_node.call(\"edit_left_released\", mouse_pos, $GUI/cursor.position, level.scale)
 			if edit_node.has_method(\"edit_left_pressed\"):
 				edit_node.call(\"edit_left_pressed\", mouse_pos, mouse_hinge)
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_right\"):
@@ -548,11 +545,14 @@ func _process(_delta):
 				mouse_hinge = mouse_pos
 				if edit_node.has_method(\"edit_right_just_pressed\"):
 					edit_node.call(\"edit_right_just_pressed\", mouse_pos, $GUI/cursor.position, level.scale)
-			if Input.is_action_just_released(\"mouse_right\"):
-				if edit_node.has_method(\"edit_right_released\"):
-					edit_node.call(\"edit_right_released\", mouse_pos, $GUI/cursor.position, level.scale)
 			if edit_node.has_method(\"edit_right_pressed\"):
 				edit_node.call(\"edit_right_pressed\", mouse_pos, mouse_hinge)
+		if (level_input.pressed or !$GUI.visible) and Input.is_action_just_released(\"mouse_left\"):
+			if edit_node.has_method(\"edit_left_released\"):
+				edit_node.call(\"edit_left_released\", mouse_pos, $GUI/cursor.position, level.scale)
+		if (level_input.pressed or !$GUI.visible) and Input.is_action_just_released(\"mouse_right\"):
+			if edit_node.has_method(\"edit_right_released\"):
+				edit_node.call(\"edit_right_released\", mouse_pos, $GUI/cursor.position, level.scale)
 	elif bucket_mode:
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
 			if Input.is_action_just_pressed(\"mouse_left\"):
@@ -711,6 +711,10 @@ func _process(_delta):
 				else:
 					property[0][0].set(property[1], property[2].get(property[3]))
 		$GUI/cursor/editor_vector.rotation_degrees = place_selected_object.rotation_degrees
+		
+		if place_selected_object.has_method(\"_selected_process\"):
+			place_selected_object._selected_process(_delta)
+	
 	if $GUI/cursor.visible and place_selected_decor.visible:
 		place_selected_decor.scale.x = $GUI/Edit_Items/Panel/other/scale_x.value
 		place_selected_decor.scale.y = $GUI/Edit_Items/Panel/other/scale_y.value
@@ -4392,11 +4396,11 @@ text = "???"
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
@@ -4418,8 +4422,8 @@ text = "???"
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_back" to="." method="layer_color_changed" binds= [ 1 ]]
 [connection signal="value_changed" from="GUI/Edit_Layers/Panel/scale_background" to="." method="layer_scale_changed" binds= [ 0 ]]
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_background" to="." method="layer_color_changed" binds= [ 0 ]]
-[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
 [connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
+[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
 [connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
 [connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="items_scroll_scrolling"]
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]

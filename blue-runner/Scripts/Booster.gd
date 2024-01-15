@@ -43,7 +43,5 @@ func _physics_process(_delta):
 
 func _on_Booster_body_entered(body):
 	if body.name == "Player":
-		body.punt(boost, overwrite_momentum)
-		body.punted = false
-		body.launched = false
+		body.punt(boost, overwrite_momentum, false)
 		disabled_timer = DISABLED_TIME

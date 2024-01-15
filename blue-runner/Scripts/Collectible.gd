@@ -30,10 +30,10 @@ func _process(_delta):
 func _on_area_entered(area):
 	if area.name == "Player":
 		if !collected: 
-			if unlock == "" and !area.collectible.has(Global.current_level + "*" + String(id)):
-				area.collectible.append(Global.current_level + "*" + String(id))
-			elif !area.unlock.has(unlock):
-				area.unlock.append(unlock)
+			if unlock == "" and !area.collectibles.has(Global.current_level + "*" + String(id)):
+				area.collectibles.append(Global.current_level + "*" + String(id))
+			elif !area.unlocks.has(unlock):
+				area.unlocks.append(unlock)
 			$Anim.play("Collect")
 		else:
 			$Anim.play("Collect Alt")

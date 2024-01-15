@@ -2,6 +2,8 @@ extends Node2D
 
 onready var level : Node2D
 
+export var is_finish : bool = true
+
 export var tele_destination : String = "*Menu_Level_Select"
 export var par : float = 0
 
@@ -34,9 +36,9 @@ func _ready():
 	#$Text.text = String(temp/3600)+":"+String(temp1/10)+String(temp1%10)+"."+String(temp2/10)+String(temp2%10)
 
 func _ready_deferred():
-	if name == "Portal":
+	if not is_finish:
 		$AnimationPlayer.current_animation = "Speen"
-	if name == "Finish":
+	if is_finish:
 		if level.get_script() != null:
 			if level.unicolor_active:
 				material.set_shader_param("active", true)
@@ -51,7 +53,7 @@ func _ready_deferred():
 			material.set_shader_param("color", Color(0.05, 0.9, 0.95))
 
 func _process(delta):
-	if name == "Finish":
+	if is_finish:
 		scale.x = 1
 		if get_parent().get_node("Player").position.x < position.x:
 			scale.x = -1
@@ -73,7 +75,14 @@ func teleport(timer : float, collectible : Array, collectible_unlock : Array, re
 	for i in collectible_unlock:
 		Global.unlock(i)
 	
-	if name == "Portal":
+	
+	if is_finish:
+		Global.save_game(timer, par, collectible, level.name, recording)
+		
+		# Victory anim
+		#if type == 0: $Visual_XT9/AnimationPlayer.current_animation = "Call"
+		level.get_node("Camera").end_zoom_in(self, tele_destination, timer, par)
+	else:
 		if not silent_portal:
 			Audio.play_sound("ZoopAway")
 		Global.save_game()
@@ -96,10 +105,3 @@ func teleport(timer : float, collectible : Array, collectible_unlock : Array, re
 			new_sprite.z_index = 99
 			
 			add_child(new_sprite)
-	
-	if name == "Finish":
-		Global.save_game(timer, par, collectible, level.name, recording)
-		
-		# Victory anim
-		#if type == 0: $Visual_XT9/AnimationPlayer.current_animation = "Call"
-		level.get_node("Camera").end_zoom_in(self, tele_destination, timer, par)
