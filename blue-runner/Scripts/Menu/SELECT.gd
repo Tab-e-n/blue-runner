@@ -40,11 +40,17 @@ var unlocked_characters : Array = []
 var selected_character : int = 0
 
 func _ready():
+	var group_not_found : bool = true
 	for i in Global.loaded_level_groups.size():
 		if Global.check_unlock_requirements(Global.loaded_level_groups[i][5][0], Global.loaded_level_groups[i][5][1], Global.loaded_level_groups[i][5][2]):
 			unlocked_level_groups.append(Global.loaded_level_groups[i])
 			if Global.current_level_location == Global.loaded_level_groups[i][1] + Global.loaded_level_groups[i][0] + "/":
 				group_current = unlocked_level_groups.size() - 1
+				group_not_found = false
+	if group_not_found:
+		group_current = 0
+		Global.current_level_location = unlocked_level_groups[0][1] + unlocked_level_groups[0][0] + "/"
+	
 	
 	var directory : Directory = Directory.new()
 	var check_exist = directory.open("user://SRLevels/")

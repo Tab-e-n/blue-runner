@@ -16,6 +16,7 @@ var momentum : Vector2 = Vector2(0, 0)
 
 var _last_on_moving_ground : bool = false
 var on_moving_ground : bool = false
+var moving_ground : Node2D = null
 var extra_momentum : Vector2 = Vector2(0, 0)
 
 var deny_input : bool = true
@@ -42,6 +43,7 @@ export var ghost : bool = false
 var break_breakables : bool = false
 var break_just_happened : bool = false
 var punted : bool = false
+var boosted : bool = false
 var launched : bool = false
 var speeding : bool = false
 
@@ -279,23 +281,28 @@ func is_jump_input_just_pressed():
 func move_player_character():
 	collision_mask = 1048575
 	# warning-ignore:return_value_discarded
-	move_and_slide(momentum + extra_momentum, Vector2(0, -1))
+	var ground_momentum : Vector2 = Vector2(0, 0)
+	if on_moving_ground:
+		ground_momentum = moving_ground.momentum
+	move_and_slide(momentum + extra_momentum + ground_momentum, Vector2(0, -1))
 	collision_mask = 1
 	
 	break_just_happened = false
 	on_moving_ground = false
+#	punted = false
+#	boosted = false
+	set_deferred("punted", false)
+	set_deferred("boosted", false)
 	set_deferred("launched", false)
 	for i in get_slide_count():
 		collision_default_effects(get_slide_collision(i).collider.collision_layer, i)
 	if on_moving_ground != _last_on_moving_ground and on_moving_ground == false:
-		momentum += extra_momentum
-		extra_momentum = Vector2(0, 0)
+		momentum += moving_ground.momentum
+		moving_ground = null
 	_last_on_moving_ground = on_moving_ground
 
 
 func collision_default_effects(collider_type : int, collider):
-	punted = false
-	
 	var Layers : Array = []
 	Layers.resize(20)
 	var l : int = 0
@@ -327,7 +334,8 @@ func collision_default_effects(collider_type : int, collider):
 	
 	if Layers[0] and Layers[3]:
 		on_moving_ground = true
-		extra_momentum = get_slide_collision(collider).collider.momentum
+		moving_ground = get_slide_collision(collider).collider
+		momentum -= moving_ground.momentum
 	
 	if Layers[2]:
 		dead = true
@@ -338,7 +346,7 @@ func collision_default_effects(collider_type : int, collider):
 			finish(collider)
 
 
-func punt(boost : Vector2, overwrite_momentum : bool):
+func punt(boost : Vector2, overwrite_momentum : bool, make_airborn : bool = true):
 	#var sign_ = sign(boost.x)
 	#if boost.x * sign_ > momentum.x * sign_:
 	#	momentum.x = boost.x
@@ -371,10 +379,12 @@ func punt(boost : Vector2, overwrite_momentum : bool):
 	elif sign(boost.y) != 0:
 		momentum.y = boost.y
 	
-	state = "air"
-	punted = true
-	if momentum.y < -1500:
-		launched = true
+	boosted = true
+	if make_airborn:
+		state = "air"
+		punted = true
+		if momentum.y < -1500:
+			launched = true
 
 
 func play_sound(sound_name : String):

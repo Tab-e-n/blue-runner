@@ -16,6 +16,7 @@ var can_attack : bool = true
 var frame_skip : bool = true
 
 var jumping : bool = false
+var punted : bool = false
 
 const UNICOLOR_COLOR : Color = Color(0, 0.75, 0, 1)
 
@@ -25,6 +26,8 @@ func _ready():
 
 
 func _physics_process(delta):
+	if player.boosted:
+		punted = true
 	frame_skip = not frame_skip
 	
 	if player.is_jump_input_just_pressed(): # Check Jump Key
@@ -49,6 +52,11 @@ func _physics_process(delta):
 		$attack/coll.disabled = true
 	if !player.deny_input:
 		if frame_skip:
+			if punted:
+				momentum.x = player.momentum.x * delta
+				momentum.y = round(player.momentum.y * delta)
+				punted = false
+			
 			# Variables needing to be before something
 			# warning-ignore:narrowing_conversion
 			wall_jump -= sign(wall_jump)
@@ -71,7 +79,7 @@ func _physics_process(delta):
 			if key_right:
 				Direction += 1
 			
-			momentum.x += float(Direction) - ( momentum.x / MAX_SPEED ) # Set SPEED
+			momentum.x += float(Direction) - min(momentum.x / MAX_SPEED, 1) # Set SPEED
 			
 			if round(abs(momentum.x)) == 1 and Direction == 0:
 				momentum.x = 0
@@ -167,16 +175,11 @@ func _physics_process(delta):
 			if player.move_and_collide(Vector2(0,momentum.y), false, true, true):
 				momentum.y = 0
 			
-			print(momentum)
-#			momentum.x = player.momentum.x / 60
-#			momentum.y = round(player.momentum.y / 60)
-			print(Vector2(player.momentum.x / 60, round(player.momentum.y / 60)))
-			
 			# Variables needing to be after something
 			air_break = 0
 		
 		player.move_player_character()
-#		print(player.momentum)
+		#print("After: ", player.momentum)
 		
 		$attack.visible = attack_timer > 0
 		$attack/coll.disabled = attack_timer == 0
@@ -194,9 +197,13 @@ func _physics_process(delta):
 		pass
 
 
-func _on_attack_connected(_body):
+func _on_attack_connected(body):
 	if !player.deny_input:
 		momentum.y = -BOUNCE_STRENGH
 		attack_timer = 0
 		player.jump_buffer = 0
 		can_attack = true
+		if body.collision_layer % 2 and (body.collision_layer / 2) % 2:
+			body.break_active = true
+			body.break_position = player.position + $attack.position
+			player.break_just_happened = true
