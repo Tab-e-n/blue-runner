@@ -401,7 +401,6 @@ func load_replays():
 		var _last_replay : String = "*"
 		
 		_last_replay = dir.get_next()
-		var dir_empty : bool = true
 		while _last_replay != "":
 			if dir.current_is_dir():
 				var dont_skip : bool = true

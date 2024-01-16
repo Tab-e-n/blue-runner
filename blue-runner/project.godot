@@ -165,3 +165,4 @@ screenshot={
 
 environment/default_clear_color=Color( 0.0156863, 0.0235294, 0.133333, 1 )
 environment/default_environment="res://default_env.tres"
+quality/dynamic_fonts/use_oversampling=false

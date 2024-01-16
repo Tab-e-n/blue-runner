@@ -3,12 +3,13 @@
 [ext_resource path="res://Visual/Menu/menu_circle.png" type="Texture" id=1]
 [ext_resource path="res://Visual/Menu/options_rectangle.png" type="Texture" id=2]
 [ext_resource path="res://Scripts/Menu/OPTIONS.gd" type="Script" id=3]
-[ext_resource path="res://Scripts/menu_shader.shader" type="Shader" id=4]
+[ext_resource path="res://Scripts/Menu/menu_shader.shader" type="Shader" id=4]
 [ext_resource path="res://Visual/Menu/cursor.png" type="Texture" id=5]
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=6]
 [ext_resource path="res://Text/Text_Options.tscn" type="PackedScene" id=7]
 [ext_resource path="res://Visual/particle_big_star.png" type="Texture" id=8]
 [ext_resource path="res://Text/Shixel.tres" type="DynamicFont" id=9]
+
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 4 )

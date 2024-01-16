@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Scripts/Menu/SELECT.gd" type="Script" id=1]
 [ext_resource path="res://Objects/Level.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Scripts/menu_shader.shader" type="Shader" id=3]
+[ext_resource path="res://Scripts/Menu/menu_shader.shader" type="Shader" id=3]
 [ext_resource path="res://Visual/Menu/play_wiggles.png" type="Texture" id=4]
 [ext_resource path="res://Visual/Menu/play_edges.png" type="Texture" id=5]
 [ext_resource path="res://Visual/Menu/options_rectangle.png" type="Texture" id=6]
@@ -22,6 +22,7 @@
 [ext_resource path="res://Text/Shixel.tres" type="DynamicFont" id=20]
 [ext_resource path="res://Text/Shixel_Small.tres" type="DynamicFont" id=21]
 [ext_resource path="res://Visual/Menu/select_rectangle.png" type="Texture" id=22]
+
 
 [sub_resource type="Animation" id=1]
 resource_name = "CHARACTER -> LEVEL"

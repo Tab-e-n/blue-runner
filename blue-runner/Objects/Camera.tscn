@@ -6,8 +6,9 @@
 [ext_resource path="res://Visual/camera_input_continue.png" type="Texture" id=4]
 [ext_resource path="res://Text/Shixel.tres" type="DynamicFont" id=5]
 [ext_resource path="res://Visual/camera_input_reset.png" type="Texture" id=6]
-[ext_resource path="res://Scripts/menu_shader.shader" type="Shader" id=7]
+[ext_resource path="res://Scripts/Menu/menu_shader.shader" type="Shader" id=7]
 [ext_resource path="res://Text/Shixel_Outlined.tres" type="DynamicFont" id=8]
+
 
 [sub_resource type="Animation" id=1]
 resource_name = "end_zoom_in"

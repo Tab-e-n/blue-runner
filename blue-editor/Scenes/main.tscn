@@ -61,11 +61,11 @@ var edit_storage : PackedScene = PackedScene.new()
 onready var level_input : Button = $GUI/Level
 onready var level : Node2D = $Game/Level
 var level_objects : Dictionary = {
+	\"camera\" : null,
+	\"bg\" : null,
 	\"player\" : null,
 	\"ghost\" : null,
 	\"finish\" : null,
-	\"camera\" : null,
-	\"bg\" : null,
 }
 
 const LEVEL_TILE_SUBLAYER_AMOUNT = 3
@@ -905,6 +905,15 @@ func create_new_level_objects(object_type : String):
 				node.editor_ready()
 			level_objects[object_type] = node
 
+
+func order_level_objects():
+	var order = 0
+	for obj in level_objects.values():
+		if obj:
+			level.move_child(obj, order)
+			order += 1
+
+
 func create_new_level_option_select(option_button, setting : String):
 	for i in range(option_button.get_item_count()):
 		if option_button.get_item_text(i) == data.settings[setting][0] and option_button.get_item_metadata(i) == data.settings[setting][1]:
@@ -925,14 +934,20 @@ func save_level(level_filename : String = \"Level\"):
 	level.scale = Vector2(1, 1)
 	if level_objects[\"camera\"] != null:
 		level_objects[\"camera\"].name = \"Camera\"
+		level_objects[\"camera\"].z_index = 100
 	if level_objects[\"bg\"] != null:
 		level_objects[\"bg\"].name = \"BG\"
+		level_objects[\"bg\"].z_index = -100
 	if level_objects[\"player\"] != null:
 		level_objects[\"player\"].name = \"Player\"
+		level_objects[\"player\"].z_index = 20
 	if level_objects[\"ghost\"] != null:
 		level_objects[\"ghost\"].name = \"Ghost\"
+		level_objects[\"ghost\"].z_index = 15
 	if level_objects[\"finish\"] != null:
 		level_objects[\"finish\"].name = \"Finish\"
+		level_objects[\"finish\"].z_index = 20
+	order_level_objects()
 	
 	#set_owner_recursive(level.get_children())
 	
@@ -1265,7 +1280,10 @@ func object_select(object_file : String, _object : Node = null, no_selected_obje
 	$GUI/Edit_Items/Panel/other/scale_x.editable = !editor_properties_node.editor_properties[\"unchangeable_properties\"][\"scale\"]
 	$GUI/Edit_Items/Panel/other/scale_y.editable = !editor_properties_node.editor_properties[\"unchangeable_properties\"][\"scale\"]
 	$GUI/Edit_Items/Panel/other/rotation.editable = !editor_properties_node.editor_properties[\"unchangeable_properties\"][\"rotation\"]
-	$GUI/Edit_Items/Panel/other/z_index.editable = !editor_properties_node.editor_properties[\"unchangeable_properties\"][\"z_index\"]
+	if editor_properties_node.editor_properties[\"layer\"] == \"selected\":
+		$GUI/Edit_Items/Panel/other/z_index.editable = !editor_properties_node.editor_properties[\"unchangeable_properties\"][\"z_index\"]
+	else:
+		$GUI/Edit_Items/Panel/other/z_index.editable = false
 	$GUI/Edit_Items/Panel/other/color.disabled = editor_properties_node.editor_properties[\"unchangeable_properties\"][\"color\"]
 	$GUI/Edit_Items/Panel/other/order.editable = !editor_properties_node.editor_properties[\"unchangeable_properties\"][\"order\"]
 	edit_scroll.value = 0
@@ -1512,7 +1530,6 @@ func level_add_objects():
 	var attachable
 	
 	var layer : String
-	var z_add = 0
 	if place_attach_mode:
 		attachable = level_closest_item(null, true)
 		if new_object.editor_properties[\"object_type\"] != \"normal\":
@@ -1526,10 +1543,9 @@ func level_add_objects():
 			return
 	else:
 		if new_object.editor_properties[\"layer\"] != \"selected\":
-			var layer_name = new_object.editor_properties[\"layer\"]
 			layer = \"Game/Level\"
-			if layer_name == \"special\":
-				z_add = 20
+#			if layer_name == \"special\":
+#				z_add = 20
 			#\"bg\": z_add = -100
 			#\"camera\": z_add = 100
 		else:
@@ -1548,9 +1564,17 @@ func level_add_objects():
 	new_object.scale = place_selected_object.scale
 	new_object.rotation_degrees = place_selected_object.rotation_degrees
 	new_object.modulate = place_selected_object.modulate
-	if new_object.editor_properties[\"layer\"] == \"selected\":
+	var layer_type = new_object.editor_properties[\"layer\"]
+	if layer_type == \"selected\":
 		new_object.use_parent_material = true
-	new_object.z_index = place_selected_object.z_index + z_add
+		new_object.z_index = place_selected_object.z_index
+	elif layer_type == \"special\":
+		new_object.z_index = 20
+	elif layer_type == \"bg\":
+		new_object.z_index = -100
+	elif layer_type == \"camera\":
+		new_object.z_index = 100
+	
 	if place_current_layer != LAYER_CENTER and new_object.editor_properties[\"layer\"] != \"special\":
 		for i in new_object.get_property_list():
 			if i[\"name\"] == \"collision_layer\":
@@ -1893,7 +1917,10 @@ func place_tab_move(direction : int = 0, tab : int = -1):
 			$GUI/Edit_Items/Panel/other/scale_x.editable = !place_selected_object.editor_properties[\"unchangeable_properties\"][\"scale\"]
 			$GUI/Edit_Items/Panel/other/scale_y.editable = !place_selected_object.editor_properties[\"unchangeable_properties\"][\"scale\"]
 			$GUI/Edit_Items/Panel/other/rotation.editable = !place_selected_object.editor_properties[\"unchangeable_properties\"][\"rotation\"]
-			$GUI/Edit_Items/Panel/other/z_index.editable = !place_selected_object.editor_properties[\"unchangeable_properties\"][\"z_index\"]
+			if place_selected_object.editor_properties[\"layer\"] == \"selected\":
+				$GUI/Edit_Items/Panel/other/z_index.editable = !place_selected_object.editor_properties[\"unchangeable_properties\"][\"z_index\"]
+			else:
+				$GUI/Edit_Items/Panel/other/z_index.editable = false
 			$GUI/Edit_Items/Panel/other/color.disabled = place_selected_object.editor_properties[\"unchangeable_properties\"][\"color\"]
 			$GUI/Edit_Items/Panel/other/order.editable = !place_selected_object.editor_properties[\"unchangeable_properties\"][\"order\"]
 			
@@ -4396,11 +4423,11 @@ text = "???"
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
@@ -4422,8 +4449,8 @@ text = "???"
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_back" to="." method="layer_color_changed" binds= [ 1 ]]
 [connection signal="value_changed" from="GUI/Edit_Layers/Panel/scale_background" to="." method="layer_scale_changed" binds= [ 0 ]]
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_background" to="." method="layer_color_changed" binds= [ 0 ]]
-[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
 [connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
+[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
 [connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
 [connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="items_scroll_scrolling"]
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]

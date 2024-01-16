@@ -4,13 +4,14 @@
 [ext_resource path="res://Visual/Menu/button.png" type="Texture" id=2]
 [ext_resource path="res://Scripts/Menu/REPLAY.gd" type="Script" id=3]
 [ext_resource path="res://Visual/Menu/replay_cassette.png" type="Texture" id=4]
-[ext_resource path="res://Scripts/menu_shader.shader" type="Shader" id=5]
+[ext_resource path="res://Scripts/Menu/menu_shader.shader" type="Shader" id=5]
 [ext_resource path="res://Visual/Menu/options_rectangle.png" type="Texture" id=6]
 [ext_resource path="res://Visual/Menu/replay_rack.png" type="Texture" id=7]
 [ext_resource path="res://Visual/Menu/replay_rack_start.png" type="Texture" id=8]
 [ext_resource path="res://Visual/Menu/replay_rack_end.png" type="Texture" id=9]
 [ext_resource path="res://Scripts/Menu/Scrolling_Text.gd" type="Script" id=10]
 [ext_resource path="res://Visual/Menu/replay_directory_walls.png" type="Texture" id=11]
+
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 5 )

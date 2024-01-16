@@ -94,7 +94,7 @@ func _physics_process(delta):
 				-1:
 					player.facing = "left"
 			if attack_timer == 0:
-				if round(abs(momentum.x)) == MAX_SPEED:
+				if round(abs(momentum.x)) >= MAX_SPEED:
 					$Anim.play("SpeedMove")
 				else:
 					$Anim.play("Move")

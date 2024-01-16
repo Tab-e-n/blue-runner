@@ -69,7 +69,7 @@ func _on_replay_looped(_player : Node2D = null):
 
 func go_to_tutorial_level():
 	Global.doing_tutorial = true
-	Global.change_level("*res://Scenes/Tutorial.tscn")
+	Global.change_level("*res://Scenes/other/Tutorial.tscn")
 
 func set_tutorial():
 	var tut_name = tutorials[current_tutorial]

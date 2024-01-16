@@ -36,9 +36,9 @@ func _ready():
 	$border.visible = true
 	$finish.visible = false
 	$complete_dark.visible = true
-	if $"/root/Global".options["*timer_on"] == 1:
+	if Global.options["*timer_on"] == 1:
 		visible_timer = true
-	elif $"/root/Global".options["*timer_on"] == 2:
+	elif Global.options["*timer_on"] == 2:
 		visible_timer = Global.check_unlock_requirements(Global.UNLOCK_BEAT, Global.current_level_location, Global.current_level)
 	
 	if get_parent().has_node("BG"):
@@ -57,8 +57,8 @@ func _ready():
 	$info/text.visible = speedometer_active or visible_timer
 	$info/speed.visible = speedometer_active
 	
-	$finish/continue.text = $"/root/Global".key_names(4)
-	$finish/reset.text = $"/root/Global".key_names(6)
+	$finish/continue.text = Global.key_names(4)
+	$finish/reset.text = Global.key_names(6)
 	
 	if Global.compatibility_mode:
 		compatibility_mode = true

@@ -387,7 +387,7 @@ func change_level(destination : String, return_value : bool = false, check_depen
 	elif destination == "*MENU" or destination == "*Menu_Level_Select" or destination == "*Menu_Level_Select.tscn":
 		destination_new = "res://Scenes/MENU.tscn"
 	elif destination == "*Level_Missing":
-		destination_new = "res://Scenes/Level_Missing.tscn"
+		destination_new = "res://Scenes/other/Level_Missing.tscn"
 	elif destination == "*Level_Next" and current_level_location == "user://SRLevels/":
 		destination_new = "res://Scenes/MENU.tscn"
 	elif destination == "*Level_Next" and not level_group.has("levels"):
@@ -432,23 +432,25 @@ func change_level(destination : String, return_value : bool = false, check_depen
 		
 #		print("CL " + current_level)
 #		print("CLL " + current_level_location)
-	if error == OK:
-#		print(destination_new)
-		error = change_scene_level(destination_new, return_value)
+		if error == OK:
+#			print(destination_new)
+			error = change_scene_level(destination_new, return_value)
+	else:
+		error = get_tree().change_scene(destination_new)
 	if return_value:
 		return error
 	elif error != OK:
 		if playtesting:
 			get_tree().quit()
 		# warning-ignore:return_value_discarded
-		get_tree().change_scene("res://Scenes/MENU.tscn")
-#		call_deferred("make_text_debug", String(destination_new), String(error))
+		get_tree().change_scene("res://Scenes/other/Level_Missing.tscn")
+		call_deferred("make_text_debug", String(destination_new) + " " + String(error))
 
 
-func make_text_debug(one, two):
+func make_text_debug(_text : String):
 		var text = RichTextLabel.new()
 		text.rect_size = Vector2(1024, 1024)
-		text.text = ":" + one + " " + two + ":"
+		text.text = _text
 		get_tree().current_scene.add_child(text)
 		print(get_tree().current_scene.name)
 

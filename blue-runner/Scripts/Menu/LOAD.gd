@@ -116,7 +116,7 @@ func _physics_process(_delta):
 	if current_section == SECTION_GOING_TO_TUTORIAL and text_current_line == TUTORIAL_TEXT.size():
 		# *TUTORIAL*
 		Global.doing_tutorial = true
-		Global.change_level("*res://Scenes/Tutorial.tscn")
+		Global.change_level("*res://Scenes/other/Tutorial.tscn")
 	
 	if is_changing_audio:
 		if Input.is_action_just_pressed("accept"):
