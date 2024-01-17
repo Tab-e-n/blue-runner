@@ -853,7 +853,10 @@ func load_game():
 
 func delete_save(): 
 	level_completion.clear()
-	unlocked.clear()
+	unlocked = {
+		"*char_select_active" : false,
+		"completion_percentages" : {},
+	}
 	save_game()
 
 
@@ -939,9 +942,6 @@ func update_old_save(version : String, save : Dictionary):
 		else:
 			save["options"]["*timer_on"] = 0
 		
-		if not save["unlocked"].has("completion_percentages"):
-			save["unlocked"]["completion_percentages"] = {}
-		
 		version = "2.0.0"
 	if version == "1.2.0-dev":
 		if !save["unlocked"].has("completion_percentages"):
@@ -951,6 +951,8 @@ func update_old_save(version : String, save : Dictionary):
 	
 	if not save["unlocked"].has("*char_select_active"):
 		save["unlocked"]["*char_select_active"] = false
+	if not save["unlocked"].has("completion_percentages"):
+		save["unlocked"]["completion_percentages"] = {}
 	for i in DEFAULT_OPTIONS.keys():
 		if !save["options"].has(i):
 			save["options"][i] = DEFAULT_OPTIONS[i]
