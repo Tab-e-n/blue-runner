@@ -65,7 +65,7 @@ func _ready():
 #	print("Player")
 	
 	for i in range(8):
-		if Input.is_action_pressed(Global.keybind_names[i].trim_prefix("*")):
+		if Input.is_action_pressed(Global.KEYBIND_NAMES[i].trim_prefix("*")):
 			start_timer = true
 	
 	visible = true
