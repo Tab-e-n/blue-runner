@@ -154,6 +154,14 @@ func _exit_tree():
 	save_game()
 
 
+func fade_float(start : float, end : float, progress : float) -> float:
+	if progress == 0:
+		return start
+	if progress == 1:
+		return end
+	return start + (end - start) * progress
+
+
 func change_input(input_id : int, new_input):
 	var input_string : String = keybind_names[input_id].trim_prefix("*")
 #	print(input_string)
