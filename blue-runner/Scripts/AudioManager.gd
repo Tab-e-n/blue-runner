@@ -3,6 +3,7 @@ extends Node
 
 const SOUND_EFFECT_LIMIT : int = 32
 const FADE_TIME : float = 2.0
+const FAST_FADE_TIME : float = 0.1
 
 
 var current_music : AudioStreamPlayer
@@ -10,6 +11,7 @@ var last_music : AudioStreamPlayer
 
 
 var fading : float = 0.0
+var fast_fade : bool = false
 
 
 func _physics_process(delta):
@@ -46,7 +48,7 @@ func play_sound(soundname : String, pitch : float = 1, random_pitch_range : floa
 	sound.play()
 
 
-func play_music(musicname : String):
+func play_music(musicname : String, fast : bool = true):
 	
 	if Global.options["*audio_music"] == 0:
 		return
@@ -63,7 +65,11 @@ func play_music(musicname : String):
 	current_music.volume_db = -24
 	
 	add_child(current_music)
-	fading = FADE_TIME
+	fast_fade = fast
+	if fast:
+		fading = FAST_FADE_TIME
+	else:
+		fading = FADE_TIME
 	current_music.play()
 
 
@@ -74,11 +80,17 @@ func volume_conversion(opt_volume) -> float:
 func fade_music(delta):
 	fading -= delta
 	var volume = volume_conversion(Global.options["*audio_music"])
+	var fade_progress : float
+	if fast_fade:
+		fade_progress = fading / FAST_FADE_TIME
+	else:
+		fade_progress = fading / FADE_TIME
 	if fading > 0:
 		if last_music:
-			last_music.volume_db = Global.fade_float(-24, volume, fading / FADE_TIME)
-		current_music.volume_db = Global.fade_float(-24, volume, 1.0 - fading / FADE_TIME)
+			last_music.volume_db = Global.fade_float(-24, volume, fade_progress)
+		current_music.volume_db = Global.fade_float(-24, volume, 1.0 - fade_progress)
 	else:
-		last_music.queue_free()
+		if last_music:
+			last_music.queue_free()
 		current_music.volume_db = volume
 	
