@@ -85,11 +85,12 @@ const controls_meta_buttons : Array = [
 const audio_buttons : Array = [
 	["== AUDIO ==", "label"],
 	["", "label"],
-	["SFX", "slider", "*audio_sfx", [0, 100]],
-#	["MUSIC", "slider", "*audio_music", [0, 100]],
+	["SFX", "slider", "*audio_sfx", [0, 100], ""],
+	["MUSIC", "slider", "*audio_music", [0, 100], "music_slider_update"],
 ]
 
 var where_to_go_back : String = "main"
+
 
 func make_options(menu_buttons : Array):
 	var section : int = 1
@@ -165,7 +166,7 @@ func make_options(menu_buttons : Array):
 				new_slider.max_value = menu_buttons[i][3][1]
 				new_slider.value = Global.options[menu_buttons[i][2]]
 				$buttons.add_child(new_slider)
-				buttons.append(["slider", new_slider, menu_buttons[i][2]])
+				buttons.append(["slider", new_slider, menu_buttons[i][2], menu_buttons[i][4]])
 			"enum":
 				var new_text = text.instance()
 				new_text.rect_position = pos - Vector2(0, 4)
@@ -195,13 +196,16 @@ func make_options(menu_buttons : Array):
 	buttons.append(["back"])
 	add_cursor_pos(Vector2(-576, 304))
 
+
 func add_cursor_pos(button_position : Vector2):
 	cursor_positions.append(button_position + Vector2(-24, 16))
+
 
 func _ready():
 	change_menu(current_menu)
 	scale = Vector2(0, 0)
 	$mainAnim.play("enter")
+
 
 func _input(event):
 	if event is InputEventKey:
@@ -213,6 +217,7 @@ func _input(event):
 			confirmation = false
 		if event.pressed and disabled_popup:
 			disabled_popup = false
+
 
 func menu_update():
 	for i in buttons:
@@ -230,13 +235,9 @@ func menu_update():
 		$cursor/anim.stop()
 		$cursor/anim.play("Spin")
 	if Input.is_action_pressed("menu_left") and parent.move and slider:
-		if buttons[cursor_row][1].value != buttons[cursor_row][1].min_value:
-			buttons[cursor_row][1].value -= 1
-			$slider_value.text = String(buttons[cursor_row][1].value)
+		move_slider(-1)
 	if Input.is_action_pressed("menu_right") and parent.move and slider:
-		if buttons[cursor_row][1].value != buttons[cursor_row][1].max_value:
-			buttons[cursor_row][1].value += 1
-			$slider_value.text = String(buttons[cursor_row][1].value)
+		move_slider(1)
 	if Input.is_action_just_pressed("accept") and !keybinds:
 		$cursor/anim.stop()
 		$cursor/anim.play("Select")
@@ -244,9 +245,7 @@ func menu_update():
 	if Input.is_action_just_pressed("deny") and !keybinds and !confirm_popup:
 		if slider:
 			buttons[cursor_row][1].value = starting_slider_pos
-			confirmation = false
-			slider = false
-			$slider_value.visible = false
+			end_slider()
 		elif cursor_row != cursor_positions.size() - 1:
 			$cursor/anim.stop()
 			$cursor/anim.play("Spin")
@@ -268,6 +267,20 @@ func menu_update():
 	$disabled.visible = disabled_popup
 	
 	material.set_shader_param("offset", pulse_time)
+
+
+func move_slider(direction : int):
+	var end_value : int
+	if direction == -1:
+		end_value = buttons[cursor_row][1].min_value
+	else:
+		end_value = buttons[cursor_row][1].max_value
+	
+	if buttons[cursor_row][1].value != end_value:
+		buttons[cursor_row][1].value += direction
+		$slider_value.text = String(buttons[cursor_row][1].value)
+		slider_call()
+
 
 func change_menu(menu : String):
 	current_menu = menu
@@ -293,6 +306,7 @@ func change_menu(menu : String):
 			make_options(controls_meta_buttons)
 			where_to_go_back = "controls"
 
+
 func select():
 	match(buttons[cursor_row][0]):
 		"back":
@@ -317,10 +331,8 @@ func select():
 				$slider_value.rect_position = cursor.position + Vector2(352, -20)
 				$slider_value.text = String(buttons[cursor_row][1].value)
 			else:
-				confirmation = false
-				slider = false
 				Global.options[buttons[cursor_row][2]] = buttons[cursor_row][1].value
-				$slider_value.visible = false
+				end_slider()
 		"enum":
 			Global.options[buttons[cursor_row][2]] += 1
 			if Global.options[buttons[cursor_row][2]] == buttons[cursor_row][3].size():
@@ -346,3 +358,23 @@ func select():
 			buttons[cursor_row][1].text = "???"
 			confirmation = true
 			keybinds = true
+
+
+func slider_call():
+	if buttons[cursor_row][3] != "":
+		call(buttons[cursor_row][3], buttons[cursor_row][1].value)
+
+
+func end_slider():
+	confirmation = false
+	slider = false
+	$slider_value.visible = false
+	slider_call()
+
+
+func sfx_slider_update(value):
+	pass
+
+
+func music_slider_update(value):
+	Audio.change_music_status(value)

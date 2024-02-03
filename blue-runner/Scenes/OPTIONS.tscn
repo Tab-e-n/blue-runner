@@ -10,7 +10,6 @@
 [ext_resource path="res://Visual/particle_big_star.png" type="Texture" id=8]
 [ext_resource path="res://Text/Shixel.tres" type="DynamicFont" id=9]
 
-
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 4 )
 shader_param/color = Plane( 0.25, 0.75, 0.75, 1 )

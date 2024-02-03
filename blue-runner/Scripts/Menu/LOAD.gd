@@ -109,10 +109,10 @@ func _physics_process(_delta):
 	if current_section == SECTION_FIRST_TIME and text_current_line == LORE_TEXT.size():
 		$audio_text.visible = true
 		$sfx.visible = true
-#		$music.visible = true
-#		$cursor.visible = true
+		$music.visible = true
+		$cursor.visible = true
 		is_changing_audio = true
-#		audio_cursor()
+		audio_cursor()
 	if current_section == SECTION_GOING_TO_TUTORIAL and text_current_line == TUTORIAL_TEXT.size():
 		# *TUTORIAL*
 		Global.doing_tutorial = true
@@ -155,21 +155,32 @@ func _physics_process(_delta):
 				slider_text = "MUSIC "
 		
 		if Input.is_action_pressed("menu_left") and move:
-			if slider.value != slider.min_value:
-				slider.value -= 1
-				slider.get_node("text").text = slider_text + String(slider.value)
+			move_audio_slider(-1, slider, slider_text)
 		if Input.is_action_pressed("menu_right") and move:
-			if slider.value != slider.max_value:
-				slider.value += 1
-				slider.get_node("text").text = slider_text + String(slider.value)
-#		if Input.is_action_just_pressed("menu_up") and current_audio != 0:
-#			current_audio -= 1
-#			audio_cursor()
-#		if Input.is_action_just_pressed("menu_down") and current_audio != 1:
-#			current_audio += 1
-#			audio_cursor()
+			move_audio_slider(1, slider, slider_text)
+		if Input.is_action_just_pressed("menu_up") and current_audio != 0:
+			current_audio -= 1
+			audio_cursor()
+		if Input.is_action_just_pressed("menu_down") and current_audio != 1:
+			current_audio += 1
+			audio_cursor()
 		
 		move = false
+
+
+func move_audio_slider(direction : int, slider : HSlider, slider_text : String):
+	var end_value
+	if direction == -1:
+		end_value = slider.min_value
+	else:
+		end_value = slider.max_value
+	
+	if slider.value != end_value:
+		slider.value += direction
+		slider.get_node("text").text = slider_text + String(slider.value)
+		if current_audio == 1:
+			# warning-ignore:narrowing_conversion
+			Audio.change_music_status(slider.value)
 
 
 func audio_cursor():

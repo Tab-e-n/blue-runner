@@ -6,6 +6,7 @@ const FADE_TIME : float = 2.0
 const FAST_FADE_TIME : float = 0.1
 
 
+var song_name : String = ""
 var current_music : AudioStreamPlayer
 var last_music : AudioStreamPlayer
 
@@ -19,10 +20,15 @@ func _physics_process(delta):
 		fade_music(delta)
 
 
-func play_sound(soundname : String, pitch : float = 1, random_pitch_range : float = -1):
+func play_sound(soundname : String, pitch : float = 1, random_pitch_range : float = -1, custom_volume : int = -1):
 	
-	if Global.options["*audio_sfx"] == 0:
+	var volume : int
+	if custom_volume >= 0:
+		volume = custom_volume
+	elif Global.options["*audio_sfx"] == 0:
 		return
+	else:
+		volume = Global.options["*audio_sfx"]
 	
 	if get_child_count() > SOUND_EFFECT_LIMIT:
 		return
@@ -42,7 +48,7 @@ func play_sound(soundname : String, pitch : float = 1, random_pitch_range : floa
 	else:
 		sound.pitch_scale = pitch
 	
-	sound.volume_db = volume_conversion(Global.options["*audio_sfx"])
+	sound.volume_db = volume_conversion(volume)
 	
 	add_child(sound)
 	sound.play()
@@ -50,8 +56,9 @@ func play_sound(soundname : String, pitch : float = 1, random_pitch_range : floa
 
 func play_music(musicname : String, fast : bool = true):
 	
-	if Global.options["*audio_music"] == 0:
+	if song_name == musicname:
 		return
+	song_name = musicname
 	
 	var f : File = File.new()
 	
@@ -65,12 +72,17 @@ func play_music(musicname : String, fast : bool = true):
 	current_music.volume_db = -24
 	
 	add_child(current_music)
-	fast_fade = fast
-	if fast:
-		fading = FAST_FADE_TIME
-	else:
-		fading = FADE_TIME
-	current_music.play()
+	
+	if Global.options["*audio_music"] > 0:
+		fast_fade = fast
+		if fast:
+			fading = FAST_FADE_TIME
+		else:
+			fading = FADE_TIME
+		
+		current_music.play()
+	elif last_music:
+		last_music.queue_free()
 
 
 func volume_conversion(opt_volume) -> float:
@@ -93,4 +105,21 @@ func fade_music(delta):
 		if last_music:
 			last_music.queue_free()
 		current_music.volume_db = volume
+
+
+func change_music_status(preset_volume : int = -1):
+	if not current_music:
+		return
 	
+	var volume
+	if preset_volume >= 0:
+		volume = preset_volume
+	else:
+		volume = Global.options["*audio_music"]
+	
+	current_music.volume_db = volume_conversion(volume)
+	
+	if volume > 0 and not current_music.playing:
+		current_music.play()
+	elif volume == 0 and current_music.playing:
+		current_music.stop()
