@@ -19,7 +19,7 @@ func reload():
 	
 	var level_location : String = Global.current_level_location
 	
-	if level_location == "user://SRLevels/" or level_location == "":
+	if level_location == Global.USER_LEVELS or level_location == "":
 		sprite.texture = preload("res://Visual/no_image.png")
 		add_child(sprite)
 		return

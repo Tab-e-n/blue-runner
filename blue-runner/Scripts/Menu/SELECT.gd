@@ -42,18 +42,18 @@ var selected_character : int = 0
 func _ready():
 	var group_not_found : bool = true
 	for i in Global.loaded_level_groups.size():
-		if Global.check_unlock_requirements(Global.loaded_level_groups[i][5][0], Global.loaded_level_groups[i][5][1], Global.loaded_level_groups[i][5][2]):
+		if Global.check_loaded_group_unlocked(i):
 			unlocked_level_groups.append(Global.loaded_level_groups[i])
-			if Global.current_level_location == Global.loaded_level_groups[i][1] + Global.loaded_level_groups[i][0] + "/":
+			if Global.current_level_location == Global.location_of_loaded_group(i):
 				group_current = unlocked_level_groups.size() - 1
 				group_not_found = false
 	if group_not_found:
 		group_current = 0
-		Global.current_level_location = unlocked_level_groups[0][1] + unlocked_level_groups[0][0] + "/"
+		Global.current_level_location = Global.location_of_loaded_group(0, unlocked_level_groups)
 	
 	
 	var directory : Directory = Directory.new()
-	var check_exist = directory.open("user://SRLevels/")
+	var check_exist = directory.open(Global.USER_LEVELS)
 	var current_file
 	
 	if check_exist == OK:
@@ -69,7 +69,7 @@ func _ready():
 	user_page_amount = user_levels.size() / 20 + 1
 	
 #	print(user_levels)
-	if Global.current_level_location == "user://SRLevels/":
+	if Global.current_level_location == Global.USER_LEVELS:
 		for i in range(user_levels.size()):
 			if user_levels[i] == Global.current_level:
 				user_selected_level = int(i)
@@ -122,7 +122,7 @@ func menu_update():
 			return
 		
 		if Input.is_action_just_pressed("accept"):
-			Global.current_level_location = unlocked_level_groups[group_current][1] + unlocked_level_groups[group_current][0] + "/"
+			Global.current_level_location = Global.location_of_loaded_group(group_current, unlocked_level_groups)
 			is_selecting_groups = false
 			selected_level = 0
 			user_selected_level = 0
@@ -217,7 +217,7 @@ func menu_update():
 
 func level_move_cursor(move_amount : int = 0):
 	
-	var is_in_user_universe = Global.current_level_location == "user://SRLevels/"
+	var is_in_user_universe = Global.current_level_location == Global.USER_LEVELS
 	
 	if move_amount == 0:
 		pass
@@ -226,9 +226,9 @@ func level_move_cursor(move_amount : int = 0):
 			selected_level += move_amount
 		if sign(move_amount) == 1 and selected_level + (move_amount - sign(move_amount)) < 19:
 			selected_level += move_amount
-	else:
+	elif is_in_user_universe:
+		user_selected_level += move_amount
 		if sign(move_amount) == -1:
-			user_selected_level += move_amount
 			if user_selected_level - user_current_page * 20 < 0:
 				user_current_page -= 1
 				if user_current_page <= -1:
@@ -238,7 +238,6 @@ func level_move_cursor(move_amount : int = 0):
 					$level_select/author.text = String(user_current_page + 1) + "/" + String(user_page_amount)
 					reload_all_levels()
 		if sign(move_amount) == 1:
-			user_selected_level += move_amount
 			if user_selected_level - user_current_page * 20 > 19:
 				user_current_page += 1
 				if user_current_page >= user_page_amount:
@@ -247,7 +246,6 @@ func level_move_cursor(move_amount : int = 0):
 				else:
 					$level_select/author.text = String(user_current_page + 1) + "/" + String(user_page_amount)
 					reload_all_levels()
-	if is_in_user_universe:
 		selected_level = user_selected_level - user_current_page * 20
 	# warning-ignore:integer_division
 	$level_select/levels/selected_level.position = Vector2(-288 + 144 * (selected_level % 5), -144 + 96 * (selected_level / 5))
@@ -395,7 +393,7 @@ func make_group_icons():
 		$group_select/groups.add_child(new_sprite)
 	
 	for i in range(repetitions):
-		var file : String = unlocked_level_groups[i][1] + unlocked_level_groups[i][0] + "/logo.png"
+		var file : String = Global.location_of_loaded_group(i, unlocked_level_groups) + "logo.png"
 		if unlocked_level_groups[i][1] == "user://":
 			get_node("group_select/groups/" + String(i)).texture = preload("res://Visual/Title/logo_user.png")
 		elif unlocked_level_groups[i][3] != null:
@@ -410,7 +408,7 @@ func make_group_icons():
 		Global.scale_down_sprite(get_node("group_select/groups/" + String(i)), Vector2(2, 2))
 
 func reload_all_levels():
-	var is_user_group : bool = Global.current_level_location == "user://SRLevels/"
+	var is_user_group : bool = Global.current_level_location == Global.USER_LEVELS
 	
 	if !Global.load_level_group() and !is_user_group:
 		return
