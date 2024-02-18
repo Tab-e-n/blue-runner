@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://Scripts/Player/Greenbox_Character.gd" type="Script" id=1]
 [ext_resource path="res://Visual/Greenbox/normal.png" type="Texture" id=2]
@@ -362,6 +362,10 @@ tracks/2/keys = {
 }
 
 [sub_resource type="Animation" id=9]
+resource_name = "Enter"
+length = 0.4
+
+[sub_resource type="Animation" id=10]
 length = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("normal:visible")
@@ -388,7 +392,7 @@ tracks/1/keys = {
 "values": [ false ]
 }
 
-[sub_resource type="Animation" id=10]
+[sub_resource type="Animation" id=11]
 length = 0.2
 loop = true
 step = 0.05
@@ -429,7 +433,7 @@ tracks/2/keys = {
 "values": [ 0, 1, 2, 3 ]
 }
 
-[sub_resource type="Animation" id=11]
+[sub_resource type="Animation" id=12]
 length = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("normal:visible")
@@ -551,7 +555,8 @@ anims/Attack_N = SubResource( 5 )
 anims/Attack_U = SubResource( 6 )
 anims/Attack_UH = SubResource( 7 )
 anims/Dead = SubResource( 8 )
-anims/Move = SubResource( 9 )
-anims/SpeedMove = SubResource( 10 )
-anims/_RESET = SubResource( 11 )
+anims/Enter = SubResource( 9 )
+anims/Move = SubResource( 10 )
+anims/SpeedMove = SubResource( 11 )
+anims/_RESET = SubResource( 12 )
 [connection signal="body_entered" from="attack" to="." method="_on_attack_connected"]

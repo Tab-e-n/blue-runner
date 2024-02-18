@@ -22,7 +22,6 @@
 [ext_resource path="res://Visual/Menu/main_pixel.png" type="Texture" id=22]
 [ext_resource path="res://Scripts/single_color.shader" type="Shader" id=23]
 
-
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
@@ -45,6 +44,8 @@ func set_available_replays():
 		load_character_replays(\"missing\", 3)
 	if check_character_unlock(\"Greenbox\"):
 		load_character_replays(\"Greenbox\", 3)
+	if check_character_unlock(\"Granddad\"):
+		load_character_replays(\"Granddad\", 1)
 
 
 func load_character_replays(character : String, amount : int):

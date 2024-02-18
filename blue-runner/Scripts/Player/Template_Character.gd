@@ -27,8 +27,10 @@ var last_anim : String = "Default"
 var last_facing : String
 var wall_anim : int = 1
 
+
 func _ready():
 	last_facing = player.facing
+
 
 func _physics_process(_delta):
 	player.collisions[1].position = $col_1.position
@@ -81,7 +83,8 @@ func _physics_process(_delta):
 		
 		if (player.is_on_floor() or player.move_and_collide(Vector2(0,1), false, true, true)) and player.state != "air":
 			player.momentum.y = 1
-		else: player.state = "air"
+		else:
+			player.state = "air"
 		
 		# MOVEMENT
 		if Input.is_action_pressed("left"):
@@ -189,19 +192,17 @@ func _physics_process(_delta):
 		
 		if particle_disable != 0:
 			particle_disable -= 1
-		
-		player.record()
 	
-	# - - - REPLAY STATE - - -
+	# - - - END OF REPLAY - - -
 	elif player.replay and player.timer > player.replay_timer:
-			scale = Vector2(scale.x, 1)
-			
-			$Anim.current_animation = ""
+		scale = Vector2(scale.x, 1)
+		
+		$Anim.current_animation = ""
 	
 	# - - - DEATH STATE - - -
 	elif player.dead:
 		scale = Vector2(scale.x, 1)
-		if $Anim.current_animation!="Death":
+		if $Anim.current_animation != "Death":
 			player.play_sound("example")
 		$Anim.play("Death")
 	
@@ -216,7 +217,6 @@ func _physics_process(_delta):
 	elif player.deny_input:
 		if player.jump_buffer > 0:
 			player.jump_buffer -= 1
-		player.record()
 	
 
 #func _process(delta):

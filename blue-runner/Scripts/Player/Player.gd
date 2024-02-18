@@ -281,6 +281,61 @@ func is_jump_input_just_released():
 	return jump
 
 
+func get_horizontal_axis() -> float:
+	var axis = 0
+	if Input.is_action_pressed("right"):
+		axis += 1
+	if Input.is_action_pressed("left"):
+		axis -= 1
+	return axis
+
+
+func should_jump() -> bool:
+	return jump_buffer > 0
+
+
+func start_jump_buffer():
+	jump_buffer = INPUT_BUFFER_FRAMES
+
+
+func decrement_jump_buffer():
+	if jump_buffer > 0:
+		jump_buffer -= 1
+
+
+func start_ground_buffer():
+	ground_buffer = GROUND_BUFFER_FRAMES
+
+
+func decrement_ground_buffer():
+	if ground_buffer > 0:
+		ground_buffer -= 1
+
+
+func get_facing_axis() -> float:
+	var axis = 1
+	if facing == "left":
+		axis = -1
+	if facing == "right":
+		axis = 1
+	return axis
+
+
+func below_max_speed(number : float, direction : float, threshold : float) -> bool:
+	if direction == 1:
+		return number < threshold
+	if direction == -1:
+		return number > -threshold
+	return false
+
+
+func cap_momentum_x(max_speed : float):
+	if momentum.x > max_speed:
+		momentum.x = max_speed
+	if momentum.x < -max_speed:
+		momentum.x = -max_speed
+
+
 func move_player_character():
 	collision_mask = 0b1111_1111_1111_1111_1111
 	# warning-ignore:return_value_discarded
@@ -354,6 +409,12 @@ func bit_include(num : int, pattern : int) -> bool:
 	return num & pattern == pattern
 
 
+func jump(jump_power : int):
+	momentum.y = -jump_power
+	state = "air"
+	jump_buffer = 0
+
+
 func punt(boost : Vector2, overwrite_momentum : bool, make_airborn : bool = true):
 	#var sign_ = sign(boost.x)
 	#if boost.x * sign_ > momentum.x * sign_:
@@ -395,9 +456,15 @@ func punt(boost : Vector2, overwrite_momentum : bool, make_airborn : bool = true
 			launched = true
 
 
-func play_sound(sound_name : String):
+func play_sound(sound_name : String, random_pitch : bool = false):
+	var pitch = 1
+	var pitch_end = -1
+	if random_pitch:
+		pitch = 0.8
+		pitch_end = 1.2
+	
 	if sound_name != "" and !silent:
-		Audio.play_sound(sound_name)
+		Audio.play_sound(sound_name, pitch, pitch_end)
 		current_sound = sound_name
 
 

@@ -5,7 +5,6 @@ onready var parent : Node2D = get_parent()
 var is_leaving : bool = false
 
 func _ready():
-#	Audio.play_music("caving-remix")
 	Global.options["*first_time_load"] = false
 	Global.in_load_previously = false
 	$prompt.text = "Press\n" + Global.key_names(12) + "\nto start!"

@@ -4,6 +4,7 @@ extends Node
 const SOUND_EFFECT_LIMIT : int = 32
 const FADE_TIME : float = 2.0
 const FAST_FADE_TIME : float = 0.1
+const FAKE_SILENCE : float = -32.0
 
 
 var song_name : String = ""
@@ -55,23 +56,36 @@ func play_sound(soundname : String, pitch : float = 1, random_pitch_range : floa
 
 
 func play_music(musicname : String, fast : bool = true):
-	
+	change_music(musicname, false, fast)
+
+
+func stop_music(fast : bool = true):
+	change_music("", true, fast)
+
+
+func change_music(musicname : String, stop : bool = false, fast : bool = true):
 	if song_name == musicname:
 		return
 	song_name = musicname
 	
-	var f : File = File.new()
 	
-	if not f.file_exists("res://Sound/Music/" + musicname + ".wav.import"):
-		return
-	
+	if not stop:
+		var f : File = File.new()
+		
+		if not f.file_exists("res://Sound/Music/" + musicname + ".wav.import"):
+			return
+		
 	last_music = current_music
-	current_music = AudioStreamPlayer.new()
-	current_music.stream = load("res://Sound/Music/" + musicname + ".wav")
 	
-	current_music.volume_db = -24
-	
-	add_child(current_music)
+	if not stop:
+		current_music = AudioStreamPlayer.new()
+		current_music.stream = load("res://Sound/Music/" + musicname + ".wav")
+		
+		current_music.volume_db = FAKE_SILENCE
+		
+		add_child(current_music)
+	else:
+		current_music = null
 	
 	if Global.options["*audio_music"] > 0:
 		fast_fade = fast
@@ -80,7 +94,8 @@ func play_music(musicname : String, fast : bool = true):
 		else:
 			fading = FADE_TIME
 		
-		current_music.play()
+		if current_music:
+			current_music.play()
 	elif last_music:
 		last_music.queue_free()
 
@@ -99,12 +114,14 @@ func fade_music(delta):
 		fade_progress = fading / FADE_TIME
 	if fading > 0:
 		if last_music:
-			last_music.volume_db = Global.fade_float(-24, volume, fade_progress)
-		current_music.volume_db = Global.fade_float(-24, volume, 1.0 - fade_progress)
+			last_music.volume_db = Global.fade_float(FAKE_SILENCE, volume, fade_progress)
+		if current_music:
+			current_music.volume_db = Global.fade_float(FAKE_SILENCE, volume, 1.0 - fade_progress)
 	else:
 		if last_music:
 			last_music.queue_free()
-		current_music.volume_db = volume
+		if current_music:
+			current_music.volume_db = volume
 
 
 func change_music_status(preset_volume : int = -1):

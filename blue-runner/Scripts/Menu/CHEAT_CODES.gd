@@ -86,11 +86,11 @@ func code_interpretor():
 	$did_it.modulate = Color(0.25, 0.75, 0.5, 1)
 	match code_text:
 		"GRANDDAD":
-			$did_it.text = "GRANDDAD????????"
+			done_unlock("*character_granddad", "GRANDDAD????????")
 		"NULL":
-			show_unlock("*character_missing")
+			done_unlock("*character_missing")
 		"PLATFORMERKAT":
-			show_unlock("*character_greenbox")
+			done_unlock("*character_greenbox")
 		"PLATTHEVIDEOGAME":
 			$did_it.text = "\'KAT\' IS INTENCIONAL"
 		"PLAT":
@@ -104,7 +104,7 @@ func code_interpretor():
 			$Anim.play("Fail")
 
 
-func show_unlock(unlock : String, first_text : String = "YOU GOT SOMETHING", after_text : String = "ALREADY GOT THIS"):
+func done_unlock(unlock : String, first_text : String = "YOU GOT SOMETHING", after_text : String = "ALREADY GOT THIS"):
 	$did_it.modulate = Color(0.75, 0.5, 0.25, 1)
 	if !Global.check_unlock(unlock):
 		$did_it.text = first_text

@@ -10,7 +10,7 @@ const JUMP_POWER : int = 800
 var MAX_SPEED : int = 850
 var ACCELERATION : int = 40
 var DECELERATION : int = 50
-var ACC_DIVIDOR : int = 40
+var ACC_DIVIDOR : float = 0.025
 
 
 onready var player : KinematicBody2D = get_parent()
@@ -45,7 +45,6 @@ func _ready():
 	
 	$Anim.current_animation = "Enter"
 	
-	
 	player.setup_trail(trail_color)
 
 func _physics_process(_delta):
@@ -58,21 +57,21 @@ func _physics_process(_delta):
 	player.collisions[2].disabled = !$col_2.visible
 	
 	if player.is_jump_input_just_pressed():
-		player.jump_buffer = player.INPUT_BUFFER_FRAMES
+		player.start_jump_buffer()
 	
 	if player.start:
-		if player.jump_buffer > 0:
-			player.jump_buffer -= 1
+		player.decrement_jump_buffer()
 		if Input.is_action_just_pressed("special"):
 			sliding = 15
 			player.play_sound("dash")
+		
 	if !player.deny_input:
 		# GRAVITY / DECELERATION
 		if player.is_on_ceiling():
 			player.momentum.y = 0
 		
-		var on_wall_right : bool = player.move_and_collide(Vector2(1,0), false, true, true) != null
-		var on_wall_left : bool = player.move_and_collide(Vector2(-1,0), false, true, true) != null
+		var on_wall_right : bool = player.move_and_collide(Vector2(3,0), false, true, true) != null
+		var on_wall_left : bool = player.move_and_collide(Vector2(-3,0), false, true, true) != null
 		var on_wall : bool = on_wall_right or on_wall_left
 		
 		if (player.momentum.y > 0):
@@ -88,18 +87,22 @@ func _physics_process(_delta):
 			else:
 				player.momentum.y += GRAVITY_WALL_DOWN
 		if player.state == "ground":
-			player.ground_buffer = player.GROUND_BUFFER_FRAMES
+			player.start_ground_buffer()
 			jump_amount = MAX_JUMP_AMOUNT
-			if sign(player.momentum.x) != 0:
-				var temp_momentum = sign(player.momentum.x)
-				if !Input.is_action_pressed("right") and sign(player.momentum.x) == 1:
-					player.momentum.x -= DECELERATION
-				if !Input.is_action_pressed("left") and sign(player.momentum.x) == -1:
-					player.momentum.x += DECELERATION
-				if temp_momentum != sign(player.momentum.x):
+			
+			if player.momentum.x != 0:
+				var previous_direction : float = sign(player.momentum.x)
+				var held_direction = player.get_horizontal_axis()
+				
+				if held_direction != previous_direction:
+					player.momentum.x -= DECELERATION * previous_direction
+				
+				if previous_direction != sign(player.momentum.x):
 					player.momentum.x = 0
-			if player.momentum.x > -DECELERATION and player.momentum.x < DECELERATION and !(Input.is_action_pressed("left") or Input.is_action_pressed("right")):
+			
+			if player.momentum.x > -DECELERATION and player.momentum.x < DECELERATION and not player.get_horizontal_axis():
 				player.momentum.x = 0
+			
 			if !player.break_just_happened:
 				if Input.is_action_pressed("special") and dropping > 0:
 					sliding = 15
@@ -111,6 +114,7 @@ func _physics_process(_delta):
 				dropping = 0
 			else:
 				player.state = "air"
+		
 		if player.state == "air" and $Anim.current_animation != "Enter":
 			sliding = 0
 			#if is_on_ceiling() and dropping: sliding = dropping
@@ -121,16 +125,15 @@ func _physics_process(_delta):
 			player.state = "air"
 		
 		# MOVEMENT
-		if Input.is_action_pressed("left") and sliding == 0 and dropping == 0:
-			if player.momentum.x > -MAX_SPEED:
-				player.momentum.x -= ACCELERATION - round(player.momentum.x / ACC_DIVIDOR)
+		if player.get_horizontal_axis() and sliding == 0 and dropping == 0:
+			if player.below_max_speed(player.momentum.x, player.get_horizontal_axis(), MAX_SPEED):
+				player.momentum.x += (ACCELERATION - round(player.momentum.x * ACC_DIVIDOR)) * player.get_horizontal_axis()
+				player.cap_momentum_x(MAX_SPEED)
 			if dropping == 0 and !on_wall:
-				player.facing = "left"
-		if Input.is_action_pressed("right") and sliding == 0 and dropping == 0:
-			if player.momentum.x < MAX_SPEED:
-				player.momentum.x += ACCELERATION - round(player.momentum.x / ACC_DIVIDOR)
-			if dropping == 0 and !on_wall:
-				player.facing = "right"
+				if player.get_horizontal_axis() == -1:
+					player.facing = "left"
+				if player.get_horizontal_axis() == 1:
+					player.facing = "right"
 		
 		# SPECIAL ABILITIES
 		if sliding > 0:
@@ -156,10 +159,13 @@ func _physics_process(_delta):
 					player.play_sound("ding")
 					dropping = 1
 					particle_summon(Vector2(0, -64), 0, 1)
-			if dropping > 0: player.break_breakables = true
-			elif sliding > 0: player.break_breakables = false
+			if dropping > 0: 
+				player.break_breakables = true
+			elif sliding > 0: 
+				player.break_breakables = false
 		else:
-			if dropping == 1: dropping = 2
+			if dropping == 1: 
+				dropping = 2
 			player.break_breakables = false
 		
 		force_slide = false
@@ -192,8 +198,7 @@ func _physics_process(_delta):
 			player.momentum.y += GRAVITY_DOWN
 		
 		# JUMPING
-		if player.ground_buffer > 0:
-			player.ground_buffer -= 1
+		player.decrement_ground_buffer()
 		if player.ground_buffer == 1:
 			jump_amount = MAX_JUMP_AMOUNT - 1
 		
@@ -203,8 +208,8 @@ func _physics_process(_delta):
 		
 		player.collision_mask = 0b11
 		
-		if player.jump_buffer > 0 and !force_slide:
-			player.jump_buffer -= 1
+		if player.should_jump() and !force_slide:
+			player.decrement_jump_buffer()
 			player.ground_buffer = 0
 			if player.move_and_collide(Vector2(0,4), false, true, true) or sliding > 0:
 				jump_amount = MAX_JUMP_AMOUNT - 1
@@ -212,24 +217,24 @@ func _physics_process(_delta):
 				particle_summon(Vector2(0, 0), 0)
 			elif player.move_and_collide(Vector2(4,0), false, true, true):
 				jump_amount = MAX_JUMP_AMOUNT - 1
-				# warning-ignore:integer_division
-				player.momentum.x = -MAX_SPEED / 1.5
+				player.momentum.x = int(-MAX_SPEED * 0.66)
 				player.facing = "left"
 				# warning-ignore:narrowing_conversion
 				jump(JUMP_POWER * 1.075)
 				particle_summon(Vector2(12, -64), -1.6)
 			elif player.move_and_collide(Vector2(-4,0), false, true, true):
 				jump_amount = MAX_JUMP_AMOUNT - 1
-				# warning-ignore:integer_division
-				player.momentum.x = MAX_SPEED / 1.5
+				player.momentum.x = int(MAX_SPEED * 0.66)
 				player.facing = "right"
 				# warning-ignore:narrowing_conversion
 				jump(JUMP_POWER * 1.075)
 				particle_summon(Vector2(-12, -64), 1.6)
+		
 		if jump_amount > 0 and player.jump_buffer == 1:
 			jump_amount -= 1
 			jump(JUMP_POWER)
 			#player.jump_buffer = 0
+		
 		if !player.is_jump_input_pressed() and jumping and !player.punted and sliding == 0:
 			jumping = false
 			if player.momentum.y < -200:
@@ -273,12 +278,12 @@ func _physics_process(_delta):
 					particle_summon(Vector2(12, -64), -1.6)
 		else:
 			if state_air > 0:
-				scale = Vector2(0.6, 0.4)
+				scale = Vector2(0.6 * player.get_facing_axis(), 0.4)
 				state_air -= 1
 			if state_air == 4:
 				particle_summon(Vector2(0, 0), 0)
 				player.play_sound("land")
-			if player.momentum.x != 0 and !on_wall:
+			if (player.momentum.x != 0 or player.get_horizontal_axis()) and !on_wall:
 				if $Anim.current_animation != "Walk" or last_facing != player.facing:
 					$Anim.stop()
 					$Anim.current_animation = "Walk"
@@ -293,31 +298,26 @@ func _physics_process(_delta):
 						2:
 							$Anim.current_animation = "Idle_2"
 					idle_anim_timer -= 1
-				elif($Anim.current_animation != "Default"
-						and $Anim.current_animation != "Idle_1"
-						and $Anim.current_animation != "Idle_2"
-						and $Anim.current_animation != "Enter"):
+				elif not $Anim.current_animation in ["Default", "Idle_1", "Idle_2", "Enter"]:
 					$Anim.current_animation = "Default"
 					idle_anim_timer = 30 * Global.rand.randi_range(7, 11)
 		
 		last_anim = $Anim.current_animation
 		last_facing = player.facing
 		
-		if player.facing == "left":
-			scale = Vector2(-0.5 * wall_anim, scale.y)
-		else:
-			scale = Vector2(0.5 * wall_anim, scale.y)
+		if state_air == 0 or player.state == "air" or sliding > 0:
+			scale = Vector2(0.5 * wall_anim * player.get_facing_axis(), scale.y)
 		
 		if player.state == "air":
 			state_air = 5
 		if particle_disable != 0:
 			particle_disable -= 1
 	
-	# - - - REPLAY STATE - - -
+	# - - - END OF REPLAY - - -
 	elif player.replay and player.timer > player.replay_timer:
-			scale = Vector2(scale.x, 0.5)
-			
-			$Anim.current_animation = ""
+		scale = Vector2(scale.x, 0.5)
+		
+		$Anim.current_animation = ""
 	
 	# - - - DEATH STATE - - -
 	elif player.dead:
@@ -350,27 +350,27 @@ func _physics_process(_delta):
 #func _process(delta):
 #	pass
 
-func jump(local_jump_power : int):
-	player.momentum.y = -local_jump_power
-	player.state = "air"
-	player.jump_buffer = 0
+func jump(jump_power : int):
+	player.jump(jump_power)
 	jumping = true
 	dropping = 0
 	player.play_sound("jump")
 
+
 func particle_summon(particle_position : Vector2, particle_rotation : float, type : int = 0):
 	if particle_disable == 0:
-		var node_creator
-		node_creator = particle.instance()
-		player.get_parent().add_child(node_creator)
-		node_creator.position = player.position + particle_position
-		node_creator.rotation = particle_rotation
-		node_creator.color_start = particle_start
-		node_creator.color_end = particle_end
-		node_creator.color_star = particle_star
-		node_creator.z_index = player.z_index + 1
-		node_creator.start(type)
+		var new_particle
+		new_particle = particle.instance()
+		get_tree().current_scene.add_child(new_particle)
+		new_particle.position = player.position + particle_position
+		new_particle.rotation = particle_rotation
+		new_particle.color_start = particle_start
+		new_particle.color_end = particle_end
+		new_particle.color_star = particle_star
+		new_particle.z_index = player.z_index + 1
+		new_particle.start(type)
 		particle_disable = 6
+
 
 func enter_anim_end():
 	player.enter_anim_end()
