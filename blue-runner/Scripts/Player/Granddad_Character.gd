@@ -1,7 +1,7 @@
 extends Node2D
 
 
-const UNICOLOR_COLOR : Color = Color(0, 0.75, 0, 1)
+const UNICOLOR_COLOR : Color = Color("ffffff")
 const GRAVITY : int = 26
 const JUMP_POWER : int = 1000
 
@@ -129,9 +129,9 @@ func _physics_process(_delta):
 			player.state = "ground"
 		
 		if crouching:
-			$spriteshit.scale.y = 0.5
+			scale.y = 0.5
 		else:
-			$spriteshit.scale.y = 1
+			scale.y = 1
 		
 		if player.state == "air":
 			if $Anim.current_animation != "Air":
@@ -156,7 +156,7 @@ func _physics_process(_delta):
 			player.play_sound("example")
 		$Anim.play("Death")
 		
-		$spriteshit.scale.y = 1
+		scale.y = 1
 		$spriteshit.rotation = 0
 	elif player.end:
 		if abs(scale.x) < 1000:

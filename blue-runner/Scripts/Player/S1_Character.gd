@@ -321,13 +321,10 @@ func _physics_process(_delta):
 	
 	# - - - DEATH STATE - - -
 	elif player.dead:
-		scale = Vector2(scale.x, 0.5)
+		scale = Vector2(0.5 * player.get_facing_axis(), 0.5)
 		if $Anim.current_animation != "Death":
 			player.play_sound("elExplose")
-		$Anim.play("Death")
-		
-		
-		#position.y -= (10 - player.death_wait) * 2
+			$Anim.play("Death")
 	
 	# - - - IM DONE FOR STATE - - -
 	elif player.end:

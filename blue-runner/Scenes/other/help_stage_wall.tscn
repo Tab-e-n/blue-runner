@@ -1,0 +1,365 @@
+[gd_scene load_steps=31 format=2]
+
+[ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scripts/Level_Control.gd" type="Script" id=3]
+[ext_resource path="res://Scripts/single_color.shader" type="Shader" id=4]
+[ext_resource path="res://Objects/Tilesets/WaterWay.tres" type="TileSet" id=5]
+[ext_resource path="res://Objects/Player/Ghost.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Objects/Finish.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Scripts/Camera.gd" type="Script" id=8]
+[ext_resource path="res://Scripts/Portal.gd" type="Script" id=9]
+[ext_resource path="res://Scripts/Player/Player.gd" type="Script" id=10]
+
+[sub_resource type="ShaderMaterial" id=1]
+shader = ExtResource( 4 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 4 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=3]
+shader = ExtResource( 4 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=4]
+shader = ExtResource( 4 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=5]
+shader = ExtResource( 4 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=6]
+shader = ExtResource( 4 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=7]
+shader = ExtResource( 4 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=8]
+shader = ExtResource( 4 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=9]
+shader = ExtResource( 4 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=10]
+shader = ExtResource( 4 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=11]
+shader = ExtResource( 4 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=12]
+shader = ExtResource( 4 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=13]
+shader = ExtResource( 4 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=14]
+shader = ExtResource( 4 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=15]
+shader = ExtResource( 4 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=16]
+shader = ExtResource( 4 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=17]
+shader = ExtResource( 4 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=18]
+shader = ExtResource( 4 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=19]
+shader = ExtResource( 4 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=20]
+shader = ExtResource( 4 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[node name="help_stage_wall" type="Node2D"]
+script = ExtResource( 3 )
+unicolor_active = false
+
+[node name="Ghost" type="Node2D" parent="." instance=ExtResource( 6 )]
+position = Vector2( -176, -16 )
+z_index = 19
+script = ExtResource( 10 )
+editor_properties = {
+"attachable": false,
+"description": "The ghost that you race against.",
+"editable_properties": {
+
+},
+"layer": "special",
+"object_path": "res://Objects/Player/Ghost.tscn",
+"object_type": "ghost",
+"rect": Rect2( 0, -32, 64, 64 ),
+"unchangeable_properties": {
+"color": true,
+"order": true,
+"rotation": true,
+"scale": true,
+"z_index": true
+}
+}
+character_name = ""
+character_location = "res:/"
+facing = "right"
+deny_input = true
+ghost = true
+
+[node name="Finish" type="StaticBody2D" parent="." instance=ExtResource( 7 )]
+position = Vector2( -240, -16 )
+z_index = 20
+script = ExtResource( 9 )
+editor_properties = {
+"attachable": false,
+"description": "The levels finish.
+The player wins if they touch this object. You can change which level the player goes to after their done with this one with tele_destination. You can also set the par time (in seconds), what unlocks after you beat the level and if XT9 or S1 appears as the damsel.",
+"editable_properties": {
+"par": [ 3, 0, 0, 0 ],
+"tele_destination": [ 4, 0, 0, 0 ],
+"type": [ 2, 0, 1, 1 ],
+"unlock": [ 4, 0, 0, 0 ]
+},
+"layer": "special",
+"object_path": "res://Objects/Finish.tscn",
+"object_type": "finish",
+"rect": Rect2( 0, -32, 64, 64 ),
+"unchangeable_properties": {
+"color": false,
+"order": true,
+"rotation": false,
+"scale": false,
+"z_index": false
+}
+}
+tele_destination = "*MENU"
+par = 0.0
+type = 0.0
+unlock = ""
+
+[node name="Player" type="Node2D" parent="." instance=ExtResource( 2 )]
+position = Vector2( 256, 320 )
+z_index = 20
+script = ExtResource( 10 )
+editor_properties = {
+"attachable": false,
+"description": "The player.
+This objects position is where the player starts. With the character properties you can specify which character the player plays as. if character_name is left blank, the player will choose the character they want for the level.",
+"editable_properties": {
+"character_location": [ 4, 0, 0, 0 ],
+"character_name": [ 4, 0, 0, 0 ],
+"facing": [ 4, 0, 0, 0 ]
+},
+"layer": "special",
+"object_path": "res://Objects/Player/Player.tscn",
+"object_type": "player",
+"rect": Rect2( 0, -32, 64, 64 ),
+"unchangeable_properties": {
+"color": false,
+"order": true,
+"rotation": true,
+"scale": true,
+"z_index": true
+}
+}
+character_name = ""
+character_location = "res:/"
+facing = "right"
+deny_input = true
+ghost = false
+
+[node name="objects_background" type="Node2D" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 1 )
+z_index = -40
+
+[node name="decor_background" type="Node2D" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 2 )
+z_index = -40
+
+[node name="tiles_background_0" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 3 )
+z_index = -30
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_background_1" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 4 )
+z_index = -30
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_background_2" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 5 )
+z_index = -30
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="objects_back" type="Node2D" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 6 )
+z_index = -20
+
+[node name="decor_back" type="Node2D" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 7 )
+z_index = -20
+
+[node name="tiles_back_0" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 8 )
+z_index = -10
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_back_1" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 9 )
+z_index = -10
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_back_2" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 10 )
+z_index = -10
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="objects_center" type="Node2D" parent="."]
+material = SubResource( 11 )
+
+[node name="decor_center" type="Node2D" parent="."]
+material = SubResource( 12 )
+
+[node name="tiles_center_0" type="TileMap" parent="."]
+material = SubResource( 13 )
+z_index = 10
+tile_set = ExtResource( 5 )
+format = 1
+
+[node name="tiles_center_1" type="TileMap" parent="."]
+material = SubResource( 14 )
+z_index = 10
+tile_set = ExtResource( 5 )
+format = 1
+tile_data = PoolIntArray( 0, 26, 0, 1, 26, 0, 65536, 26, 0, 65537, 26, 0, 131072, 26, 0, 131073, 26, 0, 196608, 26, 0, 196609, 26, 0, 262144, 26, 0, 262145, 26, 0, 393214, 18, 0, 393215, 18, 0, 327680, 22, 0, 327681, 22, 0, 327682, 22, 0, 327683, 22, 0, 327684, 22, 0, 327685, 22, 0, 327686, 22, 0, 327687, 22, 0, 327688, 18, 0, 327689, 18, 0 )
+
+[node name="tiles_center_2" type="TileMap" parent="."]
+material = SubResource( 15 )
+z_index = 10
+tile_set = ExtResource( 5 )
+format = 1
+
+[node name="objects_front" type="Node2D" parent="."]
+material = SubResource( 16 )
+z_index = 40
+
+[node name="decor_front" type="Node2D" parent="."]
+material = SubResource( 17 )
+z_index = 40
+
+[node name="tiles_front_0" type="TileMap" parent="."]
+material = SubResource( 18 )
+z_index = 50
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_front_1" type="TileMap" parent="."]
+material = SubResource( 19 )
+z_index = 50
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_front_2" type="TileMap" parent="."]
+material = SubResource( 20 )
+z_index = 50
+tile_set = ExtResource( 5 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="Camera" type="Node2D" parent="." instance=ExtResource( 1 )]
+z_index = 100
+script = ExtResource( 8 )
+limit_x = Vector2( 0, 0 )
+limit_y = Vector2( 0, 0 )
+zoom = Vector2( 2, 2 )
+compatibility_mode = false

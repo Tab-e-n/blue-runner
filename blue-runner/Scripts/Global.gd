@@ -673,6 +673,7 @@ func make_text_debug(_text : String):
 		var text = RichTextLabel.new()
 		text.rect_size = Vector2(1024, 1024)
 		text.text = _text
+		text.rect_scale = Vector2(2, 2)
 		get_tree().current_scene.add_child(text)
 		print(get_tree().current_scene.name)
 
@@ -848,7 +849,7 @@ func load_game():
 		print("loading disabled")
 	elif !loadfile.file_exists(SAVEFILE): # does file exist
 		print("save doesn't exist")
-		
+		options = DEFAULT_OPTIONS.duplicate()
 		save_game()
 	else:
 		print("loading successful")

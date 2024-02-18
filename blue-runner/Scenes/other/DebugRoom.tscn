@@ -1,0 +1,659 @@
+[gd_scene load_steps=58 format=2]
+
+[ext_resource path="res://Scripts/Level_Control.gd" type="Script" id=1]
+[ext_resource path="res://Objects/Tilesets/WaterWay.tres" type="TileSet" id=2]
+[ext_resource path="res://Scripts/single_color.shader" type="Shader" id=3]
+[ext_resource path="res://Scripts/Spike.gd" type="Script" id=4]
+[ext_resource path="res://Scripts/Player/Player.gd" type="Script" id=5]
+[ext_resource path="res://Scripts/Portal.gd" type="Script" id=6]
+[ext_resource path="res://Scripts/Camera.gd" type="Script" id=7]
+[ext_resource path="res://Scripts/Booster.gd" type="Script" id=8]
+[ext_resource path="res://Scripts/Mushroom.gd" type="Script" id=9]
+[ext_resource path="res://Visual/light_point.png" type="Texture" id=10]
+[ext_resource path="res://Scripts/Waterfall.gd" type="Script" id=11]
+[ext_resource path="res://Scripts/HoverText.gd" type="Script" id=12]
+[ext_resource path="res://Scripts/MovingPlatform.gd" type="Script" id=13]
+[ext_resource path="res://Scripts/SpinningArm.gd" type="Script" id=14]
+[ext_resource path="res://Scripts/Collectible.gd" type="Script" id=15]
+[ext_resource path="res://Scripts/BreakableGlass.gd" type="Script" id=16]
+[ext_resource path="res://Scripts/Track.gd" type="Script" id=17]
+[ext_resource path="res://Visual/decor_waterfall.png" type="Texture" id=18]
+[ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=19]
+[ext_resource path="res://Objects/Finish.tscn" type="PackedScene" id=20]
+[ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=21]
+[ext_resource path="res://Objects/Mushroom.tscn" type="PackedScene" id=22]
+[ext_resource path="res://Scripts/GroundGeneric.gd" type="Script" id=23]
+[ext_resource path="res://Objects/Booster.tscn" type="PackedScene" id=24]
+[ext_resource path="res://Objects/Decor/HoverText.tscn" type="PackedScene" id=25]
+[ext_resource path="res://Objects/SpinningArm.tscn" type="PackedScene" id=26]
+[ext_resource path="res://Objects/Player/Ghost.tscn" type="PackedScene" id=27]
+[ext_resource path="res://Objects/Spike.tscn" type="PackedScene" id=28]
+[ext_resource path="res://Objects/Decor/Light_Point.tscn" type="PackedScene" id=29]
+[ext_resource path="res://Objects/MovingPlatform.tscn" type="PackedScene" id=30]
+[ext_resource path="res://Objects/GroundGeneric.tscn" type="PackedScene" id=31]
+[ext_resource path="res://Objects/Collectible.tscn" type="PackedScene" id=32]
+[ext_resource path="res://Objects/Track.tscn" type="PackedScene" id=33]
+[ext_resource path="res://Objects/Decor/Waterfall.tscn" type="PackedScene" id=34]
+[ext_resource path="res://Objects/BreakableGlass.tscn" type="PackedScene" id=35]
+[ext_resource path="res://Objects/Portal.tscn" type="PackedScene" id=36]
+
+[sub_resource type="ShaderMaterial" id=1]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=3]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=4]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=5]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=6]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=7]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=8]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=9]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=10]
+shader = ExtResource( 3 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=11]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="GDScript" id=12]
+script/source = "extends Sprite
+
+var editor_properties : Dictionary = {
+	\"description\" : \"A pulsating light.\",
+	\"object_path\" : \"res://Objects/Decor/Light_Point.tscn\",
+	\"object_type\" : \"normal\", # some object types have a limited amount of the times they can appear
+	\"layer\" : \"selected\", # selected or special
+	\"rect\" : Rect2(0, 0, 256, 256),
+	\"editable_properties\" : {
+		#\"name\" : [TYPE, min, max, step, start],
+	},
+	\"unchangeable_properties\" : {
+		\"scale\" : false,
+		\"rotation\" : false,
+		\"z_index\" : false,
+		\"color\" : false,
+		\"order\" : false,
+	},
+	\"attachable\" : false,
+}
+
+func _ready():
+	$anim.play(\"flicker\")
+"
+
+[sub_resource type="ShaderMaterial" id=13]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=14]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=15]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=16]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=17]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=18]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=19]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=20]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[sub_resource type="ShaderMaterial" id=21]
+shader = ExtResource( 3 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+
+[node name="DebugRoom" type="Node2D"]
+script = ExtResource( 1 )
+unicolor_active = false
+
+[node name="Player" type="Node2D" parent="." instance=ExtResource( 19 )]
+position = Vector2( 128, 256 )
+z_index = 20
+script = ExtResource( 5 )
+editor_properties = {
+"attachable": false,
+"description": "The player.
+This objects position is where the player starts. With the character properties you can specify which character the player plays as. if character_name is left blank, the player will choose the character they want for the level.",
+"editable_properties": {
+"character_location": [ 4, 0, 0, 0 ],
+"character_name": [ 4, 0, 0, 0 ],
+"facing": [ 4, 0, 0, 0 ]
+},
+"layer": "special",
+"object_path": "res://Objects/Player/Player.tscn",
+"object_type": "player",
+"rect": Rect2( 0, -32, 64, 64 ),
+"unchangeable_properties": {
+"color": false,
+"order": true,
+"rotation": true,
+"scale": true,
+"z_index": true
+}
+}
+character_name = ""
+character_location = "res:/"
+facing = "right"
+deny_input = true
+ghost = false
+
+[node name="Finish" type="StaticBody2D" parent="." instance=ExtResource( 20 )]
+position = Vector2( -1216, -576 )
+z_index = 20
+script = ExtResource( 6 )
+editor_properties = {
+"attachable": false,
+"description": "The levels finish.
+The player wins if they touch this object. You can change which level the player goes to after their done with this one with tele_destination. You can also set the par time (in seconds), what unlocks after you beat the level and if XT9 or S1 appears as the damsel.",
+"editable_properties": {
+"par": [ 3, 0, 0, 0 ],
+"tele_destination": [ 4, 0, 0, 0 ],
+"type": [ 2, 0, 1, 1 ],
+"unlock": [ 4, 0, 0, 0 ]
+},
+"layer": "special",
+"object_path": "res://Objects/Finish.tscn",
+"object_type": "finish",
+"rect": Rect2( 0, -32, 64, 64 ),
+"unchangeable_properties": {
+"color": false,
+"order": true,
+"rotation": false,
+"scale": false,
+"z_index": false
+}
+}
+tele_destination = "*MENU"
+par = 0.0
+type = 0.0
+unlock = ""
+silent_portal = false
+
+[node name="Camera" type="Node2D" parent="." instance=ExtResource( 21 )]
+z_index = 100
+script = ExtResource( 7 )
+limit_x = Vector2( 0, 2048 )
+limit_y = Vector2( 0, 0 )
+zoom = Vector2( 2, 2 )
+fade_in_darkness_lenght = 0
+fade_in_end = 12
+fade_out_darkness_lenght = 0
+fade_out_end = 12
+compatibility_mode = false
+
+[node name="objects_background" type="Node2D" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 1 )
+z_index = -40
+
+[node name="decor_background" type="Node2D" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 2 )
+z_index = -40
+
+[node name="tiles_background_0" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 3 )
+z_index = -30
+tile_set = ExtResource( 2 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_background_1" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 4 )
+z_index = -30
+tile_set = ExtResource( 2 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_background_2" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 5 )
+z_index = -30
+tile_set = ExtResource( 2 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="objects_back" type="Node2D" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 6 )
+z_index = -20
+
+[node name="decor_back" type="Node2D" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 7 )
+z_index = -20
+
+[node name="tiles_back_0" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 8 )
+z_index = -10
+tile_set = ExtResource( 2 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_back_1" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 9 )
+z_index = -10
+tile_set = ExtResource( 2 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_back_2" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 10 )
+z_index = -10
+tile_set = ExtResource( 2 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="objects_center" type="Node2D" parent="."]
+material = SubResource( 11 )
+
+[node name="Mushroom" type="Area2D" parent="objects_center" instance=ExtResource( 22 )]
+use_parent_material = true
+position = Vector2( -1024, 640 )
+script = ExtResource( 9 )
+boost_strenght = 0
+overwrite_momentum = false
+
+[node name="MovingPlatform" type="Node2D" parent="objects_center" instance=ExtResource( 30 )]
+use_parent_material = true
+position = Vector2( 896, -48 )
+script = ExtResource( 13 )
+
+[node name="Ground" type="StaticBody2D" parent="objects_center" instance=ExtResource( 31 )]
+use_parent_material = true
+position = Vector2( 1120, 512 )
+scale = Vector2( 1, 4 )
+script = ExtResource( 23 )
+completely_invisible = false
+
+[node name="Portal" type="StaticBody2D" parent="objects_center" instance=ExtResource( 36 )]
+use_parent_material = true
+position = Vector2( 2240, 0 )
+script = ExtResource( 6 )
+editor_properties = {
+"attachable": false,
+"description": "A portal.                                                    After the player touches it, they go to a the level specified in tele_destination. You can also specify what it unlocks.",
+"editable_properties": {
+"silent_portal": [ 1, 0, 0, 0 ],
+"tele_destination": [ 4, 0, 0, 0 ],
+"type": [ 2, 0, 1, 1 ],
+"unlock": [ 4, 0, 0, 0 ]
+},
+"layer": "selected",
+"object_path": "res://Objects/Portal.tscn",
+"object_type": "normal",
+"rect": Rect2( 0, -32, 64, 64 ),
+"unchangeable_properties": {
+"color": false,
+"order": false,
+"rotation": true,
+"scale": false,
+"z_index": false
+}
+}
+tele_destination = "*MENU"
+par = 0.0
+type = 0.0
+unlock = ""
+silent_portal = false
+
+[node name="@Portal@609" type="StaticBody2D" parent="objects_center" instance=ExtResource( 36 )]
+use_parent_material = true
+position = Vector2( 2352, 0 )
+script = ExtResource( 6 )
+editor_properties = {
+"attachable": false,
+"description": "A portal.                                                    After the player touches it, they go to a the level specified in tele_destination. You can also specify what it unlocks.",
+"editable_properties": {
+"silent_portal": [ 1, 0, 0, 0 ],
+"tele_destination": [ 4, 0, 0, 0 ],
+"type": [ 2, 0, 1, 1 ],
+"unlock": [ 4, 0, 0, 0 ]
+},
+"layer": "selected",
+"object_path": "res://Objects/Portal.tscn",
+"object_type": "normal",
+"rect": Rect2( 0, -32, 64, 64 ),
+"unchangeable_properties": {
+"color": false,
+"order": false,
+"rotation": true,
+"scale": false,
+"z_index": false
+}
+}
+tele_destination = "*MENU"
+par = 0.0
+type = 0.0
+unlock = ""
+silent_portal = true
+
+[node name="Track" type="Line2D" parent="objects_center" instance=ExtResource( 33 )]
+use_parent_material = true
+position = Vector2( 1408, 256 )
+points = PoolVector2Array( 0, 0, 512, 0, 512, 128, 0, 128, 0, 0 )
+width = 0.0
+default_color = Color( 0, 0, 0, 0 )
+script = ExtResource( 17 )
+time = 120
+is_a_loop = false
+time_internal = 0
+time_direction = true
+auto_pos = true
+pre_pos = {
+
+}
+attached_nodes = [ null, Object(StaticBody2D,"_import_path":NodePath(""),"pause_mode":0,"process_priority":0,"visible":true,"modulate":Color( 1, 1, 1, 1 ),"self_modulate":Color( 1, 1, 1, 1 ),"show_behind_parent":false,"light_mask":1,"material":null,"use_parent_material":true,"position":Vector2( 0, 0 ),"rotation":0.0,"scale":Vector2( 2, 2 ),"z_index":0,"z_as_relative":true,"input_pickable":false,"collision_layer":1,"collision_mask":1,"constant_linear_velocity":Vector2( 0, 0 ),"constant_angular_velocity":0.0,"physics_material_override":null,"script":ExtResource( 4 ),"editor_properties":{
+"attachable": false,
+"description": "A sawblade.
+It hurts to touch. However, with precise spacing, you are able to jump off of it.",
+"editable_properties": {
+
+},
+"layer": "selected",
+"object_path": "res://Objects/Spike.tscn",
+"object_type": "normal",
+"rect": Rect2( 0, 0, 64, 64 ),
+"unchangeable_properties": {
+"color": false,
+"order": false,
+"rotation": true,
+"scale": false,
+"z_index": false
+}
+})
+ ]
+
+[node name="Spike" type="StaticBody2D" parent="objects_center/Track" instance=ExtResource( 28 )]
+use_parent_material = true
+scale = Vector2( 2, 2 )
+script = ExtResource( 4 )
+
+[node name="Collectible" type="Area2D" parent="objects_center" instance=ExtResource( 32 )]
+use_parent_material = true
+position = Vector2( 128, 416 )
+script = ExtResource( 15 )
+id = 1
+unlock = ""
+
+[node name="@Collectible@526" type="Area2D" parent="objects_center" instance=ExtResource( 32 )]
+use_parent_material = true
+position = Vector2( 800, 416 )
+script = ExtResource( 15 )
+id = 2
+unlock = ""
+
+[node name="BreakableGlass" type="StaticBody2D" parent="objects_center" instance=ExtResource( 35 )]
+use_parent_material = true
+position = Vector2( 384, 256 )
+scale = Vector2( 2, 0.5 )
+script = ExtResource( 16 )
+
+[node name="Waterfall" type="Sprite" parent="objects_center" instance=ExtResource( 34 )]
+modulate = Color( 1, 1, 1, 0.564706 )
+use_parent_material = true
+position = Vector2( 240, 512 )
+texture = ExtResource( 18 )
+hframes = 12
+script = ExtResource( 11 )
+
+[node name="light_point" type="Sprite" parent="objects_center" instance=ExtResource( 29 )]
+modulate = Color( 0, 0.596078, 0.572549, 0.313726 )
+self_modulate = Color( 1, 1, 1, 0.884091 )
+use_parent_material = true
+position = Vector2( 896, -48 )
+texture = ExtResource( 10 )
+script = SubResource( 12 )
+
+[node name="HoverText" type="Node2D" parent="objects_center" instance=ExtResource( 25 )]
+use_parent_material = true
+position = Vector2( -640, 512 )
+scale = Vector2( 4, 2 )
+script = ExtResource( 12 )
+text = "empty"
+offset = Vector2( 0, 0 )
+text_size = Vector2( 341, 85 )
+text_scale = Vector2( 0.75, 0.75 )
+text_color = Color( 1, 1, 1, 1 )
+follow_player = false
+delay_until_appearing = 0
+appear_time = 60
+font_path = "res://Text/Lacrimae.tres"
+
+[node name="Spike" type="StaticBody2D" parent="objects_center" instance=ExtResource( 28 )]
+use_parent_material = true
+position = Vector2( 704, 400 )
+scale = Vector2( 2, 2 )
+script = ExtResource( 4 )
+
+[node name="SpinningArm" type="Node2D" parent="objects_center" instance=ExtResource( 26 )]
+use_parent_material = true
+position = Vector2( 896, -48 )
+script = ExtResource( 14 )
+spin_time_frames = 120
+direction = true
+timer = 0
+lenght = 1.0
+attached_nodes = [ Object(Node2D,"_import_path":NodePath(""),"pause_mode":0,"process_priority":0,"visible":true,"modulate":Color( 1, 1, 1, 1 ),"self_modulate":Color( 1, 1, 1, 1 ),"show_behind_parent":false,"light_mask":1,"material":null,"use_parent_material":true,"position":Vector2( 0, -256 ),"rotation":0.0,"scale":Vector2( 1, 1 ),"z_index":0,"z_as_relative":true,"script":ExtResource( 13 ),"editor_properties":{
+"attachable": false,
+"description": "A solid platform.
+If the platform is moving, the player will move with it if they are touching it. It isn't solid from the bottom or the sides.",
+"editable_properties": {
+
+},
+"layer": "selected",
+"object_path": "res://Objects/MovingPlatform.tscn",
+"object_type": "normal",
+"rect": Rect2( 0, -10, 256, 20 ),
+"unchangeable_properties": {
+"color": false,
+"order": false,
+"rotation": false,
+"scale": false,
+"z_index": false
+}
+})
+ ]
+
+[node name="MovingPlatform" type="Node2D" parent="objects_center/SpinningArm" instance=ExtResource( 30 )]
+use_parent_material = true
+position = Vector2( 0, -256 )
+script = ExtResource( 13 )
+
+[node name="@Mushroom@402" type="Area2D" parent="objects_center" instance=ExtResource( 22 )]
+use_parent_material = true
+position = Vector2( -1152, 160 )
+rotation = 0.785398
+script = ExtResource( 9 )
+boost_strenght = 0
+overwrite_momentum = false
+
+[node name="@Mushroom@403" type="Area2D" parent="objects_center" instance=ExtResource( 22 )]
+use_parent_material = true
+position = Vector2( -272, 640 )
+rotation = 6.28319
+scale = Vector2( 1.5, 1.5 )
+script = ExtResource( 9 )
+boost_strenght = 0
+overwrite_momentum = false
+
+[node name="Booster" type="Node2D" parent="objects_center" instance=ExtResource( 24 )]
+use_parent_material = true
+position = Vector2( -848, 256 )
+script = ExtResource( 8 )
+boost_strenght = 0
+overwrite_momentum = false
+flip_direction = false
+
+[node name="decor_center" type="Node2D" parent="."]
+material = SubResource( 13 )
+
+[node name="tiles_center_0" type="TileMap" parent="."]
+material = SubResource( 14 )
+z_index = 10
+tile_set = ExtResource( 2 )
+format = 1
+
+[node name="tiles_center_1" type="TileMap" parent="."]
+material = SubResource( 15 )
+z_index = 10
+tile_set = ExtResource( 2 )
+format = 1
+tile_data = PoolIntArray( -524308, 18, 0, -524307, 18, 0, -458772, 18, 0, -458771, 18, 0, -393236, 18, 0, -393235, 18, 0, -327700, 18, 0, -327699, 18, 0, -262164, 18, 0, -262163, 18, 0, -196628, 18, 0, -196627, 18, 0, -131092, 18, 0, -131091, 18, 0, -65556, 18, 0, -65555, 18, 0, -20, 18, 0, -19, 18, 0, 65516, 18, 0, 65517, 18, 0, 131052, 18, 0, 131053, 18, 0, 196588, 18, 0, 196589, 18, 0, 262124, 18, 0, 262125, 18, 0, 327660, 18, 0, 327661, 18, 0, 327666, 18, 0, 327667, 18, 0, 327668, 18, 0, 327669, 18, 0, 327670, 18, 0, 327671, 18, 0, 327672, 18, 0, 327673, 18, 0, 327678, 18, 0, 327679, 18, 0, 262144, 18, 0, 262145, 18, 0, 262146, 18, 0, 262147, 18, 0, 262148, 18, 0, 262149, 18, 0, 262154, 18, 0, 262155, 18, 0, 262156, 18, 0, 262157, 18, 0, 262158, 18, 0, 262159, 18, 0, 262160, 18, 0, 262161, 18, 0, 262166, 18, 0, 262167, 18, 0, 262168, 18, 0, 262169, 18, 0, 262170, 18, 0, 262171, 18, 0, 262172, 18, 0, 262173, 18, 0, 262178, 18, 0, 262179, 18, 0, 262180, 18, 0, 262181, 18, 0, 262182, 18, 0, 262183, 18, 0, 262184, 18, 0, 262185, 18, 0, 393196, 18, 0, 393197, 18, 0, 393202, 18, 0, 393203, 18, 0, 393204, 18, 0, 393205, 18, 0, 393206, 18, 0, 393207, 18, 0, 393208, 18, 0, 393209, 18, 0, 393214, 18, 0, 393215, 18, 0, 327680, 18, 0, 327681, 18, 0, 327682, 18, 0, 327683, 18, 0, 327684, 18, 0, 327685, 18, 0, 327690, 18, 0, 327691, 18, 0, 327692, 18, 0, 327693, 18, 0, 327694, 18, 0, 327695, 18, 0, 327696, 18, 0, 327697, 18, 0, 327702, 18, 0, 327703, 18, 0, 327704, 18, 0, 327705, 18, 0, 327706, 18, 0, 327707, 18, 0, 327708, 18, 0, 327709, 18, 0, 327714, 18, 0, 327715, 18, 0, 327716, 18, 0, 327717, 18, 0, 327718, 18, 0, 327719, 18, 0, 327720, 18, 0, 327721, 18, 0, 458732, 18, 0, 458733, 18, 0, 524268, 18, 0, 524269, 18, 0, 589804, 18, 0, 589805, 18, 0, 655340, 18, 0, 655341, 18, 0, 720876, 18, 0, 720877, 18, 0, 720878, 18, 0, 720879, 18, 0, 720880, 18, 0, 720881, 18, 0, 720882, 18, 0, 720883, 18, 0, 720884, 18, 0, 720885, 18, 0, 720886, 18, 0, 720887, 18, 0, 720888, 18, 0, 720889, 18, 0, 720890, 18, 0, 720891, 18, 0, 720892, 18, 0, 720893, 18, 0, 720894, 18, 0, 720895, 18, 0, 655360, 18, 0, 655361, 18, 0, 655362, 18, 0, 655363, 18, 0, 655364, 18, 0, 655365, 18, 0, 655366, 18, 0, 655367, 18, 0, 655368, 18, 0, 655369, 18, 0, 655370, 18, 0, 655371, 18, 0, 655372, 18, 0, 655373, 18, 0, 655374, 18, 0, 655375, 18, 0, 655376, 18, 0, 655377, 18, 0, 655378, 18, 0, 655379, 18, 0, 655380, 18, 0, 655381, 18, 0, 655382, 18, 0, 655383, 18, 0, 655384, 18, 0, 655385, 18, 0, 655386, 18, 0, 655387, 18, 0, 655388, 18, 0, 655389, 18, 0, 655390, 18, 0, 655391, 18, 0, 655392, 18, 0, 655393, 18, 0, 655394, 18, 0, 655395, 18, 0, 655396, 18, 0, 655397, 18, 0, 655398, 18, 0, 655399, 18, 0, 655400, 18, 0, 655401, 18, 0, 655402, 18, 0, 655403, 18, 0, 655404, 18, 0, 655405, 18, 0, 655406, 18, 0, 655407, 18, 0, 655408, 18, 0, 655409, 18, 0, 655410, 18, 0, 655411, 18, 0, 786412, 18, 0, 786413, 18, 0, 786414, 18, 0, 786415, 18, 0, 786416, 18, 0, 786417, 18, 0, 786418, 18, 0, 786419, 18, 0, 786420, 18, 0, 786421, 18, 0, 786422, 18, 0, 786423, 18, 0, 786424, 18, 0, 786425, 18, 0, 786426, 18, 0, 786427, 18, 0, 786428, 18, 0, 786429, 18, 0, 786430, 18, 0, 786431, 18, 0, 720896, 18, 0, 720897, 18, 0, 720898, 18, 0, 720899, 18, 0, 720900, 18, 0, 720901, 18, 0, 720902, 18, 0, 720903, 18, 0, 720904, 18, 0, 720905, 18, 0, 720906, 18, 0, 720907, 18, 0, 720908, 18, 0, 720909, 18, 0, 720910, 18, 0, 720911, 18, 0, 720912, 18, 0, 720913, 18, 0, 720914, 18, 0, 720915, 18, 0, 720916, 18, 0, 720917, 18, 0, 720918, 18, 0, 720919, 18, 0, 720920, 18, 0, 720921, 18, 0, 720922, 18, 0, 720923, 18, 0, 720924, 18, 0, 720925, 18, 0, 720926, 18, 0, 720927, 18, 0, 720928, 18, 0, 720929, 18, 0, 720930, 18, 0, 720931, 18, 0, 720932, 18, 0, 720933, 18, 0, 720934, 18, 0, 720935, 18, 0, 720936, 18, 0, 720937, 18, 0, 720938, 18, 0, 720939, 18, 0, 720940, 18, 0, 720941, 18, 0, 720942, 18, 0, 720943, 18, 0, 720944, 18, 0, 720945, 18, 0, 720946, 18, 0, 720947, 18, 0 )
+
+[node name="tiles_center_2" type="TileMap" parent="."]
+material = SubResource( 16 )
+z_index = 10
+tile_set = ExtResource( 2 )
+format = 1
+
+[node name="objects_front" type="Node2D" parent="."]
+material = SubResource( 17 )
+z_index = 40
+
+[node name="decor_front" type="Node2D" parent="."]
+material = SubResource( 18 )
+z_index = 40
+
+[node name="tiles_front_0" type="TileMap" parent="."]
+material = SubResource( 19 )
+z_index = 50
+tile_set = ExtResource( 2 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_front_1" type="TileMap" parent="."]
+material = SubResource( 20 )
+z_index = 50
+tile_set = ExtResource( 2 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_front_2" type="TileMap" parent="."]
+material = SubResource( 21 )
+z_index = 50
+tile_set = ExtResource( 2 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="Ghost" type="Node2D" parent="." instance=ExtResource( 27 )]
+z_index = -1
+script = ExtResource( 5 )
+editor_properties = {
+"attachable": false,
+"description": "The ghost that you race against.",
+"editable_properties": {
+
+},
+"layer": "special",
+"object_path": "res://Objects/Player/Ghost.tscn",
+"object_type": "ghost",
+"rect": Rect2( 0, -32, 64, 64 ),
+"unchangeable_properties": {
+"color": true,
+"order": true,
+"rotation": true,
+"scale": true,
+"z_index": true
+}
+}
+character_name = ""
+character_location = "res:/"
+facing = "right"
+deny_input = true
+ghost = true

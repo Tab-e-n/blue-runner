@@ -4,7 +4,7 @@
 [ext_resource path="res://Scripts/Player/Granddad_Character.gd" type="Script" id=2]
 [ext_resource path="res://Visual/Granddad/DeltaruneRealisticExplosion.png" type="Texture" id=3]
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=1]
 resource_name = "Air"
 length = 0.4
 loop = true
@@ -114,7 +114,7 @@ tracks/2/keys = {
 "values": [ false, true ]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=4]
 resource_name = "Moving Left"
 length = 0.2
 loop = true
@@ -155,7 +155,7 @@ tracks/2/keys = {
 "values": [ Vector2( 0, -48 ) ]
 }
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=5]
 resource_name = "Moving Right"
 length = 0.2
 loop = true
@@ -196,7 +196,7 @@ tracks/2/keys = {
 "values": [ Vector2( 0, -48 ) ]
 }
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=6]
 resource_name = "Stand Left"
 length = 0.1
 loop = true
@@ -237,7 +237,7 @@ tracks/2/keys = {
 "values": [ Vector2( 0, -48 ) ]
 }
 
-[sub_resource type="Animation" id=8]
+[sub_resource type="Animation" id=7]
 resource_name = "Stand Right"
 length = 0.1
 loop = true
@@ -278,8 +278,7 @@ tracks/2/keys = {
 "values": [ Vector2( 0, -48 ) ]
 }
 
-[sub_resource type="Animation" id=1]
-resource_name = "_RESET"
+[sub_resource type="Animation" id=8]
 length = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("spriteshit:frame")
@@ -355,17 +354,18 @@ tracks/5/keys = {
 }
 
 [node name="Character" type="Node2D"]
+use_parent_material = true
 script = ExtResource( 2 )
 
 [node name="Anim" type="AnimationPlayer" parent="."]
-anims/Air = SubResource( 4 )
+anims/Air = SubResource( 1 )
 anims/Death = SubResource( 2 )
 anims/Enter = SubResource( 3 )
-"anims/Moving Left" = SubResource( 5 )
-"anims/Moving Right" = SubResource( 6 )
-"anims/Stand Left" = SubResource( 7 )
-"anims/Stand Right" = SubResource( 8 )
-anims/_RESET = SubResource( 1 )
+"anims/Moving Left" = SubResource( 4 )
+"anims/Moving Right" = SubResource( 5 )
+"anims/Stand Left" = SubResource( 6 )
+"anims/Stand Right" = SubResource( 7 )
+anims/_RESET = SubResource( 8 )
 
 [node name="col_1" type="Node2D" parent="."]
 position = Vector2( 0, -24 )
@@ -377,6 +377,7 @@ color = Color( 0, 1, 1, 0.486275 )
 polygon = PoolVector2Array( -8, -8, 8, -8, 8, 8, -8, 8 )
 
 [node name="spriteshit" type="Sprite" parent="."]
+use_parent_material = true
 position = Vector2( 0, -24 )
 texture = ExtResource( 1 )
 offset = Vector2( 0, -32 )
@@ -385,6 +386,7 @@ hframes = 4
 
 [node name="explosion" type="Sprite" parent="."]
 visible = false
+use_parent_material = true
 position = Vector2( 0, -48 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 3 )

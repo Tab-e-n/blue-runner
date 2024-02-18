@@ -1178,9 +1178,8 @@ margin_bottom = 392.0
 window_title = "Open a Directory"
 mode = 2
 access = 1
-current_dir = "user://SRLevels"
-current_file = "bridge_test.dat"
-current_path = "user://SRLevels/bridge_test.dat"
+current_dir = "user://D:/Project/Godot 3.2/sonic_runner_git/blue-editor"
+current_path = "user://D:/Project/Godot 3.2/sonic_runner_git/blue-editor/"
 __meta__ = {
 "_edit_use_anchors_": false
 }
