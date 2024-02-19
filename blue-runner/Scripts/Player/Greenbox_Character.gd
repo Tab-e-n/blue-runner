@@ -1,11 +1,13 @@
 extends Node2D
 
-onready var player : KinematicBody2D = get_parent()
+var player : KinematicBody2D
+onready var attack : Area2D = preload("res://Objects/Player/Greenbox_Attack.tscn").instance()
 
 const MAX_SPEED : float = 12.0
 const TERMINAL_VELOCITY : float = 12.0
 const JUMP_STRENGH : float = 14.0
 const BOUNCE_STRENGH : float = 12.0
+const ATTACK_TIME : int = 6
 
 var momentum : Vector2 = Vector2(0, 0)
 var air_break : int = 0
@@ -24,6 +26,10 @@ func _ready():
 	player.collisions[1].position = $col_1.position
 	player.collisions[1].scale = $col_1.scale
 	player.collisions[1].disabled = false
+	player.material.set_shader_param("pattern", 2)
+	player.enter_anim_end()
+	player.add_child(attack)
+	attack.connect("body_entered", self, "_on_attack_connected")
 
 
 func _physics_process(delta):
@@ -46,12 +52,11 @@ func _physics_process(delta):
 	if attack_timer > 0:
 		attack_timer -= 1
 	
-	
 	if player.start:
 		pass
 	if player.deny_input:
-		$attack.visible = false
-		$attack/coll.disabled = true
+		attack.visible = false
+		attack.get_node("coll").disabled = true
 	if !player.deny_input:
 		if frame_skip:
 			if punted:
@@ -88,6 +93,7 @@ func _physics_process(delta):
 			
 			if Direction != 0:
 				scale = Vector2(Direction, 1)
+				attack.scale.x = Direction
 			match(Direction):
 				1:
 					player.facing = "right"
@@ -145,7 +151,7 @@ func _physics_process(delta):
 						jumping = true
 			if player.special_buffer > 0 and can_attack and player.ground_buffer == 0: # else if you can, attack.
 				player.special_buffer = 0
-				attack_timer = 4
+				attack_timer = ATTACK_TIME
 				can_attack = false
 				# This isn't very pretty, but i did it so attacks can be seen in replays
 				var key_hori = key_left != key_right
@@ -183,8 +189,8 @@ func _physics_process(delta):
 		player.move_player_character()
 		#print("After: ", player.momentum)
 		
-		$attack.visible = attack_timer > 0
-		$attack/coll.disabled = attack_timer == 0
+		attack.visible = attack_timer > 0 and attack_timer != ATTACK_TIME
+		attack.get_node("coll").disabled = attack_timer == 0
 		
 	elif player.replay and player.timer > player.replay_timer:
 		pass
@@ -199,6 +205,11 @@ func _physics_process(delta):
 		pass
 
 
+func set_attack():
+	attack.get_node("coll").position = $attack.position
+	attack.get_node("attack").position = $attack.position
+
+
 func _on_attack_connected(body):
 	if !player.deny_input:
 		momentum.y = -BOUNCE_STRENGH
@@ -207,5 +218,5 @@ func _on_attack_connected(body):
 		can_attack = true
 		if body.collision_layer % 2 and (body.collision_layer / 2) % 2:
 			body.break_active = true
-			body.break_position = player.position + $attack.position
+			body.break_position = player.position + attack.get_node("attack").position
 			player.break_just_happened = true

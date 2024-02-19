@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Scripts/Player/Player.gd" type="Script" id=18]
 
@@ -10,6 +10,8 @@ extents = Vector2( 8, 8 )
 
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 8, 8 )
+
+[sub_resource type="World" id=4]
 
 [node name="Player" type="KinematicBody2D"]
 script = ExtResource( 18 )
@@ -55,3 +57,15 @@ disabled = true
 position = Vector2( 0, -4.76837e-07 )
 color = Color( 1, 0, 0, 0.486275 )
 polygon = PoolVector2Array( -8, -8, 8, -8, 8, 8, -8, 8 )
+
+[node name="character_texture" type="Sprite" parent="."]
+use_parent_material = true
+
+[node name="character_viewport" type="Viewport" parent="."]
+size = Vector2( 1024, 1024 )
+own_world = true
+world = SubResource( 4 )
+transparent_bg = true
+disable_3d = true
+usage = 0
+render_target_v_flip = true

@@ -33,7 +33,7 @@ const main_buttons : Array = [
 const game_buttons : Array = [
 	["== GAME SETTINGS ==", "label"],
 	["", "label"],
-#	["OUTLINES", "checkbox", "*outlines_on"],
+	["OUTLINES", "checkbox", "*outlines_on"],
 	["GHOSTS", "checkbox", "*ghosts_on"],
 	["TIMER", "enum", "*timer_on", ["OFF", "ON", "LEVEL BEAT"]],
 	["", "label"],

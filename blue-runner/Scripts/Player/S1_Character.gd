@@ -13,7 +13,7 @@ var DECELERATION : int = 50
 var ACC_DIVIDOR : float = 0.025
 
 
-onready var player : KinematicBody2D = get_parent()
+var player : KinematicBody2D
 
 export (PackedScene) var particle
 export var particle_start : Color = Color(0.05, 0.9, 0.95, 1)
@@ -46,6 +46,7 @@ func _ready():
 	$Anim.current_animation = "Enter"
 	
 	player.setup_trail(trail_color)
+
 
 func _physics_process(_delta):
 	player.collisions[1].position = $col_1.position
@@ -340,9 +341,9 @@ func _physics_process(_delta):
 		player.animate_trail(Vector2(0, -88))
 	else:
 		player.animate_trail(Vector2(0, -8), Vector2(0, 80))
-	
-	if $Anim.current_animation != "Enter":
-		position.y = 0
+#
+#	if $Anim.current_animation != "Enter":
+#		position.y = 0
 
 #func _process(delta):
 #	pass

@@ -11,7 +11,7 @@ var DECELERATION : int = 50
 var AIR_MAX_SPEED : int = 800
 var AIR_ACCELERATION : int = 100
 
-onready var player : KinematicBody2D = get_parent()
+var player : KinematicBody2D
 
 
 var can_jump : bool = true
@@ -180,7 +180,8 @@ func _on_animation_finished(anim_name):
 
 
 func point_sprite():
-	var difference = (player.position - last_position) * Vector2(3, 3)
-	$spriteshit.look_at(player.position + difference + Vector2(1, 0))
-	$spriteshit.rotation += PI * 0.5
+#	https://docs.godotengine.org/en/3.2/tutorials/math/matrices_and_transforms.html
+#	var pyth = player.position.distance_to(last_position)
+	$spriteshit.rotation = PI * 0.5
+#	$spriteshit.rotation += PI * 0.5
 	last_position = player.position

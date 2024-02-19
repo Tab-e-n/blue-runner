@@ -63,6 +63,7 @@ var trail_converted : PoolVector2Array = []
 
 func _ready():
 #	print("Player")
+	$character_texture.texture = $character_viewport.get_texture()
 	
 	for i in range(8):
 		if Input.is_action_pressed(Global.KEYBIND_NAMES[i].trim_prefix("*")):
@@ -136,6 +137,8 @@ func _ready():
 	if !ghost:
 		level.player = self
 	
+	material.set_shader_param("outline_active", Global.options["*outlines_on"])
+#	material.set_shader_param("outline_active", true)
 	
 #	print("R " + name)
 
@@ -148,7 +151,9 @@ func load_current_character(change_unicolor : bool = true):
 	if char_load == null:
 		char_load = preload("res://Objects/Player/missing_Character.tscn")
 	var char_node = char_load.instance()
-	add_child(char_node)
+	char_node.player = self
+	$character_viewport.add_child(char_node)
+	char_node.position = $character_viewport.size * Vector2(0.5, 0.5)
 	character = char_node
 	
 	if replay:
