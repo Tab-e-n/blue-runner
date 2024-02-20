@@ -32,6 +32,9 @@ func _ready():
 	- UI Roaster - 
 	honestAndrew
 	
+	- Outline Shader -
+	Juulpower
+	
 	
 	- Development Tools -
 	Godot

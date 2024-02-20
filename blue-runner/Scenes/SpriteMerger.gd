@@ -1,4 +1,5 @@
 # thank you cak4_lover and Theraot
+# however i found out that i'm stupid and didn't need this at all
 tool
 extends Sprite
 
