@@ -11,6 +11,11 @@ shader = ExtResource( 4 )
 shader_param/color = Color( 0.827451, 0.929412, 0.933333, 1 )
 shader_param/active = true
 shader_param/blend = 0.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+shader_param/add_margins = true
 
 [sub_resource type="GDScript" id=2]
 script/source = "extends Sprite

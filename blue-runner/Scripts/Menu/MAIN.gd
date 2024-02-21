@@ -15,8 +15,10 @@ var player : Node2D
 
 var dat : Dictionary
 
+
 func _init():
 	dat = Global.load_dat_file(Global.current_level_location + Global.current_level)
+
 
 func _ready():
 	pass

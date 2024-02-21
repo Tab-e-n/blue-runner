@@ -22,13 +22,16 @@ var punted : bool = false
 
 const UNICOLOR_COLOR : Color = Color(0, 0.75, 0, 1)
 
+
 func _ready():
 	player.collisions[1].position = $col_1.position
 	player.collisions[1].scale = $col_1.scale
 	player.collisions[1].disabled = false
 	player.material.set_shader_param("pattern", 2)
+	player.material.set_shader_param("active", false)
 	player.enter_anim_end()
 	player.add_child(attack)
+	# warning-ignore:return_value_discarded
 	attack.connect("body_entered", self, "_on_attack_connected")
 
 

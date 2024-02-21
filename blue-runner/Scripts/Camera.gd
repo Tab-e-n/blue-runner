@@ -31,6 +31,9 @@ var fade_out_timer : float = 0
 export var fade_out_darkness_lenght : int = 0
 export var fade_out_end : int = 12
 
+var unlock_fade : bool = false
+
+
 func _ready():
 	$Fade.visible = true
 	$border.visible = true
@@ -151,10 +154,14 @@ func _physics_process(_delta):
 	if scrolling_objects != []:
 		for i in scrolling_objects:
 			i.update_self(position)
-	if bg != null: bg.update_self(position)
+	if bg != null:
+		bg.update_self(position)
 	$Fade.scale = zoom
 	$border.scale = zoom
 	$info.scale = zoom
+	if unlock_fade:
+		$unlock_fade.scale = zoom
+
 
 func end_zoom_in(target : Node2D, tele, timer : float, par : float):
 	end_zoom = true
@@ -178,8 +185,19 @@ func end_zoom_in(target : Node2D, tele, timer : float, par : float):
 	$anim.play("end_zoom_in")
 	$finish/anim.play("shift")
 
+
 func start_fade_out(tele : String = "*MENU"):
 	fade_out = true
 	$Fade.visible = true
 	tele_destination = tele
 	$info.visible = false
+
+
+func unlock_fade_in():
+	$anim.play("unlock_fade_in")
+	unlock_fade = true
+
+
+func unlock_fade_out():
+	$anim.play("unlock_fade_out")
+	unlock_fade = false

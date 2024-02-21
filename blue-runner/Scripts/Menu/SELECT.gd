@@ -19,7 +19,6 @@ var current_group_color : int = 0
 var selected_level : int
 var has_selected_level : bool = false
 
-var unlocked_level_groups : Array = []
 var group_current : int = 0
 
 var user_levels : Array
@@ -31,26 +30,18 @@ var user_page_amount : int = 0
 var bg : Node2D
 export var cam_target : Vector2 = Vector2(0, 0)
 
-
 export var character_pulse : float = 0
 
 var is_selecting_characters : bool = false
 var characters_first_time : bool = true
-var unlocked_characters : Array = []
 var selected_character : int = 0
 
+var showcase_characters : Array = []
+var showcase_groups : Array = []
+
+
 func _ready():
-	var group_not_found : bool = true
-	for i in Global.loaded_level_groups.size():
-		if Global.check_loaded_group_unlocked(i):
-			unlocked_level_groups.append(Global.loaded_level_groups[i])
-			if Global.current_level_location == Global.location_of_loaded_group(i):
-				group_current = unlocked_level_groups.size() - 1
-				group_not_found = false
-	if group_not_found:
-		group_current = 0
-		Global.current_level_location = Global.location_of_loaded_group(0, unlocked_level_groups)
-	
+	check_group_unlocks()
 	
 	var directory : Directory = Directory.new()
 	var check_exist = directory.open(Global.USER_LEVELS)
@@ -110,6 +101,10 @@ func _physics_process(_delta):
 		bg.position = Vector2(0, 0)
 
 
+func _exit_tree():
+	Global.wipe_loaded_group_textures()
+
+
 func menu_update():
 	if parent.move:
 		$level_select/dependency.visible = false
@@ -122,7 +117,7 @@ func menu_update():
 			return
 		
 		if Input.is_action_just_pressed("accept"):
-			Global.current_level_location = Global.location_of_loaded_group(group_current, unlocked_level_groups)
+			Global.current_level_location = Global.location_of_loaded_group(group_current, Global.unlocked_level_groups)
 			is_selecting_groups = false
 			selected_level = 0
 			user_selected_level = 0
@@ -147,8 +142,8 @@ func menu_update():
 			$mainAnim.play("CHARACTER -> LEVEL")
 			
 		if Input.is_action_just_pressed("jump"):
-			Global.current_character = unlocked_characters[selected_character][0]
-			Global.current_character_location = unlocked_characters[selected_character][1]
+			Global.current_character = Global.unlocked_characters[selected_character][0]
+			Global.current_character_location = Global.unlocked_characters[selected_character][1]
 			Global.select_menu = true
 			if Global.change_level("", true) != OK:
 				$level_select/fail.visible = true
@@ -169,7 +164,7 @@ func menu_update():
 		$character_select/options_rectangle.material.set_shader_param("offset", character_pulse)
 	else:
 		if Input.is_action_just_pressed("deny") and not has_selected_level:
-			if unlocked_level_groups.size() > 1:
+			if Global.unlocked_level_groups.size() > 1:
 				is_selecting_groups = true
 				if groups_first_time:
 					make_group_icons()
@@ -213,6 +208,14 @@ func menu_update():
 		
 		if parent.move == true:
 			$level_select/new_version.visible = false
+	
+	if showcase_characters:
+		var chara : int = showcase_characters.pop_back()
+		parent.showcase_unlock(Global.unlocked_characters[chara][0] + " unlocked!", load_character_sprite(chara))
+	elif showcase_groups:
+		var group : int = showcase_groups.pop_back()
+		parent.showcase_unlock(Global.unlocked_level_groups[group][0] + " unlocked!", load_group_title(group))
+	
 
 
 func level_move_cursor(move_amount : int = 0):
@@ -271,7 +274,7 @@ func group_move_cursor(move_amount : Vector2 = Vector2(0, 0)):
 				# warning-ignore:narrowing_conversion
 				group_current += move_amount.x
 	
-	var group_num : int = unlocked_level_groups.size()
+	var group_num : int = Global.unlocked_level_groups.size()
 	
 	if move_amount.y != 0:
 		# warning-ignore:narrowing_conversion
@@ -334,22 +337,22 @@ func character_move_cursor(move_amount : int = 0):
 	else:
 		if sign(move_amount) == -1 and selected_character + move_amount >= 0:
 			selected_character += move_amount
-		if sign(move_amount) == 1 and selected_character + move_amount < unlocked_characters.size():
+		if sign(move_amount) == 1 and selected_character + move_amount < Global.unlocked_characters.size():
 			selected_character += move_amount
 	
 #	print(selected_character)
 	
 	if selected_character < 0:
 		selected_character = 0
-	if selected_character >= unlocked_characters.size():
-		selected_character = unlocked_characters.size() - 1
+	if selected_character >= Global.unlocked_characters.size():
+		selected_character = Global.unlocked_characters.size() - 1
 	
 	update_character_visuals()
 
 
 func find_current_character():
-	for i in range(unlocked_characters.size()):
-		if unlocked_characters[i][0] == Global.current_character and unlocked_characters[i][1] == Global.current_character_location:
+	for i in range(Global.unlocked_characters.size()):
+		if Global.unlocked_characters[i][0] == Global.current_character and Global.unlocked_characters[i][1] == Global.current_character_location:
 			selected_character = i
 			return
 	selected_character = 0
@@ -362,16 +365,16 @@ func update_character_visuals():
 	$character_select/characters/cursor.position = get_node("character_select/characters/" + String(selected_character)).position
 	load_render(selected_character)
 	
-	if Global.loaded_characters[unlocked_characters[selected_character][1]][unlocked_characters[selected_character][0]].size() > 3:
-		$character_select/name.bbcode_text = "[center]" + Global.loaded_characters[unlocked_characters[selected_character][1]][unlocked_characters[selected_character][0]][3] + "[/center]"
-		$character_select/description.bbcode_text = "[center]" + Global.loaded_characters[unlocked_characters[selected_character][1]][unlocked_characters[selected_character][0]][4] + "[/center]"
+	if Global.loaded_characters[Global.unlocked_characters[selected_character][1]][Global.unlocked_characters[selected_character][0]].size() > 3:
+		$character_select/name.bbcode_text = "[center]" + Global.loaded_characters[Global.unlocked_characters[selected_character][1]][Global.unlocked_characters[selected_character][0]][3] + "[/center]"
+		$character_select/description.bbcode_text = "[center]" + Global.loaded_characters[Global.unlocked_characters[selected_character][1]][Global.unlocked_characters[selected_character][0]][4] + "[/center]"
 	else:
-		$character_select/name.bbcode_text = "[center]" + unlocked_characters[selected_character][0] + "[/center]"
+		$character_select/name.bbcode_text = "[center]" + Global.unlocked_characters[selected_character][0] + "[/center]"
 		$character_select/description.bbcode_text = ""
 
 
 func make_group_icons():
-	var repetitions : int = unlocked_level_groups.size()
+	var repetitions : int = Global.unlocked_level_groups.size()
 	# warning-ignore:narrowing_conversion
 	var row_amount : int = ceil(float(repetitions) / 7)
 	for i in range(repetitions):
@@ -393,19 +396,40 @@ func make_group_icons():
 		$group_select/groups.add_child(new_sprite)
 	
 	for i in range(repetitions):
-		var file : String = Global.location_of_loaded_group(i, unlocked_level_groups) + "logo.png"
-		if unlocked_level_groups[i][1] == "user://":
+		var file : String = Global.location_of_loaded_group(i, Global.unlocked_level_groups) + "logo.png"
+		if Global.unlocked_level_groups[i][1] == "user://":
 			get_node("group_select/groups/" + String(i)).texture = preload("res://Visual/Title/logo_user.png")
-		elif unlocked_level_groups[i][3] != null:
-			get_node("group_select/groups/" + String(i)).texture = unlocked_level_groups[i][3]
+		elif Global.unlocked_level_groups[i][3] != null:
+			get_node("group_select/groups/" + String(i)).texture = Global.unlocked_level_groups[i][3]
 		else:
 			get_node("group_select/groups/" + String(i)).texture = Global.load_texture_from_png(file)
-			unlocked_level_groups[i][3] = get_node("group_select/groups/" + String(i)).texture
+			Global.unlocked_level_groups[i][3] = get_node("group_select/groups/" + String(i)).texture
 			if get_node("group_select/groups/" + String(i)).texture == null:
 				get_node("group_select/groups/" + String(i)).texture = preload("res://Visual/Title/logo_custom.png")
-				unlocked_level_groups[i][3] = get_node("group_select/groups/" + String(i)).texture
+				Global.unlocked_level_groups[i][3] = get_node("group_select/groups/" + String(i)).texture
 		
 		Global.scale_down_sprite(get_node("group_select/groups/" + String(i)), Vector2(2, 2))
+
+
+func load_group_title(index : int) -> Texture:
+	var group_location = Global.location_of_loaded_group(index, Global.unlocked_level_groups)
+	var is_user_group : bool = group_location == Global.USER_LEVELS
+	var texture : Texture
+	
+	if is_user_group:
+		texture = preload("res://Visual/Title/title_user.png")
+	else:
+		if Global.unlocked_level_groups[index][2] != null:
+			texture = Global.unlocked_level_groups[index][2]
+		else:
+			texture = Global.load_texture_from_png(group_location + "title.png")
+			Global.unlocked_level_groups[index][2] = texture
+		if texture == null:
+			texture = preload("res://Visual/Title/title_custom.png")
+			Global.unlocked_level_groups[index][2] = texture 
+	
+	return texture
+
 
 func reload_all_levels():
 	var is_user_group : bool = Global.current_level_location == Global.USER_LEVELS
@@ -416,17 +440,7 @@ func reload_all_levels():
 	Global.update_level_group_save()
 	
 	# Group title
-	if is_user_group:
-		$level_select/title.texture = preload("res://Visual/Title/title_user.png")
-	else:
-		if unlocked_level_groups[group_current][2] != null:
-			$level_select/title.texture = unlocked_level_groups[group_current][2]
-		else:
-			$level_select/title.texture = Global.load_texture_from_png(Global.current_level_location + "title.png")
-			unlocked_level_groups[group_current][2] = $level_select/title.texture
-		if $level_select/title.texture == null:
-			$level_select/title.texture = preload("res://Visual/Title/title_custom.png")
-			unlocked_level_groups[group_current][2] = $level_select/title.texture 
+	$level_select/title.texture = load_group_title(group_current)
 	
 	var comp_list : Array = []
 	for i in range(20):
@@ -459,11 +473,11 @@ func reload_all_levels():
 	
 	var stats : Array = Global.completion_percentage(is_user_group, user_current_page)
 	
-	unlocked_level_groups[group_current][4] = stats[0]
+	Global.unlocked_level_groups[group_current][4] = stats[0]
 	
 	var group = -1
 	for i in range(Global.loaded_level_groups.size()):
-		if unlocked_level_groups[group_current][0] == Global.loaded_level_groups[i][0] and unlocked_level_groups[group_current][1] == Global.loaded_level_groups[i][1]:
+		if Global.unlocked_level_groups[group_current][0] == Global.loaded_level_groups[i][0] and Global.unlocked_level_groups[group_current][1] == Global.loaded_level_groups[i][1]:
 			group = i
 	
 	Global.loaded_level_groups[group][4] = stats[0]
@@ -534,6 +548,7 @@ func reload_all_levels():
 		$level_select/new_version.visible = true
 		Global.new_version_alert = false
 
+
 func make_new_bg(bg_filepath : String):
 	if bg != null:
 		bg.queue_free()
@@ -545,6 +560,7 @@ func make_new_bg(bg_filepath : String):
 			bg.position = Vector2(0, 0)
 			bg.scale = Vector2(0.5, 0.5)
 			$level_select.add_child(bg)
+
 
 func set_level_data_text(is_in_user_universe : bool = false):
 	var selected_level_location = get_node("level_select/levels/" + String(selected_level)).level_location
@@ -685,32 +701,81 @@ func level_selected():
 		Global.select_menu = true
 		parent.get_node("Camera").start_fade_out("")
 
-func check_character_unlocks():
+
+func check_group_unlocks():
+	var unlocked_level_groups : Array = []
+	var group_not_found : bool = true
+	var check_group : int = 0
 	
-	unlocked_characters = []
+	for i in Global.loaded_level_groups.size():
+		var check : bool = false
+		var showcase : bool = false
+		var new_unlock : bool = true
+		
+		if Global.unlocked_level_groups.size() > check_group:
+			if Global.location_of_loaded_group(check_group, Global.unlocked_level_groups) == Global.location_of_loaded_group(i):
+				check_group += 1
+				check = true
+				new_unlock = false
+		if new_unlock:
+			if Global.check_loaded_group_unlocked(i):
+				check = true
+				showcase = true
+		
+		if check:
+			unlocked_level_groups.append(Global.loaded_level_groups[i])
+			if Global.current_level_location == Global.location_of_loaded_group(i):
+				group_current = unlocked_level_groups.size() - 1
+				group_not_found = false
+			if showcase and Global.unlocked_level_groups.size() != 0:
+				showcase_groups.append(unlocked_level_groups.size() - 1)
+		
+	if group_not_found:
+		group_current = 0
+		Global.current_level_location = Global.location_of_loaded_group(0, unlocked_level_groups)
+	
+	Global.unlocked_level_groups = unlocked_level_groups.duplicate()
+
+
+func check_character_unlocks():
+	var unlocked_characters : Array = []
+	var check_character : int = 0
+	
 #	print(Global.loaded_characters)
 	for place in Global.loaded_characters.keys():
 		for character in Global.loaded_characters[place].keys():
-			
-			var unlock_type : int = Global.loaded_characters[place][character][0]
-			var parameter_1 = Global.loaded_characters[place][character][1]
-			var parameter_2 = Global.loaded_characters[place][character][2]
-			
 			var check : bool = false
+			var showcase : bool = false
 			
-			if unlock_type == 5:
-				check = Global.check_unlock_requirements(unlock_type, parameter_1, place)
+			if Global.unlocked_characters.size() > check_character and character == Global.unlocked_characters[check_character][0]:
+				check_character += 1
+				check = true
+				
 			else:
-				check = Global.check_unlock_requirements(unlock_type, parameter_1, parameter_2)
+				var unlock_type : int = Global.loaded_characters[place][character][0]
+				var parameter_1 = Global.loaded_characters[place][character][1]
+				var parameter_2 = Global.loaded_characters[place][character][2]
+				
+				if unlock_type == 5:
+					check = Global.check_unlock_requirements(unlock_type, parameter_1, place)
+				else:
+					check = Global.check_unlock_requirements(unlock_type, parameter_1, parameter_2)
+				
+				showcase = check
 			
 			if check:
 				unlocked_characters.append([character, place, "", ""])
 				
 				if unlocked_characters.size() > 1:
 					Global.unlock("*char_select_active")
+				if showcase and Global.unlocked_characters.size() != 0:
+					showcase_characters.append(unlocked_characters.size() - 1)
+	
+	Global.unlocked_characters = unlocked_characters.duplicate()
+
 
 func make_character_icons():
-	var repetitions : int = unlocked_characters.size()
+	var repetitions : int = Global.unlocked_characters.size()
 	# warning-ignore:narrowing_conversion
 	for i in range(repetitions):
 		var new_sprite : Sprite = Sprite.new()
@@ -731,46 +796,57 @@ func make_character_icons():
 	for i in range(repetitions):
 		load_icon(i)
 
-func load_render(index : int):
-	if unlocked_characters.size() == 0:
-		$character_select/character_render.texture = preload("res://Visual/Menu/no_character_found.png")
+
+func load_render(index : int, icon : bool = false):
+	var sprite : Sprite
+	if icon:
+		sprite = get_node("character_select/characters/" + String(index))
+	else:
+		sprite = $character_select/character_render
+	
+	if Global.unlocked_characters.size() == 0:
+		if icon:
+			sprite.texture = preload("res://Visual/Menu/no_icon_found.png")
+		else:
+			sprite.texture = preload("res://Visual/Menu/no_character_found.png")
 		return
 	if index < 0:
-		index += unlocked_characters.size()
-	if index >= unlocked_characters.size():
-		index -= unlocked_characters.size()
+		index += Global.unlocked_characters.size()
+	if index >= Global.unlocked_characters.size():
+		index -= Global.unlocked_characters.size()
 	
-	var texture : Texture
-	if unlocked_characters[index][2] != "":
-		texture = load(unlocked_characters[index][2])
-	else:
-		texture = load(unlocked_characters[index][1] + "/Visual/" + unlocked_characters[index][0] + "/portrait.png")
-		unlocked_characters[index][2] = unlocked_characters[index][1] + "/Visual/" + unlocked_characters[index][0] + "/portrait.png"
-		if texture == null:
-			texture = preload("res://Visual/Menu/no_character_found.png")
-			unlocked_characters[index][2] = "res://Visual/Menu/no_character_found.png"
-	$character_select/character_render.texture = texture
+	sprite.texture = load_character_sprite(index, icon)
 	
-	Global.scale_down_sprite($character_select/character_render, Vector2(1, 1), Vector2(384, 384))
+	var size = Vector2(384, 384)
+	if icon:
+		size = Vector2(128, 128)
+	
+	Global.scale_down_sprite(sprite, Vector2(1, 1), size)
+
 
 func load_icon(index : int):
-	if unlocked_characters.size() == 0:
-		get_node("character_select/characters/" + String(index)).texture.texture = preload("res://Visual/Menu/no_icon_found.png")
-		return
-	if index < 0:
-		index += unlocked_characters.size()
-	if index >= unlocked_characters.size():
-		index -= unlocked_characters.size()
-	
+	load_render(index, true)
+
+
+func load_character_sprite(index : int, icon : bool = false) -> Texture:
+	var dat : int = 2
+	var file : String = "portrait.png"
+	if icon:
+		dat = 3
+		file = "icon.png"
 	var texture : Texture
-	if unlocked_characters[index][3] != "":
-		texture = load(unlocked_characters[index][3])
-	else:
-		texture = load(unlocked_characters[index][1] + "/Visual/" + unlocked_characters[index][0] + "/icon.png")
-		unlocked_characters[index][3] = unlocked_characters[index][1] + "/Visual/" + unlocked_characters[index][0] + "/icon.png"
-		if texture == null:
-			texture = preload("res://Visual/Menu/no_icon_found.png")
-			unlocked_characters[index][3] = "res://Visual/Menu/no_icon_found.png"
-	get_node("character_select/characters/" + String(index)).texture = texture
 	
-	Global.scale_down_sprite(get_node("character_select/characters/" + String(index)), Vector2(1, 1), Vector2(128, 128))
+	if Global.unlocked_characters[index][dat] != "":
+		texture = load(Global.unlocked_characters[index][dat])
+	else:
+		texture = load(Global.unlocked_characters[index][1] + "/Visual/" + Global.unlocked_characters[index][0] + "/" + file)
+		Global.unlocked_characters[index][dat] = Global.unlocked_characters[index][1] + "/Visual/" + Global.unlocked_characters[index][0] + "/" + file
+		if texture == null:
+			if icon:
+				texture = preload("res://Visual/Menu/no_icon_found.png")
+				Global.unlocked_characters[index][3] = "res://Visual/Menu/no_icon_found.png"
+			else:
+				texture = preload("res://Visual/Menu/no_character_found.png")
+				Global.unlocked_characters[index][2] = "res://Visual/Menu/no_character_found.png"
+	
+	return texture

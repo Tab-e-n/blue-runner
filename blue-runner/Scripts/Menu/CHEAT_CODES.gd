@@ -88,17 +88,21 @@ func code_interpretor():
 		"GRANDDAD":
 			done_unlock("*character_granddad", "GRANDDAD????????")
 		"NULL":
-			done_unlock("*character_missing")
+			done_unlock("*character_missing", "YOU GOT SOMEONE")
 		"PLATFORMERKAT":
-			done_unlock("*character_greenbox")
+			done_unlock("*character_greenbox", "YOU GOT SOMEONE")
 		"PLATTHEVIDEOGAME":
-			$did_it.text = "\'KAT\' IS INTENCIONAL"
+			$did_it.text = "WRONG GAME"
 		"PLAT":
 			$did_it.text = "\'KAT\' IS INTENCIONAL"
 		"PLATKAT":
 			$did_it.text = "CLOSE, BUT TOO SHORT"
+		"PLATFORMER":
+			$did_it.text = "CLOSE, SOMETHING IS MISSING"
 		"TABIN":
-			$did_it.text = "HEY, THATS ME!"
+			$did_it.text = "HEY, THATS ME :D"
+		"IAMDEVYESYES":
+			done_unlock("*developer_levels", "DEV LEVELS NOW AVAILABLE")
 		_:
 			$Anim.stop()
 			$Anim.play("Fail")

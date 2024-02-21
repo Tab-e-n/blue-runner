@@ -1,6 +1,7 @@
 extends Node2D
 
 #var loaded_menu : PackedScene = preload("res://Scenes/MAIN.tscn")
+var background_menu : Node2D
 var current_menu : Node2D
 
 var hold : int = 0
@@ -65,6 +66,7 @@ func _process(_delta):
 	
 	move = false
 
+
 func switch_menu(menu_name : String, comming_from : String = ""):
 	var load_menu : PackedScene = load("res://Scenes/" + menu_name + ".tscn") 
 	var new_menu = load_menu.instance()
@@ -75,3 +77,16 @@ func switch_menu(menu_name : String, comming_from : String = ""):
 		current_menu.menu_ready(comming_from)
 	
 	menu = menu_name
+
+
+func showcase_unlock(text : String, texture : Texture):
+	background_menu = current_menu
+	current_menu = Global.showcase_unlock(text, texture)
+	# warning-ignore:return_value_discarded
+	current_menu.connect("going_away", self, "_on_unlock_left")
+	$Camera.unlock_fade_in()
+
+
+func _on_unlock_left():
+	current_menu = background_menu
+	$Camera.unlock_fade_out()

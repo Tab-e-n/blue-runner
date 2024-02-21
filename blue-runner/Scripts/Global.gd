@@ -74,8 +74,10 @@ var loaded_level_groups = []
 var user_levels : Array
 var user_pages : int
 var level_group = {}
+var unlocked_level_groups : Array = []
 
 var loaded_characters = {}
+var unlocked_characters : Array = []
 
 var last_input_events : Array = []
 
@@ -748,6 +750,14 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
 	return true
 
 
+func showcase_unlock(text : String, texture : Texture) -> Node2D:
+	var show_unlock : Node2D = preload("res://Objects/Unlock.tscn").instance()
+	show_unlock.texture = texture
+	get_tree().current_scene.add_child(show_unlock)
+	show_unlock.set_text(text)
+	return show_unlock
+
+
 func level_group_in_save(level_location : String, data : Dictionary = level_completion) -> bool:
 	return data.has(level_location)
 
@@ -776,6 +786,12 @@ func check_loaded_group_unlocked(index : int) -> bool:
 
 func location_of_loaded_group(index : int, data : Array = loaded_level_groups) -> String:
 	return data[index][1] + data[index][0] + "/"
+
+
+func wipe_loaded_group_textures():
+	for i in loaded_level_groups:
+		i[2] = null
+		i[3] = null
 
 
 func save_game(timer : float = 0, par : float = 0, collectible : Array = [], level = null, recording : Dictionary = {}):
@@ -905,6 +921,8 @@ func delete_save():
 		"*char_select_active" : false,
 		"completion_percentages" : {},
 	}
+	unlocked_characters = []
+	unlocked_level_groups = []
 	save_game()
 
 

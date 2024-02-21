@@ -14,10 +14,10 @@
  - Achievements!
  - Cheat Codes!
  - New timer setting, where it will only appear if you had beaten the level you are playing.
+ - New outlines option, when turned on the player character and the finish will gain outlines to make them more visible.
  - You can now screenshot the game with F2.
  - You can now save replays while playing the level with F6. This will save a replay without you needing to finish the level.
  - While looking at a replay, you can now pause it by pressing the jump button.
-
 
 ### VISUAL
 
@@ -28,6 +28,7 @@
  - The timer is now outlined for better visibility.
  - User Universe now has a unique BG.
  - Bootup sequence has a new font.
+ - Ghosts now appear a solid instead of appearing segmented.
 
 ### FIXES & CHANGES
 

@@ -180,8 +180,12 @@ func _on_animation_finished(anim_name):
 
 
 func point_sprite():
-#	https://docs.godotengine.org/en/3.2/tutorials/math/matrices_and_transforms.html
-#	var pyth = player.position.distance_to(last_position)
-	$spriteshit.rotation = PI * 0.5
-#	$spriteshit.rotation += PI * 0.5
+	var pyth = player.position.distance_to(last_position)
+	var difference = player.position - last_position
+	var cosine = difference.x / pyth
+	$spriteshit.rotation = incos(cosine, difference.y) + PI * 0.5
 	last_position = player.position
+
+
+func incos(cosine : float, y : float) -> float:
+	return acos(cosine) * sign(y)
