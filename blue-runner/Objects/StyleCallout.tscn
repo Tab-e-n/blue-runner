@@ -1,0 +1,56 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Text/Lacrimae_Outlined.tres" type="DynamicFont" id=1]
+[ext_resource path="res://Scripts/StyleCallout.gd" type="Script" id=2]
+
+[sub_resource type="Animation" id=1]
+resource_name = "move"
+tracks/0/type = "value"
+tracks/0/path = NodePath("text:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -448, -40 ), Vector2( -448, -168 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("text:rect_scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2, 0.8, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 1, 1 ), Vector2( 1, 1 ), Vector2( 0, 0 ) ]
+}
+
+[node name="StyleCallout" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="text" type="Label" parent="."]
+margin_left = -448.0
+margin_top = -40.0
+margin_right = 448.0
+margin_bottom = 40.0
+rect_scale = Vector2( 1e-05, 1e-05 )
+rect_pivot_offset = Vector2( 448, 40 )
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 0.792157, 0.278431, 0.54902, 1 )
+custom_colors/font_outline_modulate = Color( 0.941176, 0.607843, 0.678431, 1 )
+text = "Close one!"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="anim" type="AnimationPlayer" parent="."]
+autoplay = "move"
+anims/move = SubResource( 1 )
+[connection signal="animation_finished" from="anim" to="." method="_on_anim_animation_finished"]

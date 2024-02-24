@@ -1,6 +1,9 @@
 extends Node2D
 
-onready var player : KinematicBody2D = get_parent()
+
+const UNICOLOR_COLOR : Color = Color(0, 0.75, 0, 1)
+const STYLISH_POSITION : Vector2 = Vector2(0, -28)
+const STYLISH_RECT : Vector2 = Vector2(32, 32)
 
 const GRAVITY_UP : int = 26
 const GRAVITY_DOWN : int = 40
@@ -14,7 +17,8 @@ const ACCELERATION : int = 40
 const DECELERATION : int = 50
 const ACC_DIVIDOR : int = 40
 
-const UNICOLOR_COLOR : Color = Color(0, 0.75, 0, 1)
+
+onready var player : KinematicBody2D = get_parent()
 
 export (PackedScene) var particle
 var particle_disable : int = 0
@@ -44,9 +48,10 @@ func _physics_process(_delta):
 	if player.is_jump_input_just_pressed():
 		player.jump_buffer = player.INPUT_BUFFER_FRAMES
 	
-	if player.start:
+	if player.is_starting():
 		if player.jump_buffer > 0:
 			player.jump_buffer -= 1
+	
 	if !player.deny_input:
 		# GRAVITY / DECELERATION
 		if player.is_on_ceiling(): player.momentum.y = 0

@@ -1,5 +1,11 @@
 extends Node2D
 
+
+export var trail_color : Color = Color(1, 1, 1, 1)
+export var UNICOLOR_COLOR : Color = Color(1, 1, 1, 1)
+const STYLISH_POSITION : Vector2 = Vector2(0, -60)
+const STYLISH_RECT : Vector2 = Vector2(16, 60)
+
 const GRAVITY_UP : int = 26
 const GRAVITY_DOWN : int = 40
 const GRAVITY_WALL_UP : int = 13
@@ -35,9 +41,6 @@ var state_air : int = 0
 var wall_anim : int = 1
 var last_facing : String
 
-export var trail_color : Color = Color(1, 1, 1, 1)
-export var UNICOLOR_COLOR : Color = Color(1, 1, 1, 1)
-
 export var idle_anim_timer : int = -1
 
 func _ready():
@@ -60,7 +63,7 @@ func _physics_process(_delta):
 	if player.is_jump_input_just_pressed():
 		player.start_jump_buffer()
 	
-	if player.start:
+	if player.is_starting():
 		player.decrement_jump_buffer()
 		if Input.is_action_just_pressed("special"):
 			sliding = 15

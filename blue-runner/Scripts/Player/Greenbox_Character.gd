@@ -1,13 +1,18 @@
 extends Node2D
 
-var player : KinematicBody2D
-onready var attack : Area2D = preload("res://Objects/Player/Greenbox_Attack.tscn").instance()
+
+const UNICOLOR_COLOR : Color = Color(0, 0.75, 0, 1)
+const STYLISH_POSITION : Vector2 = Vector2(0, -28)
+const STYLISH_RECT : Vector2 = Vector2(32, 32)
 
 const MAX_SPEED : float = 12.0
 const TERMINAL_VELOCITY : float = 12.0
 const JUMP_STRENGH : float = 14.0
 const BOUNCE_STRENGH : float = 12.0
 const ATTACK_TIME : int = 6
+
+var player : KinematicBody2D
+onready var attack : Area2D = preload("res://Objects/Player/Greenbox_Attack.tscn").instance()
 
 var momentum : Vector2 = Vector2(0, 0)
 var air_break : int = 0
@@ -19,8 +24,6 @@ var frame_skip : bool = true
 
 var jumping : bool = false
 var punted : bool = false
-
-const UNICOLOR_COLOR : Color = Color(0, 0.75, 0, 1)
 
 
 func _ready():
@@ -55,7 +58,7 @@ func _physics_process(delta):
 	if attack_timer > 0:
 		attack_timer -= 1
 	
-	if player.start:
+	if player.is_starting():
 		pass
 	if player.deny_input:
 		attack.visible = false
@@ -120,6 +123,9 @@ func _physics_process(delta):
 			if player.move_and_collide(Vector2(0,1), false, true, true): # ground check
 				player.ground_buffer = player.GROUND_BUFFER_FRAMES
 				can_attack = true
+				player.state = "ground"
+			if player.ground_buffer == 0:
+				player.state = "air"
 			
 			if player.move_and_collide(Vector2(3,0), false, true, true): # check for walls, if there are walls near, enable wall jumping
 				air_break = 6
@@ -155,6 +161,7 @@ func _physics_process(delta):
 			if player.special_buffer > 0 and can_attack and player.ground_buffer == 0: # else if you can, attack.
 				player.special_buffer = 0
 				attack_timer = ATTACK_TIME
+				attack.get_node("coll").disabled = false
 				can_attack = false
 				# This isn't very pretty, but i did it so attacks can be seen in replays
 				var key_hori = key_left != key_right
@@ -193,7 +200,8 @@ func _physics_process(delta):
 		#print("After: ", player.momentum)
 		
 		attack.visible = attack_timer > 0 and attack_timer != ATTACK_TIME
-		attack.get_node("coll").disabled = attack_timer == 0
+		if attack_timer == 0:
+			attack.get_node("coll").disabled = true
 		
 	elif player.replay and player.timer > player.replay_timer:
 		pass
@@ -216,7 +224,8 @@ func set_attack():
 func _on_attack_connected(body):
 	if !player.deny_input:
 		momentum.y = -BOUNCE_STRENGH
-		attack_timer = 0
+		attack.get_node("coll").disabled = true
+#		attack_timer = 0
 		player.jump_buffer = 0
 		can_attack = true
 		if body.collision_layer % 2 and (body.collision_layer / 2) % 2:

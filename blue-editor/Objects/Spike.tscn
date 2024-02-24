@@ -25,6 +25,10 @@ texture = ExtResource( 3 )
 color = Color( 1, 0, 0, 0.25098 )
 polygon = PoolVector2Array( 24, 0, 23, -6, 21, -12, 17, -17, 12, -21, 6, -23, 0, -24, -6, -23, -12, -21, -17, -17, -21, -12, -23, -6, -24, 0, -23, 6, -21, 12, -17, 17, -12, 21, -6, 23, 0, 24, 6, 23, 12, 21, 17, 17, 21, 12, 23, 6 )
 
+[node name="style" type="Polygon2D" parent="."]
+color = Color( 1, 0, 1, 0.25098 )
+polygon = PoolVector2Array( -8, -24, 8, -24, 8, 24, -8, 24 )
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
 shape = SubResource( 1 )

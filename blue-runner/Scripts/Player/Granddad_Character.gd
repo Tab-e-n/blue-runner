@@ -2,6 +2,9 @@ extends Node2D
 
 
 const UNICOLOR_COLOR : Color = Color("ffffff")
+const STYLISH_POSITION : Vector2 = Vector2(0, -28)
+const STYLISH_RECT : Vector2 = Vector2(48, 48)
+
 const GRAVITY : int = 26
 const JUMP_POWER : int = 1000
 
@@ -29,7 +32,7 @@ func _physics_process(_delta):
 	if player.is_jump_input_just_pressed():
 		player.start_jump_buffer()
 	
-	if player.start:
+	if player.is_starting():
 		player.decrement_jump_buffer()
 		
 	if !player.deny_input:

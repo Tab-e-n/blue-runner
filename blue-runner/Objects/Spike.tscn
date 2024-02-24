@@ -1,11 +1,15 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Scripts/Spike.gd" type="Script" id=1]
 [ext_resource path="res://Visual/saw_1.png" type="Texture" id=2]
+[ext_resource path="res://Objects/StylishCheck.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Visual/saw_2.png" type="Texture" id=4]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 24.0
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 8, 24 )
 
 [node name="Spike" type="StaticBody2D"]
 collision_layer = 6
@@ -24,3 +28,12 @@ texture = ExtResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
+
+[node name="StylishCheck" parent="." instance=ExtResource( 3 )]
+monitoring = false
+monitorable = false
+style = "Close one!"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StylishCheck"]
+visible = false
+shape = SubResource( 2 )

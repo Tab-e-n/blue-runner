@@ -1,4 +1,6 @@
 extends KinematicBody2D
+class_name Player
+
 
 onready var level : Node2D
 onready var character : Node2D
@@ -39,6 +41,7 @@ var break_just_happened : bool = false
 var punted : bool = false
 var boosted : bool = false
 var launched : bool = false
+var stylish : bool = false
 #var speeding : bool = false
 
 var moving_ground : Node2D = null
@@ -138,7 +141,6 @@ func _ready():
 		level.player = self
 	
 	material.set_shader_param("outline_active", Global.options["*outlines_on"])
-#	material.set_shader_param("outline_active", true)
 	
 #	print("R " + name)
 
@@ -165,6 +167,9 @@ func load_current_character(change_unicolor : bool = true):
 			character.get_node("Anim").current_animation = "Enter"
 		else:
 			enter_anim_end()
+	
+	$stylish.position = character.STYLISH_POSITION
+	$stylish.emission_rect_extents = character.STYLISH_RECT + Vector2(8, 8)
 	
 	if !ghost and change_unicolor:
 		shader_color()
@@ -214,16 +219,22 @@ func _physics_process(delta):
 		if Input.is_action_just_pressed("save_replay"):
 			add_recording_data()
 			Global.save_replay_with_date(get_parent().name, recording.duplicate())
-		if !level.unicolor_active and false:
-			var speed : float = sqrt(pow(momentum.x, 2) + pow(momentum.y, 2))
-			material.set_shader_param("active", speed > 1500)
-			if speed > 1500:
-				var blend : float = (speed - 1500) / 1000
-				if blend > 1:
-					blend = 1
-				material.set_shader_param("blend", blend)
+		if stylish and state == "ground":
+			boost(Vector2(get_facing_axis() * 200, 0))
+			stylish = false
+		
+#		if !level.unicolor_active and false:
+#			var speed : float = sqrt(pow(momentum.x, 2) + pow(momentum.y, 2))
+#			material.set_shader_param("active", speed > 1500)
+#			if speed > 1500:
+#				var blend : float = (speed - 1500) / 1000
+#				if blend > 1:
+#					blend = 1
+#				material.set_shader_param("blend", blend)
+		
 	# - - - REPLAY STATE - - -
 	elif replay:
+		stylish = false
 		if Input.is_action_just_pressed("jump") and Global.replay_menu and not Global.race_mode:
 			increment_timer = !increment_timer
 			level.timers_active = increment_timer
@@ -234,6 +245,9 @@ func _physics_process(delta):
 				character.get_node("Anim").playback_speed = 1
 			else:
 				character.get_node("Anim").playback_speed = 0
+		
+		if Input.is_action_just_pressed("special") and Global.replay_menu and not Global.race_mode and !increment_timer:
+			timer += delta
 		
 		if !play_loaded_recording(int(timer * 1000)):
 			if timer > replay_timer + 2 and !ghost:
@@ -249,6 +263,7 @@ func _physics_process(delta):
 					Global.change_level("*Menu_Level_Select")
 	# - - - DEATH STATE - - -
 	elif dead:
+		stylish = false
 		if death_wait == 0:
 			var _name : String = get_parent().name
 			if Global.level_completion[Global.current_level_location].has(_name):
@@ -263,6 +278,10 @@ func _physics_process(delta):
 		death_wait += 1
 		if death_wait >= 20:
 			Global.change_level("")
+	elif end:
+		stylish = false
+	
+	$stylish.emitting = stylish
 
 
 func is_jump_input_pressed():
@@ -297,6 +316,10 @@ func get_horizontal_axis() -> float:
 
 func should_jump() -> bool:
 	return jump_buffer > 0
+
+
+func is_starting() -> bool:
+	return start and not Global.replay_menu
 
 
 func start_jump_buffer():
@@ -461,6 +484,12 @@ func punt(boost : Vector2, overwrite_momentum : bool, make_airborn : bool = true
 			launched = true
 
 
+func boost(boost : Vector2):
+	boosted = true
+	momentum += boost
+	
+
+
 func play_sound(sound_name : String, random_pitch : bool = false):
 	var pitch = 1
 	var pitch_end = -1
@@ -498,7 +527,7 @@ func play_loaded_recording(time : int):
 		position = Vector2(replay_data[0], replay_data[1])
 		character.get_node("Anim").current_animation = replay_data[4]
 		character.scale = Vector2(replay_data[2], replay_data[3])
-		if replay_data.size() > 5:
+		if replay_data.size() > 5 and increment_timer:
 			play_sound(replay_data[5])
 		return true
 	else:
@@ -547,3 +576,12 @@ func clear_trail_history():
 		trail_points[i] = position
 		trail_converted[i] = Vector2(0, 0)
 	trail.points = trail_converted
+
+
+func been_stylish(style : String = "Nice!"):
+	var new_callout : Node2D = preload("res://Objects/StyleCallout.tscn").instance()
+	new_callout.text = style
+	new_callout.position = position
+	get_tree().current_scene.add_child(new_callout)
+	
+	stylish = true
