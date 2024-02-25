@@ -7,3 +7,4 @@
 script = ExtResource( 1 )
 
 [node name="Camera" parent="." instance=ExtResource( 2 )]
+in_main_menu = true

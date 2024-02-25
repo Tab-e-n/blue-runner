@@ -184,6 +184,8 @@ func _on_animation_finished(anim_name):
 
 func point_sprite():
 	var pyth = player.position.distance_to(last_position)
+	if pyth == 0:
+		return
 	var difference = player.position - last_position
 	var cosine = difference.x / pyth
 	$spriteshit.rotation = incos(cosine, difference.y) + PI * 0.5

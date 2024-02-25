@@ -12,10 +12,10 @@ extents = Vector2( 8, 8 )
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 8, 8 )
 
-[sub_resource type="Curve" id=5]
+[sub_resource type="Curve" id=4]
 _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.00454545 ), 0.0, 0.0, 0, 0 ]
 
-[sub_resource type="World" id=4]
+[sub_resource type="World" id=5]
 
 [node name="Player" type="KinematicBody2D"]
 script = ExtResource( 18 )
@@ -67,7 +67,6 @@ use_parent_material = true
 
 [node name="stylish" type="CPUParticles2D" parent="."]
 emitting = false
-amount = 16
 lifetime = 0.5
 local_coords = false
 texture = ExtResource( 1 )
@@ -76,12 +75,12 @@ emission_rect_extents = Vector2( 64, 64 )
 gravity = Vector2( 0, 30 )
 angular_velocity = 108.38
 angular_velocity_random = 1.0
-scale_amount_curve = SubResource( 5 )
+scale_amount_curve = SubResource( 4 )
 
 [node name="character_viewport" type="Viewport" parent="."]
 size = Vector2( 1024, 1024 )
 own_world = true
-world = SubResource( 4 )
+world = SubResource( 5 )
 transparent_bg = true
 disable_3d = true
 usage = 0

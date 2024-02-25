@@ -35,6 +35,7 @@
  - The menu now has it's own seperate keys from gameplay.
  - Fixed bug where a level groups completion percentage wouldn't save, leading to messy behaviour.
  - The level timer doesn't start until you start moving.
+ - Saw jumps are now consistent.
  - S1's default slide is now a bit slower. Dropslide is staying the same speed, however.
  - Shortend coyote time on S1 and it's derivates.
  - XT9 is unlocked when you have 7 bonuses now. If you already have them unlocked,
@@ -61,24 +62,8 @@
     - __ External Images__! It's the lite version of mods!
     - __ Invisible Ground__! :)
  - You can now change the font of HoverText.
- - New text interpreter or something!
-	 - When typing text into HoverText, you can type some commands
-	   inbetween %% and they will be replaced by game info.
-	 - `%left%`, `%right%`, `%up%`, `%down%`, `%jump%`, `%special%`,
-	   `%reset%`, `%return%`, `%menu_left%`, `%menu_right%`, `%menu_up%`,
-           `%menu_down%`, `%accept%`, `%deny%`, `%save_replay%`, `%screenshot%`
-	   will be replaced by the users keybinds for those actions.
-	 - `%unlock [unlock]%` will be replaced by a YES or NO depending on if
-	   `[unlock]` is unlocked.
-	 - `%level [level_data]%` will be replaced by info from the level .dat file.
-	   possible options for [level_data]:
-		 - creator - Who made the level.
-		 - level_name - Name of the level.
-		 - level_icon - What icon the level has.
-		 - level_base - What base the level has.
-	 - If you wanna type % or any of the commands without them being replaced, put them between \`\`,
-	   and the interpreter will ignore them.
-	 - %\`% will put a \`, since otherwise it will be removed.
+ - New text formating or something! It allows you show some game data as text.
+   This will be explained in the wiki in more detail if you are interested.
  - You can now set `tele_destination` of the portal and finish to `*Level_Next`, which will change the level to the next level in the level group.
  - The Camera's fade in and fade out can be edited. Useful for story levels, but not needed for normal levels.
  - You can now add the name of the author to a level group. You can also make it so it doesn't display in the level select screen, if you don't like how it looks.

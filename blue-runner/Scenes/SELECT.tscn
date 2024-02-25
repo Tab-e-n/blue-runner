@@ -1558,6 +1558,8 @@ __meta__ = {
 }
 
 [node name="bg" type="Polygon2D" parent="."]
+visible = false
+modulate = Color( 1, 1, 1, 0 )
 color = Color( 0.0156863, 0.0235294, 0.133333, 1 )
 polygon = PoolVector2Array( 640, -384, 640, 384, -640, 384, -640, -384 )
 

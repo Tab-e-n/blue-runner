@@ -5,7 +5,7 @@ const VERSION : String = "2.0.0-dev"
 const USER_LEVELS : String = "user://SRLevels/"
 const SAVEFILE : String = "user://sonicRunner"
 const MODS_SAVEFILE : String = "user://sonicRunnerMods"
-const KEYBIND_NAMES : Array = ["*left", "*right", "*up", "*down", "*jump", "*special", "*reset", "*return", "*menu_left", "*menu_right", "*menu_up", "*menu_down", "*accept", "*deny", "*save_replay", "*screenshot"]
+const KEYBIND_NAMES : Array = ["*left", "*right", "*up", "*down", "*jump", "*special", "*reset", "*return", "*menu_left", "*menu_right", "*menu_up", "*menu_down", "*accept", "*deny", "*save_replay", "*screenshot", "*info"]
 
 const DEFAULT_OPTIONS : Dictionary = {
 	"*version" : VERSION,
@@ -25,6 +25,7 @@ const DEFAULT_OPTIONS : Dictionary = {
 	"*deny" : KEY_BACKSPACE,
 	"*save_replay" : KEY_F6,
 	"*screenshot" : KEY_F2,
+	"*info" : KEY_F3,
 	"*outlines_on" : false,
 	"*ghosts_on" : false,
 	"*up_key_jump" : false,
@@ -370,6 +371,16 @@ func text_interpretor(text : String):
 			else: match op_text:
 				"`":
 					new_text += "`"
+				"current_level":
+					new_text += current_level
+				"current_level_location":
+					new_text += current_level_location
+				"current_character":
+					new_text += current_character
+				"current_character_location":
+					new_text += current_character_location
+				"version":
+					new_text += VERSION
 				_: # bruh
 					if op_text.begins_with("unlock"):
 						if check_unlock(op_text.substr(7, op_text.length() - 7)):

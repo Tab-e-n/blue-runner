@@ -220,7 +220,8 @@ func _physics_process(delta):
 			add_recording_data()
 			Global.save_replay_with_date(get_parent().name, recording.duplicate())
 		if stylish and state == "ground":
-			boost(Vector2(get_facing_axis() * 200, 0))
+			if get_horizontal_axis() != 0:
+				boost(Vector2(get_horizontal_axis() * 200, 0))
 			stylish = false
 		
 #		if !level.unicolor_active and false:
@@ -409,8 +410,9 @@ func collision_default_effects(type : int, collider):
 	
 	# Hurt
 	if bit_include(type, 0b0100):
-		dead = true
-		deny_input = true
+		if not (bit_include(type, 0b0010) and jump_buffer != 0):
+			dead = true
+			deny_input = true
 	
 	# Breakable
 	if bit_include(type, 0b0011) and break_breakables:
@@ -487,7 +489,8 @@ func punt(boost : Vector2, overwrite_momentum : bool, make_airborn : bool = true
 func boost(boost : Vector2):
 	boosted = true
 	momentum += boost
-	
+	if boost.x != 0:
+		make_speed_ring(sign(boost.x))
 
 
 func play_sound(sound_name : String, random_pitch : bool = false):
@@ -585,3 +588,11 @@ func been_stylish(style : String = "Nice!"):
 	get_tree().current_scene.add_child(new_callout)
 	
 	stylish = true
+
+
+func make_speed_ring(direction : float = 1):
+	var ring : Node2D = preload("res://Objects/SpeedRing.tscn").instance()
+	ring.position = position - character.STYLISH_RECT * Vector2(0, 0.5)
+	ring.scale.x = direction
+	get_tree().current_scene.add_child(ring)
+	

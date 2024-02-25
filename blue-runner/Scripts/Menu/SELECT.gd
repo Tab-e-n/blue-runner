@@ -648,9 +648,11 @@ func set_level_data_text(is_in_user_universe : bool = false):
 	
 	#$level_data/replay.visible = Global.load_replay(selected_level_location + selected_level_name + "_Best", true)
 
+
 func remove_bg():
 	if bg != null:
 		bg.queue_free()
+
 
 func level_selected():
 	Global.current_level = get_node("level_select/levels/" + String(selected_level)).level_name

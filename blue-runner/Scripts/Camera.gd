@@ -34,6 +34,9 @@ export var fade_out_end : int = 12
 var unlock_fade : bool = false
 
 
+export var in_main_menu : bool = false
+
+
 func _ready():
 	$Fade.visible = true
 	$border.visible = true
@@ -77,6 +80,15 @@ func _ready():
 		$finish/continue.rect_size.x = 512
 		$finish/reset.rect_size.x = 512
 		$finish/reset.rect_position.x = -416
+	
+	if not in_main_menu:
+		$info/level/data.text = Global.text_interpretor(
+"""%level level_name%
+%current_level_location%%current_level%
+By: %level creator%"""
+#As: %current_character%
+)
+
 
 func _physics_process(_delta):
 	if has_node("complete_dark"):
@@ -161,6 +173,9 @@ func _physics_process(_delta):
 	$info.scale = zoom
 	if unlock_fade:
 		$unlock_fade.scale = zoom
+	
+	if not in_main_menu:
+		$info/level.visible = Input.is_action_pressed("info")
 
 
 func end_zoom_in(target : Node2D, tele, timer : float, par : float):

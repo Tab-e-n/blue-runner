@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Scripts/Camera.gd" type="Script" id=1]
 [ext_resource path="res://Visual/camera_black_border_thing.png" type="Texture" id=2]
@@ -8,6 +8,8 @@
 [ext_resource path="res://Visual/camera_input_reset.png" type="Texture" id=6]
 [ext_resource path="res://Scripts/Menu/menu_shader.shader" type="Shader" id=7]
 [ext_resource path="res://Text/Shixel_Outlined.tres" type="DynamicFont" id=8]
+[ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=9]
+[ext_resource path="res://Text/Shixel_Small.tres" type="DynamicFont" id=10]
 
 [sub_resource type="Animation" id=1]
 resource_name = "end_zoom_in"
@@ -390,6 +392,22 @@ __meta__ = {
 visible = false
 position = Vector2( 0, 288 )
 texture = ExtResource( 3 )
+
+[node name="level" type="Node2D" parent="info"]
+visible = false
+position = Vector2( -624, -368 )
+z_index = 10
+
+[node name="data" type="Label" parent="info/level"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 344.0
+margin_bottom = 128.0
+theme = ExtResource( 9 )
+custom_fonts/font = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Fade" type="Polygon2D" parent="."]
 visible = false

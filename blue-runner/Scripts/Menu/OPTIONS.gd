@@ -79,6 +79,7 @@ const controls_meta_buttons : Array = [
 	["== META CONTROLS ==", "label"],
 	["", "label"],
 	["SCREENSHOT", "keybind", 15],
+	["SHOW INFO", "keybind", 16],
 	["SAVE REPLAY", "keybind", 14],
 ]
 
