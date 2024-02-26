@@ -1,16 +1,11 @@
 extends Node2D
 
+
+const UNFINISHED_GROUP_TIMER_TEXT = "Time: N/A"
+const NO_GROUP_DESCRIPTION = "No description given."
+
+
 onready var parent : Node2D = get_parent()
-
-#export var bg_transition : float = 0
-#export var bg_changing : bool = false
-#onready var bg_current : Node2D = null
-#onready var bg_next : Node2D = null
-
-#var current_world : int = 1
-
-#var group_select : bool = false
-
 
 var is_selecting_groups : bool = false
 var groups_first_time : bool = true
@@ -216,6 +211,7 @@ func menu_update():
 		var group : int = showcase_groups.pop_back()
 		parent.showcase_unlock(Global.unlocked_level_groups[group][0] + " unlocked!", load_group_title(group))
 	
+	$level_select/description.visible = Input.is_action_pressed("info")
 
 
 func level_move_cursor(move_amount : int = 0):
@@ -495,10 +491,15 @@ func reload_all_levels():
 	else:
 		$level_select/Completion.visible = false
 	
-	$level_select/stats.text = String(stats[1]) + "\n" + String(stats[2]) + "\n" + String(stats[4]) + "\n"
-	$level_select/keycollect.visible = !is_user_group
-	if !is_user_group:
-		$level_select/stats.text += String(stats[3]) + "\n"
+	$level_select/description/stats_beat.text = String(stats[1])
+	$level_select/description/stats_par.text = String(stats[2])
+	$level_select/description/stats_bonus.text = String(stats[4])
+	$level_select/description/stats_unlock.text = String(stats[3])
+	$level_select/description/keycollect.visible = not is_user_group
+	$level_select/description/stats_unlock.visible = not is_user_group
+	
+	$level_select/description/name.text = Global.loaded_level_groups[group_current][0]
+	$level_select/time.text = level_group_complete_time(Global.current_level_location)
 	
 	for i in range(20):
 		get_node("level_select/levels/" + String(i)).reload()
@@ -520,8 +521,19 @@ func reload_all_levels():
 		if Global.level_group.has("author"):
 			if Global.level_group["author"] == "":
 				$level_select/author.text = ""
+				$level_select/description/author.text = ""
 			else:
-				$level_select/author.text = "By: " + Global.level_group["author"]
+				var author_text = "By: " + Global.level_group["author"]
+				$level_select/author.text = author_text
+				$level_select/description/author.text = author_text
+		
+		if Global.level_group.has("description"):
+			if Global.level_group["description"] == "":
+				$level_select/description/text.text = NO_GROUP_DESCRIPTION
+			else:
+				$level_select/description/text.text = Global.level_group["description"]
+		else:
+			$level_select/description/text.text = NO_GROUP_DESCRIPTION
 		
 		if Global.level_group.has("ui_color"):
 			color = Color(Global.level_group["ui_color"][0], Global.level_group["ui_color"][1], Global.level_group["ui_color"][2])
@@ -531,22 +543,26 @@ func reload_all_levels():
 	
 	$level_select/levels/selected_level.modulate = color
 	$level_select/Completion.set_color(color)
-	$level_select/beatflag.modulate = color
-	$level_select/parstar.modulate = color
-	$level_select/boltcollect.modulate = color
-	$level_select/keycollect.modulate = color
 	
 	$level_select/level_data.material.set_shader_param("color", color)
 	$level_select/level_data.material.set_shader_param("secondary_color", color * Color(0.2, 0.2, 0.3, 1))
-#	$level_select/level_data/level_name.modulate = color
-#	$level_select/level_data/best_time.modulate = color
-#	$level_select/level_data/par.modulate = color
-#	$level_select/level_data/deaths.modulate = color
-#	$level_select/level_data/creator.modulate = color
 	
 	if is_user_group and Global.new_version_alert:
 		$level_select/new_version.visible = true
 		Global.new_version_alert = false
+
+
+func level_group_complete_time(group : String) -> String:
+	if not Global.level_completion.has(group):
+		return UNFINISHED_GROUP_TIMER_TEXT
+	var time : float = 0
+	for level in Global.level_completion[group].keys():
+		if not Global.level_completion[group].has(level):
+			return UNFINISHED_GROUP_TIMER_TEXT
+		if Global.level_completion[group][level][0] == null:
+			return UNFINISHED_GROUP_TIMER_TEXT
+		time += Global.level_completion[group][level][0]
+	return "Time: " + Global.convert_float_to_time(time)
 
 
 func make_new_bg(bg_filepath : String):

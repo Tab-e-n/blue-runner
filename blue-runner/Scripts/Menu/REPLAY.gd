@@ -3,6 +3,7 @@ extends Node2D
 onready var parent : Node2D = get_parent()
 
 var directories : Array = []
+#var directory_is_built_in : Array = []
 var current_directory : String = ""
 
 var selected_directory : int = 0
@@ -136,11 +137,13 @@ func interactions_inputs():
 		if Input.is_action_just_pressed("deny"):
 			delete_confirmation = false
 	if Input.is_action_just_pressed("accept"):
+#		print("accept")
 		match current_mode:
 			0:
 				is_selecting_replay = true
 				$bottom/bottom_anim.play("to_info")
 			1:
+#				print("view")
 				play_replay_level()
 			2:
 				play_replay_level()
@@ -226,8 +229,8 @@ func play_replay_level():
 	Global.replay_save[1] = current_mode
 	Global.replay_save[2] = current_directory
 	#print("dir in global: ", Global.replay_save[2])
-	#print(current_directory + replays[current_directory][next_replay])
-	Global.current_recording = Global.load_replay(current_directory + replays[current_directory][next_replay], false, false)
+	print(current_directory + replays[current_directory][next_replay])
+	Global.current_recording = Global.load_replay(current_directory + replays[current_directory][next_replay], false, false) #, false, not directory_is_built_in[selected_directory]
 	
 	if Global.current_recording.has("character"):
 		Global.current_character = Global.current_recording["character"]
@@ -385,16 +388,26 @@ func set_cassette_labes(reset : bool = false):
 		else:
 			current_cassette.set_text("")
 
+
 func load_replays():
 	replays = {}
 	
+	iterate_through_directory("user://SRReplays/", false)
+#	iterate_through_directory("res://Replays/", true)
+
+
+func iterate_through_directory(idirectory : String, built_in : bool):
 	# dir shenanigans
 	var dir = Directory.new()
+	var directories_to_visit = [idirectory]
 	
-	var directories_to_visit = ["user://SRReplays/"]
 	while directories_to_visit.size() > 0:
 		dir.open(directories_to_visit[0])
-		var current_dir_name = directories_to_visit[0].trim_prefix("user://SRReplays/")
+		var current_dir_name
+		if not built_in:
+			current_dir_name = directories_to_visit[0].trim_prefix(idirectory)
+		else:
+			current_dir_name = directories_to_visit[0]
 		replays[current_dir_name] = []
 		
 		dir.list_dir_begin(true, false)
@@ -424,6 +437,7 @@ func load_replays():
 		
 		if replays[current_dir_name] or current_dir_name == "":
 			directories.append(current_dir_name)
+#			directory_is_built_in.append(built_in)
 		
 		directories_to_visit.pop_front()
 	

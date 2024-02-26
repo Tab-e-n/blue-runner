@@ -944,7 +944,7 @@ func reset_options():
 
 func update_old_save(version : String, save : Dictionary):
 	var settings : Dictionary = {}
-	var unlocks : Dictionary = {}
+#	var unlocks : Dictionary = {}
 	var levels : Dictionary = {}
 	
 	#print(version)
@@ -1080,7 +1080,7 @@ func load_replay(new_name, existance_check : bool = false, level : bool = true, 
 	var replay_name : String = new_name
 	if level:
 		replay_name = replay_filename(new_name, false)
-	
+
 	if built_in:
 		replay_name = "res://Replays/" + replay_name
 	else:

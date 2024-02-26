@@ -12,7 +12,6 @@
 [ext_resource path="res://Scripts/Menu/Scrolling_Text.gd" type="Script" id=10]
 [ext_resource path="res://Visual/Menu/replay_directory_walls.png" type="Texture" id=11]
 
-
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 5 )
 shader_param/color = Plane( 0.25, 0.5, 0.75, 1 )
