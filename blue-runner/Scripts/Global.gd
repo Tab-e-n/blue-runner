@@ -77,7 +77,8 @@ var user_pages : int
 var level_group = {}
 var unlocked_level_groups : Array = []
 
-var loaded_characters = {}
+var loaded_characters : Dictionary = {}
+var character_order : Dictionary = {}
 var unlocked_characters : Array = []
 
 var last_input_events : Array = []
@@ -187,7 +188,7 @@ func _physics_process(_delta):
 	var curr_scene = get_tree().current_scene.name
 	if Input.is_action_just_pressed("return") and !(curr_scene == "MENU" or curr_scene == "LOAD"):
 		change_level("*MENU") 
-	if Input.is_action_just_pressed("reset") and !(curr_scene == "MENU" or curr_scene == "LOAD"):
+	if Input.is_action_just_released("reset") and !(curr_scene == "MENU" or curr_scene == "LOAD"):
 		change_level("")
 	
 	if Input.is_action_just_pressed("screenshot"):
@@ -1271,6 +1272,7 @@ func load_data():
 		
 		if dat_file.size() > 0:
 			loaded_characters[place] = dat_file["*characters"].duplicate()
+			character_order[place] = dat_file["*order"].duplicate()
 	
 	#print(loaded_characters)
 

@@ -241,8 +241,8 @@ func _physics_process(_delta):
 		
 		if !player.is_jump_input_pressed() and jumping and !player.punted and sliding == 0:
 			jumping = false
-			if player.momentum.y < -200:
-				player.momentum.y = -200
+			if player.momentum.y < player.extra_momentum.y - 200:
+				player.momentum.y = player.extra_momentum.y - 200
 		
 		# COLLISION / MOVING
 		# warning-ignore:return_value_discarded
@@ -356,6 +356,7 @@ func jump(jump_power : int):
 	jumping = true
 	dropping = 0
 	player.play_sound("jump")
+	player.extra_momentum = Vector2(0, 0)
 
 
 func particle_summon(particle_position : Vector2, particle_rotation : float, type : int = 0):

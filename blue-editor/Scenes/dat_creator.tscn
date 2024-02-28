@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Text/Text_Editor.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=2]
@@ -12,11 +12,12 @@
 [ext_resource path="res://Visual/Editor/editor_exit.png" type="Texture" id=10]
 [ext_resource path="res://Visual/Editor/editor_load_enabled.png" type="Texture" id=11]
 [ext_resource path="res://Visual/Editor/editor_load.png" type="Texture" id=12]
+[ext_resource path="res://Scenes/character_dat_order.tscn" type="PackedScene" id=13]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
-const options_span : int = 1664
+const options_span : int = 2048
 
 func _ready():
 	ready_optionbutton_setup($GUI/base/base_normal, data.level_icon)
@@ -343,7 +344,6 @@ margin_top = 16.0
 margin_right = -296.0
 margin_bottom = -213.0
 rect_scale = Vector2( 0.75, 0.75 )
-custom_colors/default_color = Color( 0.454902, 0.54902, 0.662745, 1 )
 text = "INSTRUCTIONS"
 
 [node name="Text" parent="GUI/instructions" instance=ExtResource( 1 )]
@@ -486,7 +486,7 @@ __meta__ = {
 margin_left = 152.0
 margin_top = 664.0
 margin_right = 944.0
-margin_bottom = 1128.0
+margin_bottom = 1488.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -536,7 +536,7 @@ __meta__ = {
 margin_left = 72.0
 margin_top = 88.0
 margin_right = -208.0
-margin_bottom = -312.0
+margin_bottom = -656.0
 text = "Character"
 
 [node name="file" type="LineEdit" parent="GUI/character"]
@@ -552,7 +552,7 @@ __meta__ = {
 margin_left = 72.0
 margin_top = 136.0
 margin_right = -208.0
-margin_bottom = -264.0
+margin_bottom = -608.0
 text = "Name"
 
 [node name="name" type="LineEdit" parent="GUI/character"]
@@ -568,7 +568,7 @@ __meta__ = {
 margin_left = 72.0
 margin_top = 184.0
 margin_right = -208.0
-margin_bottom = -24.0
+margin_bottom = -384.0
 tab_size = 0
 text = "Description"
 
@@ -585,7 +585,7 @@ __meta__ = {
 margin_left = 72.0
 margin_top = 328.0
 margin_right = -208.0
-margin_bottom = 56.0
+margin_bottom = -304.0
 text = "Unlock Type"
 
 [node name="type" type="OptionButton" parent="GUI/character"]
@@ -625,11 +625,26 @@ margin_top = 392.0
 margin_right = 712.0
 margin_bottom = 424.0
 
+[node name="character_dat_order" parent="GUI/character" instance=ExtResource( 13 )]
+margin_left = 24.0
+margin_top = 448.0
+margin_right = -16.0
+margin_bottom = -16.0
+
+[node name="text_order" parent="GUI/character" instance=ExtResource( 1 )]
+margin_left = 48.0
+margin_top = 520.0
+margin_right = -184.0
+margin_bottom = 208.0
+text = "The order of the characters in the character select.
+
+Update this list whenever you add a character."
+
 [node name="mod" type="Panel" parent="GUI"]
 margin_left = 152.0
-margin_top = 1144.0
+margin_top = 1504.0
 margin_right = 944.0
-margin_bottom = 1672.0
+margin_bottom = 2056.0
 __meta__ = {
 "_edit_use_anchors_": false
 }

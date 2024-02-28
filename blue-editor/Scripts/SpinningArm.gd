@@ -49,7 +49,7 @@ func _process(_delta):
 	
 	if abs(timer) >= spin_time_frames: timer = (spin_time_frames - 1) * sign(timer)
 	
-	$decor_steel_pipe.rotation_degrees = rotations[timer]
+	$editor_vector.rotation_degrees = rotations[timer]
 	$editor_pointer.rotation_degrees = rotations[timer]
 	
 	$decor_steel_pipe.scale.y = lenght + 0.125

@@ -80,6 +80,9 @@
 
 ### FIXES & CHANGES
 
+ - When picking items, the original item is nolonger deleted unless you hold shift.
+ - After you remove an item, you can press backspace to place the current
+   item you have selected in it's place.
  - There is now a shortcut to start playtesting the level.
  - Added a new dropdown menu for selecting a tab.
  - Attachables should no longer have wacky behaviours when you do anything complex with them.

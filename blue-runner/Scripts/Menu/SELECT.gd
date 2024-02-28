@@ -761,7 +761,7 @@ func check_character_unlocks():
 	
 #	print(Global.loaded_characters)
 	for place in Global.loaded_characters.keys():
-		for character in Global.loaded_characters[place].keys():
+		for character in Global.character_order[place]:
 			var check : bool = false
 			var showcase : bool = false
 			

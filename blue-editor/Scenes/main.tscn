@@ -134,6 +134,10 @@ var pause_level_input : bool = false
 
 var playtest_save : bool = false
 
+var can_return_removed : bool = false
+var last_remove_position : Vector2 = Vector2(0, 0)
+
+
 func _ready():
 	print(\"main ready\")
 	# Create bulk nodes
@@ -516,6 +520,13 @@ func _process(_delta):
 	if Input.is_action_just_pressed(\"25\"):
 		file_exit_pressed()
 	
+	if Input.is_action_just_pressed(\"27\") and can_return_removed:
+		if place_current_tab == PLACE_DECOR:
+			level_add_decor(false, last_remove_position)
+		if place_current_tab == PLACE_OBJECTS:
+			level_add_objects(false, last_remove_position)
+		can_return_removed = false
+	
 	# Mouse Input
 	if Input.is_action_just_released(\"mouse_left\"):
 		level_input.pressed = false
@@ -633,7 +644,7 @@ func _process(_delta):
 					
 					done_action(\"pick tile\", \"#e4a712\")
 				else:
-					level_pick_closest_item()
+					level_pick_closest_item(Input.is_action_pressed(\"shift\"))
 	if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_right\") and !(transform_mode or edit_mode):
 		if Input.is_action_just_pressed(\"mouse_right\"):
 			mouse_hinge = mouse_pos
@@ -1485,7 +1496,7 @@ func set_cell(pos : Vector2, tile : int):
 	print(\"Set Tile\")
 	place_current_tilemap.set_cellv(pos, tile, place_tile_mods[0], place_tile_mods[1], place_tile_mods[2])
 
-func level_add_decor():
+func level_add_decor(use_mouse_pos : bool = true, pos : Vector2 = Vector2(0, 0)):
 	var new_decor : Sprite = Sprite.new()
 	var attachable : Node2D
 	
@@ -1506,8 +1517,10 @@ func level_add_decor():
 	var step = 0
 	if place_grid_snap:
 		step = 16
-	new_decor.position.x = stepify(level_mouse_position.x, step)
-	new_decor.position.y = stepify(level_mouse_position.y, step)
+	if use_mouse_pos:
+		pos.x = stepify(level_mouse_position.x, step)
+		pos.y = stepify(level_mouse_position.y, step)
+	new_decor.position = pos
 	new_decor.texture = place_selected_decor.texture
 	new_decor.scale = place_selected_decor.scale
 	new_decor.rotation_degrees = place_selected_decor.rotation_degrees
@@ -1521,7 +1534,7 @@ func level_add_decor():
 	if attachable != null:
 		attachable.attached(new_decor)
 
-func level_add_objects():
+func level_add_objects(use_mouse_pos : bool = true, pos : Vector2 = Vector2(0, 0)):
 	var object = PackedScene.new()
 	object = load(place_selected_object.editor_properties[\"object_path\"])
 	var new_object : Node = object.instance()
@@ -1559,8 +1572,10 @@ func level_add_objects():
 	var step = 0
 	if place_grid_snap:
 		step = 16
-	new_object.position.x = stepify(level_mouse_position.x, step)
-	new_object.position.y = stepify(level_mouse_position.y, step)
+	if use_mouse_pos:
+		pos.x = stepify(level_mouse_position.x, step)
+		pos.y = stepify(level_mouse_position.y, step)
+	new_object.position = pos
 	new_object.scale = place_selected_object.scale
 	new_object.rotation_degrees = place_selected_object.rotation_degrees
 	new_object.modulate = place_selected_object.modulate
@@ -1686,8 +1701,13 @@ func level_remove_closest_item():
 	var attachable
 	if !place_attach_mode:
 		node = level_closest_item()
-		if place_current_tab == PLACE_DECOR: done_action(\"erase decor\", \"#923155\")
-		if place_current_tab == PLACE_OBJECTS: done_action(\"erase object\", \"#923155\")
+		if node:
+			can_return_removed = true
+			last_remove_position = node.position
+		if place_current_tab == PLACE_DECOR:
+			done_action(\"erase decor\", \"#923155\")
+		if place_current_tab == PLACE_OBJECTS:
+			done_action(\"erase object\", \"#923155\")
 	else:
 		attachable = level_closest_item(null, true)
 		if attachable != null:
@@ -1702,13 +1722,17 @@ func level_remove_closest_item():
 	
 	if attachable != null: attachable.detached(node)
 
-func level_pick_closest_item():
+
+func level_pick_closest_item(remove_picked : bool = false):
 	var node
 	var attachable
 	var layer : Node2D
 	if !place_attach_mode:
 		layer = get_node(\"Game/Level/\" + place_tabs[place_current_tab] + \"_\" + level_layers[place_current_layer])
 		node = level_closest_item()
+		if node and remove_picked:
+			can_return_removed = true
+			last_remove_position = node.position
 	else:
 		attachable = level_closest_item(null, true)
 		if attachable != null:
@@ -1738,7 +1762,7 @@ func level_pick_closest_item():
 		if place_current_tab == PLACE_OBJECTS:
 			object_select(\"\", node, node == level_objects[\"bg\"])
 		
-		if node != level_objects[\"bg\"]:
+		if node != level_objects[\"bg\"] and remove_picked:
 			node.queue_free()
 	if place_current_tab == PLACE_DECOR:
 		done_action(\"pick decor\", \"#e4a712\")
@@ -4423,11 +4447,11 @@ text = "???"
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]

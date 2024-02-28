@@ -14,6 +14,7 @@ var state : String = "air"
 export var facing : String = "right"
 
 var momentum : Vector2 = Vector2(0, 0)
+var extra_momentum : Vector2 = Vector2(0, 0)
 
 var deny_input : bool = true
 var start : bool = true
@@ -54,6 +55,7 @@ const GROUND_BUFFER_FRAMES : int = 4
 var ground_buffer : int = 0
 
 export var increment_timer : bool = true
+export var reset_increment_timer : bool = false
 export var loop_replay : bool = false
 export var load_replay : bool = true
 export var automatic_set_level_node : bool = true
@@ -159,7 +161,7 @@ func load_current_character(change_unicolor : bool = true):
 	character = char_node
 	
 	if replay:
-		play_loaded_recording(0)
+		play_loaded_recording(0, false)
 		if character.get_node("Anim").has_animation("_RESET"):
 			character.get_node("Anim").current_animation = "_RESET"
 	else:
@@ -213,6 +215,11 @@ func _physics_process(delta):
 		if increment_timer:
 			timer += delta
 	
+	if reset_increment_timer:
+		reset_increment_timer = false
+		increment_timer = false
+		level.set_deferred("timers_active", false)
+	
 	#print(deny_input, replay, dead, end, level.timer_active)
 	
 	if !deny_input:
@@ -238,7 +245,7 @@ func _physics_process(delta):
 		stylish = false
 		if Input.is_action_just_pressed("jump") and Global.replay_menu and not Global.race_mode:
 			increment_timer = !increment_timer
-			level.timers_active = increment_timer
+			level.set_deferred("timers_active", increment_timer)
 			var camera = level.get_node("Camera")
 			if camera != null:
 				camera.get_node("info/camera_pause").visible = !increment_timer
@@ -247,14 +254,17 @@ func _physics_process(delta):
 			else:
 				character.get_node("Anim").playback_speed = 0
 		
-		if Input.is_action_just_pressed("special") and Global.replay_menu and not Global.race_mode and !increment_timer:
-			timer += delta
+		if Input.is_action_just_pressed("special") and Global.replay_menu and not Global.race_mode and not increment_timer:
+#			timer += delta
+			reset_increment_timer = true
+			increment_timer = true
+			level.set_deferred("timers_active", true)
 		
 		if !play_loaded_recording(int(timer * 1000)):
 			if timer > replay_timer + 2 and !ghost:
 				if loop_replay:
 					timer = -1
-					play_loaded_recording(0)
+					play_loaded_recording(0, false)
 					if character.get_node("Anim").has_animation("_RESET"):
 						character.get_node("Anim").current_animation = "_RESET"
 					if level.has_method("_on_replay_looped"):
@@ -391,6 +401,7 @@ func move_player_character():
 
 func exit_moving_ground():
 	if moving_ground:
+		extra_momentum = moving_ground.momentum
 		momentum += moving_ground.momentum
 		moving_ground = null
 
@@ -478,6 +489,8 @@ func punt(boost : Vector2, overwrite_momentum : bool, make_airborn : bool = true
 	elif sign(boost.y) != 0:
 		momentum.y = boost.y
 	
+	extra_momentum = boost
+	
 	boosted = true
 	if make_airborn:
 		state = "air"
@@ -524,13 +537,13 @@ func add_recording_data():
 	#Global.current_recording = recording.duplicate()
 
 
-func play_loaded_recording(time : int):
+func play_loaded_recording(time : int, sound : bool = true):
 	if recording.has(String(time)):
 		var replay_data = recording[String(time)]
 		position = Vector2(replay_data[0], replay_data[1])
 		character.get_node("Anim").current_animation = replay_data[4]
 		character.scale = Vector2(replay_data[2], replay_data[3])
-		if replay_data.size() > 5 and increment_timer:
+		if replay_data.size() > 5 and increment_timer and sound:
 			play_sound(replay_data[5])
 		return true
 	else:

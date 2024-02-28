@@ -45,12 +45,11 @@ shader_param/outline_active = false
 shader_param/width = 4.0
 shader_param/pattern = 0
 shader_param/inside = false
-shader_param/add_margins = true
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 8, 8 )
 
-[sub_resource type="World" id=5]
+[sub_resource type="World" id=3]
 
 [sub_resource type="Animation" id=4]
 length = 2.0
@@ -512,7 +511,7 @@ tracks/37/keys = {
 "values": [ 1, 0 ]
 }
 
-[sub_resource type="Animation" id=3]
+[sub_resource type="Animation" id=5]
 length = 2.0
 loop = true
 tracks/0/type = "value"
@@ -978,7 +977,7 @@ collision_layer = 24
 collision_mask = 24
 script = ExtResource( 4 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="coll" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -56 )
 scale = Vector2( 1.5, 7 )
 shape = SubResource( 2 )
@@ -990,7 +989,7 @@ position = Vector2( 0, -64 )
 [node name="Viewport" type="Viewport" parent="."]
 size = Vector2( 128, 128 )
 own_world = true
-world = SubResource( 5 )
+world = SubResource( 3 )
 transparent_bg = true
 disable_3d = true
 usage = 0
@@ -1146,7 +1145,7 @@ position = Vector2( 64, 128 )
 scale = Vector2( 0.5, 0.5 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Viewport/Visual_XT9"]
-anims/Call = SubResource( 3 )
+anims/Call = SubResource( 5 )
 
 [node name="arm2B" type="Sprite" parent="Viewport/Visual_XT9"]
 use_parent_material = true

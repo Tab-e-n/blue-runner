@@ -3,7 +3,7 @@ extends Node2D
 onready var parent : Node2D = get_parent()
 
 var directories : Array = []
-#var directory_is_built_in : Array = []
+var directory_is_built_in : Array = []
 var current_directory : String = ""
 
 var selected_directory : int = 0
@@ -228,9 +228,9 @@ func play_replay_level():
 	Global.replay_save[0] = next_replay
 	Global.replay_save[1] = current_mode
 	Global.replay_save[2] = current_directory
-	#print("dir in global: ", Global.replay_save[2])
-	print(current_directory + replays[current_directory][next_replay])
-	Global.current_recording = Global.load_replay(current_directory + replays[current_directory][next_replay], false, false) #, false, not directory_is_built_in[selected_directory]
+#	print("dir in global: ", Global.replay_save[2])
+#	print(current_directory + replays[current_directory][next_replay])
+	Global.current_recording = load_current_replay()
 	
 	if Global.current_recording.has("character"):
 		Global.current_character = Global.current_recording["character"]
@@ -339,7 +339,7 @@ func rack_visuals():
 
 func set_cassette_labes(reset : bool = false):
 	if replays[current_directory].size() > 0:
-		var recording : Dictionary = Global.load_replay(current_directory + replays[current_directory][current_replay], false, false)
+		var recording : Dictionary = load_current_replay()
 		#print(current_directory + replays[current_directory][current_replay])
 		$bottom/replay_name.set_text(replays[current_directory][current_replay])
 		if recording.has("timer"):
@@ -389,11 +389,15 @@ func set_cassette_labes(reset : bool = false):
 			current_cassette.set_text("")
 
 
+func load_current_replay() -> Dictionary:
+	return Global.load_replay(current_directory + replays[current_directory][next_replay], false, false, directory_is_built_in[selected_directory])
+
+
 func load_replays():
 	replays = {}
 	
 	iterate_through_directory("user://SRReplays/", false)
-#	iterate_through_directory("res://Replays/", true)
+	iterate_through_directory("res://Replays/dev/", true)
 
 
 func iterate_through_directory(idirectory : String, built_in : bool):
@@ -403,11 +407,9 @@ func iterate_through_directory(idirectory : String, built_in : bool):
 	
 	while directories_to_visit.size() > 0:
 		dir.open(directories_to_visit[0])
-		var current_dir_name
-		if not built_in:
-			current_dir_name = directories_to_visit[0].trim_prefix(idirectory)
-		else:
-			current_dir_name = directories_to_visit[0]
+		var current_dir_name = directories_to_visit[0].trim_prefix(idirectory)
+		if built_in:
+			current_dir_name = "dev/" + current_dir_name
 		replays[current_dir_name] = []
 		
 		dir.list_dir_begin(true, false)
@@ -418,15 +420,20 @@ func iterate_through_directory(idirectory : String, built_in : bool):
 			if dir.current_is_dir():
 				var dont_skip : bool = true
 				var directory : String = directories_to_visit[0] + _last_replay + "/"
-				if directory.find("/res/") != -1: pass
-				elif directory.find("/user/") != -1: pass
-				elif directory.ends_with("/res"): pass
-				elif directory.ends_with("/user"): pass
+				if directory.find("/res/") != -1:
+					pass
+				elif directory.find("/user/") != -1:
+					pass
+				elif directory.ends_with("/res"):
+					pass
+				elif directory.ends_with("/user"):
+					pass
 				else:
 					var mod = directory.substr(directory.find("mods") + 5, directory.length() - directory.find("mods"))
 					mod = mod.substr(0, mod.find("/"))
 					if mod == "": 
-						if Global.mods_installed.size() == 0: dont_skip = false
+						if Global.mods_installed.size() == 0:
+							dont_skip = false
 					elif !Global.mods_installed.has(mod): 
 						dont_skip = false
 				if dont_skip:
@@ -437,7 +444,7 @@ func iterate_through_directory(idirectory : String, built_in : bool):
 		
 		if replays[current_dir_name] or current_dir_name == "":
 			directories.append(current_dir_name)
-#			directory_is_built_in.append(built_in)
+			directory_is_built_in.append(built_in)
 		
 		directories_to_visit.pop_front()
 	

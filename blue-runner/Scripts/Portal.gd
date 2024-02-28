@@ -17,6 +17,9 @@ export var automatic_set_level_node : bool = true
 var zoopaway : bool = false
 var portal_zoopaway_timer : float = 0
 
+var already_touched : bool = false
+
+
 func _ready():
 	
 	if automatic_set_level_node:
@@ -80,6 +83,10 @@ func _process(delta):
 
 
 func teleport(timer : float, collectible : Array, collectible_unlock : Array, recording : Dictionary):
+	if already_touched:
+		return
+	already_touched = true
+	
 	# warning-ignore:return_value_discarded
 	Global.unlock(unlock)
 	for i in collectible_unlock:
@@ -115,3 +122,5 @@ func teleport(timer : float, collectible : Array, collectible_unlock : Array, re
 			new_sprite.z_index = 99
 			
 			add_child(new_sprite)
+	
+	$coll.set_deferred("disabled", true)
