@@ -53,6 +53,8 @@
    placing down tiles, and with a single left click it will allow you to fill
    in any holes you may have in the ground.
  - Added new shortcuts to temporarely hide layers.
+ - After you remove an item, you can press backspace to place the current
+   item you have selected in it's place.
  - In the edit layers panel, there is now a new option:__ Unicolor__! Turning this
    on will make every layer only one color.
  - Added a new objects:
@@ -81,10 +83,9 @@
 ### FIXES & CHANGES
 
  - When picking items, the original item is nolonger deleted unless you hold shift.
- - After you remove an item, you can press backspace to place the current
-   item you have selected in it's place.
  - There is now a shortcut to start playtesting the level.
  - Added a new dropdown menu for selecting a tab.
+ - Quick mouse movement while placing down tiles nolonger makes gaps.
  - Attachables should no longer have wacky behaviours when you do anything complex with them.
  - Fixed a bug where you could have multiple of the same tile preset in the place panel.
  - You can now edit the order of portals.
