@@ -137,6 +137,8 @@ var playtest_save : bool = false
 var can_return_removed : bool = false
 var last_remove_position : Vector2 = Vector2(0, 0)
 
+var last_tile_position : Vector2 = Vector2(0, 0)
+
 
 func _ready():
 	print(\"main ready\")
@@ -538,12 +540,14 @@ func _process(_delta):
 			pause_level_input = false
 			level_input.pressed = false
 			$GUI/Hint/hint.pressed = false
+	
 	elif edit_mode:
 		var edit_node
 		if place_selected_object.editor_properties[\"object_type\"] != \"bg\":
 			edit_node = place_selected_object
 		else:
 			edit_node = level_objects[\"bg\"]
+		
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
 			if Input.is_action_just_pressed(\"mouse_left\"):
 				mouse_hinge = mouse_pos
@@ -551,6 +555,7 @@ func _process(_delta):
 					edit_node.call(\"edit_left_just_pressed\", mouse_pos, $GUI/cursor.position, level.scale)
 			if edit_node.has_method(\"edit_left_pressed\"):
 				edit_node.call(\"edit_left_pressed\", mouse_pos, mouse_hinge)
+		
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_right\"):
 			if Input.is_action_just_pressed(\"mouse_right\"):
 				mouse_hinge = mouse_pos
@@ -558,16 +563,20 @@ func _process(_delta):
 					edit_node.call(\"edit_right_just_pressed\", mouse_pos, $GUI/cursor.position, level.scale)
 			if edit_node.has_method(\"edit_right_pressed\"):
 				edit_node.call(\"edit_right_pressed\", mouse_pos, mouse_hinge)
+		
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_just_released(\"mouse_left\"):
 			if edit_node.has_method(\"edit_left_released\"):
 				edit_node.call(\"edit_left_released\", mouse_pos, $GUI/cursor.position, level.scale)
+		
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_just_released(\"mouse_right\"):
 			if edit_node.has_method(\"edit_right_released\"):
 				edit_node.call(\"edit_right_released\", mouse_pos, $GUI/cursor.position, level.scale)
+	
 	elif bucket_mode:
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
 			if Input.is_action_just_pressed(\"mouse_left\"):
 				level_bucket_fill_tiles(place_selected_tile)
+	
 	elif transform_mode:
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\") and $GUI/Edit_Items/Panel/other/scale_y.editable:
 			if Input.is_action_just_pressed(\"mouse_left\"):
@@ -578,7 +587,7 @@ func _process(_delta):
 					level_scale_hinge = place_selected_object.scale
 			$GUI/Edit_Items/Panel/other/scale_y.value = stepify(level_scale_hinge.y + (mouse_hinge.y - mouse_pos.y) / 128, 0.05)
 			$GUI/Edit_Items/Panel/other/scale_x.value = stepify(level_scale_hinge.x * (($GUI/Edit_Items/Panel/other/scale_y.value - level_scale_hinge.y) / level_scale_hinge.y + 1), 0.05)
-			
+		
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_right\") and $GUI/Edit_Items/Panel/other/rotation.editable:
 			var rotation
 			if Input.is_action_just_pressed(\"mouse_right\"):
@@ -593,6 +602,7 @@ func _process(_delta):
 			#if abs(rotation) > 360:
 			#	rotation -= 360 * sign(rotation)
 			$GUI/Edit_Items/Panel/other/rotation.value = stepify(rotation, 1)
+	
 	elif place_current_mode == PLACEMODE_MOVE or Input.is_action_pressed(\"3\"):
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
 			if Input.is_action_just_pressed(\"mouse_left\"):
@@ -607,10 +617,12 @@ func _process(_delta):
 				level.scale.y = 10
 			level.scale.x = level.scale.y
 			level.position = level_position_hinge * (level.scale / level_scale_hinge)
+	
 	elif level_layer_visible[place_current_layer] == false:
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
 			if Input.is_action_just_pressed(\"mouse_left\"):
 				done_action(\"you cannot edit invisible layers\", \"#5d1f31\")
+	
 	elif place_current_mode == PLACEMODE_PAINT:
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
 			if Input.is_action_just_pressed(\"mouse_left\"):
@@ -618,24 +630,28 @@ func _process(_delta):
 					level_add_decor()
 				if place_current_tab == PLACE_OBJECTS:
 					level_add_objects()
-				if place_current_tab == PLACE_TILES: 
+				if place_current_tab == PLACE_TILES:
+					level_draw_tile(place_selected_tile)
 					done_action(\"paint tiles\", \"#06e6a1\") # If i do undo functionality this should change
 			if place_current_tab == PLACE_TILES:
-				level_draw_tile(place_selected_tile)
+				level_draw_tile_complex(place_selected_tile, level_mouse_position)
+	
 	elif place_current_mode == PLACEMODE_ERASER:
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
 			if Input.is_action_just_pressed(\"mouse_left\") :
 				if place_current_tab != PLACE_TILES:
 					level_remove_closest_item()
 				if place_current_tab == PLACE_TILES:
+					level_draw_tile(-1)
 					done_action(\"erase tiles\", \"#923155\")
 			if place_current_tab == PLACE_TILES:
-				level_draw_tile(-1)
+				level_draw_tile_complex(-1, level_mouse_position)
+	
 	elif place_current_mode == PLACEMODE_COG:
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
 			if Input.is_action_just_pressed(\"mouse_left\"):
 				if place_current_tab == PLACE_TILES:
-					var tile_pos = place_current_tilemap.world_to_map(level_mouse_position / place_current_tilemap.scale)
+					var tile_pos = tile_position(level_mouse_position)
 					place_tile_mods[0] = place_current_tilemap.is_cell_x_flipped(tile_pos.x, tile_pos.y)
 					place_tile_mods[1] = place_current_tilemap.is_cell_y_flipped(tile_pos.x, tile_pos.y)
 					place_tile_mods[2] = place_current_tilemap.is_cell_transposed(tile_pos.x, tile_pos.y)
@@ -645,6 +661,8 @@ func _process(_delta):
 					done_action(\"pick tile\", \"#e4a712\")
 				else:
 					level_pick_closest_item(Input.is_action_pressed(\"shift\"))
+				level_input.pressed = false
+	
 	if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_right\") and !(transform_mode or edit_mode):
 		if Input.is_action_just_pressed(\"mouse_right\"):
 			mouse_hinge = mouse_pos
@@ -653,7 +671,7 @@ func _process(_delta):
 	
 	if $GUI/cursor_tiled.visible:
 		$GUI/cursor_tiled.scale = level.scale * level_layer_data[level_layers[place_current_layer]][1]
-		var level_pos_tiled : Vector2 = place_current_tilemap.map_to_world(place_current_tilemap.world_to_map(level_mouse_position / place_current_tilemap.scale), false)
+		var level_pos_tiled : Vector2 = place_current_tilemap.map_to_world(tile_position(level_mouse_position), false)
 		$GUI/cursor_tiled.position = (level_pos_tiled * place_current_tilemap.scale + level.position / level.scale + Vector2(32, 32) * place_current_tilemap.scale) * level.scale + (window / 2)
 		$GUI/cursor_tiled.modulate = level_layer_data[level_layers[place_current_layer]][0]
 		$GUI/cursor_tiled/selected_tile.z_index = level_layer_data[level_layers[place_current_layer]][2] - 100
@@ -1400,12 +1418,46 @@ func level_recieved_input(_button_pressed):
 		PLACEMODE_COG:
 			pass
 
-func level_draw_tile(tile : int):
-	var tile_pos : Vector2 = place_current_tilemap.world_to_map(level_mouse_position / place_current_tilemap.scale)
+
+func tile_position(position) -> Vector2:
+	return place_current_tilemap.world_to_map(position / place_current_tilemap.scale)
+
+
+func level_draw_tile_complex(tile : int, position : Vector2):
+	var tile_pos : Vector2 = tile_position(position)
+	var last_pos = last_tile_position
+	
+	if tile_pos == last_pos:
+		return
+	
+	print(\"new tile line\")
+	
+	var difference : Vector2 = tile_pos - last_pos
+	var diff_x : int = max(abs(difference.x) - 1, 0)
+	var diff_y : int = max(abs(difference.y) - 1, 0)
+	var sign_x : int = sign(difference.x)
+	var sign_y : int = sign(difference.y)
+	
+	for i in range(diff_x):
+		var pos = last_pos + Vector2(sign_x * (i + 1), 0)
+		level_draw_tile(tile, pos)
+	
+	for i in range(diff_y):
+		var pos = Vector2(tile_pos.x, last_pos.y + sign_y * (i + 1))
+		level_draw_tile(tile, pos)
+	
+	level_draw_tile(tile, tile_pos)
+
+
+func level_draw_tile(tile : int, position : Vector2 = tile_position(level_mouse_position)):
+	var tile_pos : Vector2 = position
 	set_cell(tile_pos, tile)
+	last_tile_position = tile_pos
+	print(tile_pos)
+
 
 func level_bucket_fill_tiles(tile : int):
-	var starting_position : Vector2 = place_current_tilemap.world_to_map(level_mouse_position / place_current_tilemap.scale)
+	var starting_position : Vector2 = tile_position(level_mouse_position)
 # warning-ignore:narrowing_conversion
 # warning-ignore:narrowing_conversion
 	var replacing : int = place_current_tilemap.get_cell(starting_position.x, starting_position.y)
@@ -4447,11 +4499,11 @@ text = "???"
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
@@ -4473,8 +4525,8 @@ text = "???"
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_back" to="." method="layer_color_changed" binds= [ 1 ]]
 [connection signal="value_changed" from="GUI/Edit_Layers/Panel/scale_background" to="." method="layer_scale_changed" binds= [ 0 ]]
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_background" to="." method="layer_color_changed" binds= [ 0 ]]
-[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
 [connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
+[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
 [connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
 [connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="items_scroll_scrolling"]
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]
