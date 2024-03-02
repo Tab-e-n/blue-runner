@@ -1,14 +1,16 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Objects/Tilesets/WaterWay.tres" type="TileSet" id=2]
-[ext_resource path="res://Objects/Decor/HoverText.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Scripts/Level_Control.gd" type="Script" id=3]
+[ext_resource path="res://Objects/Decor/FloatingLabel.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Objects/Player/Ghost.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=9]
 [ext_resource path="res://Objects/Backgrounds/BG_UserUniverse.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Visual/Old/wowie.png" type="Texture" id=11]
 
 [node name="Level_Missing" type="Node2D"]
+script = ExtResource( 3 )
 
 [node name="Player" parent="." instance=ExtResource( 1 )]
 use_parent_material = true
@@ -88,13 +90,11 @@ format = 1
 
 [node name="objects_center" type="Node2D" parent="."]
 
-[node name="HoverText" parent="objects_center" instance=ExtResource( 7 )]
-use_parent_material = true
+[node name="FloatingLabel" parent="objects_center" instance=ExtResource( 4 )]
 position = Vector2( 0, 448 )
 scale = Vector2( 7, 2 )
-text = "Sorry, but there is no level"
-offset = Vector2( -300, -200 )
-text_size = Vector2( 800, 85 )
+text = "Sorry, but there is no level."
+valign = 0
 
 [node name="decor_center" type="Node2D" parent="."]
 

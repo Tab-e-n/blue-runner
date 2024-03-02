@@ -451,6 +451,7 @@ func reload_all_levels():
 		
 		if level.level_name != "*Level_Missing":
 			level.level_location = Global.current_level_location
+			
 			if is_user_group:
 				level.locked = false
 			elif Global.unlocked[Global.current_level_location].has(level.level_name):

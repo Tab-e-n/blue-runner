@@ -14,6 +14,7 @@ color = Color( 0, 1, 1, 0.25098 )
 polygon = PoolVector2Array( -8, -8, 8, -8, 8, 8, -8, 8 )
 
 [node name="editor_point" type="Sprite" parent="."]
+modulate = Color( 1, 1, 1, 0.501961 )
 texture = ExtResource( 4 )
 
 [node name="Text" parent="." instance=ExtResource( 2 )]

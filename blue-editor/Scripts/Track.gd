@@ -7,9 +7,9 @@ var editor_properties : Dictionary = {
 	"layer" : "selected",
 	"rect" : Rect2(0, 0, 128, 128),
 	"editable_properties" : {
-		"time" : [TYPE_INT, 0, 0, 1],
+		"time" : [TYPE_INT, 0, 0, 1, "frames"],
 		"is_a_loop" : [TYPE_BOOL, 0, 0, 0],
-		"time_internal" : [TYPE_INT, 0, 0, 1],
+		"time_internal" : [TYPE_INT, 0, 0, 1, "frames"],
 		"time_direction" : [TYPE_BOOL, 0, 0, 0],
 		"points" : [TYPE_NIL, 0, 0, 0],
 		"attached_nodes" : [TYPE_NIL, 0, 0, 0],

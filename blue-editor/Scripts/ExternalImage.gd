@@ -7,9 +7,9 @@ var editor_properties : Dictionary = {
 	"layer" : "selected",
 	"rect" : Rect2(0, 0, 64, 64),
 	"editable_properties" : {
-		"texture_filename" : [TYPE_STRING, 0, 0, 0],
-		"flip_h" : [TYPE_BOOL, 0, 0, 0],
-		"flip_v" : [TYPE_BOOL, 0, 0, 0],
+		"texture_filename" : [TYPE_STRING],
+		"flip_h" : [TYPE_BOOL],
+		"flip_v" : [TYPE_BOOL],
 	},
 	"unchangeable_properties" : {
 		"scale" : false,

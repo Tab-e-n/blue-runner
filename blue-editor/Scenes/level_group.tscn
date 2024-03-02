@@ -1167,6 +1167,7 @@ __meta__ = {
 }
 
 [node name="load" type="FileDialog" parent="."]
+visible = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -1178,8 +1179,9 @@ margin_bottom = 392.0
 window_title = "Open a Directory"
 mode = 2
 access = 1
-current_dir = "user://D:/Project/Godot 3.2/sonic_runner_git/blue-editor"
-current_path = "user://D:/Project/Godot 3.2/sonic_runner_git/blue-editor/"
+current_dir = "user://SRLevels"
+current_file = "SRLevels"
+current_path = "user://SRLevels/SRLevels"
 __meta__ = {
 "_edit_use_anchors_": false
 }

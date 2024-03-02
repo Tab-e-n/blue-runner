@@ -162,8 +162,8 @@ func console_arguments():
 	if arguments.has("level"):
 		call_deferred("change_level", "*" + arguments["level"])
 	if arguments.has("playtest"):
-		print(arguments["playtest"])
-		call_deferred("change_level", "*" + arguments["playtest"])
+#		print(arguments["playtest"])
+		call_deferred("change_level", "!*" + arguments["playtest"])
 		playtesting = true
 	if arguments.has("save_interaction"):
 		match(arguments["save_interaction"]):
@@ -293,7 +293,7 @@ const NAMES : Dictionary = {
 	KEY_VOLUMEDOWN : "TURN IT DOWN",
 	KEY_VOLUMEMUTE : "MUTE IT PLEASE",
 	KEY_VOLUMEUP : "TURN IT UP",
-	KEY_BASSBOOST : "LOUD EQUALS FUNNY",
+	KEY_BASSBOOST : "LOUD = FUNNY",
 	KEY_BASSUP : "BASS UP",
 	KEY_BASSDOWN : "BASS DOWN",
 	KEY_TREBLEUP : "TREBLE UP",
@@ -397,9 +397,9 @@ func text_interpretor(text : String):
 							new_text += level.dat[data][0] + " from " + level.dat[data][1]
 							continue
 						new_text += level.dat[data]
-		#print("next     :",next_text)
-	#print("return   :",new_text)
-	#breakpoint
+#		print("next     :",next_text)
+#	print("return   :",new_text)
+#	breakpoint
 	
 	return new_text
 
@@ -585,8 +585,14 @@ func change_level(destination : String, return_value : bool = false, check_depen
 	compatibility_mode = false
 	
 	var destination_new : String
+	var check_if_unlocked : bool = true
 	
-	#print(current_level_location)
+#	print(current_level_location)
+#	print(destination)
+	
+	if destination.begins_with("!"):
+		destination = destination.trim_prefix("!")
+		check_if_unlocked = false
 	
 	if destination == "":
 		destination_new = current_level_location + current_level + ".tscn"
@@ -602,9 +608,9 @@ func change_level(destination : String, return_value : bool = false, check_depen
 		var level : int = 0
 		for i in range(19):
 			if level_group["levels"][i][0] == current_level:
-				if level_group["levels"][i + 1][1]:
-					if !check_unlock_requirements(level_group["levels"][i + 1][2][0], level_group["levels"][i + 1][2][1],level_group["levels"][i + 1][2][2]):
-						break
+#				if level_group["levels"][i + 1][1]:
+#					if !check_unlock_requirements(level_group["levels"][i + 1][2][0], level_group["levels"][i + 1][2][1],level_group["levels"][i + 1][2][2]):
+#						break
 				if level_group["levels"][i + 1][0] == "*Level_Missing":
 					break
 				level = i + 1
@@ -619,6 +625,12 @@ func change_level(destination : String, return_value : bool = false, check_depen
 		destination_new = current_level_location + destination + ".tscn"
 	
 	var error = OK
+	
+	# End playtesting if you are going to the menu
+	if destination_new == "res://Scenes/MENU.tscn" and playtesting:
+		get_tree().quit()
+		return OK
+	
 	if check_dependencies:
 		var level_dat = load_dat_file(destination_new.left(destination_new.find_last(".")))
 		if !level_dat.has("dependencies"):
@@ -628,13 +640,17 @@ func change_level(destination : String, return_value : bool = false, check_depen
 				if !mods_installed.has(i):
 					error = ERR_FILE_MISSING_DEPENDENCIES
 	
-	if destination_new == "res://Scenes/MENU.tscn" and playtesting:
-		get_tree().quit()
-		return OK
 #	print(destination_new)
+	if destination_new != "res://Scenes/MENU.tscn" and check_if_unlocked:
+		if not is_level_file_unlocked(destination_new):
+			destination_new = "res://Scenes/MENU.tscn"
+	
 	if destination_new != "res://Scenes/MENU.tscn":
-		current_level_location = destination_new.substr(0, destination_new.find_last("/") + 1)
-		current_level = destination_new.substr(destination_new.find_last("/") + 1, destination_new.find_last(".tscn") - destination_new.find_last("/") - 1)
+		var current_group = get_group_from_filepath(destination_new)
+		if current_group != current_level_location:
+			current_level_location = get_group_from_filepath(destination_new)
+			level_group = load_level_group()
+		current_level = get_level_from_filepath(destination_new)
 		
 #		print("CL " + current_level)
 #		print("CLL " + current_level_location)
@@ -643,6 +659,7 @@ func change_level(destination : String, return_value : bool = false, check_depen
 			error = change_scene_level(destination_new, return_value)
 	else:
 		error = get_tree().change_scene(destination_new)
+	
 	if return_value:
 		return error
 	elif error != OK:
@@ -681,6 +698,14 @@ func change_scene_level(file : String, return_only : bool = false):
 	get_tree().change_scene_to(packed_scene)
 	
 	return OK
+
+
+func get_group_from_filepath(filepath : String) -> String:
+	return filepath.substr(0, filepath.find_last("/") + 1)
+
+
+func get_level_from_filepath(filepath : String) -> String:
+	return filepath.substr(filepath.find_last("/") + 1, filepath.find_last(".tscn") - filepath.find_last("/") - 1)
 
 
 func make_text_debug(_text : String):
@@ -760,6 +785,45 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
 		return check_unlock(parameter_1)
 	
 	return true
+
+
+func is_level_unlocked(group : String, level : String) -> bool:
+	if group == USER_LEVELS:
+		return true
+	
+	var is_user_group : bool = group == USER_LEVELS
+	var is_unlocked : bool = true
+	var unlock_requirements : Array
+	var lv_group : Dictionary
+	
+	if group == current_level_location:
+		lv_group = level_group
+	else:
+		lv_group = load_group(group)
+	
+	var i = -1
+	for j in range(lv_group["levels"].size()):
+		if lv_group["levels"][j][0] == level:
+			i = j
+			break
+	if i == -1:
+		return true
+	unlock_requirements = lv_group["levels"][i][2]
+	
+	if is_user_group:
+		is_unlocked = true
+	elif unlocked[group].has(level):
+		if is_unlocked and unlock_requirements[0] != 6:
+			unlocked[group][level] = check_unlock_requirements(unlock_requirements[0], unlock_requirements[1], unlock_requirements[2])
+		is_unlocked = unlocked[group][level]
+	else:
+		is_unlocked = true
+	
+	return is_unlocked
+
+
+func is_level_file_unlocked(level_filename : String) -> bool:
+	return is_level_unlocked(get_group_from_filepath(level_filename), get_level_from_filepath(level_filename))
 
 
 func showcase_unlock(text : String, texture : Texture) -> Node2D:
@@ -1192,18 +1256,21 @@ func load_dat_file(filename_ : String):
 	return temp.duplicate()
 
 
-func load_level_group():
+func load_level_group() -> bool:
+	level_group = load_group(current_level_location)
+	return level_group
+
+
+func load_group(group : String) -> Dictionary:
 	var loadfile = File.new()
-	var temp = {}
+	var temp : Dictionary = {}
 	
-	#print(current_level_location + "level_group.dat")
+	#print(group + "level_group.dat")
 	
-	if not loadfile.file_exists(current_level_location + "level_group.dat"):
-		 # file doesn't exist
-		level_group = {}
-		return false
+	if not loadfile.file_exists(group + "level_group.dat"):
+		return {}
 	
-	loadfile.open(current_level_location + "level_group.dat", File.READ)
+	loadfile.open(group + "level_group.dat", File.READ)
 	
 	while loadfile.get_position() < loadfile.get_len():
 		var parsedData = parse_json(loadfile.get_line())
@@ -1212,10 +1279,7 @@ func load_level_group():
 	
 	loadfile.close()
 	
-	#print("load: ", temp)
-	
-	level_group = temp.duplicate()
-	return true
+	return temp.duplicate()
 
 
 func load_data():

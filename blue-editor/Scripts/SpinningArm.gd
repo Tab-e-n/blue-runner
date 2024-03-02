@@ -7,8 +7,8 @@ var editor_properties : Dictionary = {
 	"layer" : "selected",
 	"rect" : Rect2(0, -128, 24, 288),
 	"editable_properties" : {
-		"spin_time_frames" : [TYPE_INT, 0, 0, 1],
-		"timer" : [TYPE_INT, 0, 0, 1],
+		"spin_time_frames" : [TYPE_INT, 0, 0, 1, "frames"],
+		"timer" : [TYPE_INT, 0, 0, 1, "frames"],
 		"direction" : [TYPE_BOOL, 0, 0, 0],
 		"lenght" : [TYPE_REAL, 0, 0, 0.05],
 		"attached_nodes" : [TYPE_NIL, 0, 0, 0],

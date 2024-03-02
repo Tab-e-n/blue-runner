@@ -8,7 +8,7 @@ var editor_properties : Dictionary = {
 	"rect" : Rect2(0, 0, 32, 64),
 	"editable_properties" : {
 		"id" : [TYPE_INT, 1, 3, 1],
-		"unlock" : [TYPE_STRING, 0, 0, 0],
+		"unlock" : [TYPE_STRING],
 	},
 	"unchangeable_properties" : {
 		"scale" : true,

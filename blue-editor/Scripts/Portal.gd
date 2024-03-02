@@ -7,10 +7,10 @@ export var editor_properties : Dictionary = {
 	"layer" : "special", # selected or special
 	"rect" : Rect2(0, -32, 64, 64),
 	"editable_properties" : {
-		"tele_destination" : [TYPE_STRING, 0, 0, 0],
-		"par" : [TYPE_REAL, 0, 0, 0],
+		"tele_destination" : [TYPE_STRING],
+		"par" : [TYPE_REAL, 0, 0, 0, "seconds"],
 		"type" : [TYPE_INT, 0, 1, 1],
-		"unlock" : [TYPE_STRING, 0, 0, 0],
+		"unlock" : [TYPE_STRING],
 	},
 	"unchangeable_properties" : {
 		"scale" : false,

@@ -7,7 +7,7 @@ var editor_properties : Dictionary = {
 	"layer" : "selected",
 	"rect" : Rect2(0, 0, 64, 64),
 	"editable_properties" : {
-		"completely_invisible" : [TYPE_BOOL, 0, 0, 0],
+		"completely_invisible" : [TYPE_BOOL],
 		#"name" : [TYPE, min, max, step],
 	},
 	"unchangeable_properties" : {

@@ -536,7 +536,7 @@ func _process(_delta):
 	if Input.is_action_just_pressed(\"25\"):
 		file_exit_pressed()
 	
-	if Input.is_action_just_pressed(\"27\") and can_return_removed:
+	if Input.is_action_just_pressed(\"27\") and can_return_removed and shortcuts:
 		if place_current_tab == PLACE_DECOR:
 			level_add_decor(false, last_remove_position)
 		if place_current_tab == PLACE_OBJECTS:
@@ -821,9 +821,11 @@ func _process(_delta):
 	$GUI/Place/Panel/hint_other.visible = $GUI/Place/Panel/hint.pressed
 	$GUI/Hint/hint_obj.visible = $GUI/Hint/hint.pressed
 
+
 func _exit_tree():
 	if level_path != \"\":
 		save_level(level_path)
+
 
 func object_face_point(object_pos : Vector2, point : Vector2):
 	var distance = point - object_pos
@@ -842,6 +844,7 @@ func object_face_point(object_pos : Vector2, point : Vector2):
 		angle += 3.2
 	
 	return angle
+
 
 func create_new_level(remove_old : bool = true):
 	for i in range(4):
@@ -1845,6 +1848,7 @@ func level_pick_closest_item(remove_picked : bool = false):
 	if attachable != null:
 		attachable.detached(node)
 
+
 # PLACE FUNCTIONS
 func place_update_tiles(tileset_name : String):
 	var fav_size = 0
@@ -1860,20 +1864,21 @@ func place_update_tiles(tileset_name : String):
 			place_tiles_items.append(data.recent[tileset_name][i])
 	for _i in range(PLACE_ITEM_AMOUNT - place_tiles_items.size()):
 		place_tiles_items.append(-1)
-
+	
 	for i in range(8): get_node(\"GUI/Place/Panel/item/fav_\" + String(i)).visible = fav_size > i
-
+	
 	for x in range(PLACE_ITEM_AMOUNT):
 		var y : int = 0
 		if x > 7: y = 1
 		place_tiles.set_cell(x - y * 8, 1 - y, int(place_tiles_items[x]), place_tile_mods[0], place_tile_mods[1], place_tile_mods[2])
-
+		
 		var button : Button = get_node(\"GUI/Place/Panel/item/\" + String(x))
 		#button.hint_tooltip = \"\"
 		if int(place_tiles_items[x]) == -1:
 			button.disabled = true
 		else:
 			button.disabled = false
+
 
 func place_update_items(tab : int):
 	var fav_size = 0
@@ -1897,10 +1902,10 @@ func place_update_items(tab : int):
 			place_decor_items.append(data.recent[\"Decor\"][i])
 		for _i in range(PLACE_ITEM_AMOUNT - place_decor_items.size()):
 			place_decor_items.append(\"\")
-
+	
 	for i in range(8):
 		get_node(\"GUI/Place/Panel/item/fav_\" + String(i)).visible = fav_size > i
-
+	
 	for i in range(PLACE_ITEM_AMOUNT):
 		var current_sprite : Sprite
 		if tab == PLACE_OBJECTS:
@@ -1908,7 +1913,7 @@ func place_update_items(tab : int):
 		elif tab == PLACE_DECOR:
 			current_sprite = get_node(\"GUI/Place/Panel/tab_decor/\" + String(i))
 		var button : Button = get_node(\"GUI/Place/Panel/item/\" + String(i))
-
+		
 		if (tab == PLACE_OBJECTS and place_objects_items[i] == \"\") or (tab == PLACE_DECOR and place_decor_items[i] == \"\"):
 			current_sprite.texture = texture_empty
 			#button.hint_tooltip = \"\"
@@ -1926,8 +1931,9 @@ func place_update_items(tab : int):
 			else:
 				current_sprite.texture = loaded_texture
 			data.scale_down_sprite(current_sprite)
-
+			
 			button.disabled = false
+
 
 func place_mode_toggled(button_pressed, mode, scripted : bool = false):
 	if button_pressed:
@@ -1953,6 +1959,7 @@ func place_mode_toggled(button_pressed, mode, scripted : bool = false):
 		$GUI/Place/Panel/cog.pressed = false
 	else:
 		if scripted: $GUI/Place/Panel/cog.pressed = true
+
 
 func place_tab_move(direction : int = 0, tab : int = -1):
 	if tab != -1:
@@ -2284,6 +2291,9 @@ func edit_item_properties_update(properties : Dictionary, node : Node):
 	for property in properties.keys():
 		var button_amount : int
 		var button_descriptors : Array = [\"\"]
+		if properties[property].size() == 0:
+			push_warning(property + \" has no type specified, so it cannot be edited.\")
+			properties[property] = [TYPE_NIL]
 		match properties[property][0]:
 			TYPE_NIL:
 				button_amount = 1
@@ -2303,6 +2313,9 @@ func edit_item_properties_update(properties : Dictionary, node : Node):
 				button_amount = 1
 			TYPE_BOOL:
 				button_amount = 1
+			_:
+				button_amount = 1
+				properties[property][0] = TYPE_NIL
 		for l in range(button_amount):
 			$GUI/Edit_Items/Panel/objects/text.text += property + button_descriptors[l] + \":\\n\"
 			if properties[property][0] == TYPE_NIL:
@@ -2329,24 +2342,12 @@ func edit_item_properties_update(properties : Dictionary, node : Node):
 			edit_buttons[last_edit_button][1] = \"pressed\"
 			edit_buttons[last_edit_button][0].append(new_buttons[0])
 		elif button_amount == 1:
-			if properties[property][1] == properties[property][2]:
-				new_buttons[0].allow_greater = true
-				new_buttons[0].allow_lesser = true
-			else:
-				new_buttons[0].min_value = properties[property][1]
-				new_buttons[0].max_value = properties[property][2]
-			new_buttons[0].step = properties[property][3]
+			set_button_range_according_to_property(new_buttons[0], properties[property])
 			new_buttons[0].value = node.get(property)
 			edit_buttons[last_edit_button][0].append(new_buttons[0])
 		else:
 			for l in range(button_amount):
-				if properties[property][1] == properties[property][2]:
-					new_buttons[l].allow_greater = true
-					new_buttons[l].allow_lesser = true
-				else:
-					new_buttons[l].min_value = properties[property][1]
-					new_buttons[l].max_value = properties[property][2]
-				new_buttons[l].step = properties[property][3]
+				set_button_range_according_to_property(new_buttons[l], properties[property])
 				new_buttons[l].value = node.get(property)[l]
 				edit_buttons[last_edit_button][0].append(new_buttons[l])
 		
@@ -2354,12 +2355,28 @@ func edit_item_properties_update(properties : Dictionary, node : Node):
 	
 	# warning-ignore:integer_division
 	edit_scroll.max_value = position_y / 64
-	if edit_scroll.max_value <= 5: edit_scroll.max_value = 5
+	if edit_scroll.max_value <= 5:
+		edit_scroll.max_value = 5
 	edit_scroll.value = 0
+
+
+func set_button_range_according_to_property(button : SpinBox, property : Array):
+	if property.size() < 4:
+		button.allow_greater = true
+		button.allow_lesser = true
+	else:
+		if property[1] == property[2]:
+			button.allow_greater = true
+			button.allow_lesser = true
+		else:
+			button.min_value = property[1]
+			button.max_value = property[2]
+		button.step = property[3]
 
 
 func edit_item_buttons(parameters : Array, button_amount : int, position : Vector2):
 	var new_button : Control
+	
 	# OTHER PROPS STORAGE
 	if parameters[0] == TYPE_NIL:
 		new_button = edit_storage.instance()
@@ -2367,6 +2384,7 @@ func edit_item_buttons(parameters : Array, button_amount : int, position : Vecto
 		new_button.rect_position = position
 		new_button.focus_mode = Control.FOCUS_NONE
 		return [new_button]
+	
 	# COLOR BUTTON
 	if parameters[0] == TYPE_COLOR:
 		new_button = ColorPickerButton.new()
@@ -2375,6 +2393,7 @@ func edit_item_buttons(parameters : Array, button_amount : int, position : Vecto
 		new_button.rect_size = Vector2(32, 34)
 		new_button.focus_mode = Control.FOCUS_NONE
 		return [new_button]
+	
 	# STRING BUTTON
 	if parameters[0] == TYPE_STRING:
 		new_button = LineEdit.new()
@@ -2383,6 +2402,7 @@ func edit_item_buttons(parameters : Array, button_amount : int, position : Vecto
 		new_button.rect_size = Vector2(272, 34)
 		new_button.focus_mode = Control.FOCUS_CLICK
 		return [new_button]
+	
 	# CHECKBOX
 	if parameters[0] == TYPE_BOOL:
 		new_button = CheckBox.new()
@@ -2390,6 +2410,7 @@ func edit_item_buttons(parameters : Array, button_amount : int, position : Vecto
 		new_button.rect_position = position - Vector2(8, 8)
 		new_button.focus_mode = Control.FOCUS_CLICK
 		return [new_button]
+	
 	# NUMBER BUTTONS
 	var new_buttons : Array = []
 	for i in range(button_amount):
@@ -2398,6 +2419,8 @@ func edit_item_buttons(parameters : Array, button_amount : int, position : Vecto
 		new_button.rect_position = position + Vector2(0, i * 64)
 		new_button.rect_size = Vector2(272, 34)
 		new_buttons.append(new_button)
+		if parameters.size() >= 5:
+			new_button.suffix = parameters[4]
 	return new_buttons
 
 
@@ -4535,10 +4558,10 @@ text = "???"
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
@@ -4560,8 +4583,8 @@ text = "???"
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_back" to="." method="layer_color_changed" binds= [ 1 ]]
 [connection signal="value_changed" from="GUI/Edit_Layers/Panel/scale_background" to="." method="layer_scale_changed" binds= [ 0 ]]
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_background" to="." method="layer_color_changed" binds= [ 0 ]]
-[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
 [connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
+[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
 [connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
 [connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="items_scroll_scrolling"]
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]

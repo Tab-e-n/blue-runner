@@ -595,7 +595,7 @@ func clear_trail_history():
 
 
 func been_stylish(style : String = "Nice!"):
-	var new_callout : Node2D = preload("res://Objects/StyleCallout.tscn").instance()
+	var new_callout : Node2D = preload("res://Objects/Decor/StyleCallout.tscn").instance()
 	new_callout.text = style
 	new_callout.position = position
 	get_tree().current_scene.add_child(new_callout)
@@ -604,7 +604,7 @@ func been_stylish(style : String = "Nice!"):
 
 
 func make_speed_ring(direction : float = 1):
-	var ring : Node2D = preload("res://Objects/SpeedRing.tscn").instance()
+	var ring : Node2D = preload("res://Objects/Decor/SpeedRing.tscn").instance()
 	ring.position = position - character.STYLISH_RECT * Vector2(0, 0.5)
 	ring.scale.x = direction
 	get_tree().current_scene.add_child(ring)
