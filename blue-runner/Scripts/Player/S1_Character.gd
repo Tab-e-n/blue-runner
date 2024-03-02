@@ -170,6 +170,8 @@ func _physics_process(_delta):
 		else:
 			if dropping == 1: 
 				dropping = 2
+			if player.punted and dropping > 0:
+				dropping = 0
 			player.break_breakables = false
 		
 		force_slide = false

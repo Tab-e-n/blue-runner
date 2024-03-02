@@ -1,0 +1,4 @@
+extends StaticBody2D
+class_name AttackDestroyable
+
+signal destroy_self

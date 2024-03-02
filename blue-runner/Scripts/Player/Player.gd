@@ -342,6 +342,19 @@ func decrement_jump_buffer():
 		jump_buffer -= 1
 
 
+func should_special() -> bool:
+	return special_buffer > 0
+
+
+func start_special_buffer():
+	special_buffer = INPUT_BUFFER_FRAMES
+
+
+func decrement_special_buffer():
+	if special_buffer > 0:
+		special_buffer -= 1
+
+
 func start_ground_buffer():
 	ground_buffer = GROUND_BUFFER_FRAMES
 

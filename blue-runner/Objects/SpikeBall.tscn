@@ -1,0 +1,52 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Visual/April/spr_MoveSpike_strip3.png" type="Texture" id=1]
+[ext_resource path="res://Scripts/SpikeBall.gd" type="Script" id=2]
+[ext_resource path="res://Objects/StylishCheck.tscn" type="PackedScene" id=3]
+
+[sub_resource type="Animation" id=1]
+resource_name = "spin"
+length = 0.3
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 0 ]
+}
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 20.0
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 8, 20 )
+
+[node name="SpikeBall" type="StaticBody2D"]
+collision_layer = 6
+collision_mask = 6
+script = ExtResource( 2 )
+
+[node name="spike" type="Sprite" parent="."]
+scale = Vector2( 2, 2 )
+texture = ExtResource( 1 )
+hframes = 3
+
+[node name="anim" type="AnimationPlayer" parent="spike"]
+autoplay = "spin"
+anims/spin = SubResource( 1 )
+
+[node name="coll" type="CollisionShape2D" parent="."]
+shape = SubResource( 2 )
+
+[node name="StylishCheck" parent="." instance=ExtResource( 3 )]
+style = "Close one!"
+
+[node name="coll" type="CollisionShape2D" parent="StylishCheck"]
+visible = false
+shape = SubResource( 3 )

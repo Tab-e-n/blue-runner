@@ -36,6 +36,7 @@ func _ready():
 	player.add_child(attack)
 	# warning-ignore:return_value_discarded
 	attack.connect("body_entered", self, "_on_attack_connected")
+	attack.connect("area_entered", self, "_on_attack_connected_area")
 
 
 func _physics_process(delta):
@@ -223,12 +224,27 @@ func set_attack():
 
 func _on_attack_connected(body):
 	if !player.deny_input:
-		momentum.y = -BOUNCE_STRENGH
-		attack.get_node("coll").disabled = true
-#		attack_timer = 0
-		player.jump_buffer = 0
-		can_attack = true
-		if body.collision_layer % 2 and (body.collision_layer / 2) % 2:
+		if player.bit_include(body.collision_layer, 0b0110):
+			attack_successful()
+		if player.bit_include(body.collision_layer, 0b0011):
+			attack_successful()
 			body.break_active = true
 			body.break_position = player.position + attack.get_node("attack").position
 			player.break_just_happened = true
+		if body is AttackDestroyable:
+			body.emit_signal("destroy_self")
+
+
+func _on_attack_connected_area(area):
+	if area.has_method("_on_body_entered"):
+		area._on_body_entered(player)
+	if area.has_method("force_boost"):
+		area.force_boost()
+
+
+func attack_successful():
+	momentum.y = -BOUNCE_STRENGH
+	attack.get_node("coll").call_deferred("disabled", true)
+#			attack_timer = 0
+	player.jump_buffer = 0
+	can_attack = true

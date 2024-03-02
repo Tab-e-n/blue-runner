@@ -1,8 +1,14 @@
-[gd_scene load_steps=42 format=2]
+[gd_scene load_steps=48 format=2]
 
 [ext_resource path="res://Scripts/Level_Control.gd" type="Script" id=1]
 [ext_resource path="res://Objects/Tilesets/WaterWay.tres" type="TileSet" id=2]
 [ext_resource path="res://Scripts/single_color.shader" type="Shader" id=3]
+[ext_resource path="res://Objects/WeakGround.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Objects/Spring.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Objects/Flame.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Objects/SpikeBall.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Objects/Magma.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Objects/Icycle.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=19]
 [ext_resource path="res://Objects/Finish.tscn" type="PackedScene" id=20]
 [ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=21]
@@ -441,6 +447,28 @@ scale = Vector2( 1.5, 1.5 )
 [node name="Booster" parent="objects_center" instance=ExtResource( 24 )]
 use_parent_material = true
 position = Vector2( -848, 256 )
+
+[node name="WeakGround" parent="objects_center" instance=ExtResource( 4 )]
+position = Vector2( 128, 0 )
+
+[node name="SpikeBall" parent="objects_center" instance=ExtResource( 7 )]
+position = Vector2( 128, -256 )
+
+[node name="Flame" parent="objects_center" instance=ExtResource( 6 )]
+position = Vector2( 1056, 640 )
+
+[node name="Spring" parent="objects_center" instance=ExtResource( 5 )]
+position = Vector2( -640, 0 )
+
+[node name="Magma" parent="objects_center" instance=ExtResource( 9 )]
+position = Vector2( 2720, 288 )
+
+[node name="Magma2" parent="objects_center" instance=ExtResource( 9 )]
+position = Vector2( 2784, 288 )
+icy = true
+
+[node name="Icycle" parent="objects_center" instance=ExtResource( 10 )]
+position = Vector2( 2752, 640 )
 
 [node name="decor_center" type="Node2D" parent="."]
 material = SubResource( 13 )
