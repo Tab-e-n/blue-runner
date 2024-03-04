@@ -4,7 +4,7 @@ extends Area2D
 var player : Player
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if player:
 		if player.should_jump():
 			Audio.play_sound("GreenboxAttack")

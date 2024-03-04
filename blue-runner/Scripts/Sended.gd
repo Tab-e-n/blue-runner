@@ -14,6 +14,7 @@ var exploding : bool = false
 
 
 func _ready():
+	# warning-ignore:return_value_discarded
 	connect("destroy_self", self, "queue_free")
 	
 	target = level.get_node("Player").position

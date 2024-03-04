@@ -611,7 +611,7 @@ func been_stylish(style : String = "Nice!"):
 	var new_callout : Node2D = preload("res://Objects/Decor/StyleCallout.tscn").instance()
 	new_callout.text = style
 	new_callout.position = position
-	get_tree().current_scene.add_child(new_callout)
+	get_tree().current_scene.call_deferred("add_child", new_callout)
 	
 	stylish = true
 

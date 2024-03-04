@@ -4,12 +4,12 @@ extends StaticBody2D
 var break_active : bool = false
 var break_position : Vector2
 
-var stability : int = 29
+export var stability : int = 29
 
 var crumbleling : bool = false
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if crumbleling:
 		stability -= 1
 	if stability == 0 or break_active:

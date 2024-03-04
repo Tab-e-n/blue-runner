@@ -8,10 +8,11 @@ var editor_properties : Dictionary = {
 	"rect" : Rect2(0, 0, 64, 64),
 	"editable_properties" : {
 #		Default:
-#		"variable" : [TYPE, min, max, step]
+#		"variable" : [TYPE],
+#		If the type is or includes numbers:
+#		"variable" : [TYPE, min, max, step],
 #		You can specify additional info if you want.
-#		If the type includes numbers:
-#		"variable" : [TYPE, min, max, step, suffix]
+#		"variable" : [TYPE, min, max, step, suffix],
 	},
 	"unchangeable_properties" : {
 		"scale" : false,
@@ -27,5 +28,6 @@ var editor_properties : Dictionary = {
 func _ready()%VOID_RETURN%:
 	pass
 
-func _physics_process(delta%FLOAT_TYPE%)%VOID_RETURN%:
+
+func _physics_process(_delta%FLOAT_TYPE%)%VOID_RETURN%:
    pass
