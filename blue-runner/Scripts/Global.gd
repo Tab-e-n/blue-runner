@@ -199,6 +199,12 @@ func _exit_tree():
 	save_game()
 
 
+func quit_game():
+	get_tree().current_scene.queue_free()
+	
+	get_tree().call_deferred("quit")
+
+
 func fade_float(start : float, end : float, progress : float) -> float:
 	if progress == 0:
 		return start

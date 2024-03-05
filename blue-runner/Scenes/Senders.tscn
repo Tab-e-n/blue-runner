@@ -1,0 +1,515 @@
+[gd_scene load_steps=31 format=2]
+
+[ext_resource path="res://Objects/Player/Ghost.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Objects/Finish.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Objects/Tilesets/April.tres" type="TileSet" id=6]
+[ext_resource path="res://Scripts/single_color.shader" type="Shader" id=7]
+[ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Objects/April/Sender.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Scripts/Level_Control.gd" type="Script" id=12]
+[ext_resource path="res://Objects/April/Magma.tscn" type="PackedScene" id=13]
+[ext_resource path="res://Objects/April/Icycle.tscn" type="PackedScene" id=16]
+
+[sub_resource type="ShaderMaterial" id=1]
+shader = ExtResource( 7 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 7 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=3]
+shader = ExtResource( 7 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=4]
+shader = ExtResource( 7 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=5]
+shader = ExtResource( 7 )
+shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=6]
+shader = ExtResource( 7 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=7]
+shader = ExtResource( 7 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=8]
+shader = ExtResource( 7 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=9]
+shader = ExtResource( 7 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=10]
+shader = ExtResource( 7 )
+shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=11]
+shader = ExtResource( 7 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=12]
+shader = ExtResource( 7 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=13]
+shader = ExtResource( 7 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=14]
+shader = ExtResource( 7 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=15]
+shader = ExtResource( 7 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=16]
+shader = ExtResource( 7 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=17]
+shader = ExtResource( 7 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=18]
+shader = ExtResource( 7 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=19]
+shader = ExtResource( 7 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[sub_resource type="ShaderMaterial" id=20]
+shader = ExtResource( 7 )
+shader_param/color = Color( 1, 1, 1, 1 )
+shader_param/active = false
+shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
+
+[node name="Senders" type="Node2D"]
+script = ExtResource( 12 )
+
+[node name="Camera" parent="." instance=ExtResource( 4 )]
+z_index = 100
+zoom = Vector2( 3, 3 )
+limit_y = Vector2( -384, -384 )
+
+[node name="Player" parent="." instance=ExtResource( 10 )]
+position = Vector2( -128, 0 )
+z_index = 20
+
+[node name="Ghost" parent="." instance=ExtResource( 1 )]
+z_index = 15
+
+[node name="Finish" parent="." instance=ExtResource( 2 )]
+position = Vector2( 128, 0 )
+z_index = 20
+tele_destination = "*MENU"
+
+[node name="objects_background" type="Node2D" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 1 )
+z_index = -40
+
+[node name="decor_background" type="Node2D" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 2 )
+z_index = -40
+
+[node name="tiles_background_0" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 3 )
+z_index = -30
+tile_set = ExtResource( 6 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_background_1" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 4 )
+z_index = -30
+tile_set = ExtResource( 6 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_background_2" type="TileMap" parent="."]
+modulate = Color( 0.376471, 0.376471, 0.376471, 1 )
+material = SubResource( 5 )
+z_index = -30
+tile_set = ExtResource( 6 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="objects_back" type="Node2D" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 6 )
+z_index = -20
+
+[node name="decor_back" type="Node2D" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 7 )
+z_index = -20
+
+[node name="tiles_back_0" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 8 )
+z_index = -10
+tile_set = ExtResource( 6 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_back_1" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 9 )
+z_index = -10
+tile_set = ExtResource( 6 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_back_2" type="TileMap" parent="."]
+modulate = Color( 0.6, 0.6, 0.6, 1 )
+material = SubResource( 10 )
+z_index = -10
+tile_set = ExtResource( 6 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="objects_center" type="Node2D" parent="."]
+material = SubResource( 11 )
+
+[node name="Sender" parent="objects_center" instance=ExtResource( 11 )]
+use_parent_material = true
+position = Vector2( -32, -352 )
+start_delay = 3.0
+
+[node name="@Magma@781" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -736, -384 )
+icy = true
+
+[node name="@Magma@782" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -672, -384 )
+icy = true
+
+[node name="@Magma@783" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -608, -352 )
+icy = true
+
+[node name="@Magma@784" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -608, -416 )
+icy = true
+
+[node name="@Icycle@785" parent="objects_center" instance=ExtResource( 16 )]
+use_parent_material = true
+position = Vector2( -608, -320 )
+rotation = 3.14159
+
+[node name="@Icycle@786" parent="objects_center" instance=ExtResource( 16 )]
+use_parent_material = true
+position = Vector2( -672, -352 )
+rotation = 3.14159
+
+[node name="@Magma@777" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -1696, -64 )
+icy = true
+
+[node name="@Magma@763" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -352, -288 )
+icy = true
+
+[node name="@Magma@764" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -352, -224 )
+icy = true
+
+[node name="@Icycle@765" parent="objects_center" instance=ExtResource( 16 )]
+use_parent_material = true
+position = Vector2( -864, -64 )
+
+[node name="@Magma@757" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -928, 32 )
+icy = true
+
+[node name="@Magma@758" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -928, 96 )
+icy = true
+
+[node name="@Icycle@759" parent="objects_center" instance=ExtResource( 16 )]
+use_parent_material = true
+position = Vector2( -832, 32 )
+rotation = 1.5708
+
+[node name="@Icycle@760" parent="objects_center" instance=ExtResource( 16 )]
+use_parent_material = true
+position = Vector2( -704, -96 )
+rotation = 1.5708
+
+[node name="@Icycle@749" parent="objects_center" instance=ExtResource( 16 )]
+use_parent_material = true
+position = Vector2( -896, 96 )
+rotation = 1.5708
+
+[node name="Icycle" parent="objects_center" instance=ExtResource( 16 )]
+use_parent_material = true
+position = Vector2( -384, -224 )
+rotation = 4.71239
+
+[node name="Magma" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -864, -32 )
+icy = true
+
+[node name="@Magma@752" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -800, -32 )
+icy = true
+
+[node name="@Magma@753" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -736, -64 )
+icy = true
+
+[node name="@Magma@769" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -1760, -96 )
+icy = true
+
+[node name="@Magma@771" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -1632, -96 )
+icy = true
+
+[node name="@Magma@772" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -1760, -160 )
+icy = true
+
+[node name="@Magma@773" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -1696, -128 )
+icy = true
+
+[node name="@Icycle@774" parent="objects_center" instance=ExtResource( 16 )]
+use_parent_material = true
+position = Vector2( -1760, -192 )
+
+[node name="@Icycle@775" parent="objects_center" instance=ExtResource( 16 )]
+use_parent_material = true
+position = Vector2( -1632, -128 )
+
+[node name="@Magma@754" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -736, -128 )
+icy = true
+
+[node name="@Magma@755" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -800, -96 )
+icy = true
+
+[node name="@Icycle@747" parent="objects_center" instance=ExtResource( 16 )]
+use_parent_material = true
+position = Vector2( -384, -288 )
+rotation = 4.71239
+
+[node name="@Magma@756" parent="objects_center" instance=ExtResource( 13 )]
+use_parent_material = true
+position = Vector2( -864, 32 )
+icy = true
+
+[node name="@Sender@683" parent="objects_center" instance=ExtResource( 11 )]
+use_parent_material = true
+position = Vector2( 32, -352 )
+start_delay = 6.0
+
+[node name="decor_center" type="Node2D" parent="."]
+material = SubResource( 12 )
+
+[node name="tiles_center_0" type="TileMap" parent="."]
+material = SubResource( 13 )
+z_index = 10
+tile_set = ExtResource( 6 )
+format = 1
+
+[node name="tiles_center_1" type="TileMap" parent="."]
+material = SubResource( 14 )
+z_index = 10
+tile_set = ExtResource( 6 )
+format = 1
+tile_data = PoolIntArray( -458766, 15, 0, -458765, 15, 0, -458764, 15, 0, -458763, 15, 0, -458758, 15, 0, -458757, 15, 0, -458756, 15, 0, -458755, 15, 0, -458754, 15, 0, -458753, 15, 0, -524288, 15, 0, -524287, 15, 0, -524286, 15, 0, -524285, 15, 0, -524284, 15, 0, -524283, 15, 0, -393238, 15, 0, -393237, 15, 0, -393230, 15, 0, -393229, 15, 0, -393228, 17, 0, -393227, 17, 0, -393222, 15, 0, -393221, 15, 0, -393220, 15, 0, -393219, 15, 0, -458750, 15, 0, -458749, 15, 0, -458748, 15, 0, -458747, 15, 0, -327702, 15, 0, -327701, 15, 0, -327686, 15, 0, -327685, 15, 0, -327684, 15, 0, -327683, 15, 0, -393214, 15, 0, -393213, 15, 0, -393212, 15, 0, -393211, 15, 0, -262166, 15, 0, -262165, 15, 0, -262149, 15, 0, -262148, 15, 0, -262147, 15, 0, -327678, 15, 0, -327677, 15, 0, -327676, 15, 0, -327675, 15, 0, -196630, 15, 0, -196629, 15, 0, -196613, 15, 0, -196612, 15, 0, -196611, 15, 0, -196610, 15, 0, -196609, 15, 0, -262144, 15, 0, -262143, 15, 0, -262142, 15, 0, -262141, 15, 0, -262140, 15, 0, -262139, 15, 0, -131073, 15, 0, -196608, 15, 0, -65553, 15, 0, -65552, 15, 0, -65551, 15, 0, -65537, 15, 0, -131072, 15, 0, -28, 15, 0, -27, 16, 0, -26, 15, 0, -17, 15, 0, -16, 15, 0, -15, 15, 0, -1, 15, 0, -65536, 15, 0, 65508, 15, 0, 65509, 15, 0, 65510, 15, 0, 65519, 15, 0, 65520, 15, 0, 65533, 15, 0, 65534, 15, 0, 65535, 15, 0, 0, 15, 0, 1, 15, 0, 2, 15, 0, 131044, 15, 0, 131045, 15, 0, 131046, 15, 0, 131055, 15, 0, 131056, 15, 0, 131069, 15, 0, 131070, 15, 0, 131071, 15, 0, 65536, 15, 0, 65537, 15, 0, 65538, 15, 0, 196580, 15, 0, 196581, 15, 0, 196582, 15, 0, 196605, 15, 0, 196606, 15, 0, 196607, 15, 0, 131072, 15, 0, 131073, 15, 0, 131074, 15, 0, 262116, 15, 0, 262117, 15, 0, 262118, 15, 0, 262141, 15, 0, 262142, 15, 0, 262143, 15, 0, 196608, 15, 0, 196609, 15, 0, 196610, 15, 0, 327652, 15, 0, 327653, 15, 0, 327654, 15, 0, 327677, 15, 0, 327678, 15, 0, 327679, 15, 0, 262144, 15, 0, 262145, 15, 0, 262146, 15, 0, 393188, 15, 0, 393189, 15, 0, 393190, 15, 0, 393199, 15, 0, 393200, 15, 0, 393201, 15, 0, 393213, 15, 0, 393214, 15, 0, 393215, 15, 0, 327680, 15, 0, 327681, 15, 0, 327682, 15, 0, 458724, 15, 0, 458725, 15, 0, 458726, 15, 0, 458735, 15, 0, 458736, 15, 0, 458737, 15, 0, 458749, 15, 0, 458750, 15, 0, 458751, 15, 0, 393216, 15, 0, 393217, 15, 0, 393218, 15, 0, 524260, 15, 0, 524261, 15, 0, 524262, 15, 0, 524271, 15, 0, 524272, 15, 0, 524273, 15, 0, 524277, 15, 0, 524278, 15, 0, 524279, 15, 0, 524285, 15, 0, 524286, 15, 0, 524287, 15, 0, 458752, 15, 0, 458753, 15, 0, 458754, 15, 0, 589807, 15, 0, 589808, 15, 0, 589809, 15, 0, 589813, 15, 0, 589814, 15, 0, 589815, 15, 0, 589821, 15, 0, 589822, 15, 0, 589823, 15, 0, 524288, 15, 0, 524289, 15, 0, 524290, 15, 0, 655343, 15, 0, 655344, 15, 0, 655345, 15, 0, 655349, 15, 0, 655350, 15, 0, 655351, 15, 0, 655357, 15, 0, 655358, 15, 0, 655359, 15, 0, 589824, 15, 0, 589825, 15, 0, 589826, 15, 0, 720879, 15, 0, 720880, 15, 0, 720881, 15, 0, 720885, 15, 0, 720886, 15, 0, 720887, 15, 0, 720893, 15, 0, 720894, 15, 0, 720895, 15, 0, 655360, 15, 0, 655361, 15, 0, 655362, 15, 0, 786415, 15, 0, 786416, 15, 0, 786417, 15, 0, 786421, 15, 0, 786422, 15, 0, 786423, 15, 0, 786429, 15, 0, 786430, 15, 0, 786431, 15, 0, 720896, 15, 0, 720897, 15, 0, 720898, 15, 0, 851951, 15, 0, 851953, 15, 0, 851957, 15, 0, 851959, 15, 0, 851965, 15, 0, 851966, 15, 0, 851967, 15, 0, 786432, 15, 0, 786433, 15, 0, 786434, 15, 0, 917487, 15, 0, 917489, 15, 0, 917493, 15, 0, 917495, 15, 0, 917501, 15, 0, 917502, 15, 0, 917503, 15, 0, 851968, 15, 0, 851969, 15, 0, 851970, 15, 0, 983023, 15, 0, 983025, 15, 0, 983029, 15, 0, 983031, 15, 0, 983037, 15, 0, 983038, 15, 0, 983039, 15, 0, 917504, 15, 0, 917505, 15, 0, 917506, 15, 0 )
+
+[node name="tiles_center_2" type="TileMap" parent="."]
+material = SubResource( 15 )
+z_index = 10
+tile_set = ExtResource( 6 )
+format = 1
+
+[node name="objects_front" type="Node2D" parent="."]
+material = SubResource( 16 )
+z_index = 40
+
+[node name="decor_front" type="Node2D" parent="."]
+material = SubResource( 17 )
+z_index = 40
+
+[node name="tiles_front_0" type="TileMap" parent="."]
+material = SubResource( 18 )
+z_index = 50
+tile_set = ExtResource( 6 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_front_1" type="TileMap" parent="."]
+material = SubResource( 19 )
+z_index = 50
+tile_set = ExtResource( 6 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="tiles_front_2" type="TileMap" parent="."]
+material = SubResource( 20 )
+z_index = 50
+tile_set = ExtResource( 6 )
+collision_layer = 0
+collision_mask = 0
+format = 1
