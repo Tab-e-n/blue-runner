@@ -22,13 +22,13 @@ const DEFAULT_OPTIONS : Dictionary = {
 	"*menu_up" : KEY_UP,
 	"*menu_down" : KEY_DOWN,
 	"*accept" : KEY_SPACE,
-	"*deny" : KEY_BACKSPACE,
+	"*deny" : KEY_ESCAPE,
 	"*save_replay" : KEY_F6,
 	"*screenshot" : KEY_F2,
 	"*info" : KEY_F3,
 	"*outlines_on" : false,
 	"*ghosts_on" : false,
-	"*up_key_jump" : false,
+	"*up_key_jump" : true,
 	"*timer_on" : 0,
 	"*first_time_load" : true,
 	"*last_level_location" : "res://Scenes/waterway/",
@@ -144,6 +144,8 @@ func _ready():
 		change_input(i, last_input_events[i])
 	
 	current_level_location = options["*last_level_location"]
+	# warning-ignore:return_value_discarded
+	load_level_group()
 
 
 func console_arguments():
@@ -422,23 +424,26 @@ func add_date_to_name(dname : String):
 	return dname
 
 
-func load_external_picture(picture_filename : String, sprite : Sprite):
-	var pngf = File.new()
-	if not pngf.file_exists(picture_filename):
-		sprite.texture = preload("res://Visual/no_image.png")
-		return
-	
-	pngf.open(picture_filename, File.READ)
-	var pnglen = pngf.get_len()
-	var pngdata = pngf.get_buffer(pnglen)
-	pngf.close()
-	
-	var image = Image.new()
-	image.load_png_from_buffer(pngdata)
-	var image_texture : ImageTexture = ImageTexture.new()
-	image_texture.create_from_image(image.get_rect(image.get_used_rect()))
-	
-	sprite.texture = image_texture
+func load_external_picture(picture_filename : String, sprite : Sprite, image_was_imported : bool = false):
+	if image_was_imported:
+		sprite.texture = load(picture_filename)
+	else:
+		var pngf = File.new()
+		if not pngf.file_exists(picture_filename):
+			sprite.texture = preload("res://Visual/no_image.png")
+			return
+		
+		pngf.open(picture_filename, File.READ)
+		var pnglen = pngf.get_len()
+		var pngdata = pngf.get_buffer(pnglen)
+		pngf.close()
+		
+		var image = Image.new()
+		image.load_png_from_buffer(pngdata)
+		var image_texture : ImageTexture = ImageTexture.new()
+		image_texture.create_from_image(image.get_rect(image.get_used_rect()))
+		
+		sprite.texture = image_texture
 	
 	if sprite.texture == null:
 		sprite.texture = preload("res://Visual/no_image.png")
@@ -597,7 +602,7 @@ func change_level(destination : String, return_value : bool = false, check_depen
 #	print(destination)
 	
 	if destination.begins_with("!"):
-		destination = destination.trim_prefix("!")
+		destination = destination.substr(1, destination.length() - 1)
 		check_if_unlocked = false
 	
 	if destination == "":
@@ -632,10 +637,7 @@ func change_level(destination : String, return_value : bool = false, check_depen
 	
 	var error = OK
 	
-	# End playtesting if you are going to the menu
-	if destination_new == "res://Scenes/MENU.tscn" and playtesting:
-		get_tree().quit()
-		return OK
+	print(destination_new)
 	
 	if check_dependencies:
 		var level_dat = load_dat_file(destination_new.left(destination_new.find_last(".")))
@@ -647,15 +649,22 @@ func change_level(destination : String, return_value : bool = false, check_depen
 					error = ERR_FILE_MISSING_DEPENDENCIES
 	
 #	print(destination_new)
-	if destination_new != "res://Scenes/MENU.tscn" and check_if_unlocked:
+	
+	if destination_new != "res://Scenes/MENU.tscn" and check_if_unlocked and not playtesting:
 		if not is_level_file_unlocked(destination_new):
 			destination_new = "res://Scenes/MENU.tscn"
+	
+	# End playtesting if you are going to the menu
+	if destination_new == "res://Scenes/MENU.tscn" and playtesting:
+		quit_game()
+		return OK
 	
 	if destination_new != "res://Scenes/MENU.tscn":
 		var current_group = get_group_from_filepath(destination_new)
 		if current_group != current_level_location:
 			current_level_location = get_group_from_filepath(destination_new)
-			level_group = load_level_group()
+			# warning-ignore:return_value_discarded
+			load_level_group()
 		current_level = get_level_from_filepath(destination_new)
 		
 #		print("CL " + current_level)
@@ -670,7 +679,8 @@ func change_level(destination : String, return_value : bool = false, check_depen
 		return error
 	elif error != OK:
 		if playtesting:
-			get_tree().quit()
+			quit_game()
+			return error
 		# warning-ignore:return_value_discarded
 		get_tree().change_scene("res://Scenes/other/Level_Missing.tscn")
 		call_deferred("make_text_debug", String(destination_new) + " " + String(error))
@@ -793,6 +803,12 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
 	return true
 
 
+func should_check_unlocks(group : String, level : String) -> bool:
+	if not unlocked.has(group):
+		unlocked[group] = {}
+	return unlocked[group].has(level)
+
+
 func is_level_unlocked(group : String, level : String) -> bool:
 	if group == USER_LEVELS:
 		return true
@@ -818,7 +834,7 @@ func is_level_unlocked(group : String, level : String) -> bool:
 	
 	if is_user_group:
 		is_unlocked = true
-	elif unlocked[group].has(level):
+	elif should_check_unlocks(group, level):
 		if is_unlocked and unlock_requirements[0] != 6:
 			unlocked[group][level] = check_unlock_requirements(unlock_requirements[0], unlock_requirements[1], unlock_requirements[2])
 		is_unlocked = unlocked[group][level]

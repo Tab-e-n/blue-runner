@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=2]
+[gd_scene load_steps=49 format=2]
 
 [ext_resource path="res://Scripts/Level_Control.gd" type="Script" id=1]
 [ext_resource path="res://Objects/Tilesets/WaterWay.tres" type="TileSet" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://Objects/April/Spring.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Objects/April/Flame.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Objects/April/SpikeBall.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Objects/Barrier.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Objects/April/Magma.tscn" type="PackedScene" id=9]
 [ext_resource path="res://Objects/April/Icycle.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=19]
@@ -26,7 +27,6 @@
 [ext_resource path="res://Objects/Decor/Waterfall.tscn" type="PackedScene" id=34]
 [ext_resource path="res://Objects/BreakableGlass.tscn" type="PackedScene" id=35]
 [ext_resource path="res://Objects/Portal.tscn" type="PackedScene" id=36]
-
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 3 )
@@ -526,3 +526,7 @@ collision_mask = 0
 format = 1
 
 [node name="Ghost" parent="." instance=ExtResource( 27 )]
+
+[node name="Barrier" parent="." instance=ExtResource( 8 )]
+position = Vector2( 3328, 128 )
+rotation = -1.57079

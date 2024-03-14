@@ -58,6 +58,7 @@ editor_properties = {
 "z_index": false
 }
 }
+tele_destination = "*MENU"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Speen = SubResource( 1 )

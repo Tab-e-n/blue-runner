@@ -28,66 +28,110 @@ shader = ExtResource( 3 )
 shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=2]
 shader = ExtResource( 3 )
 shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=3]
 shader = ExtResource( 3 )
 shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=4]
 shader = ExtResource( 3 )
 shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=5]
 shader = ExtResource( 3 )
 shader_param/color = Color( 0.376471, 0.376471, 0.376471, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=6]
 shader = ExtResource( 3 )
 shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=7]
 shader = ExtResource( 3 )
 shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=8]
 shader = ExtResource( 3 )
 shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=9]
 shader = ExtResource( 3 )
 shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=10]
 shader = ExtResource( 3 )
 shader_param/color = Color( 0.6, 0.6, 0.6, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=11]
 shader = ExtResource( 3 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="GDScript" id=12]
 script/source = "extends Sprite
@@ -120,54 +164,90 @@ shader = ExtResource( 3 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=14]
 shader = ExtResource( 3 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=15]
 shader = ExtResource( 3 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=16]
 shader = ExtResource( 3 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=17]
 shader = ExtResource( 3 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=18]
 shader = ExtResource( 3 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = ExtResource( 3 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=20]
 shader = ExtResource( 3 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [sub_resource type="ShaderMaterial" id=21]
 shader = ExtResource( 3 )
 shader_param/color = Color( 1, 1, 1, 1 )
 shader_param/active = false
 shader_param/blend = 1.0
+shader_param/outline_active = false
+shader_param/width = 4.0
+shader_param/pattern = 0
+shader_param/inside = false
 
 [node name="Tutorial" type="Node2D"]
 script = ExtResource( 2 )
@@ -858,7 +938,7 @@ delay_until_appearing = 120
 
 [node name="Portal" parent="objects_center" instance=ExtResource( 19 )]
 use_parent_material = true
-position = Vector2( 3472, -304 )
+position = Vector2( 3376, -304 )
 scale = Vector2( 2.5, 2.5 )
 tele_destination = "*MENU"
 silent_portal = true

@@ -337,9 +337,6 @@ func _ready():
 	get_node(\"GUI/Edit_Tiles/Panel/sublayer_\" + String(place_current_sublayer)).pressed = true
 	get_node(\"GUI/Place/Panel/layer_\" + String(place_current_layer)).pressed = true
 	
-	# Update nodes according to save
-	tileset_changed(tilesets.get_item_index(tilesets.get_selected_id()))
-
 	for i in data.place_objects.keys():
 		items_objects_directory.add_item(i)
 #	place_update_items(PLACE_OBJECTS)
@@ -934,6 +931,8 @@ func create_new_level(remove_old : bool = true):
 	
 	change_tilemap()
 	
+	tileset_changed(tilesets.get_item_index(tilesets.get_selected_id()))
+	
 	done_action(\"create level\", \"#0ce6f2\", true)
 	level_path = \"\"
 
@@ -1094,11 +1093,6 @@ func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
 		else:
 			official.pressed = temp[\"official\"]
 		
-		var load_tileset : TileSet = get_node(\"Game/Level/tiles_back_0\").tile_set
-		
-		for i in range(tilesets.get_item_count()):
-			if tilesets.get_item_metadata(i) + \"/Objects/Tilesets/\" + tilesets.get_item_text(i) == load_tileset.resource_path:
-				tilesets.select(i)
 		bg.select(0)
 		if level_objects[\"bg\"] != null:
 			for i in range(bg.get_item_count() - 1):
@@ -1119,6 +1113,7 @@ func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
 		$Game.add_child(level)
 		level.scale = Vector2(0.5, 0.5)
 		level.name = \"Level\"
+		
 		if has_node(\"Game/Level/Camera\"):
 			level_objects[\"camera\"] = get_node(\"Game/Level/Camera\")
 		if has_node(\"Game/Level/BG\"):
@@ -1129,7 +1124,17 @@ func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
 			level_objects[\"ghost\"] = get_node(\"Game/Level/Ghost\")
 		if has_node(\"Game/Level/Finish\"):
 			level_objects[\"finish\"] = get_node(\"Game/Level/Finish\")
+		
+		var load_tileset : TileSet = get_node(\"Game/Level/tiles_back_0\").tile_set
+		print(load_tileset.resource_path)
+		for i in range(tilesets.get_item_count()):
+			if tilesets.get_item_metadata(i) + \"/Objects/Tilesets/\" + tilesets.get_item_text(i) == load_tileset.resource_path:
+				tilesets.select(i)
+		
 		change_tilemap()
+		
+		tileset_changed(tilesets.get_item_index(tilesets.get_selected_id()))
+		
 		if level_objects[\"bg\"] != null:
 			level_objects[\"bg\"].ready_up(level_objects[\"camera\"])
 		
@@ -4557,11 +4562,11 @@ text = "???"
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
@@ -4583,8 +4588,8 @@ text = "???"
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_back" to="." method="layer_color_changed" binds= [ 1 ]]
 [connection signal="value_changed" from="GUI/Edit_Layers/Panel/scale_background" to="." method="layer_scale_changed" binds= [ 0 ]]
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_background" to="." method="layer_color_changed" binds= [ 0 ]]
-[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
 [connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
+[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
 [connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
 [connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="items_scroll_scrolling"]
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]

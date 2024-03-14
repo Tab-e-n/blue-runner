@@ -36,6 +36,7 @@ func _ready():
 	player.add_child(attack)
 	# warning-ignore:return_value_discarded
 	attack.connect("body_entered", self, "_on_attack_connected")
+	# warning-ignore:return_value_discarded
 	attack.connect("area_entered", self, "_on_attack_connected_area")
 
 
@@ -188,7 +189,6 @@ func _physics_process(delta):
 				if momentum.y < -2:
 					momentum.y = -2
 			
-			
 			player.momentum.y = round(momentum.y) / delta
 			
 			if player.move_and_collide(Vector2(0,momentum.y), false, true, true):
@@ -200,10 +200,12 @@ func _physics_process(delta):
 		player.move_player_character()
 		#print("After: ", player.momentum)
 		
-		attack.visible = attack_timer > 0 and attack_timer != ATTACK_TIME
 		if attack_timer == 0:
 			attack.get_node("coll").disabled = true
 		
+	elif player.replay:
+		if $Anim.current_animation in ["Attack_H", "Attack_UH", "Attack_DH", "Attack_U", "Attack_D", "Attack_N"]:
+			attack_timer = ATTACK_TIME
 	elif player.replay and player.timer > player.replay_timer:
 		pass
 	elif player.dead:
@@ -215,6 +217,8 @@ func _physics_process(delta):
 		position += player.momentum * delta
 	elif player.end:
 		pass
+	
+	attack.visible = attack_timer > 0 and attack_timer != ATTACK_TIME
 
 
 func set_attack():

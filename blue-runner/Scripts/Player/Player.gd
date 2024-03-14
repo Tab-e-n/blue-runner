@@ -365,12 +365,17 @@ func decrement_ground_buffer():
 
 
 func get_facing_axis() -> float:
-	var axis = 1
 	if facing == "left":
-		axis = -1
-	if facing == "right":
-		axis = 1
-	return axis
+		return -1.0
+	else:
+		return 1.0
+
+
+func face_towards(direction : int):
+	if sign(direction) == -1.0:
+		facing = "left"
+	else:
+		facing = "right"
 
 
 func below_max_speed(number : float, direction : float, threshold : float) -> bool:

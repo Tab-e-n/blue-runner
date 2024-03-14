@@ -13,10 +13,10 @@ const GRAVITY_WALL_DOWN : int = 20
 const MAX_JUMP_AMOUNT = 1
 const JUMP_POWER : int = 800
 
-var MAX_SPEED : int = 850
-var ACCELERATION : int = 40
-var DECELERATION : int = 50
-var ACC_DIVIDOR : float = 0.025
+const MAX_SPEED : int = 850
+const ACCELERATION : int = 40
+const DECELERATION : int = 50
+const ACC_DIVIDOR : float = 0.025
 
 
 var player : KinematicBody2D
@@ -63,9 +63,13 @@ func _physics_process(_delta):
 	if player.is_jump_input_just_pressed():
 		player.start_jump_buffer()
 	
+	if Input.is_action_just_pressed("special"):
+		player.start_special_buffer()
+	
 	if player.is_starting():
 		player.decrement_jump_buffer()
-		if Input.is_action_just_pressed("special"):
+		if player.should_special():
+			player.special_buffer = 0
 			sliding = 15
 			player.play_sound("dash")
 		
@@ -134,10 +138,7 @@ func _physics_process(_delta):
 				player.momentum.x += (ACCELERATION - round(player.momentum.x * ACC_DIVIDOR)) * player.get_horizontal_axis()
 				player.cap_momentum_x(MAX_SPEED)
 			if dropping == 0 and !on_wall:
-				if player.get_horizontal_axis() == -1:
-					player.facing = "left"
-				if player.get_horizontal_axis() == 1:
-					player.facing = "right"
+				player.face_towards(player.get_horizontal_axis())
 		
 		# SPECIAL ABILITIES
 		if sliding > 0:
@@ -149,11 +150,18 @@ func _physics_process(_delta):
 		
 		if Input.is_action_just_pressed("special"):
 			if player.state == "ground":
+				player.special_buffer = 0
 				sliding = 15
 				player.play_sound("dash")
 			else:
 				dropping = 15
 				saved_momentum = abs(player.momentum.x)
+			
+		if player.special_buffer == 1 and dropping > 0:
+			player.face_towards(player.get_horizontal_axis())
+		if player.should_special():
+			player.decrement_special_buffer()
+		
 		if Input.is_action_pressed("special"):
 			if player.state == "ground" and !on_wall:
 				if sliding == 1:
@@ -179,11 +187,7 @@ func _physics_process(_delta):
 			if player.move_and_collide(Vector2(player.momentum.x, 0), false, true, true) and on_wall and sliding < 13:
 				sliding = 0
 			
-			var facing_multiplier : int
-			if player.facing == "left":
-				facing_multiplier = -1
-			if player.facing == "right":
-				facing_multiplier = 1
+			var facing_multiplier : int = player.get_facing_axis()
 			
 			if super_slide and saved_momentum > MAX_SPEED * 1.35:
 				player.momentum.x = saved_momentum * facing_multiplier
@@ -197,10 +201,7 @@ func _physics_process(_delta):
 				force_slide = true
 			
 		if dropping > 0:
-			if player.facing == "left":
-				player.momentum.x = -round(MAX_SPEED * 0.5)
-			if player.facing == "right":
-				player.momentum.x = round(MAX_SPEED * 0.5)
+			player.momentum.x = round(MAX_SPEED * 0.5) * player.get_facing_axis()
 			player.momentum.y += GRAVITY_DOWN
 		
 		# JUMPING

@@ -35,5 +35,4 @@ hframes = 8
 polygon = PoolVector2Array( -28, 0, 0, -56, 28, 0 )
 
 [node name="anim" type="AnimationPlayer" parent="."]
-autoplay = "twinkle"
 anims/twinkle = SubResource( 1 )

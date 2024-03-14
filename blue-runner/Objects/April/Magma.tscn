@@ -37,5 +37,4 @@ texture = ExtResource( 1 )
 hframes = 4
 
 [node name="anim" type="AnimationPlayer" parent="."]
-autoplay = "melt"
 anims/melt = SubResource( 2 )

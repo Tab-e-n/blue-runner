@@ -7,7 +7,7 @@ var editor_properties : Dictionary = {
 	"layer" : "camera",
 	"rect" : Rect2(0, 0, 128, 64),
 	"editable_properties" : {
-		"zoom" : [TYPE_VECTOR2, 1, 10, 1],
+		"zoom" : [TYPE_VECTOR2, -10, 10, 1],
 		"limit_x" : [TYPE_VECTOR2, 0, 0, 1, "pixels"],
 		"limit_y" : [TYPE_VECTOR2, 0, 0, 1, "pixels"],
 		"fade_in_darkness_lenght" : [TYPE_INT, 0, 0, 1, "frames"],

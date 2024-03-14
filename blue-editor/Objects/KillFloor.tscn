@@ -6,7 +6,7 @@
 script/source = "extends Node2D
 
 var editor_properties : Dictionary = {
-	\"description\" : \"A kill floor.\\nIt kills the player in a wide area (wider than the visual) bellow it self.\",
+	\"description\" : \"A kill floor.\\nIt kills the player in a wide area (wider than the visual may imply) bellow it self. Useful for bottomless pits.\",
 	\"object_path\" : \"res://Objects/KillFloor.tscn\",
 	\"object_type\" : \"normal\",
 	\"layer\" : \"selected\",

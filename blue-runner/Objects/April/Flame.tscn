@@ -36,7 +36,6 @@ texture = ExtResource( 2 )
 hframes = 3
 
 [node name="anim" type="AnimationPlayer" parent="sprite"]
-autoplay = "animate"
 anims/animate = SubResource( 1 )
 
 [node name="coll" type="CollisionShape2D" parent="."]
