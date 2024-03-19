@@ -366,13 +366,6 @@ texture = ExtResource( 6 )
 [node name="info" type="Node2D" parent="."]
 z_index = 95
 
-[node name="speed" type="Polygon2D" parent="info"]
-visible = false
-position = Vector2( 0, 768 )
-z_index = 95
-color = Color( 0.258824, 0.258824, 0.258824, 1 )
-polygon = PoolVector2Array( 0, 8, 8, 0, 0, -8, -128, -8, -136, 0, -128, 8 )
-
 [node name="text" type="Label" parent="info"]
 visible = false
 margin_left = -88.0

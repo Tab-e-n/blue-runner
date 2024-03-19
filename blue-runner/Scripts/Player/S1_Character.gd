@@ -35,6 +35,7 @@ var force_slide : bool = false
 var super_slide : bool = false
 var dropping : int = 0
 var saved_momentum : float = 0
+var drop_grace_turn : bool = false
 
 var last_anim : String = "Default"
 var state_air : int = 0
@@ -49,6 +50,8 @@ func _ready():
 	$Anim.current_animation = "Enter"
 	
 	player.setup_trail(trail_color)
+	
+	player.connect("boosted", self, "_on_boosted")
 
 
 func _physics_process(_delta):
@@ -136,8 +139,9 @@ func _physics_process(_delta):
 		if player.get_horizontal_axis() and sliding == 0 and dropping == 0:
 			if player.below_max_speed(player.momentum.x, player.get_horizontal_axis(), MAX_SPEED):
 				player.momentum.x += (ACCELERATION - round(player.momentum.x * ACC_DIVIDOR)) * player.get_horizontal_axis()
-				player.cap_momentum_x(MAX_SPEED)
-			if dropping == 0 and !on_wall:
+				if sign(player.momentum.x) == player.get_horizontal_axis():
+					player.cap_momentum_x(MAX_SPEED)
+			if !on_wall:
 				player.face_towards(player.get_horizontal_axis())
 		
 		# SPECIAL ABILITIES
@@ -154,10 +158,14 @@ func _physics_process(_delta):
 				sliding = 15
 				player.play_sound("dash")
 			else:
+				if dropping == 0:
+					drop_grace_turn = true
+				else:
+					drop_grace_turn = false
 				dropping = 15
 				saved_momentum = abs(player.momentum.x)
 			
-		if player.special_buffer == 1 and dropping > 0:
+		if player.special_buffer == 1 and dropping > 0 and drop_grace_turn:
 			player.face_towards(player.get_horizontal_axis())
 		if player.should_special():
 			player.decrement_special_buffer()
@@ -375,6 +383,12 @@ func particle_summon(particle_position : Vector2, particle_rotation : float, typ
 		new_particle.z_index = player.z_index + 1
 		new_particle.start(type)
 		particle_disable = 6
+
+
+func _on_boosted(boost):
+	if sliding > 0:
+		saved_momentum = player.momentum.x + boost.x
+		super_slide = true
 
 
 func enter_anim_end():

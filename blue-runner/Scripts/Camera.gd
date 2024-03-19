@@ -47,6 +47,8 @@ func _ready():
 	elif Global.options["*timer_on"] == 2:
 		visible_timer = Global.check_unlock_requirements(Global.UNLOCK_BEAT, Global.current_level_location, Global.current_level)
 	
+	speedometer_active = Global.speedometer_active
+	
 	if get_parent().has_node("BG"):
 		bg = get_parent().get_node("BG")
 	
@@ -61,7 +63,7 @@ func _ready():
 	if speedometer_active:
 		visible_timer = false
 	$info/text.visible = speedometer_active or visible_timer
-	$info/speed.visible = speedometer_active
+#	$info/speed.visible = speedometer_active
 	
 	$finish/continue.text = Global.key_names(4)
 	$finish/reset.text = Global.key_names(6)
@@ -127,9 +129,11 @@ func _physics_process(_delta):
 		if position.y < limit_y.x: position.y = limit_y.x
 		if position.y > limit_y.y: position.y = limit_y.y
 		if speedometer_active:
-			var temp_calc = (abs(cam_target.momentum.x) + abs(cam_target.momentum.y)) / 10
-			$info/speed.rotation_degrees = temp_calc / 2
+			var temp_calc = round(abs(cam_target.momentum.x)) # + abs(cam_target.momentum.y))
+			if temp_calc <= 10:
+				temp_calc = 0
 			$info/text.text = String(temp_calc)
+#			$info/speed.rotation_degrees = temp_calc * 0.05
 		if visible_timer and (cam_target.timer <= cam_target.replay_timer + 0.016 or !cam_target.replay):
 			$info/text.text = Global.convert_float_to_time(cam_target.timer)
 	else:

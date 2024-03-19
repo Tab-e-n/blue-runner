@@ -22,10 +22,10 @@ var mods_enabled : Dictionary
 const INPUT_AMOUNT : int = 28
 var last_input_events : Array = range(INPUT_AMOUNT)
 
-var default_settings : Dictionary = {}
-var settings : Dictionary = {
+const DEFAULT_SETTINGS : Dictionary = {
 	\"*version\" : VERSION,
 	\"sonic_runner_folder\" : \"\",
+	\"use_speedometer\" : false,
 	
 	\"editor_gui_additional_info\" : false,
 	
@@ -101,6 +101,8 @@ var settings : Dictionary = {
 	
 	\"editor_random_scale_range\" : [0.5, 3],
 }
+var settings : Dictionary = {
+}
 # Max 8 faves per category
 # Each tileset has its own 8 faves under its name
 var favorite : Dictionary = {
@@ -121,7 +123,7 @@ func _ready():
 	dir.open(\"user://\")
 	if !dir.dir_exists(\"SRLevels\"): dir.make_dir(\"SRLevels\")
 	
-	default_settings = settings.duplicate()
+	settings = DEFAULT_SETTINGS.duplicate()
 	
 	load_game()
 	load_editor_vanilla()

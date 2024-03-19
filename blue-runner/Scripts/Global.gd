@@ -41,6 +41,7 @@ var new_version_alert : bool = false
 var savefile_interaction : int = 3
 var compatibility_mode : bool = false
 var playtesting : bool = false
+var speedometer_active : bool = false
 
 var level_completion : Dictionary = {
 	"*collectibles" : {},
@@ -167,6 +168,8 @@ func console_arguments():
 #		print(arguments["playtest"])
 		call_deferred("change_level", "!*" + arguments["playtest"])
 		playtesting = true
+	if arguments.has("speedometer"):
+		speedometer_active = true
 	if arguments.has("save_interaction"):
 		match(arguments["save_interaction"]):
 			"x":
@@ -637,7 +640,7 @@ func change_level(destination : String, return_value : bool = false, check_depen
 	
 	var error = OK
 	
-	print(destination_new)
+#	print(destination_new)
 	
 	if check_dependencies:
 		var level_dat = load_dat_file(destination_new.left(destination_new.find_last(".")))
@@ -822,6 +825,9 @@ func is_level_unlocked(group : String, level : String) -> bool:
 		lv_group = level_group
 	else:
 		lv_group = load_group(group)
+	
+	if lv_group.empty():
+		return false
 	
 	var i = -1
 	for j in range(lv_group["levels"].size()):

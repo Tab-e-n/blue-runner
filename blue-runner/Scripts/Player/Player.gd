@@ -2,6 +2,9 @@ extends KinematicBody2D
 class_name Player
 
 
+signal boosted(boost)
+
+
 onready var level : Node2D
 onready var character : Node2D
 onready var collisions : Array = [$col_0, $col_1, $col_2]
@@ -228,7 +231,8 @@ func _physics_process(delta):
 			Global.save_replay_with_date(get_parent().name, recording.duplicate())
 		if stylish and state == "ground":
 			if get_horizontal_axis() != 0:
-				boost(Vector2(get_horizontal_axis() * 200, 0))
+				call_deferred("boost", Vector2(get_horizontal_axis() * 200, 0))
+#				boost(Vector2(get_horizontal_axis() * 200, 0))
 			stylish = false
 		
 #		if !level.unicolor_active and false:
@@ -371,10 +375,11 @@ func get_facing_axis() -> float:
 		return 1.0
 
 
-func face_towards(direction : int):
-	if sign(direction) == -1.0:
+func face_towards(direction : float):
+	direction = sign(direction)
+	if direction == -1.0:
 		facing = "left"
-	else:
+	elif direction == 1.0:
 		facing = "right"
 
 
@@ -517,11 +522,12 @@ func punt(boost : Vector2, overwrite_momentum : bool, make_airborn : bool = true
 			launched = true
 
 
-func boost(boost : Vector2):
+func boost(boost_amount : Vector2):
 	boosted = true
-	momentum += boost
-	if boost.x != 0:
-		make_speed_ring(sign(boost.x))
+	momentum += boost_amount
+	if boost_amount.x != 0:
+		make_speed_ring(sign(boost_amount.x))
+	emit_signal("boosted", boost_amount)
 
 
 func play_sound(sound_name : String, random_pitch : bool = false):

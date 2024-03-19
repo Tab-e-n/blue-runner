@@ -207,7 +207,7 @@ func _ready():
 		# warning-ignore:integer_division
 		# warning-ignore:integer_division
 		var position : Vector2 = Vector2((i % 2) * 64, (i / 2) * 64)
-
+		
 		var button : Button = Button.new()
 		button.name = String(i)
 		button.rect_position = position
@@ -415,11 +415,12 @@ func _process(_delta):
 	# Level Hotkeys
 	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"0\") and shortcuts:
 		$GUI.visible = !$GUI.visible
-	var transform_mode : bool = Input.is_action_pressed(\"1\") and shortcuts and place_current_tab != PLACE_TILES
+	
 	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"1\") and shortcuts:
 		$GUI/Edit_Items/Panel/other/scale_y.value = 1
 		$GUI/Edit_Items/Panel/other/scale_x.value = 1
 		$GUI/Edit_Items/Panel/other/rotation.value = 0
+	
 	if Input.is_action_pressed(\"alt\") and Input.is_action_just_pressed(\"1\") and shortcuts:
 		var random_range : Array = [0,0]
 		for i in range(2):
@@ -449,6 +450,7 @@ func _process(_delta):
 	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"4\") and shortcuts:
 		place_attach_mode = !place_attach_mode
 	
+	var transform_mode : bool = Input.is_action_pressed(\"1\") and shortcuts and place_current_tab != PLACE_TILES
 	var edit_mode : bool = Input.is_action_pressed(\"15\") and shortcuts and place_current_tab == PLACE_OBJECTS
 	var bucket_mode : bool = Input.is_action_pressed(\"15\") and shortcuts and place_current_tab == PLACE_TILES
 	
@@ -498,7 +500,7 @@ func _process(_delta):
 	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"13\") and shortcuts:
 		load_popup()
 	if Input.is_action_pressed(\"ctrl\") and Input.is_action_just_pressed(\"14\") and shortcuts:
-		create_new_level()
+		new_popup()
 	if Input.is_action_pressed(\"ctrl\") and Input.is_action_pressed(\"shift\") and Input.is_action_just_pressed(\"26\") and shortcuts:
 		playtest()
 	
@@ -843,6 +845,14 @@ func object_face_point(object_pos : Vector2, point : Vector2):
 	return angle
 
 
+func new_popup():
+	$GUI/File/New.popup_centered()
+
+
+func file_new_confirmed():
+	create_new_level()
+
+
 func create_new_level(remove_old : bool = true):
 	for i in range(4):
 		level_layer_visible[i] = true
@@ -1036,7 +1046,7 @@ func save_level(level_filename : String = \"Level\"):
 
 func playtest():
 	if data.settings[\"sonic_runner_folder\"] == \"\":
-		$GUI/File/Launch_Fail.popup()
+		$GUI/File/Launch_Fail.popup_centered()
 	elif level_path == \"\":
 		$GUI/File/File_Save.popup()
 		playtest_save = true
@@ -1044,17 +1054,25 @@ func playtest():
 		save_level(level_path)
 		OS.set_window_minimized(true)
 		# warning-ignore:return_value_discarded
-		OS.execute(data.settings[\"sonic_runner_folder\"], ['--playtest=\"' + level_path + '\"',], true)
+		
+		var arguments : Array = ['--playtest=\"' + level_path + '\"']
+		if data.settings[\"use_speedometer\"]:
+			arguments.append(\"--speedometer\")
+		
+		OS.execute(data.settings[\"sonic_runner_folder\"], arguments, true)
 		OS.set_window_minimized(false)
 
+
 func load_popup():
-	if level_path == \"\":
-		$GUI/File/File_Load.popup()
-	else:
-		$GUI/File/Load.popup()
+#	if level_path == \"\":
+#		$GUI/File/File_Load.popup()
+#	else:
+	$GUI/File/Load.popup_centered()
+
 
 func file_load_confirmed():
 	$GUI/File/File_Load.popup()
+
 
 func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
 	var file = File.new()
@@ -1735,6 +1753,8 @@ func add_subjects(source, reciever, set_owner : bool = true):
 		if new_item.has_method(\"editor_ready\"):
 			new_item.editor_ready()
 		l += 1
+		print(\"source: \", source, \" \", obj)
+		print(\"recieve: \", reciever, \" \", new_item)
 
 func level_closest_item(specific_node : Node2D = null, must_be_attachable : bool = false):
 	var node_group : Array
@@ -1753,8 +1773,10 @@ func level_closest_item(specific_node : Node2D = null, must_be_attachable : bool
 	var shortest_distance : float
 	
 	for node in node_group:
-		if node == null: continue
-		if must_be_attachable and !node.editor_properties[\"attachable\"]: continue
+		if node == null:
+			continue
+		if must_be_attachable and !node.editor_properties[\"attachable\"]:
+			continue
 		var rect_s : Vector2
 		var rect_p : Vector2
 		if node is Sprite:
@@ -1811,9 +1833,6 @@ func level_pick_closest_item(remove_picked : bool = false):
 	if !place_attach_mode:
 		layer = get_node(\"Game/Level/\" + PLACE_TABS[place_current_tab] + \"_\" + LEVEL_LAYERS[place_current_layer])
 		node = level_closest_item()
-		if node and remove_picked:
-			can_return_removed = true
-			last_remove_position = node.position
 	else:
 		attachable = level_closest_item(null, true)
 		if attachable != null:
@@ -1822,6 +1841,9 @@ func level_pick_closest_item(remove_picked : bool = false):
 			return
 		node = level_closest_item(layer)
 	
+	if node and remove_picked:
+		can_return_removed = true
+		last_remove_position = node.position
 	
 	if node != null:
 		$GUI/Edit_Items/Panel/other/scale_x.value = node.scale.x
@@ -1850,7 +1872,7 @@ func level_pick_closest_item(remove_picked : bool = false):
 	if place_current_tab == PLACE_OBJECTS:
 		done_action(\"pick object\", \"#e4a712\")
 	
-	if attachable != null:
+	if attachable != null and remove_picked:
 		attachable.detached(node)
 
 
@@ -2494,6 +2516,7 @@ func hint_object_change(edit_props : Dictionary):
 
 func object_hint_toggled(button_pressed):
 	pause_level_input = button_pressed
+
 "
 
 [sub_resource type="GDScript" id=2]
@@ -4473,31 +4496,50 @@ __meta__ = {
 }
 
 [node name="Exit" type="ConfirmationDialog" parent="GUI/File"]
-visible = true
-margin_left = 280.0
-margin_top = -72.0
-margin_right = 744.0
-margin_bottom = 72.0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 dialog_text = "You are exiting the level editor.
 All unsaved progress will be lost. "
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Load" type="ConfirmationDialog" parent="GUI/File"]
-margin_left = 280.0
-margin_top = -72.0
-margin_right = 744.0
-margin_bottom = 72.0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 dialog_text = "You are loading a new level.
 All unsaved progress will be lost. "
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="New" type="ConfirmationDialog" parent="GUI/File"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+dialog_text = "You are making a new level. All unsaved
+work on the current level will be lost. "
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Launch_Fail" type="ConfirmationDialog" parent="GUI/File"]
-margin_left = 176.0
-margin_top = -80.0
-margin_right = 782.0
-margin_bottom = 78.0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 window_title = "Oops!"
 dialog_text = "SR Editor doesn't know where SR is
 located, so it cannot launch it. You
-can set the where SR is in the settings."
+can set where SR is in the settings."
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Animation" type="AnimationPlayer" parent="GUI/File"]
 anims/Focus = SubResource( 21 )
@@ -4562,11 +4604,11 @@ text = "???"
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
@@ -4595,7 +4637,7 @@ text = "???"
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]
 [connection signal="item_selected" from="GUI/Items/Panel/objects_directory" to="." method="items_update_panel" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/File/Panel/slider" to="GUI/File" method="_on_slider_toggled"]
-[connection signal="pressed" from="GUI/File/Panel/new" to="." method="create_new_level"]
+[connection signal="pressed" from="GUI/File/Panel/new" to="." method="new_popup"]
 [connection signal="pressed" from="GUI/File/Panel/load" to="." method="load_popup"]
 [connection signal="pressed" from="GUI/File/Panel/save" to="." method="save_popup"]
 [connection signal="pressed" from="GUI/File/Panel/playtest" to="." method="playtest"]
@@ -4606,5 +4648,6 @@ text = "???"
 [connection signal="file_selected" from="GUI/File/File_Load" to="." method="load_level"]
 [connection signal="confirmed" from="GUI/File/Exit" to="." method="file_exit_confirmed"]
 [connection signal="confirmed" from="GUI/File/Load" to="." method="file_load_confirmed"]
+[connection signal="confirmed" from="GUI/File/New" to="." method="file_new_confirmed"]
 [connection signal="confirmed" from="GUI/File/Launch_Fail" to="." method="file_exit_confirmed"]
 [connection signal="toggled" from="GUI/Hint/hint" to="." method="object_hint_toggled"]
