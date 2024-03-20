@@ -12,6 +12,8 @@ func _ready():
 	else:
 		var pos : int = 0 + int(position.x) * 2 + int(position.y) * 1
 		pos = pos % 800
+		if pos < 0:
+			pos = 800 + pos
 		wait_time = float(pos) * 0.001
 	
 

@@ -45,8 +45,7 @@ tracks/2/keys = {
 "values": [ Vector2( 0, -24 ) ]
 }
 
-[sub_resource type="Animation" id=2]
-resource_name = "Death"
+[sub_resource type="Animation" id=3]
 length = 0.4
 tracks/0/type = "value"
 tracks/0/path = NodePath("spriteshit:frame")
@@ -73,8 +72,7 @@ tracks/1/keys = {
 "values": [ Vector2( 0, 0 ), Vector2( 0, -64 ), Vector2( 0, 128 ) ]
 }
 
-[sub_resource type="Animation" id=3]
-resource_name = "Enter"
+[sub_resource type="Animation" id=4]
 length = 0.4
 step = 0.025
 tracks/0/type = "value"
@@ -114,8 +112,7 @@ tracks/2/keys = {
 "values": [ false, true ]
 }
 
-[sub_resource type="Animation" id=4]
-resource_name = "Moving Left"
+[sub_resource type="Animation" id=5]
 length = 0.2
 loop = true
 tracks/0/type = "value"
@@ -155,8 +152,7 @@ tracks/2/keys = {
 "values": [ Vector2( 0, -48 ) ]
 }
 
-[sub_resource type="Animation" id=5]
-resource_name = "Moving Right"
+[sub_resource type="Animation" id=6]
 length = 0.2
 loop = true
 tracks/0/type = "value"
@@ -196,8 +192,7 @@ tracks/2/keys = {
 "values": [ Vector2( 0, -48 ) ]
 }
 
-[sub_resource type="Animation" id=6]
-resource_name = "Stand Left"
+[sub_resource type="Animation" id=7]
 length = 0.1
 loop = true
 tracks/0/type = "value"
@@ -237,8 +232,7 @@ tracks/2/keys = {
 "values": [ Vector2( 0, -48 ) ]
 }
 
-[sub_resource type="Animation" id=7]
-resource_name = "Stand Right"
+[sub_resource type="Animation" id=8]
 length = 0.1
 loop = true
 tracks/0/type = "value"
@@ -278,7 +272,7 @@ tracks/2/keys = {
 "values": [ Vector2( 0, -48 ) ]
 }
 
-[sub_resource type="Animation" id=8]
+[sub_resource type="Animation" id=9]
 length = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("spriteshit:frame")
@@ -359,13 +353,13 @@ script = ExtResource( 2 )
 
 [node name="Anim" type="AnimationPlayer" parent="."]
 anims/Air = SubResource( 1 )
-anims/Death = SubResource( 2 )
-anims/Enter = SubResource( 3 )
-"anims/Moving Left" = SubResource( 4 )
-"anims/Moving Right" = SubResource( 5 )
-"anims/Stand Left" = SubResource( 6 )
-"anims/Stand Right" = SubResource( 7 )
-anims/_RESET = SubResource( 8 )
+anims/Death = SubResource( 3 )
+anims/Enter = SubResource( 4 )
+"anims/Moving Left" = SubResource( 5 )
+"anims/Moving Right" = SubResource( 6 )
+"anims/Stand Left" = SubResource( 7 )
+"anims/Stand Right" = SubResource( 8 )
+anims/_RESET = SubResource( 9 )
 
 [node name="col_1" type="Node2D" parent="."]
 position = Vector2( 0, -24 )
@@ -392,4 +386,5 @@ scale = Vector2( 2, 2 )
 texture = ExtResource( 3 )
 vframes = 3
 hframes = 6
+frame = 16
 [connection signal="animation_finished" from="Anim" to="." method="_on_animation_finished"]

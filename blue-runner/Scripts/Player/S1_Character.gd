@@ -51,6 +51,7 @@ func _ready():
 	
 	player.setup_trail(trail_color)
 	
+	# warning-ignore:return_value_discarded
 	player.connect("boosted", self, "_on_boosted")
 
 

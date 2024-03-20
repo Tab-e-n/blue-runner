@@ -364,12 +364,10 @@ scale = Vector2( 1, 4 )
 [node name="Portal" parent="objects_center" instance=ExtResource( 36 )]
 use_parent_material = true
 position = Vector2( 2240, 0 )
-tele_destination = "*MENU"
 
 [node name="@Portal@609" parent="objects_center" instance=ExtResource( 36 )]
 use_parent_material = true
 position = Vector2( 2352, 0 )
-tele_destination = "*MENU"
 silent_portal = true
 
 [node name="Track" parent="objects_center" instance=ExtResource( 33 )]

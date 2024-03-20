@@ -1156,20 +1156,20 @@ func load_level(level_filename : String = \"user://SRLevels/Level.tscn\"):
 		if level_objects[\"bg\"] != null:
 			level_objects[\"bg\"].ready_up(level_objects[\"camera\"])
 		
+		ready_loaded_level(level.get_children())
+		
+		for i in range(LEVEL_LAYERS.size()):
+			level_layer_data[LEVEL_LAYERS[i]][0] = layer_shader_getter(\"Game/Level/decor_\" + LEVEL_LAYERS[i], \"color\")
+			level_layer_data[LEVEL_LAYERS[i]][1] = get_node(\"Game/Level/decor_\" + LEVEL_LAYERS[i]).scale
+			get_node(\"GUI/Edit_Layers/Panel/color_\" + LEVEL_LAYERS[i]).color = layer_shader_getter(\"Game/Level/decor_\" + LEVEL_LAYERS[i], \"color\")
+			get_node(\"GUI/Edit_Layers/Panel/scale_\" + LEVEL_LAYERS[i]).value = get_node(\"Game/Level/decor_\" + LEVEL_LAYERS[i]).scale.x
+		
 		if level.get_script() == null:
 			$GUI/Edit_Layers/Panel/unicolor.pressed = false
 			$GUI/Edit_Layers/Panel/unicolor.disabled = true
 		else:
 			$GUI/Edit_Layers/Panel/unicolor.pressed = level.unicolor_active
 			$GUI/Edit_Layers/Panel/unicolor.disabled = false
-		
-		ready_loaded_level(level.get_children())
-		
-		for i in range(LEVEL_LAYERS.size()):
-			level_layer_data[LEVEL_LAYERS[i]][0] = get_node(\"Game/Level/decor_\" + LEVEL_LAYERS[i]).modulate
-			level_layer_data[LEVEL_LAYERS[i]][1] = get_node(\"Game/Level/decor_\" + LEVEL_LAYERS[i]).scale
-			get_node(\"GUI/Edit_Layers/Panel/color_\" + LEVEL_LAYERS[i]).color = get_node(\"Game/Level/decor_\" + LEVEL_LAYERS[i]).modulate
-			get_node(\"GUI/Edit_Layers/Panel/scale_\" + LEVEL_LAYERS[i]).value = get_node(\"Game/Level/decor_\" + LEVEL_LAYERS[i]).scale.x
 		
 		done_action(\"load level\", \"#0ce6f2\", true)
 	else:
@@ -1393,17 +1393,24 @@ func layer_scale_changed(value, layer):
 	done_action(\"edit layer\", \"#c837af\")
 
 func layer_color_changed(color, layer):
-	layer_setter(\"Game/Level/objects_\" + LEVEL_LAYERS[layer], \"modulate\", color)
-	layer_setter(\"Game/Level/decor_\" + LEVEL_LAYERS[layer], \"modulate\", color)
+	var layer_color : Color = color
+	if level.unicolor_active:
+		layer_color = Color(1, 1, 1, 1)
+	
+	layer_setter(\"Game/Level/objects_\" + LEVEL_LAYERS[layer], \"modulate\", layer_color)
+	layer_setter(\"Game/Level/decor_\" + LEVEL_LAYERS[layer], \"modulate\", layer_color)
 	for i in range(LEVEL_TILE_SUBLAYER_AMOUNT):
-		layer_setter(\"Game/Level/tiles_\" + LEVEL_LAYERS[layer] + \"_\" + String(i), \"modulate\", color)
+		layer_setter(\"Game/Level/tiles_\" + LEVEL_LAYERS[layer] + \"_\" + String(i), \"modulate\", layer_color)
+
 	layer_shader_setter(\"Game/Level/objects_\" + LEVEL_LAYERS[layer], \"color\", color)
 	layer_shader_setter(\"Game/Level/decor_\" + LEVEL_LAYERS[layer], \"color\", color)
 	for i in range(LEVEL_TILE_SUBLAYER_AMOUNT):
 		layer_shader_setter(\"Game/Level/tiles_\" + LEVEL_LAYERS[layer] + \"_\" + String(i), \"color\", color)
+	
 	level_layer_data[LEVEL_LAYERS[layer]][0] = color
 	
 	done_action(\"edit layer\", \"#c837af\")
+
 
 func layer_change_visible(value, layer):
 	layer_setter(\"Game/Level/objects_\" + LEVEL_LAYERS[layer], \"visible\", value)
@@ -1412,15 +1419,24 @@ func layer_change_visible(value, layer):
 		layer_setter(\"Game/Level/tiles_\" + LEVEL_LAYERS[layer] + \"_\" + String(i), \"visible\", value)
 	level_layer_visible[layer] = value
 
+
 func layer_shader_setter(node_path : String, variant : String, value):
 	var node = get_node(node_path)
 	if node != null:
 		node.material.set_shader_param(variant,value)
 
+
+func layer_shader_getter(node_path : String, variant : String):
+	var node = get_node(node_path)
+	if node != null:
+		return node.material.get_shader_param(variant)
+
+
 func layer_setter(node_path : String, variant : String, value):
 	var node = get_node(node_path)
 	if node != null:
 		node.set(variant,value)
+
 
 func sublayer_changed(button_pressed, layer : int):
 	if button_pressed:
@@ -1437,6 +1453,7 @@ func change_tilemap():
 	#get_node(\"Game/Level\")
 	place_current_tilemap = get_node(\"Game/Level/tiles_\" + LEVEL_LAYERS[place_current_layer] + \"_\" + String(place_current_sublayer))
 
+
 func _on_unicolor_toggled(button_pressed):
 	if level.get_script() != null:
 		level.unicolor_active = button_pressed
@@ -1445,6 +1462,7 @@ func _on_unicolor_toggled(button_pressed):
 			layer_shader_setter(\"Game/Level/decor_\" + LEVEL_LAYERS[layer], \"active\", button_pressed)
 			for i in range(LEVEL_TILE_SUBLAYER_AMOUNT):
 				layer_shader_setter(\"Game/Level/tiles_\" + LEVEL_LAYERS[layer] + \"_\" + String(i), \"active\", button_pressed)
+			layer_color_changed(level_layer_data[LEVEL_LAYERS[layer]][0], layer)
 	
 
 # LEVEL FUNCTIONS
@@ -1753,8 +1771,9 @@ func add_subjects(source, reciever, set_owner : bool = true):
 		if new_item.has_method(\"editor_ready\"):
 			new_item.editor_ready()
 		l += 1
-		print(\"source: \", source, \" \", obj)
-		print(\"recieve: \", reciever, \" \", new_item)
+#		print(\"source: \", source, \" \", obj)
+#		print(\"recieve: \", reciever, \" \", new_item)
+
 
 func level_closest_item(specific_node : Node2D = null, must_be_attachable : bool = false):
 	var node_group : Array
@@ -1892,19 +1911,22 @@ func place_update_tiles(tileset_name : String):
 	for _i in range(PLACE_ITEM_AMOUNT - place_tiles_items.size()):
 		place_tiles_items.append(-1)
 	
-	for i in range(8): get_node(\"GUI/Place/Panel/item/fav_\" + String(i)).visible = fav_size > i
+	if place_current_tab == PLACE_TILES:
+		for i in range(8):
+			get_node(\"GUI/Place/Panel/item/fav_\" + String(i)).visible = fav_size > i
 	
 	for x in range(PLACE_ITEM_AMOUNT):
 		var y : int = 0
 		if x > 7: y = 1
 		place_tiles.set_cell(x - y * 8, 1 - y, int(place_tiles_items[x]), place_tile_mods[0], place_tile_mods[1], place_tile_mods[2])
 		
-		var button : Button = get_node(\"GUI/Place/Panel/item/\" + String(x))
-		#button.hint_tooltip = \"\"
-		if int(place_tiles_items[x]) == -1:
-			button.disabled = true
-		else:
-			button.disabled = false
+		if place_current_tab == PLACE_TILES:
+			var button : Button = get_node(\"GUI/Place/Panel/item/\" + String(x))
+			#button.hint_tooltip = \"\"
+			if int(place_tiles_items[x]) == -1:
+				button.disabled = true
+			else:
+				button.disabled = false
 
 
 func place_update_items(tab : int):
@@ -2263,7 +2285,8 @@ func toggle_favorite(section, item):
 		data.favorite[section].erase(item)
 		push_to_recent(section, item)
 	else:
-		if data.recent[section].has(item): data.recent[section].erase(item)
+		if data.recent[section].has(item):
+			data.recent[section].erase(item)
 		data.favorite[section].push_front(item)
 		if data.favorite[section].size() > 8:
 			data.favorite[section].pop_back()
@@ -4605,10 +4628,10 @@ text = "???"
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
