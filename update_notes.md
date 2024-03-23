@@ -84,21 +84,23 @@
 
 ### FIXES & CHANGES
 
+ - Quick mouse movement while placing down tiles nolonger makes gaps.
  - When picking items, the original item is nolonger deleted unless you hold shift.
+ - Fixed a few edge cases when rotating a object or decor with transform mode.
+ - Holding shift in transform mode snaps the rotation to multiples of 15 degrees and scale to multiples of 0.05.
  - There is now a shortcut to start playtesting the level.
  - Added a new dropdown menu for selecting a tab.
- - Quick mouse movement while placing down tiles nolonger makes gaps.
- - Attachables should no longer have wacky behaviours when you do anything complex with them.
  - Fixed a bug where you could have multiple of the same tile preset in the place panel.
+ - The "Is official" tag has been altered. Now when a level has the "Is official" tag:
+	 - If the level's author matches the level groups author, the level won't have the "Creator:" line, similary to how WaterWay doesn't have it.
+	 - If the level's author is different to the level groups author, it will show a thank you message.
+ - The "Is official" tag now does nothing in UserUniverse.
+ - Attachables should no longer have wacky behaviours when you do anything complex with them.
  - You can now edit the order of portals.
  - Portals nolonger break when multiple are placed.
  - Fixed playtested levels not reloading when you die or press reset.
  - Playtested levels no longer save as seperate levels.
  - Upon exiting a level when you are playtesting it, you will also exit SR. You won't need to go through the SR menu to get back to the editor.
- - The "Is official" tag has been altered. Now when a level has the "Is official" tag:
-	 - If the level's author matches the level groups author, the level won't have the "Creator:" line, similary to how WaterWay doesn't have it.
-	 - If the level's author is different to the level groups author, it will show a thank you message.
- - The "Is official" tag now does nothing in UserUniverse.
  - In the options menu, the keybind for saving with a popup didn't display properly. This is now fixed.
 
 </p></details>
