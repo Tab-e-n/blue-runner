@@ -4,7 +4,7 @@
 [ext_resource path="res://Scripts/Magma.gd" type="Script" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 32, 32 )
+extents = Vector2( 28, 28 )
 
 [sub_resource type="Animation" id=2]
 resource_name = "melt"
@@ -28,13 +28,13 @@ collision_layer = 2147483652
 collision_mask = 4
 script = ExtResource( 2 )
 
-[node name="coll" type="CollisionShape2D" parent="."]
-shape = SubResource( 1 )
-
 [node name="sprite" type="Sprite" parent="."]
 scale = Vector2( 2, 2 )
 texture = ExtResource( 1 )
 hframes = 4
+
+[node name="coll" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
 
 [node name="anim" type="AnimationPlayer" parent="."]
 anims/melt = SubResource( 2 )

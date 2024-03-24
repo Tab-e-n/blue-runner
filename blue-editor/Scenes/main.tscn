@@ -598,23 +598,30 @@ func _process(_delta):
 					level_scale_hinge = place_selected_decor.scale
 				if place_current_tab == PLACE_OBJECTS:
 					level_scale_hinge = place_selected_object.scale
-			$GUI/Edit_Items/Panel/other/scale_y.value = stepify(level_scale_hinge.y + (mouse_hinge.y - mouse_pos.y) / 128, 0.05)
-			$GUI/Edit_Items/Panel/other/scale_x.value = stepify(level_scale_hinge.x * (($GUI/Edit_Items/Panel/other/scale_y.value - level_scale_hinge.y) / level_scale_hinge.y + 1), 0.05)
+			
+			var step : float = 0.01
+			if Input.is_action_pressed(\"shift\"):
+				step = 0.05
+			$GUI/Edit_Items/Panel/other/scale_y.value = stepify(level_scale_hinge.y + (mouse_hinge.y - mouse_pos.y) / 128, step)
+			$GUI/Edit_Items/Panel/other/scale_x.value = stepify(level_scale_hinge.x * (($GUI/Edit_Items/Panel/other/scale_y.value - level_scale_hinge.y) / level_scale_hinge.y + 1), step)
 		
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_right\") and $GUI/Edit_Items/Panel/other/rotation.editable:
-			var rotation
+			var rotation = object_face_point($GUI/cursor.position, mouse_pos)
+			var step : float = 1
+			if Input.is_action_pressed(\"shift\"):
+				step = 15
+			rotation = stepify(rotation / PI * 180 , step)
+			
 			if Input.is_action_just_pressed(\"mouse_right\"):
 				mouse_hinge = mouse_pos
 			if place_current_tab == PLACE_DECOR:
-				place_selected_decor.rotation = object_face_point($GUI/cursor.position, mouse_pos)
-				rotation = place_selected_decor.rotation_degrees
+				place_selected_decor.rotation_degrees = rotation
 			if place_current_tab == PLACE_OBJECTS:
-				place_selected_object.rotation = object_face_point($GUI/cursor.position, mouse_pos)
-				rotation = place_selected_object.rotation_degrees
+				place_selected_object.rotation_degrees = rotation
 			
 			#if abs(rotation) > 360:
 			#	rotation -= 360 * sign(rotation)
-			$GUI/Edit_Items/Panel/other/rotation.value = stepify(rotation, 1)
+			$GUI/Edit_Items/Panel/other/rotation.value = rotation
 	
 	elif place_current_mode == PLACEMODE_MOVE or Input.is_action_pressed(\"3\"):
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
@@ -829,18 +836,13 @@ func _exit_tree():
 func object_face_point(object_pos : Vector2, point : Vector2):
 	var distance = point - object_pos
 	var hypotenuse = sqrt(pow(distance.x, 2) + pow(distance.y, 2))
-	var adjacent = abs(distance.x)
 	var angle = 0
-	var distance_sign = 1
 	if hypotenuse != 0:
-		angle = acos(adjacent / hypotenuse)
-		distance_sign = sign(distance.x) * sign(distance.y)
-	
-	angle *= distance_sign
-	
-	angle += 1.6
-	if distance.x < 0:
-		angle += 3.2
+		angle = acos(distance.y / hypotenuse)
+		if distance.x >= 0:
+			angle = PI - angle
+		if distance.x < 0:
+			angle += PI
 	
 	return angle
 
@@ -2418,10 +2420,15 @@ func set_button_range_according_to_property(button : SpinBox, property : Array):
 		if property[1] == property[2]:
 			button.allow_greater = true
 			button.allow_lesser = true
+			button.min_value = -0b1111_1111_1111_1111
+			button.max_value = 0b1111_1111_1111_1111
 		else:
 			button.min_value = property[1]
 			button.max_value = property[2]
-		button.step = property[3]
+		if property[3] == 0:
+			button.step = 0.001
+		else:
+			button.step = property[3]
 
 
 func edit_item_buttons(parameters : Array, button_amount : int, position : Vector2):
@@ -3800,7 +3807,7 @@ margin_left = 160.0
 margin_top = 136.0
 margin_right = 288.0
 margin_bottom = 168.0
-step = 0.05
+step = 0.01
 value = 1.0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -3811,7 +3818,7 @@ margin_left = 160.0
 margin_top = 168.0
 margin_right = 288.0
 margin_bottom = 200.0
-step = 0.05
+step = 0.01
 value = 1.0
 
 [node name="rotation" type="SpinBox" parent="GUI/Edit_Items/Panel/other"]
@@ -4627,11 +4634,11 @@ text = "???"
 [connection signal="toggled" from="GUI/Place/Panel/paint" to="." method="place_mode_toggled" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/Place/Panel/eraser" to="." method="place_mode_toggled" binds= [ 2 ]]
 [connection signal="toggled" from="GUI/Place/Panel/cog" to="." method="place_mode_toggled" binds= [ 3 ]]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Tiles" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Items" method="_on_more_toggled"]
-[connection signal="toggled" from="GUI/Place/Panel/more" to="." method="items_focus_toggled"]
+[connection signal="toggled" from="GUI/Place/Panel/more" to="GUI/Edit_Layers" method="_on_more_toggled"]
 [connection signal="toggled" from="GUI/Place/Panel/layer_0" to="." method="layer_changed" binds= [ 0 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_3" to="." method="layer_changed" binds= [ 3 ]]
 [connection signal="toggled" from="GUI/Place/Panel/layer_1" to="." method="layer_changed" binds= [ 1 ]]
@@ -4653,8 +4660,8 @@ text = "???"
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_back" to="." method="layer_color_changed" binds= [ 1 ]]
 [connection signal="value_changed" from="GUI/Edit_Layers/Panel/scale_background" to="." method="layer_scale_changed" binds= [ 0 ]]
 [connection signal="color_changed" from="GUI/Edit_Layers/Panel/color_background" to="." method="layer_color_changed" binds= [ 0 ]]
-[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
 [connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="." method="edit_layers_exit_pressed"]
+[connection signal="pressed" from="GUI/Edit_Layers/Panel/exit" to="GUI/Edit_Layers" method="focus_toggle" binds= [ false ]]
 [connection signal="pressed" from="GUI/Items/Panel/exit" to="GUI/Items" method="_on_exit_pressed"]
 [connection signal="scrolling" from="GUI/Items/Panel/scroll" to="." method="items_scroll_scrolling"]
 [connection signal="item_selected" from="GUI/Items/Panel/decor_directory" to="." method="items_update_panel" binds= [ 2 ]]

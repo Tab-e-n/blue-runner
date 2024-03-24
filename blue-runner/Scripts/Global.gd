@@ -218,6 +218,19 @@ func fade_float(start : float, end : float, progress : float) -> float:
 	return start + (end - start) * progress
 
 
+func string_start_similarity(string1 : String, string2 : String) -> int:
+	var max_s = string1.length()
+	if string2.length() < max_s:
+		max_s = string2.length()
+	
+	var s : int = 0
+	
+	while s < max_s and string1[s] == string2[s]:
+		s += 1
+	
+	return s
+
+
 func change_input(input_id : int, new_input):
 	var input_string : String = KEYBIND_NAMES[input_id].trim_prefix("*")
 #	print(input_string)
@@ -627,7 +640,7 @@ func change_level(destination : String, return_value : bool = false, check_depen
 #						break
 				if level_group["levels"][i + 1][0] == "*Level_Missing":
 					break
-				level = i + 1
+				level = i + 13
 				break
 		if level == 0:
 			destination_new = "res://Scenes/MENU.tscn"
@@ -635,6 +648,16 @@ func change_level(destination : String, return_value : bool = false, check_depen
 			destination_new = current_level_location + level_group["levels"][level][0] + ".tscn"
 	elif destination.begins_with("*"):
 		destination_new = destination.trim_prefix("*")
+	elif destination.begins_with("@"):
+		var s = destination.find("*")
+		var parsed_location : String = parse_level_group_abreviation(destination.substr(0, s))
+		if not parsed_location.empty():
+			var parsed_level : String = destination.substr(s + 1, destination.length() - s - 1)
+#			print(parsed_level)
+			destination_new = parsed_location + parsed_level + ".tscn"
+		else:
+			destination_new = "res://Scenes/other/Level_Missing.tscn"
+			call_deferred("make_text_debug", "Cannot find group from abreviation: " + String(destination.substr(0, s)))
 	else:
 		destination_new = current_level_location + destination + ".tscn"
 	
@@ -728,12 +751,13 @@ func get_level_from_filepath(filepath : String) -> String:
 
 
 func make_text_debug(_text : String):
-		var text = RichTextLabel.new()
-		text.rect_size = Vector2(1024, 1024)
-		text.text = _text
-		text.rect_scale = Vector2(2, 2)
-		get_tree().current_scene.add_child(text)
-		print(get_tree().current_scene.name)
+	var text = RichTextLabel.new()
+	text.rect_size = Vector2(1024, 1024)
+	text.text = _text
+	text.rect_scale = Vector2(2, 2)
+	get_tree().current_scene.add_child(text)
+	print(_text)
+#	print(get_tree().current_scene.name)
 
 
 func unlock(unlock):
@@ -767,7 +791,9 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
 		return false
 	
 	if unlock_type == UNLOCK_BEAT or unlock_type == UNLOCK_PAR or unlock_type == UNLOCK_COMPLETION:
-		if !level_completion.has(parameter_1):
+#		if parameter_1.begins_with("@"):
+#			parameter_1 = parse_level_group_abreviation(parameter_1)
+		if not level_completion.has(parameter_1):
 			return false
 	
 	if unlock_type == UNLOCK_BEAT or unlock_type == UNLOCK_PAR:
@@ -860,6 +886,44 @@ func showcase_unlock(text : String, texture : Texture) -> Node2D:
 	get_tree().current_scene.add_child(show_unlock)
 	show_unlock.set_text(text)
 	return show_unlock
+
+
+func parse_level_group_abreviation(abr : String) -> String:
+#	print(group)
+	var group : String = abr.substr(1, abr.length() - 1)
+#	print(group)
+	
+	var matches : Array = []
+	for i in range(loaded_level_groups.size()):
+		if loaded_level_groups[i][0] == group:
+			matches.append(i)
+	
+	if matches.size() == 0:
+		group = ""
+	elif matches.size() == 1:
+		group = location_of_loaded_group(matches[0])
+	elif matches.size() > 1:
+		print("More than one group shares this abreviation: ", abr)
+		
+		var previous_matches : Array = matches.duplicate()
+		matches = []
+		var best_s : int = 0
+		for i in range(previous_matches.size()):
+			var s : int = string_start_similarity(location_of_loaded_group(previous_matches[i]), current_level_location)
+			if s > best_s:
+				matches = [previous_matches[i]]
+			if s == best_s:
+				matches.append(previous_matches[i])
+		
+		if matches.size() == 0:
+			group = ""
+		elif matches.size() == 1:
+			group = location_of_loaded_group(matches[0])
+		if matches.size() > 1:
+			group = ""
+	
+#	print(group)
+	return group
 
 
 func level_group_in_save(level_location : String, data : Dictionary = level_completion) -> bool:
@@ -1354,6 +1418,7 @@ func load_data():
 			loaded_level_groups[i][4] = 0
 			unlocked["completion_percentages"][loaded_level_groups[i][1] + loaded_level_groups[i][0]] = 0
 		loaded_level_groups[i][5] = group_unlocks[i]
+	
 	# CHARACTERS.DAT
 	
 	var scan_places = ["res:/"]

@@ -43,6 +43,7 @@ func _ready_deferred():
 		$AnimationPlayer.current_animation = "Speen"
 		
 	if is_finish:
+		material.set_shader_param("active", false)
 		if level.get_script() != null:
 			if level.unicolor_active:
 				material.set_shader_param("active", true)

@@ -10,10 +10,10 @@ onready var cam_target : Node2D
 var tele_destination : String
 
 var end_zoom : bool = false
-const end_timer_const : int = 60
-var end_timer : float = end_timer_const
+const END_TIMER_DEFAULT : int = 60
+var end_timer : float = END_TIMER_DEFAULT
 
-var end_zoom_begin : float
+var end_zoom_begin : Vector2
 var end_pos_begin : Vector2
 # Color(0.87451, 0.909804, 0.905882)
 
@@ -122,12 +122,16 @@ func _physics_process(_delta):
 	
 	if !end_zoom:
 		position.x = int(cam_target.position.x / 2) * 2
-		if position.x < limit_x.x: position.x = limit_x.x
-		if position.x > limit_x.y: position.x = limit_x.y
+		if position.x < limit_x.x:
+			position.x = limit_x.x
+		if position.x > limit_x.y:
+			position.x = limit_x.y
 		
 		position.y = int(cam_target.position.y / 2) * 2
-		if position.y < limit_y.x: position.y = limit_y.x
-		if position.y > limit_y.y: position.y = limit_y.y
+		if position.y < limit_y.x:
+			position.y = limit_y.x
+		if position.y > limit_y.y:
+			position.y = limit_y.y
 		if speedometer_active:
 			var temp_calc = round(abs(cam_target.momentum.x)) # + abs(cam_target.momentum.y))
 			if temp_calc <= 10:
@@ -139,18 +143,18 @@ func _physics_process(_delta):
 	else:
 		$info.visible = false
 		
-		zoom.x = 1 + (end_zoom_begin - 1) / end_timer_const * end_timer
-		zoom.y = 1 + (end_zoom_begin - 1) / end_timer_const * end_timer
+		zoom.x = 1 + (end_zoom_begin.x - 1) / END_TIMER_DEFAULT * end_timer
+		zoom.y = 1 + (end_zoom_begin.y - 1) / END_TIMER_DEFAULT * end_timer
 		
-		$finish.scale.x = zoom.x + (zoom.x * 0.5) / end_timer_const * end_timer
-		$finish.scale.y = zoom.y + (zoom.y * 0.5) / end_timer_const * end_timer
+		$finish.scale.x = zoom.x + (zoom.x * 0.5) / END_TIMER_DEFAULT * end_timer
+		$finish.scale.y = zoom.y + (zoom.y * 0.5) / END_TIMER_DEFAULT * end_timer
 		
 #		$camera_inputs.scale = $finish.scale
 		
-#		$camera_inputs.position.y = 80.0 / end_timer_const * end_timer
+#		$camera_inputs.position.y = 80.0 / END_TIMER_DEFAULT * end_timer
 		
-		position.x = cam_target.position.x + (end_pos_begin.x - cam_target.position.x) / end_timer_const * end_timer
-		position.y = cam_target.position.y + (end_pos_begin.y - cam_target.position.y) / end_timer_const * end_timer
+		position.x = cam_target.position.x + (end_pos_begin.x - cam_target.position.x) / END_TIMER_DEFAULT * end_timer
+		position.y = cam_target.position.y + (end_pos_begin.y - cam_target.position.y) / END_TIMER_DEFAULT * end_timer
 		
 		
 		if end_timer > 0:
@@ -186,7 +190,7 @@ func end_zoom_in(target : Node2D, tele, timer : float, par : float):
 	end_zoom = true
 	cam_target = target
 	tele_destination = tele
-	end_zoom_begin = zoom.x
+	end_zoom_begin = zoom
 	end_pos_begin = position
 	$finish.visible = true
 #	$camera_inputs.visible = true
