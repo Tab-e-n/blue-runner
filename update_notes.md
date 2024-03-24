@@ -64,6 +64,7 @@
     - __ External Images__! It's the lite version of mods!
     - __ Invisible Ground__! :)
     - __ Floating Label__! HoverText but a bit simpler to use.
+      __ All April Fools Objects__!
  - You can now change the font of HoverText.
  - New text formating or something! It allows you show some game data as text.
    This will be explained in the wiki in more detail if you are interested.
