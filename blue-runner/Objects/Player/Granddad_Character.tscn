@@ -45,8 +45,8 @@ tracks/2/keys = {
 "values": [ Vector2( 0, -24 ) ]
 }
 
-[sub_resource type="Animation" id=3]
-length = 0.4
+[sub_resource type="Animation" id=2]
+length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("spriteshit:frame")
 tracks/0/interp = 1
@@ -66,13 +66,13 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.1, 0.4 ),
+"times": PoolRealArray( 0, 0.1, 0.5 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
-"values": [ Vector2( 0, 0 ), Vector2( 0, -64 ), Vector2( 0, 128 ) ]
+"values": [ Vector2( 0, 0 ), Vector2( 0, -64 ), Vector2( 0, 192 ) ]
 }
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=3]
 length = 0.4
 step = 0.025
 tracks/0/type = "value"
@@ -112,7 +112,7 @@ tracks/2/keys = {
 "values": [ false, true ]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id=4]
 length = 0.2
 loop = true
 tracks/0/type = "value"
@@ -152,7 +152,7 @@ tracks/2/keys = {
 "values": [ Vector2( 0, -48 ) ]
 }
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=5]
 length = 0.2
 loop = true
 tracks/0/type = "value"
@@ -192,7 +192,7 @@ tracks/2/keys = {
 "values": [ Vector2( 0, -48 ) ]
 }
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=6]
 length = 0.1
 loop = true
 tracks/0/type = "value"
@@ -232,7 +232,7 @@ tracks/2/keys = {
 "values": [ Vector2( 0, -48 ) ]
 }
 
-[sub_resource type="Animation" id=8]
+[sub_resource type="Animation" id=7]
 length = 0.1
 loop = true
 tracks/0/type = "value"
@@ -272,7 +272,7 @@ tracks/2/keys = {
 "values": [ Vector2( 0, -48 ) ]
 }
 
-[sub_resource type="Animation" id=9]
+[sub_resource type="Animation" id=8]
 length = 0.1
 tracks/0/type = "value"
 tracks/0/path = NodePath("spriteshit:frame")
@@ -353,17 +353,17 @@ script = ExtResource( 2 )
 
 [node name="Anim" type="AnimationPlayer" parent="."]
 anims/Air = SubResource( 1 )
-anims/Death = SubResource( 3 )
-anims/Enter = SubResource( 4 )
-"anims/Moving Left" = SubResource( 5 )
-"anims/Moving Right" = SubResource( 6 )
-"anims/Stand Left" = SubResource( 7 )
-"anims/Stand Right" = SubResource( 8 )
-anims/_RESET = SubResource( 9 )
+anims/Death = SubResource( 2 )
+anims/Enter = SubResource( 3 )
+"anims/Moving Left" = SubResource( 4 )
+"anims/Moving Right" = SubResource( 5 )
+"anims/Stand Left" = SubResource( 6 )
+"anims/Stand Right" = SubResource( 7 )
+anims/_RESET = SubResource( 8 )
 
 [node name="col_1" type="Node2D" parent="."]
-position = Vector2( 0, -24 )
-scale = Vector2( 3, 3 )
+position = Vector2( 0, -48 )
+scale = Vector2( 2.5, 6 )
 
 [node name="Polygon2D" type="Polygon2D" parent="col_1"]
 visible = false
@@ -377,6 +377,7 @@ texture = ExtResource( 1 )
 offset = Vector2( 0, -32 )
 vframes = 2
 hframes = 4
+frame = 1
 
 [node name="explosion" type="Sprite" parent="."]
 visible = false

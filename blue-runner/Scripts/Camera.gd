@@ -1,5 +1,8 @@
 extends Camera2D
 
+
+const FADE_IN_OUT_DEFAULT : int = 12
+
 export var compatibility_mode : bool = false
 export var limit_x : Vector2 = Vector2(0,0)
 export var limit_y : Vector2 = Vector2(0,0)
@@ -24,12 +27,12 @@ var visible_timer : bool = false
 var fade_in : bool = true
 var fade_in_timer : float = 0
 export var fade_in_darkness_lenght : int = 0
-export var fade_in_end : int = 12
+export var fade_in_end : int = FADE_IN_OUT_DEFAULT
 
 var fade_out : bool = false
 var fade_out_timer : float = 0
 export var fade_out_darkness_lenght : int = 0
-export var fade_out_end : int = 12
+export var fade_out_end : int = FADE_IN_OUT_DEFAULT
 
 var unlock_fade : bool = false
 
@@ -96,27 +99,31 @@ func _physics_process(_delta):
 	if has_node("complete_dark"):
 		$complete_dark.call_deferred("queue_free")
 	
-	if fade_in_timer < fade_in_end + fade_in_darkness_lenght and fade_in:
+	if fade_in:
 		fade_in_timer += 1
-		if fade_in_timer == fade_in_end + fade_in_darkness_lenght:
+		if fade_in_timer > fade_in_end + fade_in_darkness_lenght:
 			$Fade.visible = false
+			fade_in = false
 		elif fade_in_timer > fade_in_darkness_lenght:
-			var color = $Fade.color
-			var max_fade = fade_in_end - 2
-			var fade_timer = fade_in_timer - fade_in_darkness_lenght
-			$Fade.color = Color(color.r,color.g,color.b,(max_fade-fade_timer)/max_fade)
+			var max_fade : float = fade_in_end
+			var fade_timer : float = fade_in_timer - fade_in_darkness_lenght
+			$Fade.color.a = (max_fade - fade_timer) / max_fade
+		else:
+			$Fade.color.a = 0.0
 	
-	if fade_out_timer < fade_out_end + fade_out_darkness_lenght and fade_out:
+	if fade_out:
 		fade_out_timer += 1
-		if fade_out_timer == fade_out_end + fade_out_darkness_lenght:
+		if fade_out_timer > fade_out_end + fade_out_darkness_lenght:
+			$Fade.color.a = 1.0
 			if Global.race_mode:
 				Global.change_level("*MENU")
 			else: 
 				Global.change_level(tele_destination)
 		elif fade_out_timer < fade_out_end:
-			var color = $Fade.color
-			var max_fade = fade_out_end - 2
-			$Fade.color = Color(color.r,color.g,color.b,fade_out_timer/max_fade)
+			var max_fade : float = fade_out_end
+			$Fade.color.a = fade_out_timer / max_fade
+		else:
+			$Fade.color.a = 1.0
 			
 		# warning-ignore:return_value_discarded
 	
@@ -209,7 +216,10 @@ func end_zoom_in(target : Node2D, tele, timer : float, par : float):
 	$finish/anim.play("shift")
 
 
-func start_fade_out(tele : String = "*MENU"):
+func start_fade_out(tele : String = "*MENU", reset_fade : bool = false):
+	if reset_fade:
+		fade_out_end = 8
+		fade_out_darkness_lenght = 0
 	fade_out = true
 	$Fade.visible = true
 	tele_destination = tele

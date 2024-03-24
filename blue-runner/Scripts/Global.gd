@@ -191,10 +191,11 @@ func console_arguments():
 
 func _physics_process(_delta):
 	var curr_scene = get_tree().current_scene.name
+	
 	if Input.is_action_just_pressed("return") and !(curr_scene == "MENU" or curr_scene == "LOAD"):
-		change_level("*MENU") 
+		change_level_fade_out("*MENU")
 	if Input.is_action_just_released("reset") and !(curr_scene == "MENU" or curr_scene == "LOAD"):
-		change_level("")
+		change_level_fade_out("")
 	
 	if Input.is_action_just_pressed("screenshot"):
 		screenshot()
@@ -606,6 +607,16 @@ func completion_percentage(is_user_group : bool, user_current_page : int):
 	else:
 		stats[0] =  0
 	return stats.duplicate()
+
+
+func change_level_fade_out(destination : String):
+	var camera = null
+	if get_tree().current_scene.has_node("Camera"):
+		camera = get_tree().current_scene.get_node("Camera")
+	if camera:
+		camera.start_fade_out(destination, true)
+	else:
+		change_level(destination) 
 
 
 func change_level(destination : String, return_value : bool = false, check_dependencies : bool = true):

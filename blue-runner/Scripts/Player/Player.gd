@@ -291,8 +291,8 @@ func _physics_process(delta):
 				Global.level_completion[Global.current_level_location][_name] = [null, null, 1]
 #			print(Global.level_completion[Global.current_level_location][_name])
 		death_wait += 1
-		if death_wait >= 20:
-			Global.change_level("")
+		if death_wait >= 16:
+			Global.change_level_fade_out("")
 	elif end:
 		stylish = false
 	

@@ -36,5 +36,7 @@ func _on_area_entered(area):
 		set_deferred("monitoring", false)
 		
 		remove_wall = true
+		$wall.collision_layer = 0
+		$wall.collision_mask = 0
 		
 		area.queue_free()
