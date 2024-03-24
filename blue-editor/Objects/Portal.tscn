@@ -49,7 +49,7 @@ editor_properties = {
 "layer": "selected",
 "object_path": "res://Objects/Portal.tscn",
 "object_type": "normal",
-"rect": Rect2( 0, -32, 64, 64 ),
+"rect": Rect2( 0, 0, 64, 64 ),
 "unchangeable_properties": {
 "color": false,
 "order": false,

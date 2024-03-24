@@ -11,6 +11,7 @@ var song_name : String = ""
 var current_music : AudioStreamPlayer
 var last_music : AudioStreamPlayer
 
+var lock_music : bool = false
 
 var fading : float = 0.0
 var fast_fade : bool = false
@@ -64,7 +65,9 @@ func stop_music(fast : bool = true):
 
 
 func change_music(musicname : String, stop : bool = false, fast : bool = true):
-	if song_name == musicname:
+	if lock_music:
+		return
+	if song_name == musicname and not stop:
 		return
 	song_name = musicname
 	

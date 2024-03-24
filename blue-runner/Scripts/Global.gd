@@ -614,8 +614,8 @@ func change_level(destination : String, return_value : bool = false, check_depen
 	var destination_new : String
 	var check_if_unlocked : bool = true
 	
-#	print(current_level_location)
-#	print(destination)
+#	print("location: ", current_level_location)
+#	print("destination: ", destination)
 	
 	if destination.begins_with("!"):
 		destination = destination.substr(1, destination.length() - 1)
@@ -635,12 +635,11 @@ func change_level(destination : String, return_value : bool = false, check_depen
 		var level : int = 0
 		for i in range(19):
 			if level_group["levels"][i][0] == current_level:
-#				if level_group["levels"][i + 1][1]:
-#					if !check_unlock_requirements(level_group["levels"][i + 1][2][0], level_group["levels"][i + 1][2][1],level_group["levels"][i + 1][2][2]):
-#						break
+				if not is_level_unlocked(current_level_location, level_group["levels"][i + 1][0]):
+					break
 				if level_group["levels"][i + 1][0] == "*Level_Missing":
 					break
-				level = i + 13
+				level = i + 1
 				break
 		if level == 0:
 			destination_new = "res://Scenes/MENU.tscn"
@@ -649,21 +648,18 @@ func change_level(destination : String, return_value : bool = false, check_depen
 	elif destination.begins_with("*"):
 		destination_new = destination.trim_prefix("*")
 	elif destination.begins_with("@"):
-		var s = destination.find("*")
-		var parsed_location : String = parse_level_group_abreviation(destination.substr(0, s))
-		if not parsed_location.empty():
-			var parsed_level : String = destination.substr(s + 1, destination.length() - s - 1)
-#			print(parsed_level)
-			destination_new = parsed_location + parsed_level + ".tscn"
+		var parsed : Array = parse_level_group_abreviation(destination)
+		if not parsed.empty():
+			destination_new = parsed[0] + parsed[1] + ".tscn"
 		else:
 			destination_new = "res://Scenes/other/Level_Missing.tscn"
-			call_deferred("make_text_debug", "Cannot find group from abreviation: " + String(destination.substr(0, s)))
+			call_deferred("make_text_debug", "Cannot find group from abreviation: " + String(destination))
 	else:
 		destination_new = current_level_location + destination + ".tscn"
 	
 	var error = OK
 	
-#	print(destination_new)
+#	print("destination converted: ", destination_new)
 	
 	if check_dependencies:
 		var level_dat = load_dat_file(destination_new.left(destination_new.find_last(".")))
@@ -765,9 +761,22 @@ func unlock(unlock):
 		if unlock.begins_with("*"):
 			unlocked[unlock] = true
 		else:
-			if !unlocked.has(current_level_location):
-				unlocked[current_level_location] = []
-			unlocked[current_level_location][unlock] = true
+			var location : String
+			if unlock.begins_with("@"):
+				var parsed : Array = parse_level_group_abreviation(unlock)
+				if not parsed.empty():
+					location = parsed[0]
+					unlock = parsed[1]
+				else:
+					return
+			else:
+				location = current_level_location
+			
+			if !unlocked.has(location):
+				unlocked[location] = {}
+			unlocked[location][unlock] = true
+			
+#			print("unlocked ", location, " ", unlock)
 
 
 func check_unlock(unlock):
@@ -777,11 +786,22 @@ func check_unlock(unlock):
 				unlocked[unlock] = false
 			return unlocked[unlock]
 		else:
-			if !unlocked.has(current_level_location):
-				unlocked[current_level_location] = []
-			if !unlocked[current_level_location].has(unlock):
-				unlocked[current_level_location][unlock] = false
-			return unlocked[current_level_location][unlock]
+			var location : String
+			if unlock.begins_with("@"):
+				var parsed : Array = parse_level_group_abreviation(unlock)
+				if not parsed.empty():
+					location = parsed[0]
+					unlock = parsed[1]
+				else:
+					return false
+			else:
+				location = current_level_location
+			
+			if !unlocked.has(location):
+				unlocked[location] = {}
+			if !unlocked[location].has(unlock):
+				unlocked[location][unlock] = false
+			return unlocked[location][unlock]
 
 
 enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
@@ -842,7 +862,6 @@ func is_level_unlocked(group : String, level : String) -> bool:
 	if group == USER_LEVELS:
 		return true
 	
-	var is_user_group : bool = group == USER_LEVELS
 	var is_unlocked : bool = true
 	var unlock_requirements : Array
 	var lv_group : Dictionary
@@ -853,6 +872,7 @@ func is_level_unlocked(group : String, level : String) -> bool:
 		lv_group = load_group(group)
 	
 	if lv_group.empty():
+#		print(lv_group, " ", level_group)
 		return false
 	
 	var i = -1
@@ -861,18 +881,16 @@ func is_level_unlocked(group : String, level : String) -> bool:
 			i = j
 			break
 	if i == -1:
+#		print("side level, always unlocked")
 		return true
 	unlock_requirements = lv_group["levels"][i][2]
 	
-	if is_user_group:
-		is_unlocked = true
-	elif should_check_unlocks(group, level):
-		if is_unlocked and unlock_requirements[0] != 6:
+	if should_check_unlocks(group, level):
+		if unlock_requirements[0] != 6:
 			unlocked[group][level] = check_unlock_requirements(unlock_requirements[0], unlock_requirements[1], unlock_requirements[2])
 		is_unlocked = unlocked[group][level]
-	else:
-		is_unlocked = true
 	
+#	print(is_unlocked)
 	return is_unlocked
 
 
@@ -888,9 +906,11 @@ func showcase_unlock(text : String, texture : Texture) -> Node2D:
 	return show_unlock
 
 
-func parse_level_group_abreviation(abr : String) -> String:
+func parse_level_group_abreviation(abr : String, context : String = current_level_location) -> Array:
+	var p = abr.find("*")
+	
 #	print(group)
-	var group : String = abr.substr(1, abr.length() - 1)
+	var group : String = abr.substr(1, p - 1)
 #	print(group)
 	
 	var matches : Array = []
@@ -900,6 +920,7 @@ func parse_level_group_abreviation(abr : String) -> String:
 	
 	if matches.size() == 0:
 		group = ""
+		print("Can't find level group from: ", abr)
 	elif matches.size() == 1:
 		group = location_of_loaded_group(matches[0])
 	elif matches.size() > 1:
@@ -909,7 +930,7 @@ func parse_level_group_abreviation(abr : String) -> String:
 		matches = []
 		var best_s : int = 0
 		for i in range(previous_matches.size()):
-			var s : int = string_start_similarity(location_of_loaded_group(previous_matches[i]), current_level_location)
+			var s : int = string_start_similarity(location_of_loaded_group(previous_matches[i]), context)
 			if s > best_s:
 				matches = [previous_matches[i]]
 			if s == best_s:
@@ -922,8 +943,10 @@ func parse_level_group_abreviation(abr : String) -> String:
 		if matches.size() > 1:
 			group = ""
 	
-#	print(group)
-	return group
+	if not group.empty():
+		return [group, abr.substr(p + 1, abr.length() - p - 1)]
+	else:
+		return []
 
 
 func level_group_in_save(level_location : String, data : Dictionary = level_completion) -> bool:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=2]
+[gd_scene load_steps=51 format=2]
 
 [ext_resource path="res://Scripts/Level_Control.gd" type="Script" id=1]
 [ext_resource path="res://Objects/Tilesets/WaterWay.tres" type="TileSet" id=2]
@@ -10,6 +10,8 @@
 [ext_resource path="res://Objects/Barrier.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Objects/April/Magma.tscn" type="PackedScene" id=9]
 [ext_resource path="res://Objects/April/Icycle.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Objects/April/GolfDisk.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Objects/April/GolfCatcher.tscn" type="PackedScene" id=12]
 [ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=19]
 [ext_resource path="res://Objects/Finish.tscn" type="PackedScene" id=20]
 [ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=21]
@@ -468,6 +470,12 @@ icy = true
 
 [node name="Icycle" parent="objects_center" instance=ExtResource( 10 )]
 position = Vector2( 2752, 640 )
+
+[node name="GolfDisk" parent="objects_center" instance=ExtResource( 11 )]
+position = Vector2( 320, -192 )
+
+[node name="GolfCatcher" parent="objects_center" instance=ExtResource( 12 )]
+position = Vector2( 2432, 256 )
 
 [node name="decor_center" type="Node2D" parent="."]
 material = SubResource( 13 )
