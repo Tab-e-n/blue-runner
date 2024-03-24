@@ -1,7 +1,7 @@
 # 2.0.B THE BEST UPDATE
 
-This is the BEST UPDATE. I have hit my _PEAK_.__ There will be no need to update the game anymore__. This is the_ last update_
-this GAME will RECIEVE for a while because it is__ the__ BEST. ___ I am the bestest videogamermaker___.
+ - This is the BEST UPDATE. I have hit my _PEAK_. __There will be no need to update the game anymore__. This is the _last update_
+   this GAME will RECIEVE for a while because it is __the__ BEST. ___I am the bestest videogamermaker___.
 
 <details><summary><h2>OUTSIDE OF GAME BUT GAME RELEVANT</h2></summary><p>
 
@@ -26,8 +26,8 @@ this GAME will RECIEVE for a while because it is__ the__ BEST. ___ I am the best
 </p></details>
 <details><summary><h2>VISUALS</h2></summary><p>
 
- - SR is nolonger in the 4:3 aspect ratio, but in the glorious___ 5:3 aspect ratio___!
- - The game now sports a__ new visual style__, i worked REALLY HARD on it, i hope you like it.
+ - SR is nolonger in the 4:3 aspect ratio, but in the glorious ___5:3 aspect ratio___!
+ - The game now sports a __new visual style__, i worked REALLY HARD on it, i hope you like it.
  - If you ever felt, like you can't see S1 or XT9 because they blend into the bisexualy lit 
    enviroment too well, then you can enable outlines to make them more visible.
  - Also NEW TREES OMG I LOVE THERES!!! THEY ARE SO COOL! (_EVEN COOLER THAN SHIFTING AROUND THE
@@ -53,7 +53,7 @@ this GAME will RECIEVE for a while because it is__ the__ BEST. ___ I am the best
 <details><summary><h2>FIXES AND CHANGES</h2></summary><p>
 
  - I have fixed all bugs. They are all gone. If you ever felt, like you found a bug, don't send it to me, it has already been fixed. I got them all. Bang Bang.
- - The___ feature___ of being able to walljump of sawblades has been made more consistent.
+ - The ___feature___ of being able to walljump of sawblades has been made more consistent.
  - Fixed herobrine.
 
 </p></details>
