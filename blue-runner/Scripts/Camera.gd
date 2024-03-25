@@ -105,9 +105,8 @@ func _physics_process(_delta):
 			$Fade.visible = false
 			fade_in = false
 		elif fade_in_timer > fade_in_darkness_lenght:
-			var max_fade : float = fade_in_end
 			var fade_timer : float = fade_in_timer - fade_in_darkness_lenght
-			$Fade.color.a = (max_fade - fade_timer) / max_fade
+			$Fade.color.a = (fade_in_end - fade_timer) / fade_in_end
 		else:
 			$Fade.color.a = 0.0
 	
@@ -120,21 +119,20 @@ func _physics_process(_delta):
 			else: 
 				Global.change_level(tele_destination)
 		elif fade_out_timer < fade_out_end:
-			var max_fade : float = fade_out_end
-			$Fade.color.a = fade_out_timer / max_fade
+			$Fade.color.a = fade_out_timer / fade_out_end
 		else:
 			$Fade.color.a = 1.0
 			
 		# warning-ignore:return_value_discarded
 	
 	if !end_zoom:
-		position.x = int(cam_target.position.x / 2) * 2
+		position.x = int(cam_target.position.x * 0.5) * 2
 		if position.x < limit_x.x:
 			position.x = limit_x.x
 		if position.x > limit_x.y:
 			position.x = limit_x.y
 		
-		position.y = int(cam_target.position.y / 2) * 2
+		position.y = int(cam_target.position.y * 0.5) * 2
 		if position.y < limit_y.x:
 			position.y = limit_y.x
 		if position.y > limit_y.y:
@@ -216,10 +214,12 @@ func end_zoom_in(target : Node2D, tele, timer : float, par : float):
 	$finish/anim.play("shift")
 
 
-func start_fade_out(tele : String = "*MENU", reset_fade : bool = false):
+func start_fade_out(tele : String = "*MENU", reset_fade : bool = false, fast : bool = false):
 	if reset_fade:
-		fade_out_end = 8
+		fade_out_end = FADE_IN_OUT_DEFAULT
 		fade_out_darkness_lenght = 0
+	if fast:
+		fade_out_end *= 0.5
 	fade_out = true
 	$Fade.visible = true
 	tele_destination = tele

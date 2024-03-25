@@ -21,7 +21,7 @@ var editor_properties : Dictionary = {
 }
 
 export var boost_strenght : int = 0
-export var overwrite_momentum : bool = false
+export var overwrite_momentum : bool = false setget overwrite_momentum_set, overwrite_momentum_get
 
 const CHARACTER_GRAVITIES : Dictionary = {
 	"S1" : 40,
@@ -30,6 +30,19 @@ const CHARACTER_GRAVITIES : Dictionary = {
 var current_gravity : int = 0
 var grav_char : Sprite = Sprite.new()
 var grav_timer : int = 0
+
+
+func overwrite_momentum_set(value):
+	overwrite_momentum = value
+	if overwrite_momentum:
+		$mushroom.texture = preload("res://Visual/mushroom_overwrite.png")
+	else:
+		$mushroom.texture = preload("res://Visual/mushroom.png")
+
+
+func overwrite_momentum_get() -> bool:
+	return overwrite_momentum
+
 
 func _ready():
 	call_deferred("_selected_process", 0)

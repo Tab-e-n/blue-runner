@@ -51,7 +51,7 @@ tracks/2/keys = {
 "values": [ Color( 0.74902, 0.74902, 0.74902, 1 ), Color( 1, 1, 1, 1 ), Color( 0.74902, 0.74902, 0.74902, 1 ) ]
 }
 tracks/3/type = "value"
-tracks/3/path = NodePath("mushroom_star:rotation_degrees")
+tracks/3/path = NodePath("mushroom_star1:rotation_degrees")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/imported = false
@@ -63,7 +63,7 @@ tracks/3/keys = {
 "values": [ 90.0, 180.0 ]
 }
 tracks/4/type = "value"
-tracks/4/path = NodePath("mushroom_star:scale")
+tracks/4/path = NodePath("mushroom_star1:scale")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/imported = false
@@ -75,7 +75,7 @@ tracks/4/keys = {
 "values": [ Vector2( 1e-05, 1e-05 ), Vector2( 1e-05, 1e-05 ), Vector2( 1, 1 ), Vector2( 1e-05, 1e-05 ) ]
 }
 tracks/5/type = "value"
-tracks/5/path = NodePath("mushroom_star:visible")
+tracks/5/path = NodePath("mushroom_star1:visible")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/imported = false
@@ -258,33 +258,43 @@ self_modulate = Color( 0.74902, 0.74902, 0.74902, 1 )
 texture = ExtResource( 2 )
 offset = Vector2( 0, -40 )
 
-[node name="mushroom_star" type="Sprite" parent="."]
+[node name="mushroom_star1" type="Sprite" parent="."]
+visible = false
+modulate = Color( 0.894118, 0.654902, 0.0705882, 1 )
 position = Vector2( 43, -40 )
-rotation = 1.5708
+rotation = 3.14159
 scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 3 )
 
 [node name="mushroom_star2" type="Sprite" parent="."]
+visible = false
+modulate = Color( 0.894118, 0.654902, 0.0705882, 1 )
 position = Vector2( 1.19209e-07, -29 )
-rotation = 0.523599
+rotation = 2.0944
 scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 3 )
 
 [node name="mushroom_star3" type="Sprite" parent="."]
+visible = false
+modulate = Color( 0.894118, 0.654902, 0.0705882, 1 )
 position = Vector2( -30, -33 )
-rotation = -1.0472
+rotation = -2.61799
 scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 3 )
 
 [node name="mushroom_star4" type="Sprite" parent="."]
+visible = false
+modulate = Color( 0.894118, 0.654902, 0.0705882, 1 )
 position = Vector2( 25, -33 )
-rotation = -2.0944
+rotation = -3.66519
 scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 3 )
 
 [node name="mushroom_star5" type="Sprite" parent="."]
+visible = false
+modulate = Color( 0.894118, 0.654902, 0.0705882, 1 )
 position = Vector2( -45, -40 )
-rotation = 2.61799
+rotation = 4.18879
 scale = Vector2( 1e-05, 1e-05 )
 texture = ExtResource( 3 )
 

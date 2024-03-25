@@ -18,6 +18,12 @@ func _ready():
 	boost.y = round(boost_strenght * cos(rotation) * -1)
 	boost.x = round(boost_strenght * sin(rotation))
 	$anim.playback_speed += cos(position.x + position.y)
+	
+	if overwrite_momentum:
+		$mushroom.texture = preload("res://Visual/mushroom_overwrite.png")
+		for i in range(5):
+			get_node("mushroom_star" + String(i + 1)).modulate = Color("7faf3c")
+	
 
 
 func _physics_process(_delta):

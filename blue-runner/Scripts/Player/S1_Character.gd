@@ -10,7 +10,6 @@ const GRAVITY_UP : int = 26
 const GRAVITY_DOWN : int = 40
 const GRAVITY_WALL_UP : int = 13
 const GRAVITY_WALL_DOWN : int = 20
-const MAX_JUMP_AMOUNT = 1
 const JUMP_POWER : int = 800
 
 const MAX_SPEED : int = 850
@@ -28,13 +27,15 @@ export var particle_star : Color = Color(0.05, 0.9, 0.95, 1)
 var particle_disable : int = 0
 
 var jumping : bool = false
-var jump_amount : int = MAX_JUMP_AMOUNT
+export var max_jump_amount : int = 1
+var jump_amount : int = max_jump_amount
 
 var sliding : int = 0
 var force_slide : bool = false
 var super_slide : bool = false
 var dropping : int = 0
 var saved_momentum : float = 0
+var previous_speeds : Array = [0, 0, 0, 0]
 var drop_grace_turn : bool = false
 
 var last_anim : String = "Default"
@@ -56,6 +57,8 @@ func _ready():
 
 
 func _physics_process(_delta):
+	save_speed_to_previous(player.momentum.x)
+	
 	player.collisions[1].position = $col_1.position
 	player.collisions[1].scale = $col_1.scale
 	player.collisions[1].disabled = !$col_1.visible
@@ -100,7 +103,7 @@ func _physics_process(_delta):
 				player.momentum.y += GRAVITY_WALL_DOWN
 		if player.state == "ground":
 			player.start_ground_buffer()
-			jump_amount = MAX_JUMP_AMOUNT
+			jump_amount = max_jump_amount
 			
 			if player.momentum.x != 0:
 				var previous_direction : float = sign(player.momentum.x)
@@ -164,7 +167,7 @@ func _physics_process(_delta):
 				else:
 					drop_grace_turn = false
 				dropping = 15
-				saved_momentum = abs(player.momentum.x)
+				saved_momentum = abs(fastest_previous_speed())
 			
 		if player.special_buffer == 1 and dropping > 0 and drop_grace_turn:
 			player.face_towards(player.get_horizontal_axis())
@@ -216,11 +219,11 @@ func _physics_process(_delta):
 		# JUMPING
 		player.decrement_ground_buffer()
 		if player.ground_buffer == 1:
-			jump_amount = MAX_JUMP_AMOUNT - 1
+			jump_amount = max_jump_amount - 1
 		
 		if player.is_on_wall() and !player.punted:
 			player.momentum.x = 0
-			jump_amount = MAX_JUMP_AMOUNT - 1
+			jump_amount = max_jump_amount - 1
 		
 		player.collision_mask = 0b11
 		
@@ -228,18 +231,18 @@ func _physics_process(_delta):
 			player.decrement_jump_buffer()
 			player.ground_buffer = 0
 			if player.move_and_collide(Vector2(0,4), false, true, true) or sliding > 0:
-				jump_amount = MAX_JUMP_AMOUNT - 1
+				jump_amount = max_jump_amount - 1
 				jump(JUMP_POWER)
 				particle_summon(Vector2(0, 0), 0)
 			elif player.move_and_collide(Vector2(4,0), false, true, true):
-				jump_amount = MAX_JUMP_AMOUNT - 1
+				jump_amount = max_jump_amount - 1
 				player.momentum.x = int(-MAX_SPEED * 0.66)
 				player.facing = "left"
 				# warning-ignore:narrowing_conversion
 				jump(JUMP_POWER * 1.075)
 				particle_summon(Vector2(12, -64), -1.6)
 			elif player.move_and_collide(Vector2(-4,0), false, true, true):
-				jump_amount = MAX_JUMP_AMOUNT - 1
+				jump_amount = max_jump_amount - 1
 				player.momentum.x = int(MAX_SPEED * 0.66)
 				player.facing = "right"
 				# warning-ignore:narrowing_conversion
@@ -260,7 +263,7 @@ func _physics_process(_delta):
 		# warning-ignore:return_value_discarded
 		player.move_player_character()
 		
-		if player.is_on_floor() or player.move_and_collide(Vector2(0,1), false, true, true):
+		if player.is_on_floor() or (player.move_and_collide(Vector2(0,1), false, true, true) and dropping == 0):
 			player.state = "ground"
 		
 		# ANIMATION
@@ -394,3 +397,17 @@ func _on_boosted(boost):
 
 func enter_anim_end():
 	player.enter_anim_end()
+
+
+func save_speed_to_previous(speed : float):
+	for i in range(previous_speeds.size() - 1):
+		previous_speeds[i + 1] = previous_speeds[i]
+	previous_speeds[0] = speed
+
+
+func fastest_previous_speed() -> float:
+	var speed = 0
+	for i in range(previous_speeds.size()):
+		if abs(previous_speeds[i]) > abs(speed):
+			speed = previous_speeds[i]
+	return speed
