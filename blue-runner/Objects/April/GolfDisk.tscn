@@ -5,10 +5,10 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 32, 8 )
 
-[sub_resource type="RectangleShape2D" id=5]
+[sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 4, 4 )
 
-[sub_resource type="RectangleShape2D" id=6]
+[sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 4, 8 )
 
 [node name="GolfDisk" type="Area2D"]
@@ -32,7 +32,7 @@ collision_mask = 15
 
 [node name="coll" type="CollisionShape2D" parent="check_tl"]
 position = Vector2( -28, -4 )
-shape = SubResource( 5 )
+shape = SubResource( 2 )
 
 [node name="check_tr" type="Area2D" parent="."]
 position = Vector2( 0, -8 )
@@ -41,7 +41,7 @@ collision_mask = 15
 
 [node name="coll" type="CollisionShape2D" parent="check_tr"]
 position = Vector2( 28, -4 )
-shape = SubResource( 5 )
+shape = SubResource( 2 )
 
 [node name="check_bl" type="Area2D" parent="."]
 position = Vector2( 0, -8 )
@@ -50,7 +50,7 @@ collision_mask = 15
 
 [node name="coll" type="CollisionShape2D" parent="check_bl"]
 position = Vector2( -28, 4 )
-shape = SubResource( 5 )
+shape = SubResource( 2 )
 
 [node name="check_br" type="Area2D" parent="."]
 position = Vector2( 0, -8 )
@@ -59,7 +59,7 @@ collision_mask = 15
 
 [node name="coll" type="CollisionShape2D" parent="check_br"]
 position = Vector2( 28, 4 )
-shape = SubResource( 5 )
+shape = SubResource( 2 )
 
 [node name="check_c" type="Area2D" parent="."]
 position = Vector2( 0, -8 )
@@ -67,5 +67,5 @@ collision_layer = 15
 collision_mask = 15
 
 [node name="coll" type="CollisionShape2D" parent="check_c"]
-shape = SubResource( 6 )
+shape = SubResource( 3 )
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

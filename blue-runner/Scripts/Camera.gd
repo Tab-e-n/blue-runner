@@ -219,7 +219,7 @@ func start_fade_out(tele : String = "*MENU", reset_fade : bool = false, fast : b
 		fade_out_end = FADE_IN_OUT_DEFAULT
 		fade_out_darkness_lenght = 0
 	if fast:
-		fade_out_end *= 0.5
+		fade_out_end = int(fade_out_end * 0.5)
 	fade_out = true
 	$Fade.visible = true
 	tele_destination = tele

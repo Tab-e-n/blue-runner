@@ -815,15 +815,19 @@ func check_unlock(unlock):
 			return unlocked[location][unlock]
 
 
-enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
-func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
+enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER, UNLOCK_GROUP_BEAT, UNLOCK_GROUP_PAR}
+func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2, context : String = current_level_location):
 	
 	if unlock_type == UNLOCK_NEVER:
 		return false
 	
-	if unlock_type == UNLOCK_BEAT or unlock_type == UNLOCK_PAR or unlock_type == UNLOCK_COMPLETION:
-#		if parameter_1.begins_with("@"):
-#			parameter_1 = parse_level_group_abreviation(parameter_1)
+	if unlock_type in [UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_GROUP_BEAT, UNLOCK_GROUP_PAR]:
+		if parameter_1.empty():
+			parameter_1 = context
+		if parameter_1.begins_with("@"):
+			parameter_1 = parse_level_group_abreviation(parameter_1, context)
+	
+	if unlock_type in [UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION]:
 		if not level_completion.has(parameter_1):
 			return false
 	
@@ -855,6 +859,33 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
 			if i.begins_with(parameter_1):
 				collectible_amount += level_completion["*collectibles"][i].size()
 		if parameter_2 > collectible_amount:
+			return false
+	
+	if unlock_type in [UNLOCK_GROUP_BEAT, UNLOCK_GROUP_PAR]:
+		print(parameter_1)
+		var level_amount : int = 0
+		for group in level_completion.keys():
+			var lv_group = {}
+			if group.begins_with(parameter_1):
+				lv_group = load_group(group)
+			else:
+#				print("lv_group doesn't meet param1")
+				continue # I am using continues so the code doesn't go into the stratosphere ->
+			if lv_group.empty():
+#				print("lv_group didn't load")
+				continue
+			for i in range(20):
+				var level = lv_group["levels"][i][0]
+				if not level_completion[group].has(level):
+					continue
+				if level_completion[group][level][0] != null:
+					if unlock_type == UNLOCK_GROUP_BEAT:
+#						print("beat")
+						level_amount += 1
+					elif level_completion[group][level][1] != null:
+						if level_completion[group][level][0] < level_completion[group][level][1]:
+							level_amount += 1
+		if parameter_2 > level_amount:
 			return false
 	
 	if unlock_type == UNLOCK_CUSTOM:
@@ -898,7 +929,7 @@ func is_level_unlocked(group : String, level : String) -> bool:
 	
 	if should_check_unlocks(group, level):
 		if unlock_requirements[0] != 6:
-			unlocked[group][level] = check_unlock_requirements(unlock_requirements[0], unlock_requirements[1], unlock_requirements[2])
+			unlocked[group][level] = check_unlock_requirements(unlock_requirements[0], unlock_requirements[1], unlock_requirements[2], group)
 		is_unlocked = unlocked[group][level]
 	
 #	print(is_unlocked)
@@ -983,7 +1014,7 @@ func check_level_group_unlocked(level_location : String) -> bool:
 
 
 func check_loaded_group_unlocked(index : int) -> bool:
-	return check_unlock_requirements(loaded_level_groups[index][5][0], loaded_level_groups[index][5][1], loaded_level_groups[index][5][2])
+	return check_unlock_requirements(loaded_level_groups[index][5][0], loaded_level_groups[index][5][1], loaded_level_groups[index][5][2], location_of_loaded_group(index))
 
 
 func location_of_loaded_group(index : int, data : Array = loaded_level_groups) -> String:

@@ -445,8 +445,7 @@ func collision_default_effects(type : int, collider):
 	# Hurt
 	if bit_include(type, 0b0100):
 		if not (bit_include(type, 0b0010) and jump_buffer != 0):
-			dead = true
-			deny_input = true
+			die()
 	
 	# Breakable
 	if bit_include(type, 0b0011) and break_breakables:
@@ -471,6 +470,11 @@ func bit_match(num : int, pattern : int) -> bool:
 
 func bit_include(num : int, pattern : int) -> bool:
 	return num & pattern == pattern
+
+
+func die():
+	dead = true
+	deny_input = true
 
 
 func jump(jump_power : int):

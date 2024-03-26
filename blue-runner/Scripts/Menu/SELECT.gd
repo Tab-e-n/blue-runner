@@ -776,9 +776,9 @@ func check_character_unlocks():
 				var parameter_2 = Global.loaded_characters[place][character][2]
 				
 				if unlock_type == 5:
-					check = Global.check_unlock_requirements(unlock_type, parameter_1, place)
+					check = Global.check_unlock_requirements(unlock_type, parameter_1, place, place)
 				else:
-					check = Global.check_unlock_requirements(unlock_type, parameter_1, parameter_2)
+					check = Global.check_unlock_requirements(unlock_type, parameter_1, parameter_2, place)
 				
 				showcase = check
 			

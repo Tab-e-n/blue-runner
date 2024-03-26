@@ -37,8 +37,6 @@ var level_group_dat : Dictionary = {
 	\"ui_color\" : [0.02, 0.9, 0.63],
 }
 
-enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
-
 func _ready():
 	for i in range(20): level_group_dat[\"levels\"][i] = [\"*Level_Missing\", true, [0, \"\", \"\"]]
 	
@@ -182,7 +180,7 @@ func save_current_group(dir, defaults : bool = false):
 		
 		level_group_dat[\"unlock\"][0] = $settings/unlock_type.selected
 		level_group_dat[\"unlock\"][1] = $\"settings/1_text\".text
-		if level_group_dat[\"unlock\"][0] == UNLOCK_COMPLETION or level_group_dat[\"unlock\"][0] == UNLOCK_BONUS:
+		if data.unlock_numerical_para2(level_group_dat[\"unlock\"][0]):
 			level_group_dat[\"unlock\"][2] = $\"settings/2_number\".value
 		else:
 			level_group_dat[\"unlock\"][2] = $\"settings/2_text\".text
@@ -259,7 +257,7 @@ func load_group(dir):
 		if temp.has(\"unlock\"):
 			data.changed_unlock_type(temp[\"unlock\"][0], $settings/text_edit, $settings/unlock_type, $\"settings/1_text\", $\"settings/2_text\", $\"settings/2_number\", \"\\n\")
 			$\"settings/1_text\".text = temp[\"unlock\"][1]
-			if temp[\"unlock\"][0] == UNLOCK_COMPLETION or temp[\"unlock\"][0] == UNLOCK_BONUS:
+			if data.unlock_numerical_para2(temp[\"unlock\"][0]):
 				$\"settings/2_number\".value = temp[\"unlock\"][2]
 			else:
 				$\"settings/2_text\".text = temp[\"unlock\"][2]
@@ -419,7 +417,7 @@ func save_level_dat():
 		#level_group_dat[\"levels\"][current_level][1] = $Edits/locked.pressed
 		
 		level_group_dat[\"levels\"][current_level][2] = [$level_edits/level_unlock_type.selected, $\"level_edits/level_1_text\".text, \"\"]
-		if $level_edits/level_unlock_type.selected == UNLOCK_COMPLETION or $level_edits/level_unlock_type.selected == UNLOCK_BONUS:
+		if data.unlock_numerical_para2($level_edits/level_unlock_type.selected):
 			level_group_dat[\"levels\"][current_level][2][2] = $\"level_edits/level_2_number\".value
 		else:
 			level_group_dat[\"levels\"][current_level][2][2] = $\"level_edits/level_2_text\".text
@@ -472,7 +470,7 @@ func load_level_dat(level : int, values_only : bool = false):
 		locked_toggled(level_group_dat[\"levels\"][level][1], true)
 		
 		$\"level_edits/level_1_text\".text = level_group_dat[\"levels\"][current_level][2][1]
-		if $level_edits/level_unlock_type.selected == UNLOCK_COMPLETION or $level_edits/level_unlock_type.selected == UNLOCK_BONUS:
+		if data.unlock_numerical_para2($level_edits/level_unlock_type.selected):
 			$\"level_edits/level_2_number\".value = level_group_dat[\"levels\"][current_level][2][2] 
 		else:
 			$\"level_edits/level_2_text\".text = level_group_dat[\"levels\"][current_level][2][2] 
@@ -770,7 +768,7 @@ margin_right = 480.0
 margin_bottom = 96.0
 text = "Always Unlocked"
 clip_text = true
-items = [ "Always Unlocked", null, true, 1, null, "Beat Level", null, false, 2, null, "Par Level", null, false, 3, null, "Group Completion", null, false, 4, null, "Bonus Amount", null, false, 5, null, "Custom Unlock", null, false, 6, null, "Level Unlock", null, false, 6, null ]
+items = [ "Always Unlocked", null, true, 1, null, "Beat Level", null, false, 2, null, "Par Level", null, false, 3, null, "Group Completion", null, false, 4, null, "Bonus Amount", null, false, 5, null, "Custom Unlock", null, false, 6, null, "Level Unlock", null, false, 6, null, "Beaten Levels", null, false, 7, null, "Pared Levels", null, false, 8, null ]
 selected = 0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -1002,7 +1000,7 @@ margin_bottom = -32.0
 disabled = true
 text = "Always Unlocked"
 clip_text = true
-items = [ "Always Unlocked", null, false, 0, null, "Beat Level", null, false, 1, null, "Par Level", null, false, 2, null, "Group Completion", null, false, 3, null, "Bonus Amount", null, false, 4, null, "Custom Unlock", null, false, 5, null, "Never Unlocked", null, false, 6, null ]
+items = [ "Always Unlocked", null, false, 0, null, "Beat Level", null, false, 1, null, "Par Level", null, false, 2, null, "Group Completion", null, false, 3, null, "Bonus Amount", null, false, 4, null, "Custom Unlock", null, false, 5, null, "Never Unlocked", null, false, 6, null, "Beaten Levels", null, false, 7, null, "Pared Levels", null, false, 8, null ]
 selected = 0
 __meta__ = {
 "_edit_use_anchors_": false
