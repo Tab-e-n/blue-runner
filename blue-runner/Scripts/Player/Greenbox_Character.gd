@@ -25,6 +25,8 @@ var frame_skip : bool = true
 var jumping : bool = false
 var punted : bool = false
 
+var jump_buffer : int = 0
+
 
 func _ready():
 	player.collisions[1].position = $col_1.position
@@ -47,14 +49,14 @@ func _physics_process(delta):
 	frame_skip = not frame_skip
 	
 	if player.is_jump_input_just_pressed(): # Check Jump Key
-		player.jump_buffer = player.INPUT_BUFFER_FRAMES 
+		jump_buffer = player.INPUT_BUFFER_FRAMES 
 	if Input.is_action_just_pressed("special"):
 		player.special_buffer = player.INPUT_BUFFER_FRAMES
 	
 	if player.ground_buffer > 0:
 		player.ground_buffer -= 1
-	if player.jump_buffer > 0:
-		player.jump_buffer -= 1
+	if jump_buffer > 0:
+		jump_buffer -= 1
 	if player.special_buffer > 0:
 		player.special_buffer -= 1
 	if attack_timer > 0:
@@ -141,14 +143,14 @@ func _physics_process(delta):
 				momentum.y = TERMINAL_VELOCITY - air_break
 			
 			# jump
-			if player.jump_buffer > 0: # if jump key pressed
+			if jump_buffer > 0: # if jump key pressed
 				if player.ground_buffer > 0: # If you are/were on the ground
 					momentum.y = -JUMP_STRENGH # Jump
 					attack_timer = 0
 					can_attack = true
 					player.play_sound("GreenboxJump")
 					player.ground_buffer = 0
-					player.jump_buffer = 0
+					jump_buffer = 0
 					jumping = true
 				else:
 					if wall_jump != 0:  # If you are able to wall jump
@@ -158,7 +160,7 @@ func _physics_process(delta):
 						can_attack = true
 						player.play_sound("GreenboxJump")
 						player.ground_buffer = 0
-						player.jump_buffer = 0
+						jump_buffer = 0
 						jumping = true
 			if player.special_buffer > 0 and can_attack and player.ground_buffer == 0: # else if you can, attack.
 				player.special_buffer = 0
@@ -242,13 +244,13 @@ func _on_attack_connected(body):
 func _on_attack_connected_area(area):
 	if area.has_method("_on_body_entered"):
 		area._on_body_entered(player)
-	if area.has_method("force_boost"):
-		area.force_boost()
+	if area.has_method("apply_effect"):
+		area.apply_effect(player)
 
 
 func attack_successful():
 	momentum.y = -BOUNCE_STRENGH
 	attack.get_node("coll").call_deferred("disabled", true)
 #			attack_timer = 0
-	player.jump_buffer = 0
+	jump_buffer = 0
 	can_attack = true

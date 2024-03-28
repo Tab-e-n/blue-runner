@@ -862,7 +862,7 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2, cont
 			return false
 	
 	if unlock_type in [UNLOCK_GROUP_BEAT, UNLOCK_GROUP_PAR]:
-		print(parameter_1)
+#		print(parameter_1)
 		var level_amount : int = 0
 		for group in level_completion.keys():
 			var lv_group = {}
@@ -1382,11 +1382,6 @@ func replay_filename(new_name : String, create_dir : bool):
 				directory.make_dir_recursive("user://SRReplays/mods/" + folder_path)
 	
 	return replay_name
-
-
-func load_level_dat_file(filename_ : String, _official : bool = true):
-	print(get_stack())
-	return load_dat_file(filename_)
 
 
 func load_dat_file(filename_ : String):

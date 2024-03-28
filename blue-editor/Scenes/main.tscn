@@ -556,11 +556,7 @@ func _process(_delta):
 			pause_level_input = false
 			level_input.pressed = false
 			$GUI/Hint/hint.pressed = false
-	
-	if unpause_level_input:
-		pause_level_input = false
-		unpause_level_input = false
-	
+		
 	elif edit_mode:
 		var edit_node
 		if place_selected_object.editor_properties[\"object_type\"] != \"bg\":
@@ -591,12 +587,12 @@ func _process(_delta):
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_just_released(\"mouse_right\"):
 			if edit_node.has_method(\"edit_right_released\"):
 				edit_node.call(\"edit_right_released\", mouse_pos, $GUI/cursor.position, level.scale)
-	
+		
 	elif bucket_mode:
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
 			if Input.is_action_just_pressed(\"mouse_left\"):
 				level_bucket_fill_tiles(place_selected_tile)
-	
+		
 	elif transform_mode:
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\") and $GUI/Edit_Items/Panel/other/scale_y.editable:
 			if Input.is_action_just_pressed(\"mouse_left\"):
@@ -629,7 +625,7 @@ func _process(_delta):
 			#if abs(rotation) > 360:
 			#	rotation -= 360 * sign(rotation)
 			$GUI/Edit_Items/Panel/other/rotation.value = rotation
-	
+		
 	elif place_current_mode == PLACEMODE_MOVE or Input.is_action_pressed(\"3\"):
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
 			if Input.is_action_just_pressed(\"mouse_left\"):
@@ -644,12 +640,12 @@ func _process(_delta):
 				level.scale.y = 10
 			level.scale.x = level.scale.y
 			level.position = level_position_hinge * (level.scale / level_scale_hinge)
-	
+		
 	elif level_layer_visible[place_current_layer] == false:
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
 			if Input.is_action_just_pressed(\"mouse_left\"):
 				done_action(\"you cannot edit invisible layers\", \"#5d1f31\")
-	
+		
 	elif place_current_mode == PLACEMODE_PAINT:
 		if (level_input.pressed or not $GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
 			if Input.is_action_just_pressed(\"mouse_left\"):
@@ -662,7 +658,7 @@ func _process(_delta):
 					done_action(\"paint tiles\", \"#06e6a1\") # If i do undo functionality this should change
 			if place_current_tab == PLACE_TILES:
 				level_draw_tile_complex(place_selected_tile, level_mouse_position)
-	
+		
 	elif place_current_mode == PLACEMODE_ERASER:
 		if (level_input.pressed or not $GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
 			if Input.is_action_just_pressed(\"mouse_left\") :
@@ -673,7 +669,7 @@ func _process(_delta):
 					done_action(\"erase tiles\", \"#923155\")
 			if place_current_tab == PLACE_TILES:
 				level_draw_tile_complex(-1, level_mouse_position)
-	
+		
 	elif place_current_mode == PLACEMODE_COG:
 		if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_left\"):
 			if Input.is_action_just_pressed(\"mouse_left\"):
@@ -689,6 +685,10 @@ func _process(_delta):
 				else:
 					level_pick_closest_item(Input.is_action_pressed(\"shift\"))
 				level_input.pressed = false
+	
+	if unpause_level_input:
+		pause_level_input = false
+		unpause_level_input = false
 	
 	if (level_input.pressed or !$GUI.visible) and Input.is_action_pressed(\"mouse_right\") and !(transform_mode or edit_mode):
 		if Input.is_action_just_pressed(\"mouse_right\"):
