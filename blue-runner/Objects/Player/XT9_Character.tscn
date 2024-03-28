@@ -7422,13 +7422,8 @@ tracks/44/keys = {
 
 [node name="Character" type="Node2D"]
 use_parent_material = true
-position = Vector2( 0, -16 )
 scale = Vector2( 0.5, 0.5 )
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_horizontal_guides_": [ -131.0, -15.0 ],
-"_edit_vertical_guides_": [ -38.0, 78.0 ]
-}
 trail_color = Color( 0.572549, 0.192157, 0.333333, 1 )
 UNICOLOR_COLOR = Color( 0.8, 0.427451, 0.670588, 1 )
 particle = ExtResource( 1 )

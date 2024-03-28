@@ -1,0 +1,53 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Visual/BG/bg_clouds.png" type="Texture" id=1]
+[ext_resource path="res://Scripts/BG_Greenbox_Hill.gd" type="Script" id=2]
+[ext_resource path="res://Visual/BG/bg_mountains.png" type="Texture" id=3]
+
+[node name="BG" type="Node2D"]
+z_index = -100
+script = ExtResource( 2 )
+bg_color = Color( 0.262745, 0.431373, 0.552941, 1 )
+
+[node name="back" type="Polygon2D" parent="."]
+color = Color( 0.278431, 0.505882, 0.682353, 1 )
+polygon = PoolVector2Array( 1280, 768, -1280, 768, -1280, -768, 1280, -768 )
+
+[node name="bg_mountains1" type="Sprite" parent="."]
+self_modulate = Color( 0.196078, 0.337255, 0.501961, 1 )
+position = Vector2( 0, 512 )
+texture = ExtResource( 3 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 4096, 1024 )
+
+[node name="bg_clouds1" type="Sprite" parent="."]
+self_modulate = Color( 0.196078, 0.337255, 0.501961, 1 )
+position = Vector2( 0, -768 )
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 0, -1024, 4096, 1216 )
+
+[node name="bg_mountains2" type="Sprite" parent="."]
+self_modulate = Color( 0.0941176, 0.211765, 0.360784, 1 )
+position = Vector2( 0, 512 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 3 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 4096, 1024 )
+
+[node name="bg_clouds2" type="Sprite" parent="."]
+self_modulate = Color( 0.0941176, 0.211765, 0.360784, 1 )
+position = Vector2( 0, -1200 )
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 1 )
+flip_h = true
+region_enabled = true
+region_rect = Rect2( 0, -1024, 4096, 1216 )
+
+[node name="bg_clouds3" type="Sprite" parent="."]
+self_modulate = Color( 0.0431373, 0.0784314, 0.231373, 1 )
+position = Vector2( 0, -1728 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 0, -1024, 4096, 1216 )

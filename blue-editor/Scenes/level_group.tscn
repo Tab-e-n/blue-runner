@@ -1055,7 +1055,6 @@ margin_bottom = -32.0
 disabled = true
 text = "none"
 clip_text = true
-items = [ "none", null, false, 0, null ]
 selected = 0
 __meta__ = {
 "_edit_use_anchors_": false

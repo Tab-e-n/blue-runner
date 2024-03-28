@@ -225,6 +225,9 @@ func _physics_process(_delta):
 			player.momentum.x = 0
 			jump_amount = max_jump_amount - 1
 		
+		if player.punted:
+			jump_amount = max_jump_amount - 1
+		
 		player.collision_mask = 0b11
 		
 		if player.should_jump() and !force_slide:
@@ -252,6 +255,7 @@ func _physics_process(_delta):
 		if jump_amount > 0 and player.jump_buffer == 1:
 			jump_amount -= 1
 			jump(JUMP_POWER)
+			player.make_speed_ring(PI * 1.5, Vector2(0, 0), 0.5)
 			#player.jump_buffer = 0
 		
 		if !player.is_jump_input_pressed() and jumping and !player.punted and sliding == 0:

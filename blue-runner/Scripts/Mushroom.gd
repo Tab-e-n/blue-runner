@@ -13,6 +13,9 @@ var last_playback_speed : float = 0
 
 
 func _ready():
+	if level.unicolor_active:
+		for i in range(5):
+			get_node("mushroom_star" + String(i + 1)).modulate = Color.white
 	if boost_strenght == 0:
 		boost_strenght = int(scale.y * 1200)
 	boost.y = round(boost_strenght * cos(rotation) * -1)

@@ -236,6 +236,13 @@ func load_editor_vanilla():
 	print(\"scanning vanilla backgrounds\")
 	scan_single_directory(\"res:/\", \"/Objects/Backgrounds/\", bg, \".tscn\", \"background\")
 	
+	for i in range(bg.size()):
+		if bg[i][0] == \"BG_Default.tscn\":
+			var default = bg[i]
+			for j in range(i):
+				bg[i - j] = bg[i - j - 1]
+			bg[0] = default
+	
 	# Other Objects
 	print(\"scanning vanilla objects\")
 	scan_multi_directory(\"res:/\", \"/Objects/\", place_objects, \".tscn\", [\"Tilesets\", \"Backgrounds\"])

@@ -530,7 +530,7 @@ func boost(boost_amount : Vector2):
 	boosted = true
 	momentum += boost_amount
 	if boost_amount.x != 0:
-		make_speed_ring(sign(boost_amount.x))
+		make_horizontal_speed_ring(sign(boost_amount.x))
 	emit_signal("boosted", boost_amount)
 
 
@@ -631,9 +631,17 @@ func been_stylish(style : String = "Nice!"):
 	stylish = true
 
 
-func make_speed_ring(direction : float = 1):
+func make_horizontal_speed_ring(direction : float = 1):
+#	var ring : Node2D = preload("res://Objects/Decor/SpeedRing.tscn").instance()
+#	ring.position = position - character.STYLISH_RECT * Vector2(0, 0.5)
+#	ring.scale.x = direction
+#	get_tree().current_scene.add_child(ring)
+	make_speed_ring(0, character.STYLISH_RECT * Vector2(0, 0.5), direction)
+
+
+func make_speed_ring(rot : float, offset : Vector2, ring_scale : float):
 	var ring : Node2D = preload("res://Objects/Decor/SpeedRing.tscn").instance()
-	ring.position = position - character.STYLISH_RECT * Vector2(0, 0.5)
-	ring.scale.x = direction
+	ring.position = position - offset
+	ring.rotation = rot
+	ring.scale = Vector2(ring_scale, ring_scale)
 	get_tree().current_scene.add_child(ring)
-	
