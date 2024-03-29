@@ -36,9 +36,13 @@ const DEFAULT_OPTIONS : Dictionary = {
 	"*audio_music" : 60,
 }
 
+enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER, UNLOCK_GROUP_BEAT, UNLOCK_GROUP_PAR}
+
+enum {SAVE_DISALLOW, SAVE_ALLOW_READ, SAVE_ALLOW_WRITE, SAVE_ALLOW_READ_WRITE}
+
 
 var new_version_alert : bool = false
-var savefile_interaction : int = 3
+var savefile_interaction : int = SAVE_ALLOW_READ_WRITE
 var compatibility_mode : bool = false
 var playtesting : bool = false
 var speedometer_active : bool = false
@@ -166,22 +170,23 @@ func console_arguments():
 		call_deferred("change_level", "*" + arguments["level"])
 	if arguments.has("playtest"):
 #		print(arguments["playtest"])
-		call_deferred("change_level", "!*" + arguments["playtest"])
 		playtesting = true
+		arguments["save_interaction"] = "r"
+		call_deferred("change_level", "!*" + arguments["playtest"])
 	if arguments.has("speedometer"):
 		speedometer_active = true
 	if arguments.has("save_interaction"):
 		match(arguments["save_interaction"]):
 			"x":
-				savefile_interaction = 0
+				savefile_interaction = SAVE_DISALLOW
 			"r":
-				savefile_interaction = 1
+				savefile_interaction = SAVE_ALLOW_READ
 			"w":
-				savefile_interaction = 2
+				savefile_interaction = SAVE_ALLOW_WRITE
 			"rw":
-				savefile_interaction = 3
+				savefile_interaction = SAVE_ALLOW_READ_WRITE
 			"wr":
-				savefile_interaction = 3
+				savefile_interaction = SAVE_ALLOW_READ_WRITE
 	if savefile_interaction % 2:
 		print("read allowed")
 	# warning-ignore:integer_division
@@ -815,7 +820,6 @@ func check_unlock(unlock):
 			return unlocked[location][unlock]
 
 
-enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER, UNLOCK_GROUP_BEAT, UNLOCK_GROUP_PAR}
 func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2, context : String = current_level_location):
 	
 	if unlock_type == UNLOCK_NEVER:
@@ -940,6 +944,54 @@ func is_level_file_unlocked(level_filename : String) -> bool:
 	return is_level_unlocked(get_group_from_filepath(level_filename), get_level_from_filepath(level_filename))
 
 
+func level_group_display_name(group : String, context : String = current_level_location) -> String:
+	var lvg_name : String = group
+	if group.empty():
+		lvg_name = "this group"
+	elif group == "res://":
+		lvg_name = "any level"
+	else:
+		if group.begins_with("@"):
+			var parsed : Array = parse_level_group_abreviation(group, context)
+			if parsed:
+				lvg_name = parsed[0]
+		
+		lvg_name = lvg_name.substr(0, lvg_name.length() - 1)
+		lvg_name = lvg_name.substr(lvg_name.find_last("/") + 1, lvg_name.length() - lvg_name.find_last("/") - 1)
+	
+	return lvg_name
+
+
+func describe_unlock(requirements : Array, is_level : bool = false, context : String = current_level_location) -> String:
+#	print(requirements)
+	match(int(requirements[0])):
+		UNLOCK_ALWAYS:
+			if is_level:
+				return ""
+			else:
+				return "Always unlocked."
+		UNLOCK_BEAT:
+			return "Beat " + requirements[2] + "."
+		UNLOCK_PAR:
+			return "Par " + requirements[2] + "."
+		UNLOCK_COMPLETION:
+			return "Complete " + String(requirements[2]) + "% of " + level_group_display_name(requirements[1], context) + "."
+		UNLOCK_BONUS:
+			return "Get " + String(requirements[2]) + " bonuses from " + level_group_display_name(requirements[1], context) + "."
+		UNLOCK_CUSTOM:
+			return "Find a secret!"
+		UNLOCK_NEVER:
+			if is_level:
+				return "Find a secret!"
+			else:
+				return "Cannot unlock this."
+		UNLOCK_GROUP_BEAT:
+			return "Beat " + String(requirements[2]) + " levels from " + level_group_display_name(requirements[1], context) + "."
+		UNLOCK_GROUP_PAR:
+			return "Par " + String(requirements[2]) + " levels from " + level_group_display_name(requirements[1], context) + "."
+	return ""
+
+
 func showcase_unlock(text : String, texture : Texture) -> Node2D:
 	var show_unlock : Node2D = preload("res://Objects/Unlock.tscn").instance()
 	show_unlock.texture = texture
@@ -948,8 +1000,23 @@ func showcase_unlock(text : String, texture : Texture) -> Node2D:
 	return show_unlock
 
 
+func level_name(level_index : int, data : Dictionary = level_group) -> String:
+	if level_index < 0 or level_index >= 20:
+		return "Unknown"
+	return data["levels"][level_index][0]
+
+
+func level_unlock_requirements(level_index : int, data : Dictionary = level_group) -> Array:
+	if level_index < 0 or level_index >= 20:
+		return [UNLOCK_ALWAYS, null, null]
+	return data["levels"][level_index][2].duplicate()
+
+
 func parse_level_group_abreviation(abr : String, context : String = current_level_location) -> Array:
 	var p = abr.find("*")
+	
+	if p == -1:
+		p = abr.length() + 1
 	
 #	print(group)
 	var group : String = abr.substr(1, p - 1)

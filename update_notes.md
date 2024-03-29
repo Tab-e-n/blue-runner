@@ -91,6 +91,7 @@
  - Fixed a few edge cases when rotating a object or decor with transform mode.
  - Holding shift in transform mode snaps the rotation to multiples of 15 degrees and scale to multiples of 0.05.
  - There is now a shortcut to start playtesting the level.
+ - Playtested levels nolonger alter the savefile.
  - Added a new dropdown menu for selecting a tab.
  - Fixed a bug where you could have multiple of the same tile preset in the place panel.
  - The "Is official" tag has been altered. Now when a level has the "Is official" tag:

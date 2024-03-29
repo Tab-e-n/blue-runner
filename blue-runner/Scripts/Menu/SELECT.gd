@@ -251,7 +251,7 @@ func level_move_cursor(move_amount : int = 0):
 	$level_select/levels/selected_level/anim.stop()
 	$level_select/levels/selected_level/anim.play("Reset")
 	
-	set_level_data_text()
+	set_level_data_text(is_in_user_universe)
 
 func group_move_cursor(move_amount : Vector2 = Vector2(0, 0)):
 	if move_amount.x != 0:
@@ -441,13 +441,14 @@ func reload_all_levels():
 	var comp_list : Array = []
 	for i in range(20):
 		var level = get_node("level_select/levels/" + String(i))
+		
 		if is_user_group:
 			if i + user_current_page * 20 >= user_levels.size():
 				level.level_name = "*Level_Missing"
 			else:
 				level.level_name = user_levels[i + user_current_page * 20]
 		else:
-			level.level_name = Global.level_group["levels"][i][0]
+			level.level_name = Global.level_name(i)
 		
 		if level.level_name != "*Level_Missing":
 			level.level_location = Global.current_level_location
@@ -456,10 +457,11 @@ func reload_all_levels():
 				level.locked = false
 			elif Global.unlocked[Global.current_level_location].has(level.level_name):
 				level.locked = !Global.unlocked[Global.current_level_location][level.level_name]
-				if level.locked and (Global.level_group["levels"][i][2][0] == 3 or Global.level_group["levels"][i][2][0] == 4):
+				var requirements = Global.level_unlock_requirements(i)
+				if level.locked and (requirements[0] == Global.UNLOCK_COMPLETION or requirements[0] == Global.UNLOCK_BONUS):
 					comp_list.append(i)
-				if level.locked and Global.level_group["levels"][i][2][0] != 6:
-					Global.unlocked[Global.current_level_location][level.level_name] = Global.check_unlock_requirements(Global.level_group["levels"][i][2][0], Global.level_group["levels"][i][2][1], Global.level_group["levels"][i][2][2])
+				if level.locked and requirements[0] != Global.UNLOCK_NEVER:
+					Global.unlocked[Global.current_level_location][level.level_name] = Global.check_unlock_requirements(requirements[0], requirements[1], requirements[2])
 					level.locked = !Global.unlocked[Global.current_level_location][level.level_name]
 			else:
 				level.locked = false
@@ -483,7 +485,8 @@ func reload_all_levels():
 	if !is_user_group:
 		for i in comp_list:
 			var level = get_node("level_select/levels/" + String(i))
-			Global.unlocked[Global.current_level_location][level.level_name] = Global.check_unlock_requirements(Global.level_group["levels"][i][2][0], Global.level_group["levels"][i][2][1], Global.level_group["levels"][i][2][2])
+			var requirements = Global.level_unlock_requirements(i)
+			Global.unlocked[Global.current_level_location][level.level_name] = Global.check_unlock_requirements(requirements[0], requirements[1], requirements[2])
 			level.locked = !Global.unlocked[Global.current_level_location][level.level_name]
 			if Global.unlocked[Global.current_level_location][level.level_name]:
 				stats[3] += 1
@@ -499,7 +502,7 @@ func reload_all_levels():
 	$level_select/description/keycollect.visible = not is_user_group
 	$level_select/description/stats_unlock.visible = not is_user_group
 	
-	$level_select/description/name.text = Global.loaded_level_groups[group_current][0]
+	$level_select/description/name.text = Global.unlocked_level_groups[group_current][0]
 	$level_select/time.text = level_group_complete_time(Global.current_level_location)
 	
 	for i in range(20):
@@ -580,12 +583,13 @@ func make_new_bg(bg_filepath : String):
 
 
 func set_level_data_text(is_in_user_universe : bool = false):
-	var selected_level_location = get_node("level_select/levels/" + String(selected_level)).level_location
-	var selected_level_name = get_node("level_select/levels/" + String(selected_level)).level_name
-	#print(selected_level_location + selected_level_name)
+	var level = get_node("level_select/levels/" + String(selected_level))
+	var selected_level_location = level.level_location
+	var selected_level_name = level.level_name
+#	print(selected_level_location + selected_level_name)
 	
 	var level_dat = Global.load_dat_file(selected_level_location + selected_level_name)
-	#print(level_dat)
+#	print(level_dat)
 	
 	# Default text
 	$level_select/level_data/level_name.set_text(selected_level_name)
@@ -595,9 +599,13 @@ func set_level_data_text(is_in_user_universe : bool = false):
 	$level_select/level_data/deaths.set_text("")
 	
 	# The level is locked
-	if get_node("level_select/levels/" + String(selected_level)).locked == true:
+	if level.locked == true:
 		$level_select/level_data/level_name.set_text("LOCKED")
 		$level_select/level_data/best_time.set_text("")
+		if not is_in_user_universe:
+			var requirements = Global.level_unlock_requirements(selected_level)
+			$level_select/level_data/creator.set_text(Global.describe_unlock(requirements, true))
+			$level_select/level_data/creator.rect_position.y = -48
 		$level_select/level_data/level_picture.texture = null
 		$level_select/level_data/level_picture.visible = false
 		return
@@ -672,10 +680,11 @@ func remove_bg():
 
 
 func level_selected():
-	Global.current_level = get_node("level_select/levels/" + String(selected_level)).level_name
-	Global.current_level_location = get_node("level_select/levels/" + String(selected_level)).level_location
+	var level = get_node("level_select/levels/" + String(selected_level))
+	Global.current_level = level.level_name
+	Global.current_level_location = level.level_location
 	
-	var level_dat = get_node("level_select/levels/" + String(selected_level)).level_dat.duplicate()
+	var level_dat = level.level_dat.duplicate()
 	var error : int = false
 	if !level_dat.has("dependencies"):
 		error = true
@@ -699,11 +708,11 @@ func level_selected():
 			activate_char_select = false
 	
 	if error:
-		get_node("level_select/levels/" + String(selected_level)).get_node("Anim").play("Refuse")
+		level.get_node("Anim").play("Refuse")
 		$level_select/levels/selected_level/anim.play("Refuse")
 		has_selected_level = false
 	elif Global.change_level("", true, false) != OK:
-		get_node("level_select/levels/" + String(selected_level)).get_node("Anim").play("Refuse")
+		level.get_node("Anim").play("Refuse")
 		$level_select/levels/selected_level/anim.play("Refuse")
 		$level_select/fail.visible = true
 		has_selected_level = false

@@ -229,7 +229,7 @@ func _physics_process(delta):
 		if Input.is_action_just_pressed("save_replay"):
 			add_recording_data()
 			Global.save_replay_with_date(get_parent().name, recording.duplicate())
-		if stylish and state == "ground":
+		if stylish and state == "ground" and not should_jump():
 			if get_horizontal_axis() != 0:
 				call_deferred("boost", Vector2(get_horizontal_axis() * 200, 0))
 #				boost(Vector2(get_horizontal_axis() * 200, 0))
@@ -444,7 +444,7 @@ func collision_default_effects(type : int, collider):
 	
 	# Hurt
 	if bit_include(type, 0b0100):
-		if not (bit_include(type, 0b0010) and jump_buffer != 0):
+		if not (bit_include(type, 0b0010) and should_jump()):
 			die()
 	
 	# Breakable

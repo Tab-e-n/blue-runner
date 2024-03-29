@@ -1,4 +1,4 @@
-[gd_scene load_steps=52 format=2]
+[gd_scene load_steps=53 format=2]
 
 [ext_resource path="res://Scripts/Level_Control.gd" type="Script" id=1]
 [ext_resource path="res://Objects/Tilesets/WaterWay.tres" type="TileSet" id=2]
@@ -13,6 +13,7 @@
 [ext_resource path="res://Objects/April/GolfDisk.tscn" type="PackedScene" id=11]
 [ext_resource path="res://Objects/April/GolfCatcher.tscn" type="PackedScene" id=12]
 [ext_resource path="res://Objects/April/SuperDuperUltraLaser.tscn" type="PackedScene" id=13]
+[ext_resource path="res://Objects/Player/StartPos.tscn" type="PackedScene" id=14]
 [ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=19]
 [ext_resource path="res://Objects/Finish.tscn" type="PackedScene" id=20]
 [ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=21]
@@ -482,6 +483,13 @@ position = Vector2( 2432, 256 )
 position = Vector2( 3072, -640 )
 rotation = 1.57079
 
+[node name="StartPos" parent="objects_center" instance=ExtResource( 14 )]
+position = Vector2( 1664, 640 )
+
+[node name="Barrier" parent="objects_center" instance=ExtResource( 8 )]
+position = Vector2( 3328, 128 )
+rotation = -1.57079
+
 [node name="decor_center" type="Node2D" parent="."]
 material = SubResource( 13 )
 
@@ -537,7 +545,3 @@ collision_mask = 0
 format = 1
 
 [node name="Ghost" parent="." instance=ExtResource( 27 )]
-
-[node name="Barrier" parent="." instance=ExtResource( 8 )]
-position = Vector2( 3328, 128 )
-rotation = -1.57079
