@@ -89,6 +89,7 @@ var unlocked_characters : Array = []
 var last_input_events : Array = []
 
 var doing_tutorial : bool = false
+var credits : bool = false
 
 
 func _ready():
@@ -198,7 +199,10 @@ func _physics_process(_delta):
 	var curr_scene = get_tree().current_scene.name
 	
 	if Input.is_action_just_pressed("return") and !(curr_scene == "MENU" or curr_scene == "LOAD"):
-		change_level_fade_out("*MENU")
+		if credits:
+			change_level_fade_out("*CREDITS")
+		else:
+			change_level_fade_out("*MENU")
 	if Input.is_action_just_released("reset") and !(curr_scene == "MENU" or curr_scene == "LOAD"):
 		change_level_fade_out("", true)
 	
@@ -625,6 +629,7 @@ func change_level_fade_out(destination : String, fast : bool = false):
 
 
 func change_level(destination : String, return_value : bool = false, check_dependencies : bool = true):
+	credits = false
 	compatibility_mode = false
 	
 	var destination_new : String
@@ -641,6 +646,12 @@ func change_level(destination : String, return_value : bool = false, check_depen
 		destination_new = current_level_location + current_level + ".tscn"
 	elif destination == "*MENU" or destination == "*Menu_Level_Select" or destination == "*Menu_Level_Select.tscn":
 		destination_new = "res://Scenes/MENU.tscn"
+	elif destination == "*CREDITS":
+		if replay_menu:
+			destination_new = "res://Scenes/MENU.tscn"
+		else:
+			destination_new = "res://Scenes/other/CreditsStage.tscn"
+			check_if_unlocked = false
 	elif destination == "*Level_Missing":
 		destination_new = "res://Scenes/other/Level_Missing.tscn"
 	elif destination == "*Level_Next" and current_level_location == USER_LEVELS:

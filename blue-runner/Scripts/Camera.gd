@@ -195,6 +195,8 @@ func end_zoom_in(target : Node2D, tele, timer : float, par : float):
 	end_zoom = true
 	cam_target = target
 	tele_destination = tele
+	if tele_destination == "*CREDITS":
+		Global.credits = true
 	end_zoom_begin = zoom
 	end_pos_begin = position
 	$finish.visible = true

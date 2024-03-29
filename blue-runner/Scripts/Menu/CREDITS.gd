@@ -1,10 +1,18 @@
 extends Node2D
 
+
 onready var parent : Node2D = get_parent()
+
+export var end_credits : bool = false
 
 var line_lenght : int
 
+
 func _ready():
+	if Global.playtesting:
+		Global.change_level("*MENU")
+		return
+	
 	var credits = """SONIC RUNNER
 	v2.0.0
 	
@@ -20,13 +28,14 @@ func _ready():
 	- Lead Designer -
 	Tabin
 	
-	- Lead Artist -
+	- Lead Art Director -
 	Tabin
 	
 	- Lead Programmer -
 	Tabin
 	
-	- Art Advisor -
+	- Art Advisors -
+	Maxpeeks
 	Lux
 	
 	- UI Roaster - 
@@ -38,7 +47,7 @@ func _ready():
 	
 	
 	- Development Tools -
-	Godot
+	Godot 3
 	Gimp
 	Audacity
 	SoundBFXR
@@ -53,7 +62,10 @@ func _ready():
 	Lena-hal
 	Sunny
 	My Dad
-	(More to be added since i def forgot some)
+	Simon Vladik
+	That one girl from game club
+	that played the game, you
+	know who you are ;)
 	
 	- Blue Runner Best Fan -
 	Vitor
@@ -74,7 +86,11 @@ func _ready():
 #	print(line_lenght)
 	
 	$credits.text = credits
-	$back.text = "GO BACK - " + Global.key_names(13)
+	if end_credits:
+		$back.text = ""
+	else:
+		$back.text = "GO BACK - " + Global.key_names(13)
+
 
 func _physics_process(_delta):
 	$credits.rect_position.y -= 0.5
@@ -82,7 +98,18 @@ func _physics_process(_delta):
 		$credits.rect_position.y -= 1.5
 	
 	if $credits.rect_position.y < -384 - line_lenght:
-		$credits.rect_position.y = 384
+		if end_credits:
+			exit_end_credits()
+		else:
+			$credits.rect_position.y = 384
+
+
+func exit_end_credits():
+	Global.select_menu = false
+	Global.replay_menu = false
+	Global.in_load_previously = true
+	Global.change_level("*MENU")
+
 
 func menu_update():
 	if Input.is_action_just_pressed("deny"):

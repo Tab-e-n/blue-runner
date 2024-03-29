@@ -1,5 +1,7 @@
 extends Area2D
 
+const DISABLE_TIME : float = 0.2
+
 onready var level : Node2D = get_tree().current_scene
 
 export var boost_strenght : int = 0
@@ -10,6 +12,9 @@ var pause_timer : int = cos(position.x + position.y) * 100
 var pause_timer_ticking : int = 0
 
 var last_playback_speed : float = 0
+
+var disable : float = 0
+var boost_later : Player = null
 
 
 func _ready():
@@ -29,7 +34,7 @@ func _ready():
 	
 
 
-func _physics_process(_delta):
+func _physics_process(delta):
 	monitoring = level.timers_active
 	if pause_timer_ticking == pause_timer:
 		if $anim.current_animation != "Bounce":
@@ -37,7 +42,13 @@ func _physics_process(_delta):
 		pause_timer_ticking += 1
 	else:
 		pause_timer_ticking += 1
-
+	
+	if disable > 0:
+		disable -= delta
+		if disable <= 0:
+			if boost_later:
+				boost_player(boost_later)
+				boost_later = null
 
 func bounce_start():
 	last_playback_speed = $anim.playback_speed
@@ -50,9 +61,22 @@ func bounce_end():
 	$anim.play("Glow")
 
 
+func boost_player(body):
+	body.punt(boost, overwrite_momentum)
+	$anim.stop()
+	$anim.play("Bounce")
+	Audio.play_sound("MushBounce", 0.8, 1.2)
+	disable = DISABLE_TIME
+
+
 func _on_body_entered(body):
-	if body.name == "Player":
-		body.punt(boost, overwrite_momentum)
-		$anim.stop()
-		$anim.play("Bounce")
-		Audio.play_sound("MushBounce", 0.8, 1.2)
+	if body is Player:
+		if disable <= 0:
+			boost_player(body)
+		else:
+			boost_later = body
+
+
+func _on_body_exited(body):
+	if body is Player:
+		boost_later = null
