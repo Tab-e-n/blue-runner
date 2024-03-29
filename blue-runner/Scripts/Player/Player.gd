@@ -473,8 +473,9 @@ func bit_include(num : int, pattern : int) -> bool:
 
 
 func die():
-	dead = true
-	deny_input = true
+	if not end:
+		dead = true
+		deny_input = true
 
 
 func jump(jump_power : int):
