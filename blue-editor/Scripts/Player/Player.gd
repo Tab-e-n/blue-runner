@@ -27,12 +27,14 @@ export var facing : String = "right"
 export var deny_input : bool = true
 export var ghost : bool = false
 
+
 func _ready():
 	if !ghost:
 		var child : Sprite = Sprite.new()
 		add_child(child)
 		child.position.y = -32
 		new_texture()
+
 
 func _process(_delta):
 	if !ghost:
@@ -45,17 +47,19 @@ func _process(_delta):
 		else:
 			get_child(0).flip_h = true
 
+
 func new_texture():
 	var tcl = character_location
 	if tcl == "res:/":
 		tcl = " "
 	get_child(0).name = tcl + character_name
+#	print(get_child(0).name)
 	if data.characters.has([character_name, character_location]):
 		get_child(0).texture = load(character_location + "/Visual/Objects/character_" + character_name + ".png")
 	elif character_name == "":
-		get_child(0).texture = load("res://Visual/Objects/Player.tscn.png")
+		get_child(0).texture = preload("res://Visual/Objects/Player.tscn.png")
 	else:
-		get_child(0).texture = load("res://Visual/Objects/character_missing.png")
+		get_child(0).texture = preload("res://Visual/Objects/character_missing.png")
 
 
 func edit_left_just_pressed(_mouse_pos, _cursor_pos, _level_scale):

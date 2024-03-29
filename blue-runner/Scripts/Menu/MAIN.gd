@@ -135,7 +135,7 @@ func accept(group : Node2D):
 		BUTTON_PASS:
 			print("pass")
 		BUTTON_EXIT:
-			get_tree().quit()
+			Global.quit_game()
 		BUTTON_MENU_TOP:
 			current_menu = MENU_TOP
 			$mainAnim.stop()

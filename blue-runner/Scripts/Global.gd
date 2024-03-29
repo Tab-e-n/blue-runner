@@ -22,13 +22,13 @@ const DEFAULT_OPTIONS : Dictionary = {
 	"*menu_up" : KEY_UP,
 	"*menu_down" : KEY_DOWN,
 	"*accept" : KEY_SPACE,
-	"*deny" : KEY_BACKSPACE,
+	"*deny" : KEY_ESCAPE,
 	"*save_replay" : KEY_F6,
 	"*screenshot" : KEY_F2,
 	"*info" : KEY_F3,
 	"*outlines_on" : false,
 	"*ghosts_on" : false,
-	"*up_key_jump" : false,
+	"*up_key_jump" : true,
 	"*timer_on" : 0,
 	"*first_time_load" : true,
 	"*last_level_location" : "res://Scenes/waterway/",
@@ -36,11 +36,16 @@ const DEFAULT_OPTIONS : Dictionary = {
 	"*audio_music" : 60,
 }
 
+enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER, UNLOCK_GROUP_BEAT, UNLOCK_GROUP_PAR}
+
+enum {SAVE_DISALLOW, SAVE_ALLOW_READ, SAVE_ALLOW_WRITE, SAVE_ALLOW_READ_WRITE}
+
 
 var new_version_alert : bool = false
-var savefile_interaction : int = 3
+var savefile_interaction : int = SAVE_ALLOW_READ_WRITE
 var compatibility_mode : bool = false
 var playtesting : bool = false
+var speedometer_active : bool = false
 
 var level_completion : Dictionary = {
 	"*collectibles" : {},
@@ -144,6 +149,8 @@ func _ready():
 		change_input(i, last_input_events[i])
 	
 	current_level_location = options["*last_level_location"]
+	# warning-ignore:return_value_discarded
+	load_level_group()
 
 
 func console_arguments():
@@ -163,20 +170,23 @@ func console_arguments():
 		call_deferred("change_level", "*" + arguments["level"])
 	if arguments.has("playtest"):
 #		print(arguments["playtest"])
-		call_deferred("change_level", "!*" + arguments["playtest"])
 		playtesting = true
+		arguments["save_interaction"] = "r"
+		call_deferred("change_level", "!*" + arguments["playtest"])
+	if arguments.has("speedometer"):
+		speedometer_active = true
 	if arguments.has("save_interaction"):
 		match(arguments["save_interaction"]):
 			"x":
-				savefile_interaction = 0
+				savefile_interaction = SAVE_DISALLOW
 			"r":
-				savefile_interaction = 1
+				savefile_interaction = SAVE_ALLOW_READ
 			"w":
-				savefile_interaction = 2
+				savefile_interaction = SAVE_ALLOW_WRITE
 			"rw":
-				savefile_interaction = 3
+				savefile_interaction = SAVE_ALLOW_READ_WRITE
 			"wr":
-				savefile_interaction = 3
+				savefile_interaction = SAVE_ALLOW_READ_WRITE
 	if savefile_interaction % 2:
 		print("read allowed")
 	# warning-ignore:integer_division
@@ -186,10 +196,11 @@ func console_arguments():
 
 func _physics_process(_delta):
 	var curr_scene = get_tree().current_scene.name
+	
 	if Input.is_action_just_pressed("return") and !(curr_scene == "MENU" or curr_scene == "LOAD"):
-		change_level("*MENU") 
+		change_level_fade_out("*MENU")
 	if Input.is_action_just_released("reset") and !(curr_scene == "MENU" or curr_scene == "LOAD"):
-		change_level("")
+		change_level_fade_out("", true)
 	
 	if Input.is_action_just_pressed("screenshot"):
 		screenshot()
@@ -199,12 +210,31 @@ func _exit_tree():
 	save_game()
 
 
+func quit_game():
+	get_tree().current_scene.queue_free()
+	
+	get_tree().call_deferred("quit")
+
+
 func fade_float(start : float, end : float, progress : float) -> float:
 	if progress == 0:
 		return start
 	if progress == 1:
 		return end
 	return start + (end - start) * progress
+
+
+func string_start_similarity(string1 : String, string2 : String) -> int:
+	var max_s = string1.length()
+	if string2.length() < max_s:
+		max_s = string2.length()
+	
+	var s : int = 0
+	
+	while s < max_s and string1[s] == string2[s]:
+		s += 1
+	
+	return s
 
 
 func change_input(input_id : int, new_input):
@@ -416,23 +446,26 @@ func add_date_to_name(dname : String):
 	return dname
 
 
-func load_external_picture(picture_filename : String, sprite : Sprite):
-	var pngf = File.new()
-	if not pngf.file_exists(picture_filename):
-		sprite.texture = preload("res://Visual/no_image.png")
-		return
-	
-	pngf.open(picture_filename, File.READ)
-	var pnglen = pngf.get_len()
-	var pngdata = pngf.get_buffer(pnglen)
-	pngf.close()
-	
-	var image = Image.new()
-	image.load_png_from_buffer(pngdata)
-	var image_texture : ImageTexture = ImageTexture.new()
-	image_texture.create_from_image(image.get_rect(image.get_used_rect()))
-	
-	sprite.texture = image_texture
+func load_external_picture(picture_filename : String, sprite : Sprite, image_was_imported : bool = false):
+	if image_was_imported:
+		sprite.texture = load(picture_filename)
+	else:
+		var pngf = File.new()
+		if not pngf.file_exists(picture_filename):
+			sprite.texture = preload("res://Visual/no_image.png")
+			return
+		
+		pngf.open(picture_filename, File.READ)
+		var pnglen = pngf.get_len()
+		var pngdata = pngf.get_buffer(pnglen)
+		pngf.close()
+		
+		var image = Image.new()
+		image.load_png_from_buffer(pngdata)
+		var image_texture : ImageTexture = ImageTexture.new()
+		image_texture.create_from_image(image.get_rect(image.get_used_rect()))
+		
+		sprite.texture = image_texture
 	
 	if sprite.texture == null:
 		sprite.texture = preload("res://Visual/no_image.png")
@@ -581,17 +614,27 @@ func completion_percentage(is_user_group : bool, user_current_page : int):
 	return stats.duplicate()
 
 
+func change_level_fade_out(destination : String, fast : bool = false):
+	var camera = null
+	if get_tree().current_scene.has_node("Camera"):
+		camera = get_tree().current_scene.get_node("Camera")
+	if camera:
+		camera.start_fade_out(destination, true, fast)
+	else:
+		change_level(destination) 
+
+
 func change_level(destination : String, return_value : bool = false, check_dependencies : bool = true):
 	compatibility_mode = false
 	
 	var destination_new : String
 	var check_if_unlocked : bool = true
 	
-#	print(current_level_location)
-#	print(destination)
+#	print("location: ", current_level_location)
+#	print("destination: ", destination)
 	
 	if destination.begins_with("!"):
-		destination = destination.trim_prefix("!")
+		destination = destination.substr(1, destination.length() - 1)
 		check_if_unlocked = false
 	
 	if destination == "":
@@ -608,9 +651,8 @@ func change_level(destination : String, return_value : bool = false, check_depen
 		var level : int = 0
 		for i in range(19):
 			if level_group["levels"][i][0] == current_level:
-#				if level_group["levels"][i + 1][1]:
-#					if !check_unlock_requirements(level_group["levels"][i + 1][2][0], level_group["levels"][i + 1][2][1],level_group["levels"][i + 1][2][2]):
-#						break
+				if not is_level_unlocked(current_level_location, level_group["levels"][i + 1][0]):
+					break
 				if level_group["levels"][i + 1][0] == "*Level_Missing":
 					break
 				level = i + 1
@@ -621,15 +663,19 @@ func change_level(destination : String, return_value : bool = false, check_depen
 			destination_new = current_level_location + level_group["levels"][level][0] + ".tscn"
 	elif destination.begins_with("*"):
 		destination_new = destination.trim_prefix("*")
+	elif destination.begins_with("@"):
+		var parsed : Array = parse_level_group_abreviation(destination)
+		if not parsed.empty():
+			destination_new = parsed[0] + parsed[1] + ".tscn"
+		else:
+			destination_new = "res://Scenes/other/Level_Missing.tscn"
+			call_deferred("make_text_debug", "Cannot find group from abreviation: " + String(destination))
 	else:
 		destination_new = current_level_location + destination + ".tscn"
 	
 	var error = OK
 	
-	# End playtesting if you are going to the menu
-	if destination_new == "res://Scenes/MENU.tscn" and playtesting:
-		get_tree().quit()
-		return OK
+#	print("destination converted: ", destination_new)
 	
 	if check_dependencies:
 		var level_dat = load_dat_file(destination_new.left(destination_new.find_last(".")))
@@ -641,15 +687,22 @@ func change_level(destination : String, return_value : bool = false, check_depen
 					error = ERR_FILE_MISSING_DEPENDENCIES
 	
 #	print(destination_new)
-	if destination_new != "res://Scenes/MENU.tscn" and check_if_unlocked:
+	
+	if destination_new != "res://Scenes/MENU.tscn" and check_if_unlocked and not playtesting:
 		if not is_level_file_unlocked(destination_new):
 			destination_new = "res://Scenes/MENU.tscn"
+	
+	# End playtesting if you are going to the menu
+	if destination_new == "res://Scenes/MENU.tscn" and playtesting:
+		quit_game()
+		return OK
 	
 	if destination_new != "res://Scenes/MENU.tscn":
 		var current_group = get_group_from_filepath(destination_new)
 		if current_group != current_level_location:
 			current_level_location = get_group_from_filepath(destination_new)
-			level_group = load_level_group()
+			# warning-ignore:return_value_discarded
+			load_level_group()
 		current_level = get_level_from_filepath(destination_new)
 		
 #		print("CL " + current_level)
@@ -664,7 +717,8 @@ func change_level(destination : String, return_value : bool = false, check_depen
 		return error
 	elif error != OK:
 		if playtesting:
-			get_tree().quit()
+			quit_game()
+			return error
 		# warning-ignore:return_value_discarded
 		get_tree().change_scene("res://Scenes/other/Level_Missing.tscn")
 		call_deferred("make_text_debug", String(destination_new) + " " + String(error))
@@ -709,12 +763,13 @@ func get_level_from_filepath(filepath : String) -> String:
 
 
 func make_text_debug(_text : String):
-		var text = RichTextLabel.new()
-		text.rect_size = Vector2(1024, 1024)
-		text.text = _text
-		text.rect_scale = Vector2(2, 2)
-		get_tree().current_scene.add_child(text)
-		print(get_tree().current_scene.name)
+	var text = RichTextLabel.new()
+	text.rect_size = Vector2(1024, 1024)
+	text.text = _text
+	text.rect_scale = Vector2(2, 2)
+	get_tree().current_scene.add_child(text)
+	print(_text)
+#	print(get_tree().current_scene.name)
 
 
 func unlock(unlock):
@@ -722,9 +777,22 @@ func unlock(unlock):
 		if unlock.begins_with("*"):
 			unlocked[unlock] = true
 		else:
-			if !unlocked.has(current_level_location):
-				unlocked[current_level_location] = []
-			unlocked[current_level_location][unlock] = true
+			var location : String
+			if unlock.begins_with("@"):
+				var parsed : Array = parse_level_group_abreviation(unlock)
+				if not parsed.empty():
+					location = parsed[0]
+					unlock = parsed[1]
+				else:
+					return
+			else:
+				location = current_level_location
+			
+			if !unlocked.has(location):
+				unlocked[location] = {}
+			unlocked[location][unlock] = true
+			
+#			print("unlocked ", location, " ", unlock)
 
 
 func check_unlock(unlock):
@@ -734,21 +802,37 @@ func check_unlock(unlock):
 				unlocked[unlock] = false
 			return unlocked[unlock]
 		else:
-			if !unlocked.has(current_level_location):
-				unlocked[current_level_location] = []
-			if !unlocked[current_level_location].has(unlock):
-				unlocked[current_level_location][unlock] = false
-			return unlocked[current_level_location][unlock]
+			var location : String
+			if unlock.begins_with("@"):
+				var parsed : Array = parse_level_group_abreviation(unlock)
+				if not parsed.empty():
+					location = parsed[0]
+					unlock = parsed[1]
+				else:
+					return false
+			else:
+				location = current_level_location
+			
+			if !unlocked.has(location):
+				unlocked[location] = {}
+			if !unlocked[location].has(unlock):
+				unlocked[location][unlock] = false
+			return unlocked[location][unlock]
 
 
-enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
-func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
+func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2, context : String = current_level_location):
 	
 	if unlock_type == UNLOCK_NEVER:
 		return false
 	
-	if unlock_type == UNLOCK_BEAT or unlock_type == UNLOCK_PAR or unlock_type == UNLOCK_COMPLETION:
-		if !level_completion.has(parameter_1):
+	if unlock_type in [UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_GROUP_BEAT, UNLOCK_GROUP_PAR]:
+		if parameter_1.empty():
+			parameter_1 = context
+		if parameter_1.begins_with("@"):
+			parameter_1 = parse_level_group_abreviation(parameter_1, context)
+	
+	if unlock_type in [UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION]:
+		if not level_completion.has(parameter_1):
 			return false
 	
 	if unlock_type == UNLOCK_BEAT or unlock_type == UNLOCK_PAR:
@@ -781,17 +865,49 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2):
 		if parameter_2 > collectible_amount:
 			return false
 	
+	if unlock_type in [UNLOCK_GROUP_BEAT, UNLOCK_GROUP_PAR]:
+#		print(parameter_1)
+		var level_amount : int = 0
+		for group in level_completion.keys():
+			var lv_group = {}
+			if group.begins_with(parameter_1):
+				lv_group = load_group(group)
+			else:
+#				print("lv_group doesn't meet param1")
+				continue # I am using continues so the code doesn't go into the stratosphere ->
+			if lv_group.empty():
+#				print("lv_group didn't load")
+				continue
+			for i in range(20):
+				var level = lv_group["levels"][i][0]
+				if not level_completion[group].has(level):
+					continue
+				if level_completion[group][level][0] != null:
+					if unlock_type == UNLOCK_GROUP_BEAT:
+#						print("beat")
+						level_amount += 1
+					elif level_completion[group][level][1] != null:
+						if level_completion[group][level][0] < level_completion[group][level][1]:
+							level_amount += 1
+		if parameter_2 > level_amount:
+			return false
+	
 	if unlock_type == UNLOCK_CUSTOM:
 		return check_unlock(parameter_1)
 	
 	return true
 
 
+func should_check_unlocks(group : String, level : String) -> bool:
+	if not unlocked.has(group):
+		unlocked[group] = {}
+	return unlocked[group].has(level)
+
+
 func is_level_unlocked(group : String, level : String) -> bool:
 	if group == USER_LEVELS:
 		return true
 	
-	var is_user_group : bool = group == USER_LEVELS
 	var is_unlocked : bool = true
 	var unlock_requirements : Array
 	var lv_group : Dictionary
@@ -801,29 +917,79 @@ func is_level_unlocked(group : String, level : String) -> bool:
 	else:
 		lv_group = load_group(group)
 	
+	if lv_group.empty():
+#		print(lv_group, " ", level_group)
+		return false
+	
 	var i = -1
 	for j in range(lv_group["levels"].size()):
 		if lv_group["levels"][j][0] == level:
 			i = j
 			break
 	if i == -1:
+#		print("side level, always unlocked")
 		return true
 	unlock_requirements = lv_group["levels"][i][2]
 	
-	if is_user_group:
-		is_unlocked = true
-	elif unlocked[group].has(level):
-		if is_unlocked and unlock_requirements[0] != 6:
-			unlocked[group][level] = check_unlock_requirements(unlock_requirements[0], unlock_requirements[1], unlock_requirements[2])
+	if should_check_unlocks(group, level):
+		if unlock_requirements[0] != 6:
+			unlocked[group][level] = check_unlock_requirements(unlock_requirements[0], unlock_requirements[1], unlock_requirements[2], group)
 		is_unlocked = unlocked[group][level]
-	else:
-		is_unlocked = true
 	
+#	print(is_unlocked)
 	return is_unlocked
 
 
 func is_level_file_unlocked(level_filename : String) -> bool:
 	return is_level_unlocked(get_group_from_filepath(level_filename), get_level_from_filepath(level_filename))
+
+
+func level_group_display_name(group : String, context : String = current_level_location) -> String:
+	var lvg_name : String = group
+	if group.empty():
+		lvg_name = "this group"
+	elif group == "res://":
+		lvg_name = "any level"
+	else:
+		if group.begins_with("@"):
+			var parsed : Array = parse_level_group_abreviation(group, context)
+			if parsed:
+				lvg_name = parsed[0]
+		
+		lvg_name = lvg_name.substr(0, lvg_name.length() - 1)
+		lvg_name = lvg_name.substr(lvg_name.find_last("/") + 1, lvg_name.length() - lvg_name.find_last("/") - 1)
+	
+	return lvg_name
+
+
+func describe_unlock(requirements : Array, is_level : bool = false, context : String = current_level_location) -> String:
+#	print(requirements)
+	match(int(requirements[0])):
+		UNLOCK_ALWAYS:
+			if is_level:
+				return ""
+			else:
+				return "Always unlocked."
+		UNLOCK_BEAT:
+			return "Beat " + requirements[2] + "."
+		UNLOCK_PAR:
+			return "Par " + requirements[2] + "."
+		UNLOCK_COMPLETION:
+			return "Complete " + String(requirements[2]) + "% of " + level_group_display_name(requirements[1], context) + "."
+		UNLOCK_BONUS:
+			return "Get " + String(requirements[2]) + " bonuses from " + level_group_display_name(requirements[1], context) + "."
+		UNLOCK_CUSTOM:
+			return "Find a secret!"
+		UNLOCK_NEVER:
+			if is_level:
+				return "Find a secret!"
+			else:
+				return "Cannot unlock this."
+		UNLOCK_GROUP_BEAT:
+			return "Beat " + String(requirements[2]) + " levels from " + level_group_display_name(requirements[1], context) + "."
+		UNLOCK_GROUP_PAR:
+			return "Par " + String(requirements[2]) + " levels from " + level_group_display_name(requirements[1], context) + "."
+	return ""
 
 
 func showcase_unlock(text : String, texture : Texture) -> Node2D:
@@ -832,6 +998,64 @@ func showcase_unlock(text : String, texture : Texture) -> Node2D:
 	get_tree().current_scene.add_child(show_unlock)
 	show_unlock.set_text(text)
 	return show_unlock
+
+
+func level_name(level_index : int, data : Dictionary = level_group) -> String:
+	if level_index < 0 or level_index >= 20:
+		return "Unknown"
+	return data["levels"][level_index][0]
+
+
+func level_unlock_requirements(level_index : int, data : Dictionary = level_group) -> Array:
+	if level_index < 0 or level_index >= 20:
+		return [UNLOCK_ALWAYS, null, null]
+	return data["levels"][level_index][2].duplicate()
+
+
+func parse_level_group_abreviation(abr : String, context : String = current_level_location) -> Array:
+	var p = abr.find("*")
+	
+	if p == -1:
+		p = abr.length() + 1
+	
+#	print(group)
+	var group : String = abr.substr(1, p - 1)
+#	print(group)
+	
+	var matches : Array = []
+	for i in range(loaded_level_groups.size()):
+		if loaded_level_groups[i][0] == group:
+			matches.append(i)
+	
+	if matches.size() == 0:
+		group = ""
+		print("Can't find level group from: ", abr)
+	elif matches.size() == 1:
+		group = location_of_loaded_group(matches[0])
+	elif matches.size() > 1:
+		print("More than one group shares this abreviation: ", abr)
+		
+		var previous_matches : Array = matches.duplicate()
+		matches = []
+		var best_s : int = 0
+		for i in range(previous_matches.size()):
+			var s : int = string_start_similarity(location_of_loaded_group(previous_matches[i]), context)
+			if s > best_s:
+				matches = [previous_matches[i]]
+			if s == best_s:
+				matches.append(previous_matches[i])
+		
+		if matches.size() == 0:
+			group = ""
+		elif matches.size() == 1:
+			group = location_of_loaded_group(matches[0])
+		if matches.size() > 1:
+			group = ""
+	
+	if not group.empty():
+		return [group, abr.substr(p + 1, abr.length() - p - 1)]
+	else:
+		return []
 
 
 func level_group_in_save(level_location : String, data : Dictionary = level_completion) -> bool:
@@ -857,7 +1081,7 @@ func check_level_group_unlocked(level_location : String) -> bool:
 
 
 func check_loaded_group_unlocked(index : int) -> bool:
-	return check_unlock_requirements(loaded_level_groups[index][5][0], loaded_level_groups[index][5][1], loaded_level_groups[index][5][2])
+	return check_unlock_requirements(loaded_level_groups[index][5][0], loaded_level_groups[index][5][1], loaded_level_groups[index][5][2], location_of_loaded_group(index))
 
 
 func location_of_loaded_group(index : int, data : Array = loaded_level_groups) -> String:
@@ -1227,11 +1451,6 @@ func replay_filename(new_name : String, create_dir : bool):
 	return replay_name
 
 
-func load_level_dat_file(filename_ : String, _official : bool = true):
-	print(get_stack())
-	return load_dat_file(filename_)
-
-
 func load_dat_file(filename_ : String):
 	
 	#print(filename_)
@@ -1326,6 +1545,7 @@ func load_data():
 			loaded_level_groups[i][4] = 0
 			unlocked["completion_percentages"][loaded_level_groups[i][1] + loaded_level_groups[i][0]] = 0
 		loaded_level_groups[i][5] = group_unlocks[i]
+	
 	# CHARACTERS.DAT
 	
 	var scan_places = ["res:/"]

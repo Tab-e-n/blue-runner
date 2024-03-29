@@ -46,8 +46,7 @@ tracks/2/keys = {
 }
 
 [sub_resource type="Animation" id=2]
-resource_name = "Death"
-length = 0.4
+length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("spriteshit:frame")
 tracks/0/interp = 1
@@ -67,14 +66,13 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.1, 0.4 ),
+"times": PoolRealArray( 0, 0.1, 0.5 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
-"values": [ Vector2( 0, 0 ), Vector2( 0, -64 ), Vector2( 0, 128 ) ]
+"values": [ Vector2( 0, 0 ), Vector2( 0, -64 ), Vector2( 0, 192 ) ]
 }
 
 [sub_resource type="Animation" id=3]
-resource_name = "Enter"
 length = 0.4
 step = 0.025
 tracks/0/type = "value"
@@ -115,7 +113,6 @@ tracks/2/keys = {
 }
 
 [sub_resource type="Animation" id=4]
-resource_name = "Moving Left"
 length = 0.2
 loop = true
 tracks/0/type = "value"
@@ -156,7 +153,6 @@ tracks/2/keys = {
 }
 
 [sub_resource type="Animation" id=5]
-resource_name = "Moving Right"
 length = 0.2
 loop = true
 tracks/0/type = "value"
@@ -197,7 +193,6 @@ tracks/2/keys = {
 }
 
 [sub_resource type="Animation" id=6]
-resource_name = "Stand Left"
 length = 0.1
 loop = true
 tracks/0/type = "value"
@@ -238,7 +233,6 @@ tracks/2/keys = {
 }
 
 [sub_resource type="Animation" id=7]
-resource_name = "Stand Right"
 length = 0.1
 loop = true
 tracks/0/type = "value"
@@ -368,8 +362,8 @@ anims/Enter = SubResource( 3 )
 anims/_RESET = SubResource( 8 )
 
 [node name="col_1" type="Node2D" parent="."]
-position = Vector2( 0, -24 )
-scale = Vector2( 3, 3 )
+position = Vector2( 0, -48 )
+scale = Vector2( 2.5, 6 )
 
 [node name="Polygon2D" type="Polygon2D" parent="col_1"]
 visible = false
@@ -383,6 +377,7 @@ texture = ExtResource( 1 )
 offset = Vector2( 0, -32 )
 vframes = 2
 hframes = 4
+frame = 1
 
 [node name="explosion" type="Sprite" parent="."]
 visible = false
@@ -392,4 +387,5 @@ scale = Vector2( 2, 2 )
 texture = ExtResource( 3 )
 vframes = 3
 hframes = 6
+frame = 16
 [connection signal="animation_finished" from="Anim" to="." method="_on_animation_finished"]

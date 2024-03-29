@@ -103,6 +103,8 @@ func code_interpretor():
 			$did_it.text = "HEY, THATS ME :D"
 		"IAMDEVYESYES":
 			done_unlock("*developer_levels", "DEV LEVELS NOW AVAILABLE")
+		"NOTGAYENOUGH":
+			done_unlock("*character_S1X", "YOU GOT SOMEONE")
 		_:
 			$Anim.stop()
 			$Anim.play("Fail")

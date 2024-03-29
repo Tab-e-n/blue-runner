@@ -1,5 +1,8 @@
 extends Camera2D
 
+
+const FADE_IN_OUT_DEFAULT : int = 12
+
 export var compatibility_mode : bool = false
 export var limit_x : Vector2 = Vector2(0,0)
 export var limit_y : Vector2 = Vector2(0,0)
@@ -10,10 +13,10 @@ onready var cam_target : Node2D
 var tele_destination : String
 
 var end_zoom : bool = false
-const end_timer_const : int = 60
-var end_timer : float = end_timer_const
+const END_TIMER_DEFAULT : int = 60
+var end_timer : float = END_TIMER_DEFAULT
 
-var end_zoom_begin : float
+var end_zoom_begin : Vector2
 var end_pos_begin : Vector2
 # Color(0.87451, 0.909804, 0.905882)
 
@@ -24,12 +27,12 @@ var visible_timer : bool = false
 var fade_in : bool = true
 var fade_in_timer : float = 0
 export var fade_in_darkness_lenght : int = 0
-export var fade_in_end : int = 12
+export var fade_in_end : int = FADE_IN_OUT_DEFAULT
 
 var fade_out : bool = false
 var fade_out_timer : float = 0
 export var fade_out_darkness_lenght : int = 0
-export var fade_out_end : int = 12
+export var fade_out_end : int = FADE_IN_OUT_DEFAULT
 
 var unlock_fade : bool = false
 
@@ -47,6 +50,8 @@ func _ready():
 	elif Global.options["*timer_on"] == 2:
 		visible_timer = Global.check_unlock_requirements(Global.UNLOCK_BEAT, Global.current_level_location, Global.current_level)
 	
+	speedometer_active = Global.speedometer_active
+	
 	if get_parent().has_node("BG"):
 		bg = get_parent().get_node("BG")
 	
@@ -61,7 +66,7 @@ func _ready():
 	if speedometer_active:
 		visible_timer = false
 	$info/text.visible = speedometer_active or visible_timer
-	$info/speed.visible = speedometer_active
+#	$info/speed.visible = speedometer_active
 	
 	$finish/continue.text = Global.key_names(4)
 	$finish/reset.text = Global.key_names(6)
@@ -94,59 +99,67 @@ func _physics_process(_delta):
 	if has_node("complete_dark"):
 		$complete_dark.call_deferred("queue_free")
 	
-	if fade_in_timer < fade_in_end + fade_in_darkness_lenght and fade_in:
+	if fade_in:
 		fade_in_timer += 1
-		if fade_in_timer == fade_in_end + fade_in_darkness_lenght:
+		if fade_in_timer > fade_in_end + fade_in_darkness_lenght:
 			$Fade.visible = false
+			fade_in = false
 		elif fade_in_timer > fade_in_darkness_lenght:
-			var color = $Fade.color
-			var max_fade = fade_in_end - 2
-			var fade_timer = fade_in_timer - fade_in_darkness_lenght
-			$Fade.color = Color(color.r,color.g,color.b,(max_fade-fade_timer)/max_fade)
+			var fade_timer : float = fade_in_timer - fade_in_darkness_lenght
+			$Fade.color.a = (fade_in_end - fade_timer) / fade_in_end
+		else:
+			$Fade.color.a = 0.0
 	
-	if fade_out_timer < fade_out_end + fade_out_darkness_lenght and fade_out:
+	if fade_out:
 		fade_out_timer += 1
-		if fade_out_timer == fade_out_end + fade_out_darkness_lenght:
+		if fade_out_timer > fade_out_end + fade_out_darkness_lenght:
+			$Fade.color.a = 1.0
 			if Global.race_mode:
 				Global.change_level("*MENU")
 			else: 
 				Global.change_level(tele_destination)
 		elif fade_out_timer < fade_out_end:
-			var color = $Fade.color
-			var max_fade = fade_out_end - 2
-			$Fade.color = Color(color.r,color.g,color.b,fade_out_timer/max_fade)
+			$Fade.color.a = fade_out_timer / fade_out_end
+		else:
+			$Fade.color.a = 1.0
 			
 		# warning-ignore:return_value_discarded
 	
 	if !end_zoom:
-		position.x = int(cam_target.position.x / 2) * 2
-		if position.x < limit_x.x: position.x = limit_x.x
-		if position.x > limit_x.y: position.x = limit_x.y
+		position.x = int(cam_target.position.x * 0.5) * 2
+		if position.x < limit_x.x:
+			position.x = limit_x.x
+		if position.x > limit_x.y:
+			position.x = limit_x.y
 		
-		position.y = int(cam_target.position.y / 2) * 2
-		if position.y < limit_y.x: position.y = limit_y.x
-		if position.y > limit_y.y: position.y = limit_y.y
+		position.y = int(cam_target.position.y * 0.5) * 2
+		if position.y < limit_y.x:
+			position.y = limit_y.x
+		if position.y > limit_y.y:
+			position.y = limit_y.y
 		if speedometer_active:
-			var temp_calc = (abs(cam_target.momentum.x) + abs(cam_target.momentum.y)) / 10
-			$info/speed.rotation_degrees = temp_calc / 2
+			var temp_calc = round(abs(cam_target.momentum.x)) # + abs(cam_target.momentum.y))
+			if temp_calc <= 10:
+				temp_calc = 0
 			$info/text.text = String(temp_calc)
+#			$info/speed.rotation_degrees = temp_calc * 0.05
 		if visible_timer and (cam_target.timer <= cam_target.replay_timer + 0.016 or !cam_target.replay):
 			$info/text.text = Global.convert_float_to_time(cam_target.timer)
 	else:
 		$info.visible = false
 		
-		zoom.x = 1 + (end_zoom_begin - 1) / end_timer_const * end_timer
-		zoom.y = 1 + (end_zoom_begin - 1) / end_timer_const * end_timer
+		zoom.x = 1 + (end_zoom_begin.x - 1) / END_TIMER_DEFAULT * end_timer
+		zoom.y = 1 + (end_zoom_begin.y - 1) / END_TIMER_DEFAULT * end_timer
 		
-		$finish.scale.x = zoom.x + (zoom.x * 0.5) / end_timer_const * end_timer
-		$finish.scale.y = zoom.y + (zoom.y * 0.5) / end_timer_const * end_timer
+		$finish.scale.x = zoom.x + (zoom.x * 0.5) / END_TIMER_DEFAULT * end_timer
+		$finish.scale.y = zoom.y + (zoom.y * 0.5) / END_TIMER_DEFAULT * end_timer
 		
 #		$camera_inputs.scale = $finish.scale
 		
-#		$camera_inputs.position.y = 80.0 / end_timer_const * end_timer
+#		$camera_inputs.position.y = 80.0 / END_TIMER_DEFAULT * end_timer
 		
-		position.x = cam_target.position.x + (end_pos_begin.x - cam_target.position.x) / end_timer_const * end_timer
-		position.y = cam_target.position.y + (end_pos_begin.y - cam_target.position.y) / end_timer_const * end_timer
+		position.x = cam_target.position.x + (end_pos_begin.x - cam_target.position.x) / END_TIMER_DEFAULT * end_timer
+		position.y = cam_target.position.y + (end_pos_begin.y - cam_target.position.y) / END_TIMER_DEFAULT * end_timer
 		
 		
 		if end_timer > 0:
@@ -182,7 +195,7 @@ func end_zoom_in(target : Node2D, tele, timer : float, par : float):
 	end_zoom = true
 	cam_target = target
 	tele_destination = tele
-	end_zoom_begin = zoom.x
+	end_zoom_begin = zoom
 	end_pos_begin = position
 	$finish.visible = true
 #	$camera_inputs.visible = true
@@ -201,7 +214,12 @@ func end_zoom_in(target : Node2D, tele, timer : float, par : float):
 	$finish/anim.play("shift")
 
 
-func start_fade_out(tele : String = "*MENU"):
+func start_fade_out(tele : String = "*MENU", reset_fade : bool = false, fast : bool = false):
+	if reset_fade:
+		fade_out_end = FADE_IN_OUT_DEFAULT
+		fade_out_darkness_lenght = 0
+	if fast:
+		fade_out_end = int(fade_out_end * 0.5)
 	fade_out = true
 	$Fade.visible = true
 	tele_destination = tele

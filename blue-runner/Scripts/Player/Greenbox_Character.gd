@@ -25,6 +25,8 @@ var frame_skip : bool = true
 var jumping : bool = false
 var punted : bool = false
 
+var jump_buffer : int = 0
+
 
 func _ready():
 	player.collisions[1].position = $col_1.position
@@ -36,6 +38,8 @@ func _ready():
 	player.add_child(attack)
 	# warning-ignore:return_value_discarded
 	attack.connect("body_entered", self, "_on_attack_connected")
+	# warning-ignore:return_value_discarded
+	attack.connect("area_entered", self, "_on_attack_connected_area")
 
 
 func _physics_process(delta):
@@ -45,14 +49,14 @@ func _physics_process(delta):
 	frame_skip = not frame_skip
 	
 	if player.is_jump_input_just_pressed(): # Check Jump Key
-		player.jump_buffer = player.INPUT_BUFFER_FRAMES 
+		jump_buffer = player.INPUT_BUFFER_FRAMES 
 	if Input.is_action_just_pressed("special"):
 		player.special_buffer = player.INPUT_BUFFER_FRAMES
 	
 	if player.ground_buffer > 0:
 		player.ground_buffer -= 1
-	if player.jump_buffer > 0:
-		player.jump_buffer -= 1
+	if jump_buffer > 0:
+		jump_buffer -= 1
 	if player.special_buffer > 0:
 		player.special_buffer -= 1
 	if attack_timer > 0:
@@ -139,14 +143,14 @@ func _physics_process(delta):
 				momentum.y = TERMINAL_VELOCITY - air_break
 			
 			# jump
-			if player.jump_buffer > 0: # if jump key pressed
+			if jump_buffer > 0: # if jump key pressed
 				if player.ground_buffer > 0: # If you are/were on the ground
 					momentum.y = -JUMP_STRENGH # Jump
 					attack_timer = 0
 					can_attack = true
 					player.play_sound("GreenboxJump")
 					player.ground_buffer = 0
-					player.jump_buffer = 0
+					jump_buffer = 0
 					jumping = true
 				else:
 					if wall_jump != 0:  # If you are able to wall jump
@@ -156,7 +160,7 @@ func _physics_process(delta):
 						can_attack = true
 						player.play_sound("GreenboxJump")
 						player.ground_buffer = 0
-						player.jump_buffer = 0
+						jump_buffer = 0
 						jumping = true
 			if player.special_buffer > 0 and can_attack and player.ground_buffer == 0: # else if you can, attack.
 				player.special_buffer = 0
@@ -187,7 +191,6 @@ func _physics_process(delta):
 				if momentum.y < -2:
 					momentum.y = -2
 			
-			
 			player.momentum.y = round(momentum.y) / delta
 			
 			if player.move_and_collide(Vector2(0,momentum.y), false, true, true):
@@ -199,10 +202,12 @@ func _physics_process(delta):
 		player.move_player_character()
 		#print("After: ", player.momentum)
 		
-		attack.visible = attack_timer > 0 and attack_timer != ATTACK_TIME
 		if attack_timer == 0:
 			attack.get_node("coll").disabled = true
 		
+	elif player.replay:
+		if $Anim.current_animation in ["Attack_H", "Attack_UH", "Attack_DH", "Attack_U", "Attack_D", "Attack_N"]:
+			attack_timer = ATTACK_TIME
 	elif player.replay and player.timer > player.replay_timer:
 		pass
 	elif player.dead:
@@ -214,6 +219,8 @@ func _physics_process(delta):
 		position += player.momentum * delta
 	elif player.end:
 		pass
+	
+	attack.visible = attack_timer > 0 and attack_timer != ATTACK_TIME
 
 
 func set_attack():
@@ -223,12 +230,27 @@ func set_attack():
 
 func _on_attack_connected(body):
 	if !player.deny_input:
-		momentum.y = -BOUNCE_STRENGH
-		attack.get_node("coll").disabled = true
-#		attack_timer = 0
-		player.jump_buffer = 0
-		can_attack = true
-		if body.collision_layer % 2 and (body.collision_layer / 2) % 2:
+		if player.bit_include(body.collision_layer, 0b0110):
+			attack_successful()
+		if player.bit_include(body.collision_layer, 0b0011):
+			attack_successful()
 			body.break_active = true
 			body.break_position = player.position + attack.get_node("attack").position
 			player.break_just_happened = true
+		if body is AttackDestroyable:
+			body.emit_signal("destroy_self")
+
+
+func _on_attack_connected_area(area):
+	if area.has_method("_on_body_entered"):
+		area._on_body_entered(player)
+	if area.has_method("apply_effect"):
+		area.apply_effect(player)
+
+
+func attack_successful():
+	momentum.y = -BOUNCE_STRENGH
+	attack.get_node("coll").call_deferred("disabled", true)
+#			attack_timer = 0
+	jump_buffer = 0
+	can_attack = true

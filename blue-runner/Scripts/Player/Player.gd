@@ -2,6 +2,9 @@ extends KinematicBody2D
 class_name Player
 
 
+signal boosted(boost)
+
+
 onready var level : Node2D
 onready var character : Node2D
 onready var collisions : Array = [$col_0, $col_1, $col_2]
@@ -226,9 +229,10 @@ func _physics_process(delta):
 		if Input.is_action_just_pressed("save_replay"):
 			add_recording_data()
 			Global.save_replay_with_date(get_parent().name, recording.duplicate())
-		if stylish and state == "ground":
+		if stylish and state == "ground" and not should_jump():
 			if get_horizontal_axis() != 0:
-				boost(Vector2(get_horizontal_axis() * 200, 0))
+				call_deferred("boost", Vector2(get_horizontal_axis() * 200, 0))
+#				boost(Vector2(get_horizontal_axis() * 200, 0))
 			stylish = false
 		
 #		if !level.unicolor_active and false:
@@ -287,8 +291,8 @@ func _physics_process(delta):
 				Global.level_completion[Global.current_level_location][_name] = [null, null, 1]
 #			print(Global.level_completion[Global.current_level_location][_name])
 		death_wait += 1
-		if death_wait >= 20:
-			Global.change_level("")
+		if death_wait >= 16:
+			Global.change_level_fade_out("", true)
 	elif end:
 		stylish = false
 	
@@ -342,6 +346,19 @@ func decrement_jump_buffer():
 		jump_buffer -= 1
 
 
+func should_special() -> bool:
+	return special_buffer > 0
+
+
+func start_special_buffer():
+	special_buffer = INPUT_BUFFER_FRAMES
+
+
+func decrement_special_buffer():
+	if special_buffer > 0:
+		special_buffer -= 1
+
+
 func start_ground_buffer():
 	ground_buffer = GROUND_BUFFER_FRAMES
 
@@ -352,12 +369,18 @@ func decrement_ground_buffer():
 
 
 func get_facing_axis() -> float:
-	var axis = 1
 	if facing == "left":
-		axis = -1
-	if facing == "right":
-		axis = 1
-	return axis
+		return -1.0
+	else:
+		return 1.0
+
+
+func face_towards(direction : float):
+	direction = sign(direction)
+	if direction == -1.0:
+		facing = "left"
+	elif direction == 1.0:
+		facing = "right"
 
 
 func below_max_speed(number : float, direction : float, threshold : float) -> bool:
@@ -421,9 +444,8 @@ func collision_default_effects(type : int, collider):
 	
 	# Hurt
 	if bit_include(type, 0b0100):
-		if not (bit_include(type, 0b0010) and jump_buffer != 0):
-			dead = true
-			deny_input = true
+		if not (bit_include(type, 0b0010) and should_jump()):
+			die()
 	
 	# Breakable
 	if bit_include(type, 0b0011) and break_breakables:
@@ -448,6 +470,11 @@ func bit_match(num : int, pattern : int) -> bool:
 
 func bit_include(num : int, pattern : int) -> bool:
 	return num & pattern == pattern
+
+
+func die():
+	dead = true
+	deny_input = true
 
 
 func jump(jump_power : int):
@@ -499,11 +526,12 @@ func punt(boost : Vector2, overwrite_momentum : bool, make_airborn : bool = true
 			launched = true
 
 
-func boost(boost : Vector2):
+func boost(boost_amount : Vector2):
 	boosted = true
-	momentum += boost
-	if boost.x != 0:
-		make_speed_ring(sign(boost.x))
+	momentum += boost_amount
+	if boost_amount.x != 0:
+		make_horizontal_speed_ring(sign(boost_amount.x))
+	emit_signal("boosted", boost_amount)
 
 
 func play_sound(sound_name : String, random_pitch : bool = false):
@@ -598,14 +626,22 @@ func been_stylish(style : String = "Nice!"):
 	var new_callout : Node2D = preload("res://Objects/Decor/StyleCallout.tscn").instance()
 	new_callout.text = style
 	new_callout.position = position
-	get_tree().current_scene.add_child(new_callout)
+	get_tree().current_scene.call_deferred("add_child", new_callout)
 	
 	stylish = true
 
 
-func make_speed_ring(direction : float = 1):
+func make_horizontal_speed_ring(direction : float = 1):
+#	var ring : Node2D = preload("res://Objects/Decor/SpeedRing.tscn").instance()
+#	ring.position = position - character.STYLISH_RECT * Vector2(0, 0.5)
+#	ring.scale.x = direction
+#	get_tree().current_scene.add_child(ring)
+	make_speed_ring(0, character.STYLISH_RECT * Vector2(0, 0.5), direction)
+
+
+func make_speed_ring(rot : float, offset : Vector2, ring_scale : float):
 	var ring : Node2D = preload("res://Objects/Decor/SpeedRing.tscn").instance()
-	ring.position = position - character.STYLISH_RECT * Vector2(0, 0.5)
-	ring.scale.x = direction
+	ring.position = position - offset
+	ring.rotation = rot
+	ring.scale = Vector2(ring_scale, ring_scale)
 	get_tree().current_scene.add_child(ring)
-	

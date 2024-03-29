@@ -9,12 +9,36 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "StaticBody2D",
+"class": "AttackDestroyable",
+"language": "GDScript",
+"path": "res://Scripts/AttackDestroyable.gd"
+}, {
+"base": "Node2D",
+"class": "BG",
+"language": "GDScript",
+"path": "res://Scripts/BG.gd"
+}, {
+"base": "Area2D",
+"class": "GolfDisk",
+"language": "GDScript",
+"path": "res://Scripts/GolfDisk.gd"
+}, {
+"base": "Node2D",
+"class": "LevelControl",
+"language": "GDScript",
+"path": "res://Scripts/Level_Control.gd"
+}, {
 "base": "KinematicBody2D",
 "class": "Player",
 "language": "GDScript",
 "path": "res://Scripts/Player/Player.gd"
 } ]
 _global_script_class_icons={
+"AttackDestroyable": "",
+"BG": "",
+"GolfDisk": "",
+"LevelControl": "",
 "Player": ""
 }
 

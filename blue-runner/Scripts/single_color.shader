@@ -62,11 +62,20 @@ void fragment() {
 	COLOR = texture(TEXTURE, uv);
 	
 	
-	if (outline_active && (COLOR.a >= 0.9) == inside && hasContraryNeighbour(uv, TEXTURE_PIXEL_SIZE, TEXTURE)) {
-		COLOR.rgb = inside ? mix(COLOR.rgb, color.rgb, color.a) : color.rgb;
-		COLOR.a += (1.0 - COLOR.a) * color.a;
+	if (outline_active)
+	{
+		if ((COLOR.a >= 0.9) == inside && hasContraryNeighbour(uv, TEXTURE_PIXEL_SIZE, TEXTURE))
+		{
+			COLOR.rgb = inside ? mix(COLOR.rgb, color.rgb, color.a) : color.rgb;
+			COLOR.a += (1.0 - COLOR.a) * color.a;
+		}
 	}
-	else if(active) {
+	else if(active && blend == 1.0)
+	{
+		float value = texture(TEXTURE, UV).a;
+		COLOR = vec4(color.rgb, value * color.a);
+	}
+	else if(active && blend != 0.0) {
 		vec4 value = texture(TEXTURE, UV).rgba;
 		COLOR = vec4(color.rgb * vec3(blend, blend, blend) + value.rgb * vec3(1.0 - blend, 1.0 - blend, 1.0 - blend), value.a * color.a);
 	}

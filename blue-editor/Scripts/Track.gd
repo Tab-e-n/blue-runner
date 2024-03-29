@@ -34,7 +34,7 @@ export var pre_pos : Dictionary = {}
 
 var pos : Dictionary = {}
 
-export var attached_nodes = [null]
+export var attached_nodes = []
 
 func editor_ready():
 	reset_points()

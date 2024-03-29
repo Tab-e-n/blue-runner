@@ -5,8 +5,6 @@ export var level_location : String
 export var level_symbol : Texture
 export var locked : bool = false
 
-onready var global : Control = $"/root/Global"
-
 var time : float = 0
 var par : float = 0
 var level_base : Array = ["",""]
@@ -21,9 +19,11 @@ func _process(_delta):
 	pass
 
 func load_base():
-	level_dat = global.load_dat_file(level_location + level_name)
-	if !level_dat.has("level_base"): level_dat["level_base"] = ["base","res:/"] #typeof(level_dat) == TYPE_NIL:
-	if !level_dat.has("level_icon"): level_dat["level_icon"] = ["questionmark.png","res:/"]
+	level_dat = Global.load_dat_file(level_location + level_name)
+	if !level_dat.has("level_base"):
+		level_dat["level_base"] = ["base","res:/"] #typeof(level_dat) == TYPE_NIL:
+	if !level_dat.has("level_icon"):
+		level_dat["level_icon"] = ["questionmark.png","res:/"]
 	
 	if level_dat.has("level_base"): if level_base[1]+level_base[0] != level_dat["level_base"][1]+level_dat["level_base"][0]:
 		var loadfile = File.new()
@@ -60,16 +60,16 @@ func reload():
 	if locked:
 		use_default = false
 		$icon.texture = load(base[level_dat["level_base"][0]][1][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][1][0])
-	elif global.level_completion[level_location].has(level_name):
-		if global.level_completion[level_location][level_name][0] != null:
+	elif Global.level_completion[level_location].has(level_name):
+		if Global.level_completion[level_location][level_name][0] != null:
 			use_default = false
 			
-			time = global.level_completion[level_location][level_name][0]
-			par = global.level_completion[level_location][level_name][1]
+			time = Global.level_completion[level_location][level_name][0]
+			par = Global.level_completion[level_location][level_name][1]
 			
 			var collectible_amount = 0
 			for i in range(3):
-				if global.level_completion["*collectibles"][level_location].has(level_name + "*" + String(i+1)):
+				if Global.level_completion["*collectibles"][level_location].has(level_name + "*" + String(i+1)):
 					collectible_amount += 1
 			
 			$boltcollect/Anim.stop()

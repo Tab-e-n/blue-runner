@@ -41,7 +41,7 @@ region_enabled = true
 region_rect = Rect2( 0, -64, 4096, 768 )
 
 [node name="bg1" type="Sprite" parent="bg3/bg2"]
-position = Vector2( -256, 48 )
+position = Vector2( -252, 48 )
 texture = ExtResource( 6 )
 region_enabled = true
 region_rect = Rect2( 0, -64, 4096, 768 )

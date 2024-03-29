@@ -29,6 +29,7 @@
  - User Universe now has a unique BG.
  - Bootup sequence has a new font.
  - Ghosts now appear a solid instead of appearing segmented.
+ - Fade outs and fade ins were made smoother, most harsh cuts between scenes were replaced with a fade out.
 
 ### FIXES & CHANGES
 
@@ -64,6 +65,7 @@
     - __ External Images__! It's the lite version of mods!
     - __ Invisible Ground__! :)
     - __ Floating Label__! HoverText but a bit simpler to use.
+      __ All April Fools Objects__!
  - You can now change the font of HoverText.
  - New text formating or something! It allows you show some game data as text.
    This will be explained in the wiki in more detail if you are interested.
@@ -84,21 +86,24 @@
 
 ### FIXES & CHANGES
 
- - When picking items, the original item is nolonger deleted unless you hold shift.
- - There is now a shortcut to start playtesting the level.
- - Added a new dropdown menu for selecting a tab.
  - Quick mouse movement while placing down tiles nolonger makes gaps.
- - Attachables should no longer have wacky behaviours when you do anything complex with them.
+ - When picking items, the original item is nolonger deleted unless you hold shift.
+ - Fixed a few edge cases when rotating a object or decor with transform mode.
+ - Holding shift in transform mode snaps the rotation to multiples of 15 degrees and scale to multiples of 0.05.
+ - There is now a shortcut to start playtesting the level.
+ - Playtested levels nolonger alter the savefile.
+ - Added a new dropdown menu for selecting a tab.
  - Fixed a bug where you could have multiple of the same tile preset in the place panel.
+ - The "Is official" tag has been altered. Now when a level has the "Is official" tag:
+	 - If the level's author matches the level groups author, the level won't have the "Creator:" line, similary to how WaterWay doesn't have it.
+	 - If the level's author is different to the level groups author, it will show a thank you message.
+ - The "Is official" tag now does nothing in UserUniverse.
+ - Attachables should no longer have wacky behaviours when you do anything complex with them.
  - You can now edit the order of portals.
  - Portals nolonger break when multiple are placed.
  - Fixed playtested levels not reloading when you die or press reset.
  - Playtested levels no longer save as seperate levels.
  - Upon exiting a level when you are playtesting it, you will also exit SR. You won't need to go through the SR menu to get back to the editor.
- - The "Is official" tag has been altered. Now when a level has the "Is official" tag:
-	 - If the level's author matches the level groups author, the level won't have the "Creator:" line, similary to how WaterWay doesn't have it.
-	 - If the level's author is different to the level groups author, it will show a thank you message.
- - The "Is official" tag now does nothing in UserUniverse.
  - In the options menu, the keybind for saving with a popup didn't display properly. This is now fixed.
 
 </p></details>

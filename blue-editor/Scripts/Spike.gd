@@ -1,7 +1,7 @@
 extends StaticBody2D
 
 var editor_properties : Dictionary = {
-	"description" : "A sawblade.\nIt hurts to touch. However, with precise spacing, you are able to jump off of it.",
+	"description" : "A sawblade.\nIt hurts to touch. However, with precise timing, you are able to jump off of it.",
 	"object_path" : "res://Objects/Spike.tscn",
 	"object_type" : "normal",
 	"layer" : "selected",

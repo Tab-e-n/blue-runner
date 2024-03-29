@@ -4,7 +4,7 @@ onready var level : Node2D
 
 export var is_finish : bool = true
 
-export var tele_destination : String = "*Menu_Level_Select"
+export var tele_destination : String = "*Level_Next"
 export var par : float = 0
 
 export(int, "XT9", "S1") var type = 0
@@ -43,6 +43,7 @@ func _ready_deferred():
 		$AnimationPlayer.current_animation = "Speen"
 		
 	if is_finish:
+		material.set_shader_param("active", false)
 		if level.get_script() != null:
 			if level.unicolor_active:
 				material.set_shader_param("active", true)

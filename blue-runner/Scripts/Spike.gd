@@ -9,7 +9,7 @@ func _ready():
 	$StylishCheck.monitorable = stylish
 	if stylish:
 		$saw_2.texture = preload("res://Visual/saw_3.png")
-		$StylishCheck.scale.y =  1 + 1.25 / scale.y
+		$StylishCheck.scale.y = 1 + 1.25 / scale.y
 
 
 func _physics_process(_delta):

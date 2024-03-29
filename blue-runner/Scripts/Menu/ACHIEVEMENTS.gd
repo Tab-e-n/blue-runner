@@ -5,7 +5,9 @@ onready var parent : Node2D = get_parent()
 var achivements_definition : Dictionary = {
 	#"ID" : ["Achievement Name", "Achievement Description", is_hidden, unlock_type, parameter_1, parameter_2]
 	"complete_waterway" : ["Complete WaterWay", "Get 100% completion on WaterWay.", false, 3, "res://Scenes/waterway/", 100],
+	"XT9" : ["Role Reversal", "Unlock XT9.", false, 5, "*character_XT9", null],
 	"code_missing" : ["missing", "code nothing", false, 5, "*character_missing", null],
+	"S1X" : ["Gay Videogame", "Not really...", false, 5, "*character_S1X", null],
 	"greenbox" : ["Simple fun plat-", "This ain`t no kat!", false, 5, "*character_greenbox", null],
 	"granddad" : ["The Grandfather", "Flint and stone brother!", false, 5, "*character_granddad", null],
 }

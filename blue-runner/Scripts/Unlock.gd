@@ -22,7 +22,8 @@ func menu_update():
 
 
 func stop_existing():
-	$anim.play("hide")
+	if $anim.current_animation != "popup":
+		$anim.play("hide")
 #	print("stop")
 
 

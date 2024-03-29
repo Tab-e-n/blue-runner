@@ -1,8 +1,19 @@
-[gd_scene load_steps=42 format=2]
+[gd_scene load_steps=53 format=2]
 
 [ext_resource path="res://Scripts/Level_Control.gd" type="Script" id=1]
 [ext_resource path="res://Objects/Tilesets/WaterWay.tres" type="TileSet" id=2]
 [ext_resource path="res://Scripts/single_color.shader" type="Shader" id=3]
+[ext_resource path="res://Objects/April/WeakGround.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Objects/April/Spring.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Objects/April/Flame.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Objects/April/SpikeBall.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Objects/Barrier.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Objects/April/Magma.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Objects/April/Icycle.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Objects/April/GolfDisk.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Objects/April/GolfCatcher.tscn" type="PackedScene" id=12]
+[ext_resource path="res://Objects/April/SuperDuperUltraLaser.tscn" type="PackedScene" id=13]
+[ext_resource path="res://Objects/Player/StartPos.tscn" type="PackedScene" id=14]
 [ext_resource path="res://Objects/Player/Player.tscn" type="PackedScene" id=19]
 [ext_resource path="res://Objects/Finish.tscn" type="PackedScene" id=20]
 [ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=21]
@@ -357,12 +368,10 @@ scale = Vector2( 1, 4 )
 [node name="Portal" parent="objects_center" instance=ExtResource( 36 )]
 use_parent_material = true
 position = Vector2( 2240, 0 )
-tele_destination = "*MENU"
 
 [node name="@Portal@609" parent="objects_center" instance=ExtResource( 36 )]
 use_parent_material = true
 position = Vector2( 2352, 0 )
-tele_destination = "*MENU"
 silent_portal = true
 
 [node name="Track" parent="objects_center" instance=ExtResource( 33 )]
@@ -441,6 +450,45 @@ scale = Vector2( 1.5, 1.5 )
 [node name="Booster" parent="objects_center" instance=ExtResource( 24 )]
 use_parent_material = true
 position = Vector2( -848, 256 )
+
+[node name="WeakGround" parent="objects_center" instance=ExtResource( 4 )]
+position = Vector2( 128, 0 )
+
+[node name="SpikeBall" parent="objects_center" instance=ExtResource( 7 )]
+position = Vector2( 128, -256 )
+
+[node name="Flame" parent="objects_center" instance=ExtResource( 6 )]
+position = Vector2( 1056, 640 )
+
+[node name="Spring" parent="objects_center" instance=ExtResource( 5 )]
+position = Vector2( -640, 0 )
+
+[node name="Magma" parent="objects_center" instance=ExtResource( 9 )]
+position = Vector2( 2720, 288 )
+
+[node name="Magma2" parent="objects_center" instance=ExtResource( 9 )]
+position = Vector2( 2784, 288 )
+icy = true
+
+[node name="Icycle" parent="objects_center" instance=ExtResource( 10 )]
+position = Vector2( 2752, 640 )
+
+[node name="GolfDisk" parent="objects_center" instance=ExtResource( 11 )]
+position = Vector2( 320, -192 )
+
+[node name="GolfCatcher" parent="objects_center" instance=ExtResource( 12 )]
+position = Vector2( 2432, 256 )
+
+[node name="SuperDuperUltraLaser" parent="objects_center" instance=ExtResource( 13 )]
+position = Vector2( 3072, -640 )
+rotation = 1.57079
+
+[node name="StartPos" parent="objects_center" instance=ExtResource( 14 )]
+position = Vector2( 1664, 640 )
+
+[node name="Barrier" parent="objects_center" instance=ExtResource( 8 )]
+position = Vector2( 3328, 128 )
+rotation = -1.57079
 
 [node name="decor_center" type="Node2D" parent="."]
 material = SubResource( 13 )

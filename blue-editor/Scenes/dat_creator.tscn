@@ -124,8 +124,6 @@ func base_remove():
 		savefile.store_line(to_json(temp))
 		savefile.close()
 
-enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
-
 func character_changed_unlock_type(index):
 	data.changed_unlock_type(index, $GUI/character/text_edit, $GUI/character/type, $\"GUI/character/1_text\", $\"GUI/character/2_text\", $\"GUI/character/2_number\", \"\")
 
@@ -147,7 +145,7 @@ func character_save():
 	if !temp.has(\"*characters\"): temp[\"*characters\"] = {}
 	temp[\"*characters\"][$GUI/character/file.text] = [$GUI/character/type.selected, $\"GUI/character/1_text\".text, null, \"\", \"\"]
 	
-	if $GUI/character/type.selected == UNLOCK_COMPLETION or $GUI/character/type.selected == UNLOCK_BONUS:
+	if data.unlock_numerical_para2( $GUI/character/type.selected):
 		temp[\"*characters\"][$GUI/character/file.text][2] = $\"GUI/character/2_number\".value
 	else:
 		temp[\"*characters\"][$GUI/character/file.text][2] = $\"GUI/character/2_text\".text
@@ -187,7 +185,7 @@ func character_load():
 	$GUI/character/type.selected = char_data[0]
 	$\"GUI/character/1_text\".text = char_data[1]
 	
-	if char_data[0] == UNLOCK_COMPLETION or char_data[0] == UNLOCK_BONUS:
+	if data.unlock_numerical_para2(char_data[0]):
 		$\"GUI/character/2_number\".value = char_data[2]
 	else:
 		$\"GUI/character/2_text\".text = char_data[2]
@@ -595,7 +593,7 @@ margin_right = 712.0
 margin_bottom = 360.0
 text = "Always Unlocked"
 clip_text = true
-items = [ "Always Unlocked", null, false, 0, null, "Beat Level", null, false, 1, null, "Par Level", null, false, 2, null, "Group Completion", null, false, 3, null, "Bonus Amount", null, false, 4, null, "Custom Unlock", null, false, 5, null, "Never Unlocked", null, false, 6, null ]
+items = [ "Always Unlocked", null, false, 0, null, "Beat Level", null, false, 1, null, "Par Level", null, false, 2, null, "Group Completion", null, false, 3, null, "Bonus Amount", null, false, 4, null, "Custom Unlock", null, false, 5, null, "Never Unlocked", null, false, 6, null, "Beaten Levels", null, false, 7, null, "Pared Levels", null, false, 8, null ]
 selected = 0
 __meta__ = {
 "_edit_use_anchors_": false

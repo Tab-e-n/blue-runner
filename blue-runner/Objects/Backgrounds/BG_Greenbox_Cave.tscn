@@ -1,0 +1,34 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Visual/BG/bg_cave.png" type="Texture" id=1]
+[ext_resource path="res://Scripts/BG_Greenbox_Cave.gd" type="Script" id=2]
+
+[node name="BG" type="Node2D"]
+z_index = -100
+script = ExtResource( 2 )
+bg_color = Color( 0.345098, 0.0862745, 0.0784314, 1 )
+
+[node name="back" type="Polygon2D" parent="."]
+color = Color( 0.168627, 0.0313726, 0.113725, 1 )
+polygon = PoolVector2Array( 1280, 768, 1280, -768, -1280, -768, -1280, 768 )
+
+[node name="bg_cave1" type="Sprite" parent="."]
+self_modulate = Color( 0.298039, 0.054902, 0.129412, 1 )
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 0, -768, 4096, 2304 )
+
+[node name="bg_cave2" type="Sprite" parent="."]
+self_modulate = Color( 0.411765, 0.0705882, 0.109804, 1 )
+scale = Vector2( 1.5, 1.5 )
+texture = ExtResource( 1 )
+flip_h = true
+region_enabled = true
+region_rect = Rect2( 0, -768, 4096, 2304 )
+
+[node name="bg_cave3" type="Sprite" parent="."]
+self_modulate = Color( 0.537255, 0.0941176, 0.0823529, 1 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 0, -768, 4096, 2304 )
