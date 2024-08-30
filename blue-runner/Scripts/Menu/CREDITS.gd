@@ -20,7 +20,7 @@ func _ready():
 	$credits/Greenbox.visible = Global.check_unlock("*character_greenbox")
 	$credits/Granddad.visible = Global.check_unlock("*character_granddad")
 	$credits/car.visible = Global.check_unlock("*character_car")
-	$credits/Disco.visible = Global.check_unlock("*groovy")
+	$credits/Disco.visible = Global.check_unlock("*character_XT9")
 	
 	if end_credits:
 		$back.text = ""

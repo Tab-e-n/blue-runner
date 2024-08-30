@@ -686,13 +686,6 @@ func level_selected():
 	
 	var level_dat = level.level_dat.duplicate()
 	var error : int = false
-	if !level_dat.has("dependencies"):
-		error = true
-	else:
-		for i in level_dat["dependencies"]:
-			if !Global.mods_installed.has(i):
-				error = true
-				$level_select/dependency.visible = true
 	var file : File = File.new()
 	if !file.file_exists(Global.current_level_location + Global.current_level + ".tscn"):
 		error = true
@@ -711,7 +704,7 @@ func level_selected():
 		level.get_node("Anim").play("Refuse")
 		$level_select/levels/selected_level/anim.play("Refuse")
 		has_selected_level = false
-	elif Global.change_level("", true, false) != OK:
+	elif Global.change_level("", true) != OK:
 		level.get_node("Anim").play("Refuse")
 		$level_select/levels/selected_level/anim.play("Refuse")
 		$level_select/fail.visible = true
@@ -766,6 +759,16 @@ func check_group_unlocks():
 
 
 func check_character_unlocks():
+	if not Global.check_unlock("*character_XT9"):
+		if Global.check_unlock_requirements(7, "@waterway", 19):
+			Global.unlock("*character_XT9")
+	if not Global.check_unlock("*character_S1X"):
+		if Global.check_unlock_requirements(8, "@waterway", 19):
+			Global.unlock("*character_S1X")
+	if not Global.check_unlock("*character_MXT9"):
+		if Global.check_unlock_requirements(Global.UNLOCK_BONUS, "@waterway", 7):
+			Global.unlock("*character_MXT9")
+	
 	var unlocked_characters : Array = []
 	var check_character : int = 0
 	

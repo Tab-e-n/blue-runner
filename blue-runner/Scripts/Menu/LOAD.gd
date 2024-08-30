@@ -10,14 +10,15 @@ const KEYBIND_TEXT = [
 ]
 
 const LORE_TEXT = [
-	"starting machina...\n",
-	"MOTRBIOS (C) 2022 Tabin Narciss\n",
-	"BIOS date 1/5/87 12:34:56\n",
+	"starting machine...\n",
+	"MOTRBIOS (C) 20## #### #####\n",
+	"BIOS date 29/2/87 14:#0:3#\n",
 	"CPU:",
-	" VVIDYA Cstream Nan\n",
-	"Memory:",
+	" VVIDYA Jetstr#am Nano\n",
+	"Memo#y:",
 	" SD/CCMN 48\n",
-	"WARNING: Machine has been tampered with\n\n",
+	"WARNING: Machine has be#n either tampered with,\nor it has #een dama#ed.",
+	"\n\n",
 	"AUDIO CALIBRATION",
 ]
 

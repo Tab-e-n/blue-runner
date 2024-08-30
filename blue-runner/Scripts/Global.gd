@@ -1,10 +1,9 @@
 extends Control
 
 #game Stuff
-const VERSION : String = "2.0.B"
+const VERSION : String = "2.0.1"
 const USER_LEVELS : String = "user://SRLevels/"
 const SAVEFILE : String = "user://sonicRunner"
-const MODS_SAVEFILE : String = "user://sonicRunnerMods"
 const KEYBIND_NAMES : Array = ["*left", "*right", "*up", "*down", "*jump", "*special", "*reset", "*return", "*menu_left", "*menu_right", "*menu_up", "*menu_down", "*accept", "*deny", "*save_replay", "*screenshot", "*info"]
 
 const DEFAULT_OPTIONS : Dictionary = {
@@ -31,7 +30,7 @@ const DEFAULT_OPTIONS : Dictionary = {
 	"*up_key_jump" : true,
 	"*timer_on" : 0,
 	"*first_time_load" : true,
-	"*last_level_location" : "res://Scenes/April/",
+	"*last_level_location" : "res://Scenes/waterway/",
 	"*audio_sfx" : 60,
 	"*audio_music" : 50,
 }
@@ -55,8 +54,6 @@ var unlocked : Dictionary = {
 	"completion_percentages" : {},
 }
 var options : Dictionary = {}
-
-var mods_installed = []
 
 var rand : RandomNumberGenerator = RandomNumberGenerator.new()
 
@@ -111,29 +108,27 @@ func _ready():
 		dir.make_dir("SRReplays")
 	if !dir.dir_exists("SRReplays/res"):
 		dir.make_dir("SRReplays/res")
-	if !dir.dir_exists("SRReplays/mods"):
-		dir.make_dir("SRReplays/mods")
 	if !dir.dir_exists("SRReplays/user"):
 		dir.make_dir("SRReplays/user")
 	if !dir.dir_exists("SRScreenshots"):
 		dir.make_dir("SRScreenshots")
 	
 	# Load user levels
-#	var directory : Directory = Directory.new()
-#	var check_exist = directory.open(USER_LEVELS)
-#	var current_file
-#
-#	if check_exist == OK:
-#		# warning-ignore:return_value_discarded
-#		directory.list_dir_begin(true)
-#
-#		current_file = directory.get_next()
-#		while current_file != "":
-#			if current_file.ends_with(".tscn"):
-#				user_levels.append(current_file.trim_suffix(".tscn"))
-#			current_file = directory.get_next()
-#		# warning-ignore:integer_division
-#		user_pages = user_levels.size() / 20
+	var directory : Directory = Directory.new()
+	var check_exist = directory.open(USER_LEVELS)
+	var current_file
+
+	if check_exist == OK:
+		# warning-ignore:return_value_discarded
+		directory.list_dir_begin(true)
+
+		current_file = directory.get_next()
+		while current_file != "":
+			if current_file.ends_with(".tscn"):
+				user_levels.append(current_file.trim_suffix(".tscn"))
+			current_file = directory.get_next()
+		# warning-ignore:integer_division
+		user_pages = user_levels.size() / 20
 	
 	load_data()
 	
@@ -254,54 +249,54 @@ func change_input(input_id : int, new_input):
 
 const NAMES : Dictionary = {
 	KEY_SPACE : "SPACE",
-	KEY_ESCAPE : "ESC APE",
+	KEY_ESCAPE : "ESCAPE",
 	KEY_TAB : "TAB",
 	KEY_BACKTAB : "BACKSLASH",
 	KEY_BACKSPACE : "BACK",
 	KEY_ENTER : "ENTER",
-	KEY_KP_ENTER : "KPENTER",
-	KEY_INSERT : "INSERT :3",
-	KEY_DELETE : "DEDEDELETE",
-	KEY_PAUSE : "MAUSE",
-	KEY_PRINT : "PRITNER",
+	KEY_KP_ENTER : "KP ENTER",
+	KEY_INSERT : "INSERT",
+	KEY_DELETE : "DELETE",
+	KEY_PAUSE : "PAUSE",
+	KEY_PRINT : "PRINTER",
 	KEY_SYSREQ : "SYSTEM REQUEST",
 	KEY_CLEAR : "CLS",
 	KEY_HOME : "S1 COME HOME",
-	KEY_END : "THE END :(",
-	KEY_LEFT : "<-",
-	KEY_UP : "/\\",
-	KEY_RIGHT : "->",
-	KEY_DOWN : "\\/",
+	KEY_END : "THE END",
+	KEY_LEFT : "ARROW LEFT",
+	KEY_UP : "ARROW UP",
+	KEY_RIGHT : "ARROW RIGHT",
+	KEY_DOWN : "ARROW DOWN",
 	KEY_PAGEUP : "PAGE UP",
-	KEY_PAGEDOWN : "PAIGE DOWN",
-	KEY_SHIFT : "shift",
+	KEY_PAGEDOWN : "PAGE DOWN",
+	KEY_SHIFT : "SHIFT",
 	KEY_CONTROL : "CTRL",
 	KEY_META : "THIS KEY IS THE META",
-	KEY_ALT : "ALTER",
-	KEY_CAPSLOCK : "AAAAAAAAAAAAA",
+	KEY_ALT : "ALT",
+	KEY_CAPSLOCK : "AAAAAAAAAAAAAA",
 	KEY_NUMLOCK : "NUMER NUMA EY",
 	KEY_SCROLLLOCK : "SOMETHING LOCK",
 	KEY_F1 : "F1",
 	KEY_F2 : "F2",
-	KEY_F3 : "FTRES",
-	KEY_F4 : "FCHETIRE",
-	KEY_F5 : "FFUNF",
-	KEY_F6 : "FSEST",
-	KEY_F7 : "FSEVEN",
-	KEY_F8 : "FINFINITYUPWARDS",
-	KEY_F9 : "FTSES",
-	KEY_F10 : "FDECADE",
-	KEY_F11 : "FONEONE",
-	KEY_F12 : "F 12",
-	KEY_F13 : "FUNLOCKY",
-	KEY_F14 : "FIA",
-	KEY_F15 : "F3*5",
-	KEY_F16 : "F4TOTHEPOWEROF2",
-	KEY_KP_MULTIPLY : "COUNTING STARS",
+	KEY_F3 : "F3",
+	KEY_F4 : "F4",
+	KEY_F5 : "F5",
+	KEY_F6 : "F6",
+	KEY_F7 : "F7",
+	KEY_F8 : "F8",
+	KEY_F9 : "F9",
+	KEY_F10 : "F10",
+	KEY_F11 : "F11",
+	KEY_F12 : "F12",
+	KEY_F13 : "F13",
+	KEY_F14 : "F14",
+	KEY_F15 : "F15",
+	KEY_F16 : "F16",
+	KEY_KP_MULTIPLY : "KEYPAD *",
 	KEY_KP_DIVIDE : "KEYPAD /",
 	KEY_KP_SUBTRACT : "KEYPAD -",
-	KEY_KP_PERIOD : ".",
-	KEY_KP_ADD : "PLSU",
+	KEY_KP_PERIOD : "KEYPAD .",
+	KEY_KP_ADD : "KEYPAD +",
 	KEY_KP_0 : "KEYPAD 0",
 	KEY_KP_1 : "KEYPAD 1",
 	KEY_KP_2 : "KEYPAD 2",
@@ -335,10 +330,10 @@ const NAMES : Dictionary = {
 	KEY_MEDIAPLAY : "PLAY THAT SONG AGAIN",
 	KEY_MEDIASTOP : "STOP THE MUSIC",
 	KEY_MEDIAPREVIOUS : "CLASSICAL ART",
-	KEY_MEDIANEXT : "FLIPWITCH OST",
+	KEY_MEDIANEXT : "ACCELERATIONISM",
 	KEY_MEDIARECORD : "CAUGHT ON CAMERA",
 	KEY_HOMEPAGE : "HOME WITH PAGE",
-	KEY_FAVORITES : "FEMTANYL",
+	KEY_FAVORITES : "MY JAM",
 	KEY_SEARCH : "SAVE THEM",
 	KEY_STANDBY : "HALT",
 	KEY_OPENURL : "BROWSER TIME",
@@ -362,6 +357,8 @@ const NAMES : Dictionary = {
 	KEY_LAUNCHF : "SHORTCUT F",
 	KEY_UNKNOWN : "???",
 }
+
+
 func key_names(key : int):
 	var key_number = options[KEYBIND_NAMES[key]]
 	if key_number >= 33 and key_number <= 255:
@@ -628,7 +625,7 @@ func change_level_fade_out(destination : String, fast : bool = false):
 		change_level(destination) 
 
 
-func change_level(destination : String, return_value : bool = false, check_dependencies : bool = true):
+func change_level(destination : String, return_value : bool = false):
 	credits = false
 	compatibility_mode = false
 	
@@ -690,15 +687,6 @@ func change_level(destination : String, return_value : bool = false, check_depen
 	var error = OK
 	
 #	print("destination converted: ", destination_new)
-	
-	if check_dependencies:
-		var level_dat = load_dat_file(destination_new.left(destination_new.find_last(".")))
-		if !level_dat.has("dependencies"):
-			error = ERR_FILE_MISSING_DEPENDENCIES
-		else:
-			for i in level_dat["dependencies"]:
-				if !mods_installed.has(i):
-					error = ERR_FILE_MISSING_DEPENDENCIES
 	
 #	print(destination_new)
 	
@@ -1211,22 +1199,6 @@ func load_game():
 		level_completion = temp["level_completion"].duplicate()
 		options = temp["options"].duplicate()
 		unlocked = temp["unlocked"].duplicate()
-	
-	temp = {"*mods" : []}
-	
-	# MOD LOADING IS DISABLED FOR NOW
-	if false: #loadfile.file_exists(MODS_SAVEFILE): # does file exist 
-		loadfile.open(MODS_SAVEFILE, File.READ)
-		
-		while loadfile.get_position() < loadfile.get_len():
-			var parsedData = parse_json(loadfile.get_line())
-			
-			temp = parsedData
-		
-		loadfile.close()
-	
-	mods_installed = temp["*mods"].duplicate()
-	#print(mods_installed)
 
 
 func delete_save(): 
@@ -1454,14 +1426,7 @@ func replay_filename(new_name : String, create_dir : bool):
 			# warning-ignore:return_value_discarded
 			if create_dir:
 				directory.make_dir_recursive("user://SRReplays/user/" + folder_name)
-		"Mods":
-			folder_path = folder_path.replace("/Scenes/", "/")
-			folder_path = folder_path.substr(folder_path.find("/") + 1, folder_path.length() - folder_path.find("/")) + "/"
-			replay_name = "mods/" + folder_path + replay_name
-			# warning-ignore:return_value_discarded
-			if create_dir:
-				directory.make_dir_recursive("user://SRReplays/mods/" + folder_path)
-	
+		
 	return replay_name
 
 
@@ -1519,9 +1484,6 @@ func load_data():
 	loaded_level_groups.append(["SRLevels","user://"])
 	
 	scan_for_directories("res://Scenes/", loaded_level_groups, "group")
-#	for mod_name in mods_installed:
-#		scan_for_directories("Mods/" + mod_name + "/Scenes/", loaded_level_groups, "group")
-#	scan_for_directories(USER_LEVELS, loaded_level_groups, "group")
 	
 	var temp_level_groups = loaded_level_groups.duplicate()
 	var group_unlocks : Array = []
@@ -1537,16 +1499,10 @@ func load_data():
 		if level_dat.empty():
 			group_unlocks.append([UNLOCK_NEVER, "", ""])
 			continue
-		var depend_test = true
-		for i in level_dat["dependencies"]:
-			if !mods_installed.has(i):
-				temp_level_groups.remove(group)
-				depend_test = false
-		if depend_test:
-			if level_dat.has("unlock"):
-				group_unlocks.append(level_dat["unlock"])
-			else:
-				group_unlocks.append([UNLOCK_ALWAYS, "", ""])
+		if level_dat.has("unlock"):
+			group_unlocks.append(level_dat["unlock"])
+		else:
+			group_unlocks.append([UNLOCK_ALWAYS, "", ""])
 	loaded_level_groups = temp_level_groups.duplicate()
 	
 	for i in range(loaded_level_groups.size()):
@@ -1563,8 +1519,6 @@ func load_data():
 	# CHARACTERS.DAT
 	
 	var scan_places = ["res:/"]
-	for mod_name in mods_installed:
-		scan_places.append("Mods/" + mod_name)
 	for place in scan_places:
 		var dat_file = load_dat_file(place + "/Objects/Player/characters")
 		

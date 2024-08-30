@@ -12,11 +12,14 @@ var level_base : Array = ["",""]
 var level_dat : Dictionary 
 var base : Dictionary
 
+
 func _ready():
 	pass
 
+
 func _process(_delta):
 	pass
+
 
 func load_base():
 	level_dat = Global.load_dat_file(level_location + level_name)
@@ -40,7 +43,7 @@ func load_base():
 			
 			level_base[0] = level_dat["level_base"][0]
 			level_base[1] = level_dat["level_base"][1]
-		
+
 
 func reload():
 	load_base()

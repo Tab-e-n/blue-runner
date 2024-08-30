@@ -7,7 +7,7 @@ var achivements_definition : Dictionary = {
 	"beat_april" : ["Finished Chump", "Finish every regular level.", false, 7, "@waterway", 19],
 	"par_april" : ["Speedrunner", "Finish every regular level under their respective par times.", false, 8, "@waterway", 19],
 #	"complete_waterway" : ["Complete WaterWay", "Get 100% completion on WaterWay.", false, 3, "@waterway", 100],
-	"bonus_april" : ["Mark That Is Bonus", "Find all 16 bonus bolts.", false, Global.UNLOCK_BONUS, "@waterway", 16],
+	"bonus_april" : ["Mark That Is Bonus", "Find all 7 bonus bolts.", false, Global.UNLOCK_BONUS, "@waterway", 7],
 	"XT9" : ["Role Reversal", "Unlock XT9.", false, 5, "*character_XT9", null],
 	"S1X" : ["Gay Videogame", "Not really...", false, 5, "*character_S1X", null],
 	"MXT9" : ["Magical Girl", "Munpurizumupawa! Meikuappu!", false, 5, "*character_MXT9", null],
@@ -70,6 +70,7 @@ func move_cursor(movement : Vector2 = Vector2(0, 0)):
 	else:
 		$achieve_description/description.text = "???"
 
+
 func make_the_achivements():
 	var ach_amount = achivements_definition.size()
 	row_amount = (ach_amount - 1) / 3 + 1
@@ -79,6 +80,7 @@ func make_the_achivements():
 		# warning-ignore:integer_division
 		var new_pos : Vector2 = Vector2((-1 + (i % 3)) * 384, ((i) / 3) * 96)
 		create_achievement(ach_names[i], new_pos)
+
 
 func create_achievement(ach_name : String, new_pos : Vector2):
 	var completed : bool = Global.check_unlock_requirements(achivements_definition[ach_name][3], achivements_definition[ach_name][4], achivements_definition[ach_name][5])

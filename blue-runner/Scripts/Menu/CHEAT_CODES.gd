@@ -89,8 +89,6 @@ func code_interpretor():
 			done_unlock("*character_granddad", "GRANDDAD????????")
 		"NULL":
 			done_unlock("*character_missing", "YOU GOT SOMEONE")
-		"PLATFORMERKAT":
-			done_unlock("*character_greenbox", "YOU GOT SOMEONE")
 		"PLATTHEVIDEOGAME":
 			$did_it.text = "WRONG GAME"
 		"PLAT":
@@ -99,18 +97,24 @@ func code_interpretor():
 			$did_it.text = "CLOSE, BUT TOO SHORT"
 		"PLATFORMER":
 			$did_it.text = "CLOSE, SOMETHING IS MISSING"
-		"TABIN":
-			$did_it.text = "HEY, THATS ME :D"
-		"DICKHEAD":
-			$did_it.text = "HEY, THATS MEAN :c"
+		"PLATFORMERKAT":
+			done_unlock("*character_greenbox", "YOU GOT SOMEONE")
 		"IAMDEVYESYES":
 			done_unlock("*developer_levels", "DEV LEVELS NOW AVAILABLE")
+		"GAY":
+			$did_it.text = "NOT MUCH"
 		"NOTGAYENOUGH":
 			done_unlock("*character_S1X", "YOU GOT SOMEONE")
+		"SAILORMOON":
+			$did_it.text = "THAT IS HER"
 		"MOONPRISMPOWER":
 			done_unlock("*character_MXT9", "YOU GOT SOMEONE")
 		"SRCAR":
 			done_unlock("*character_car", "2 HALFS OF A CAR")
+		"TABIN":
+			$did_it.text = "HEY, THATS ME :D"
+		"DICKHEAD":
+			$did_it.text = "HEY, THATS MEAN :c"
 		_:
 			$Anim.stop()
 			$Anim.play("Fail")

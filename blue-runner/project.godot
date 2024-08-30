@@ -53,7 +53,7 @@ _global_script_class_icons={
 config/name="Sonic Runner"
 run/main_scene="res://Scenes/LOAD.tscn"
 config/use_custom_user_dir=true
-config/custom_user_dir_name="HowDoesOneName/SonicRunner"
+config/custom_user_dir_name="HowDoesOneName/SR"
 config/icon="res://icon.png"
 
 [autoload]
