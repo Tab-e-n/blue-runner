@@ -35,6 +35,7 @@
  - Bootup sequence has a new font.
  - Ghosts now appear a solid instead of appearing segmented.
  - Fade outs and fade ins were made smoother, most harsh cuts between scenes were replaced with a fade out.
+ - Not just dirt, but all main tilesets have changed colors. It is a tradition at this point.
 
 ### FIXES & CHANGES
 

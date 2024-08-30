@@ -58,7 +58,7 @@ text = "
 	
 	
 SONIC RUNNER
-v2.0.B
+v2.0.1
 
 
 
@@ -94,19 +94,9 @@ honestAndrew
 Juulpower
 
 - Sound Effects -
+SoundBFXR
 Pixabay
 Sample Focus
-
-- Music -
-DM DOKURO - False Paradise
-Macroform - Cold Day
-
-- Midis from FreeMidi.org -
-Linkin Park - Breaking The Habit
-Linkin Park - Crawling
-Linkin Park - From The Inside
-Skrillex Ft. Sirah - Bangarang
-Vengaboys - We Like To Party
 
 - Development Tools -
 Godot 3.2.3
@@ -127,9 +117,6 @@ My Dad
 Simon Vladik
 Lucafi
 
-btw none of them playtested
-this version lol
-
 - Blue Runner Best Fan -
 vit-cerny
 
@@ -140,16 +127,12 @@ Edmund McMillen
 Hakita
 Jerma
 
-Cut and Obscure
-Video Game Content Twitter account
-
 - Shoutouts to -
 Simpleflips
 
 
 
 Thanks for playing
-this dumpsterfire!
 :D
 "
 align = 1
@@ -170,21 +153,21 @@ position = Vector2( 976, 224 )
 texture = ExtResource( 6 )
 
 [node name="MXT9" type="Sprite" parent="credits"]
-position = Vector2( -48, 2080 )
+position = Vector2( -48, 1760 )
 scale = Vector2( 1.2, 1.2 )
 texture = ExtResource( 16 )
 
 [node name="Granddad" type="Sprite" parent="credits"]
-position = Vector2( 1200, 5200 )
+position = Vector2( 1136, 4256 )
 texture = ExtResource( 12 )
 
 [node name="Greenbox" type="Sprite" parent="credits"]
-position = Vector2( 32, 4208 )
+position = Vector2( 48, 3328 )
 scale = Vector2( 16, 16 )
 texture = ExtResource( 7 )
 
 [node name="car" type="Sprite" parent="credits"]
-position = Vector2( 1200, 2928 )
+position = Vector2( 1184, 2528 )
 texture = ExtResource( 14 )
 
 [node name="Disco" type="Node2D" parent="credits"]

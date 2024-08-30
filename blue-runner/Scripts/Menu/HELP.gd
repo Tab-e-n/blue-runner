@@ -18,13 +18,13 @@ var dat : Dictionary = {
 var current_tutorial : int = 1
 const tutorials : Array = ["EXIT", "MOVING", "JUMPING", "SPECIAL", "GOAL", "BONUS", "TUTORIAL"]
 const tutorial_text : Dictionary = {
-	"EXIT" : "Press\n%deny%\nto leave hell.",
+	"EXIT" : "Press\n%deny%\nto leave.",
 	"MOVING" : "To move, use\n%left%\nand %right%.", 
-	"JUMPING" : "To jump, use\n%jump%.\nYou CANNOT jump off of walls.\nThe video is a LIE.", 
-	"SPECIAL" : "For his special, use\n%special%.\nHe no wield gun :(", 
-	"GOAL" : "You need to reach the other robot\n(they're not astronauts!) to win.\n",
-	"BONUS" : "There are bonus objectives on the way.\nDon't bother unless you are a gamer.",
-	"TUTORIAL" : "Want to die \nin the tutorial again?\n(%accept%)",
+	"JUMPING" : "To jump, use\n%jump%.\nYou can jump off of walls.", 
+	"SPECIAL" : "To perform special actions, use\n%special%.", 
+	"GOAL" : "You need to reach\n the other robot to win.\n",
+	"BONUS" : "There are bonus objectives on the way.\nThey are not mandatory.",
+	"TUTORIAL" : "Play the tutorial again?\n(%accept%)",
 }
 
 func _ready():
