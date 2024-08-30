@@ -26,11 +26,13 @@ var dead : bool = false
 var death_wait : int = 0
 
 var start_timer : bool = false
-var timer : float = 0
+export var timer : float = 0
 var collectibles : Array = []
 var unlocks : Array = []
 
 export var replay : bool = false
+export var bg_replay : bool = false
+export var bg_replay_name : String = ""
 var replay_timer : float = 3
 var recording = {
 	"timer" : 0,
@@ -53,6 +55,7 @@ var moving_ground : Node2D = null
 const INPUT_BUFFER_FRAMES : int = 4
 var jump_buffer : int = 0
 var special_buffer : int = 0
+var just_saw_jumped : int = 0
 
 const GROUND_BUFFER_FRAMES : int = 4
 var ground_buffer : int = 0
@@ -85,7 +88,7 @@ func _ready():
 	
 	#recording.clear()
 	
-	if load_replay:
+	if load_replay and not bg_replay:
 		replay = Global.replay
 	
 	if facing != "right" and facing != "left":
@@ -113,14 +116,16 @@ func _ready():
 		if recording.has("character_location"): 
 			character_location = recording["character_location"]
 		
-		collision_layer = 0
-		collision_mask = 0
-		
 		silent = true
-	elif replay: 
-		timer = -1
-		if load_replay:
-			recording = Global.current_recording.duplicate()
+	elif replay:
+		if bg_replay:
+			if load_replay:
+				recording = Global.load_replay(bg_replay_name, false, false, true)
+		else:
+			timer = -1
+			if load_replay:
+				recording = Global.current_recording.duplicate()
+		
 		replay_timer = recording["timer"]
 		character_name = recording["character"]
 		if recording.has("character_location"):
@@ -130,19 +135,19 @@ func _ready():
 			character_name = Global.current_character
 			character_location = Global.current_character_location
 	
-	load_current_character()
+	if bg_replay or ghost:
+		collision_layer = 0
+		collision_mask = 0
 	
 	if automatic_set_level_node:
 		level = get_tree().current_scene
 	
-	if level.get_script() == null:
-		level.set_script(load("res://Scripts/Level_Control.gd"))
+		if level.get_script() == null:
+			level.set_script(load("res://Scripts/Level_Control.gd"))
 	
-	material.set_shader_param("active", false)
-#	print(get_tree().current_scene)
-	if level.unicolor_active and !ghost:
-		material.set_shader_param("active", true)
-	if !ghost:
+	load_current_character()
+	
+	if !ghost and !bg_replay:
 		level.player = self
 	
 	material.set_shader_param("outline_active", Global.options["*outlines_on"])
@@ -181,7 +186,16 @@ func load_current_character(change_unicolor : bool = true):
 
 
 func shader_color():
-	material.set_shader_param("color", character.UNICOLOR_COLOR)
+	var color = character.UNICOLOR_COLOR
+	color.a = 1
+	material.set_shader_param("color", color)
+	var unicolor_active = false
+	if level:
+		unicolor_active = level.unicolor_active
+	if character.UNICOLOR_COLOR.a != 0 and unicolor_active and !ghost:
+		material.set_shader_param("active", true)
+	else:
+		material.set_shader_param("active", false)
 
 
 func _input(event):
@@ -207,10 +221,10 @@ func _physics_process(delta):
 		level.timers_active = true
 		start_timer = false
 	
-	if replay and timer >= 0 and !ghost and increment_timer:
+	if replay and timer >= 0 and !ghost and increment_timer and not bg_replay:
 		level.timers_active = true
 	
-	if level.timers_active or (replay and !ghost):
+	if level.timers_active or (replay and !ghost and not bg_replay):
 		if !replay and !end:
 			if timer == 0:
 				record()
@@ -229,11 +243,14 @@ func _physics_process(delta):
 		if Input.is_action_just_pressed("save_replay"):
 			add_recording_data()
 			Global.save_replay_with_date(get_parent().name, recording.duplicate())
-		if stylish and state == "ground" and not should_jump():
+		if stylish and state == "ground" and not should_jump() and not break_just_happened:
 			if get_horizontal_axis() != 0:
 				call_deferred("boost", Vector2(get_horizontal_axis() * 200, 0))
 #				boost(Vector2(get_horizontal_axis() * 200, 0))
 			stylish = false
+		if stylish and state == "ground" and should_jump():
+			if get_horizontal_axis() != 0:
+				call_deferred("boost", Vector2(get_horizontal_axis() * 50, 0))
 		
 #		if !level.unicolor_active and false:
 #			var speed : float = sqrt(pow(momentum.x, 2) + pow(momentum.y, 2))
@@ -247,7 +264,7 @@ func _physics_process(delta):
 	# - - - REPLAY STATE - - -
 	elif replay:
 		stylish = false
-		if Input.is_action_just_pressed("jump") and Global.replay_menu and not Global.race_mode:
+		if Input.is_action_just_pressed("jump") and Global.replay_menu and not Global.race_mode and not bg_replay:
 			increment_timer = !increment_timer
 			level.set_deferred("timers_active", increment_timer)
 			var camera = level.get_node("Camera")
@@ -258,7 +275,7 @@ func _physics_process(delta):
 			else:
 				character.get_node("Anim").playback_speed = 0
 		
-		if Input.is_action_just_pressed("special") and Global.replay_menu and not Global.race_mode and not increment_timer:
+		if Input.is_action_just_pressed("special") and Global.replay_menu and not Global.race_mode and not increment_timer and not bg_replay:
 #			timer += delta
 			reset_increment_timer = true
 			increment_timer = true
@@ -274,13 +291,15 @@ func _physics_process(delta):
 					if level.has_method("_on_replay_looped"):
 						level._on_replay_looped(self)
 					clear_trail_history()
-				else:
+				elif not bg_replay:
 					Global.change_level("*Menu_Level_Select")
 	# - - - DEATH STATE - - -
 	elif dead:
 		stylish = false
 		if death_wait == 0:
 			var _name : String = get_parent().name
+			if not Global.level_completion.has(Global.current_level_location):
+				Global.level_completion[Global.current_level_location] = {}
 			if Global.level_completion[Global.current_level_location].has(_name):
 				if Global.level_completion[Global.current_level_location][_name].size() > 2:
 					Global.level_completion[Global.current_level_location][_name][2] += 1
@@ -297,6 +316,8 @@ func _physics_process(delta):
 		stylish = false
 	
 	$stylish.emitting = stylish
+	if just_saw_jumped > 0:
+		just_saw_jumped -= 1
 
 
 func is_jump_input_pressed():
@@ -444,8 +465,10 @@ func collision_default_effects(type : int, collider):
 	
 	# Hurt
 	if bit_include(type, 0b0100):
-		if not (bit_include(type, 0b0010) and should_jump()):
+		if not (bit_include(type, 0b0010) and (should_jump() or just_saw_jumped > 0)):
 			die()
+		elif just_saw_jumped == 0:
+			just_saw_jumped = INPUT_BUFFER_FRAMES
 	
 	# Breakable
 	if bit_include(type, 0b0011) and break_breakables:
@@ -473,6 +496,8 @@ func bit_include(num : int, pattern : int) -> bool:
 
 
 func die():
+#	if OS.has_feature("editor"):
+#		return
 	if not end:
 		dead = true
 		deny_input = true
@@ -628,6 +653,7 @@ func been_stylish(style : String = "Nice!"):
 	new_callout.text = style
 	new_callout.position = position
 	get_tree().current_scene.call_deferred("add_child", new_callout)
+	play_sound("style")
 	
 	stylish = true
 

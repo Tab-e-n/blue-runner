@@ -54,7 +54,8 @@ func _physics_process(_delta):
 	
 	if !player.deny_input:
 		# GRAVITY / DECELERATION
-		if player.is_on_ceiling(): player.momentum.y = 0
+		if player.is_on_ceiling():
+			player.momentum.y = 0
 		
 		var on_wall_right : bool = player.move_and_collide(Vector2(1,0), false, true, true) != null
 		var on_wall_left : bool = player.move_and_collide(Vector2(-1,0), false, true, true) != null

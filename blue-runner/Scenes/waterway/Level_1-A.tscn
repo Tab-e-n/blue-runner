@@ -17,6 +17,8 @@
 [ext_resource path="res://Visual/decor_rock_2.png" type="Texture" id=15]
 [ext_resource path="res://Visual/decor_rock_1.png" type="Texture" id=16]
 
+
+
 [sub_resource type="OccluderPolygon2D" id=1]
 polygon = PoolVector2Array( 64, 64, 0, 64, 0, 0, 64, 0 )
 

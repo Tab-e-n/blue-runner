@@ -1,9 +1,8 @@
-[gd_scene load_steps=42 format=2]
+[gd_scene load_steps=41 format=2]
 
 [ext_resource path="res://Scripts/Menu/menu_shader.shader" type="Shader" id=1]
 [ext_resource path="res://Scripts/Menu/MAIN_group.gd" type="Script" id=2]
 [ext_resource path="res://Scripts/Menu/MAIN.gd" type="Script" id=3]
-[ext_resource path="res://Visual/Menu/button_for_future_me.png" type="Texture" id=4]
 [ext_resource path="res://Visual/Menu/button_cheat_codes.png" type="Texture" id=5]
 [ext_resource path="res://Visual/Menu/button_replay.png" type="Texture" id=6]
 [ext_resource path="res://Visual/Menu/button_play.png" type="Texture" id=7]
@@ -42,12 +41,16 @@ func set_available_replays():
 		load_character_replays(\"XT9\", 10)
 	if check_character_unlock(\"S1X\"):
 		load_character_replays(\"S1X\", 10)
+	if check_character_unlock(\"MXT9\"):
+		load_character_replays(\"MXT9\", 10)
 	if check_character_unlock(\"missing\"):
 		load_character_replays(\"missing\", 3)
 	if check_character_unlock(\"Greenbox\"):
 		load_character_replays(\"Greenbox\", 3)
 	if check_character_unlock(\"Granddad\"):
 		load_character_replays(\"Granddad\", 1)
+	if check_character_unlock(\"Car\"):
+		load_character_replays(\"Car\", 1)
 
 
 func load_character_replays(character : String, amount : int):
@@ -798,10 +801,10 @@ polygon = PoolVector2Array( 64, 384, 320, -384, 768, -384, 768, 384 )
 visible = false
 material = SubResource( 8 )
 script = ExtResource( 2 )
-node_buttons = [ "button1", "button2", "button3", "button_exit" ]
-menu_colors = [ Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ) ]
-buttons_amount = 3
-submenu = [ 2, 7, 9, 8 ]
+node_buttons = [ "button1", "button2", "button_exit" ]
+menu_colors = [ Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ), Color( 0.25098, 0.501961, 0.74902, 1 ) ]
+buttons_amount = 2
+submenu = [ 2, 7, 9 ]
 
 [node name="pillar_bottom" type="Sprite" parent="sub/play"]
 use_parent_material = true
@@ -827,13 +830,6 @@ use_parent_material = true
 position = Vector2( 288, 112 )
 scale = Vector2( 1.125, 1.125 )
 texture = ExtResource( 6 )
-
-[node name="button3" type="Sprite" parent="sub/play"]
-modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
-use_parent_material = true
-position = Vector2( 256, 208 )
-scale = Vector2( 1.125, 1.125 )
-texture = ExtResource( 4 )
 
 [node name="button_exit" type="Sprite" parent="sub/play"]
 modulate = Color( 0.501961, 0.501961, 0.501961, 1 )

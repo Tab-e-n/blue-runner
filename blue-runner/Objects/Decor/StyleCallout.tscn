@@ -32,6 +32,7 @@ tracks/1/keys = {
 
 [node name="StyleCallout" type="Node2D"]
 z_index = 90
+z_as_relative = false
 script = ExtResource( 2 )
 
 [node name="text" type="Label" parent="."]

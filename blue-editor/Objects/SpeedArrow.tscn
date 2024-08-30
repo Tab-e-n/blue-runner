@@ -1,0 +1,39 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Visual/April/SpeedArrowBack.png" type="Texture" id=1]
+[ext_resource path="res://Visual/April/SpeedArrow.png" type="Texture" id=2]
+[ext_resource path="res://Scripts/SpeedArrow.gd" type="Script" id=3]
+
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 1 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [  ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 1 ), SubResource( 2 ) ],
+"loop": true,
+"name": "Move",
+"speed": 3.0
+} ]
+
+[node name="SpeedArrow" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="SpeedArrowBack" type="AnimatedSprite" parent="."]
+scale = Vector2( 2, 2 )
+frames = SubResource( 3 )
+animation = "Move"
+
+[node name="SpeedArrow" type="Sprite" parent="."]
+modulate = Color( 0.117647, 0.341176, 0.611765, 1 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 2 )

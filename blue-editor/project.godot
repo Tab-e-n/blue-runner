@@ -13,9 +13,15 @@ _global_script_classes=[ {
 "class": "BG",
 "language": "GDScript",
 "path": "res://Scripts/BG.gd"
+}, {
+"base": "Node2D",
+"class": "SpeedArrow",
+"language": "GDScript",
+"path": "res://Scripts/SpeedArrow.gd"
 } ]
 _global_script_class_icons={
-"BG": ""
+"BG": "",
+"SpeedArrow": ""
 }
 
 [application]
@@ -23,7 +29,7 @@ _global_script_class_icons={
 config/name="Sonic Runner Editor"
 run/main_scene="res://Scenes/menu.tscn"
 config/use_custom_user_dir=true
-config/custom_user_dir_name="HowDoesOneName"
+config/custom_user_dir_name="HowDoesOneName/SR"
 config/icon="res://icon.png"
 
 [autoload]

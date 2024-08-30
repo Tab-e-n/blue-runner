@@ -1,6 +1,7 @@
 extends StaticBody2D
 
 
+export var blue : bool = false
 
 var wait_time : float = 0
 
@@ -11,6 +12,8 @@ func _ready():
 	if pos < 0:
 		pos = 80 + pos
 	wait_time = float(pos) * 0.01
+	if blue:
+		$sprite.texture = preload("res://Visual/April/BlueFlame.png")
 
 
 func _process(delta):

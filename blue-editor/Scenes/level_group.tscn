@@ -30,7 +30,6 @@ var current_group_path : String = \"\"
 
 var level_group_dat : Dictionary = {
 	\"levels\" : range(20),
-	\"dependencies\" : [],
 	\"bg\" : \"*none\",
 	\"unlock\" : [0, \"\", \"\"],
 	\"author\" : \"Unknown\",
@@ -171,13 +170,10 @@ func save_current_group(dir, defaults : bool = false):
 		temp[\"levels\"] = []
 		for _i in range(20):
 			temp[\"levels\"].append([\"*Level_Missing\", true, [0, \"\", \"\"]])
-		temp[\"dependencies\"] = []
 		temp[\"unlock\"] = [0, \"\", \"\"]
 		temp[\"author\"] = data.settings[\"editor_author_name\"]
 		temp[\"ui_color\"] = [0.02, 0.9, 0.63]
 	else:
-		level_group_dat[\"dependencies\"] = data.mods_installed.duplicate()
-		
 		level_group_dat[\"unlock\"][0] = $settings/unlock_type.selected
 		level_group_dat[\"unlock\"][1] = $\"settings/1_text\".text
 		if data.unlock_numerical_para2(level_group_dat[\"unlock\"][0]):
@@ -238,12 +234,6 @@ func load_group(dir):
 					temp[\"levels\"][i].append([0, \"\", \"\"])
 				if typeof(temp[\"levels\"][i][2]) != TYPE_ARRAY:
 					temp[\"levels\"][i][2] = [0, \"\", \"\"]
-		if !temp.has(\"dependencies\"):
-			temp[\"dependencies\"] = []
-		for i in temp[\"dependencies\"]:
-			if !data.mods_installed.has(i):
-				$dependendy_fail.popup()
-				return
 		if not temp.has(\"bg\"):
 			temp[\"bg\"] = \"*none\"
 		if not temp.has(\"author\"):
@@ -340,11 +330,6 @@ func import(dir : String):
 		file.close()
 	else:
 		return
-	
-	for i in temp[\"dependencies\"]:
-		if !level_group_dat[\"dependencies\"].has(i):
-			$dependendy_fail.popup()
-			return
 	
 	directory.copy(dir.substr(0, dir.find_last(\".\")) + \".dat\", current_group_path + \"/\" + dir.substr(dir.find_last(\"/\") + 1, dir.find_last(\".\") - dir.find_last(\"/\")) + \"dat\")
 	directory.copy(dir, current_group_path + \"/\" + dir.substr(dir.find_last(\"/\") + 1, dir.length() - 1))
@@ -1055,7 +1040,6 @@ margin_bottom = -32.0
 disabled = true
 text = "none"
 clip_text = true
-selected = 0
 __meta__ = {
 "_edit_use_anchors_": false
 }

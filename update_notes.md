@@ -1,8 +1,18 @@
-# 2.0.0 SMALL UPDATE ? NO !!! BIG BREAK !!!
+# 2.0.1 STRAIGHT DOWNGRADE
+
+ - We at HowDoesOneName inc. were notified that the "Sonic Runner Best Version" breaches something called "Copyright Law",
+   this means, as we were told, we need to remove a lot of the new content from 2.0.B to prevent our imminent demise. Oops!
+ - These patch notes document a lot changes from the previous update as well, the guy we hired to make them last time did a terrible job.
 
 <details><summary><h2>GENERAL</h2></summary><p>
 
  - License moment
+ - Removed copyrighted material
+ - Removed mod support related code
+ - The folder where the savefile, user levels, replays and other is stored. To move your old save so the game can load it, do this:
+   First launch the game, then when you get to the title screen, close it.
+   Then go to your AppData folder, into Roaming/HowDoesOneName, and move SRLevels, SRReplays, sonicRunner, sonicRunnerEditor to a folder just named SR.
+   You can delete sonicRunnerMods.
 
 </p></details>
 <details><summary><h2>SONIC RUNNER</h2></summary><p>
@@ -10,7 +20,7 @@
 ### NEW ADDITIONS
 
  - The main menu got almost completely redesigned, with every menu that it had originaly either completely overhalled or at least changed in some way.
-   There were no escapees. On top of that, there are now also new menus! And also a new inaccesable menu! God damn!
+   There were no escapees. On top of that, there are now also new menus!
  - Achievements!
  - Cheat Codes!
  - New timer setting, where it will only appear if you had beaten the level you are playing.
@@ -18,6 +28,7 @@
  - You can now screenshot the game with F2.
  - You can now save replays while playing the level with F6. This will save a replay without you needing to finish the level.
  - While looking at a replay, you can now pause it by pressing the jump button.
+ - You now can change the volume of SR non-existent music! Yay!
 
 ### VISUAL
 
@@ -30,6 +41,7 @@
  - Bootup sequence has a new font.
  - Ghosts now appear a solid instead of appearing segmented.
  - Fade outs and fade ins were made smoother, most harsh cuts between scenes were replaced with a fade out.
+ - Not just dirt, but all main tilesets have changed colors. It is a tradition at this point.
 
 ### FIXES & CHANGES
 
@@ -65,7 +77,9 @@
     - __ External Images__! It's the lite version of mods!
     - __ Invisible Ground__! :)
     - __ Floating Label__! HoverText but a bit simpler to use.
-      __ All April Fools Objects__!
+    - __ Starting Position__! Very useful for playtesting.
+    - __ + Best Update Objects and Backgrounds__!
+ - You can know specify an unlock for a level when the player beats it under par.
  - You can now change the font of HoverText.
  - New text formating or something! It allows you show some game data as text.
    This will be explained in the wiki in more detail if you are interested.
@@ -80,6 +94,7 @@
  - Some object properties were given units.
  - You can now specify the "ui color" for a level group.
  - There are now more variations of dirt tiles.
+ - Dirt has once again changed color.
  - More Blurees! i love trees trees so cool
  - New stalagmite and stalactite sprites added.
  - The .dat creator has been centralized.

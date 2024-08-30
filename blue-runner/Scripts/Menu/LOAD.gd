@@ -11,19 +11,20 @@ const KEYBIND_TEXT = [
 
 const LORE_TEXT = [
 	"starting machine...\n",
-	"MOTRBIOS (C) 2022 Luke Adams\n",
-	"BIOS date 29/2/00 14:10:32\n",
+	"MOTRBIOS (C) 20## #### #####\n",
+	"BIOS date 29/2/87 14:#0:3#\n",
 	"CPU:",
-	" VVIDYA Jetstream Nano\n",
-	"Memory:",
+	" VVIDYA Jetstr#am Nano\n",
+	"Memo#y:",
 	" SD/CCMN 48\n",
-	"WARNING: Machine has been tampered with\n\n",
+	"WARNING: Machine has be#n either tampered with,\nor it has #een dama#ed.",
+	"\n\n",
 	"AUDIO CALIBRATION",
 ]
 
 const TUTORIAL_TEXT = [
 	"",
-	"\n\n\n\n\n\n\n\n\nStarting Motors",
+	"\n\n\n\n\n\n\n\n\nStarting Motor",
 	".",
 	".",
 	".",
@@ -62,6 +63,9 @@ func _ready():
 	if Global.options["*first_time_load"]:
 		current_section = SECTION_FIRST_TIME
 		$console/lines.text = LORE_TEXT[0]
+	
+	$sfx.value = Global.DEFAULT_OPTIONS["*audio_sfx"]
+	$music.value = Global.DEFAULT_OPTIONS["*audio_music"]
 
 
 func _input(event):

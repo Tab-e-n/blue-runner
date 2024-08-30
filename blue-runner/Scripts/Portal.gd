@@ -9,6 +9,7 @@ export var par : float = 0
 
 export(int, "XT9", "S1") var type = 0
 export var unlock : String = ""
+export var par_unlock : String = ""
 
 export var silent_portal : bool = false
 
@@ -95,6 +96,8 @@ func teleport(timer : float, collectible : Array, collectible_unlock : Array, re
 	
 	
 	if is_finish:
+		if timer <= par and par > 0:
+			Global.unlock(par_unlock)
 		Global.save_game(timer, par, collectible, level.name, recording)
 		
 		# Victory anim

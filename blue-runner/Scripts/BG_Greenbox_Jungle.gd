@@ -11,6 +11,8 @@ func ready_up(camera : Node2D):
 		scale = camera.zoom * 0.5
 	
 	$back.color = darken_color(bg_color, 0.4)
+	if has_node("back/sex"):
+		$back/sex.modulate = darken_color(bg_color, 0.6)
 	$bg_jungle1.self_modulate = darken_color(bg_color, 0.6)
 	$bg_jungle2.self_modulate = darken_color(bg_color, 0.8)
 	$bg_jungle3.self_modulate = bg_color

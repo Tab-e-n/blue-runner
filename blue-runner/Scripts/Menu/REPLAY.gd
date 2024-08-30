@@ -428,14 +428,6 @@ func iterate_through_directory(idirectory : String, built_in : bool):
 					pass
 				elif directory.ends_with("/user"):
 					pass
-				else:
-					var mod = directory.substr(directory.find("mods") + 5, directory.length() - directory.find("mods"))
-					mod = mod.substr(0, mod.find("/"))
-					if mod == "": 
-						if Global.mods_installed.size() == 0:
-							dont_skip = false
-					elif !Global.mods_installed.has(mod): 
-						dont_skip = false
 				if dont_skip:
 					directories_to_visit.append(directory)
 			else:

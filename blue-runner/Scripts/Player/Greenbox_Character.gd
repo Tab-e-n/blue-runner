@@ -1,7 +1,7 @@
 extends Node2D
 
 
-const UNICOLOR_COLOR : Color = Color(0, 0.75, 0, 1)
+const UNICOLOR_COLOR : Color = Color(0, 0.75, 0, 0)
 const STYLISH_POSITION : Vector2 = Vector2(0, -28)
 const STYLISH_RECT : Vector2 = Vector2(32, 32)
 
@@ -11,7 +11,7 @@ const JUMP_STRENGH : float = 14.0
 const BOUNCE_STRENGH : float = 12.0
 const ATTACK_TIME : int = 6
 
-var player : KinematicBody2D
+var player : Player
 onready var attack : Area2D = preload("res://Objects/Player/Greenbox_Attack.tscn").instance()
 
 var momentum : Vector2 = Vector2(0, 0)
@@ -249,8 +249,8 @@ func _on_attack_connected_area(area):
 
 
 func attack_successful():
-	momentum.y = -BOUNCE_STRENGH
-	attack.get_node("coll").call_deferred("disabled", true)
+	momentum.y = -BOUNCE_STRENGH * 1.25
+	attack.get_node("coll").set_deferred("disabled", true)
 #			attack_timer = 0
 	jump_buffer = 0
 	can_attack = true

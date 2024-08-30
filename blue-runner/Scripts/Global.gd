@@ -1,10 +1,9 @@
 extends Control
 
 #game Stuff
-const VERSION : String = "2.0.0-dev"
+const VERSION : String = "2.0.1"
 const USER_LEVELS : String = "user://SRLevels/"
 const SAVEFILE : String = "user://sonicRunner"
-const MODS_SAVEFILE : String = "user://sonicRunnerMods"
 const KEYBIND_NAMES : Array = ["*left", "*right", "*up", "*down", "*jump", "*special", "*reset", "*return", "*menu_left", "*menu_right", "*menu_up", "*menu_down", "*accept", "*deny", "*save_replay", "*screenshot", "*info"]
 
 const DEFAULT_OPTIONS : Dictionary = {
@@ -33,7 +32,7 @@ const DEFAULT_OPTIONS : Dictionary = {
 	"*first_time_load" : true,
 	"*last_level_location" : "res://Scenes/waterway/",
 	"*audio_sfx" : 60,
-	"*audio_music" : 60,
+	"*audio_music" : 50,
 }
 
 enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER, UNLOCK_GROUP_BEAT, UNLOCK_GROUP_PAR}
@@ -55,8 +54,6 @@ var unlocked : Dictionary = {
 	"completion_percentages" : {},
 }
 var options : Dictionary = {}
-
-var mods_installed = []
 
 var rand : RandomNumberGenerator = RandomNumberGenerator.new()
 
@@ -111,8 +108,6 @@ func _ready():
 		dir.make_dir("SRReplays")
 	if !dir.dir_exists("SRReplays/res"):
 		dir.make_dir("SRReplays/res")
-	if !dir.dir_exists("SRReplays/mods"):
-		dir.make_dir("SRReplays/mods")
 	if !dir.dir_exists("SRReplays/user"):
 		dir.make_dir("SRReplays/user")
 	if !dir.dir_exists("SRScreenshots"):
@@ -122,11 +117,11 @@ func _ready():
 	var directory : Directory = Directory.new()
 	var check_exist = directory.open(USER_LEVELS)
 	var current_file
-	
+
 	if check_exist == OK:
 		# warning-ignore:return_value_discarded
 		directory.list_dir_begin(true)
-		
+
 		current_file = directory.get_next()
 		while current_file != "":
 			if current_file.ends_with(".tscn"):
@@ -257,29 +252,29 @@ const NAMES : Dictionary = {
 	KEY_ESCAPE : "ESCAPE",
 	KEY_TAB : "TAB",
 	KEY_BACKTAB : "BACKTAB",
-	KEY_BACKSPACE : "BACKSPACE",
+	KEY_BACKSPACE : "BACK",
 	KEY_ENTER : "ENTER",
 	KEY_KP_ENTER : "KEYPAD ENTER",
 	KEY_INSERT : "INSERT",
 	KEY_DELETE : "DELETE",
 	KEY_PAUSE : "PAUSE",
-	KEY_PRINT : "SCREENSHOT",
+	KEY_PRINT : "PRINT",
 	KEY_SYSREQ : "SYSTEM REQUEST",
-	KEY_CLEAR : "CLEAR",
+	KEY_CLEAR : "CLS",
 	KEY_HOME : "S1 COME HOME",
 	KEY_END : "THE END",
-	KEY_LEFT : "LEFT ARROW",
-	KEY_UP : "UP ARROW",
-	KEY_RIGHT : "RIGHT ARROW",
-	KEY_DOWN : "DOWN ARROW",
+	KEY_LEFT : "ARROW LEFT",
+	KEY_UP : "ARROW UP",
+	KEY_RIGHT : "ARROW RIGHT",
+	KEY_DOWN : "ARROW DOWN",
 	KEY_PAGEUP : "PAGE UP",
 	KEY_PAGEDOWN : "PAGE DOWN",
 	KEY_SHIFT : "SHIFT",
-	KEY_CONTROL : "CONTROL",
+	KEY_CONTROL : "CTRL",
 	KEY_META : "THIS KEY IS THE META",
 	KEY_ALT : "ALT",
-	KEY_CAPSLOCK : "SCREAM LOCK",
-	KEY_NUMLOCK : "ALWAYS ON LOCK",
+	KEY_CAPSLOCK : "AAAAAAAAAAAAAA",
+	KEY_NUMLOCK : "NUMER NUMA EY",
 	KEY_SCROLLLOCK : "SOMETHING LOCK",
 	KEY_F1 : "F1",
 	KEY_F2 : "F2",
@@ -315,8 +310,8 @@ const NAMES : Dictionary = {
 	KEY_SUPER_L : "SUPER LEFT",
 	KEY_SUPER_R : "SUPER RIGHT",
 	KEY_MENU : "GIVE THE CONTEXT",
-	KEY_HYPER_L : "HYPER LEFT",
-	KEY_HYPER_R : "HYPER RIGHT",
+	KEY_HYPER_L : "HYPERLINK",
+	KEY_HYPER_R : "HYPERGONER",
 	KEY_HELP : "HELP THEM GOD",
 	KEY_DIRECTION_L : "DIRECTIONAL LEFT",
 	KEY_DIRECTION_R : "DIRECTIONAL RIGHT",
@@ -335,11 +330,11 @@ const NAMES : Dictionary = {
 	KEY_MEDIAPLAY : "PLAY THAT SONG AGAIN",
 	KEY_MEDIASTOP : "STOP THE MUSIC",
 	KEY_MEDIAPREVIOUS : "CLASSICAL ART",
-	KEY_MEDIANEXT : "ART OF THE FUTURE",
+	KEY_MEDIANEXT : "ACCELERATIONISM",
 	KEY_MEDIARECORD : "CAUGHT ON CAMERA",
 	KEY_HOMEPAGE : "HOME WITH PAGE",
 	KEY_FAVORITES : "MY JAM",
-	KEY_SEARCH : "FIND THEM",
+	KEY_SEARCH : "SAVE THEM",
 	KEY_STANDBY : "HALT",
 	KEY_OPENURL : "BROWSER TIME",
 	KEY_LAUNCHMAIL : "MAIL TIME",
@@ -362,6 +357,8 @@ const NAMES : Dictionary = {
 	KEY_LAUNCHF : "SHORTCUT F",
 	KEY_UNKNOWN : "???",
 }
+
+
 func key_names(key : int):
 	var key_number = options[KEYBIND_NAMES[key]]
 	if key_number >= 33 and key_number <= 255:
@@ -593,7 +590,7 @@ func completion_percentage(is_user_group : bool, user_current_page : int):
 				if level_completion[current_level_location][level_name][1] != null:
 					if level_completion[current_level_location][level_name][1] == 0:
 						completion += 1
-					elif level_completion[current_level_location][level_name][0] < level_completion[current_level_location][level_name][1]:
+					elif level_completion[current_level_location][level_name][0] <= level_completion[current_level_location][level_name][1]:
 						completion += 1
 						par += 1
 #						print("par " + level_name)
@@ -628,7 +625,7 @@ func change_level_fade_out(destination : String, fast : bool = false):
 		change_level(destination) 
 
 
-func change_level(destination : String, return_value : bool = false, check_dependencies : bool = true):
+func change_level(destination : String, return_value : bool = false):
 	credits = false
 	compatibility_mode = false
 	
@@ -643,7 +640,10 @@ func change_level(destination : String, return_value : bool = false, check_depen
 		check_if_unlocked = false
 	
 	if destination == "":
-		destination_new = current_level_location + current_level + ".tscn"
+		if doing_tutorial:
+			destination_new = "res://Scenes/MENU.tscn"
+		else:
+			destination_new = current_level_location + current_level + ".tscn"
 	elif destination == "*MENU" or destination == "*Menu_Level_Select" or destination == "*Menu_Level_Select.tscn":
 		destination_new = "res://Scenes/MENU.tscn"
 	elif destination == "*CREDITS":
@@ -687,15 +687,6 @@ func change_level(destination : String, return_value : bool = false, check_depen
 	var error = OK
 	
 #	print("destination converted: ", destination_new)
-	
-	if check_dependencies:
-		var level_dat = load_dat_file(destination_new.left(destination_new.find_last(".")))
-		if !level_dat.has("dependencies"):
-			error = ERR_FILE_MISSING_DEPENDENCIES
-		else:
-			for i in level_dat["dependencies"]:
-				if !mods_installed.has(i):
-					error = ERR_FILE_MISSING_DEPENDENCIES
 	
 #	print(destination_new)
 	
@@ -840,7 +831,7 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2, cont
 		if parameter_1.empty():
 			parameter_1 = context
 		if parameter_1.begins_with("@"):
-			parameter_1 = parse_level_group_abreviation(parameter_1, context)
+			parameter_1 = parse_level_group_abreviation(parameter_1, context)[0]
 	
 	if unlock_type in [UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION]:
 		if not level_completion.has(parameter_1):
@@ -854,7 +845,7 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2, cont
 		
 		var time = level_completion[parameter_1][parameter_2][0]
 		var par = level_completion[parameter_1][parameter_2][1]
-		if time > par and par != 0 and unlock_type == UNLOCK_PAR:
+		if time > par and par > 0 and unlock_type == UNLOCK_PAR:
 			return false
 	
 	if unlock_type == UNLOCK_COMPLETION:
@@ -898,7 +889,7 @@ func check_unlock_requirements(unlock_type : int, parameter_1, parameter_2, cont
 #						print("beat")
 						level_amount += 1
 					elif level_completion[group][level][1] != null:
-						if level_completion[group][level][0] < level_completion[group][level][1]:
+						if level_completion[group][level][0] <= level_completion[group][level][1]:
 							level_amount += 1
 		if parameter_2 > level_amount:
 			return false
@@ -1208,22 +1199,6 @@ func load_game():
 		level_completion = temp["level_completion"].duplicate()
 		options = temp["options"].duplicate()
 		unlocked = temp["unlocked"].duplicate()
-	
-	temp = {"*mods" : []}
-	
-	# MOD LOADING IS DISABLED FOR NOW
-	if false: #loadfile.file_exists(MODS_SAVEFILE): # does file exist 
-		loadfile.open(MODS_SAVEFILE, File.READ)
-		
-		while loadfile.get_position() < loadfile.get_len():
-			var parsedData = parse_json(loadfile.get_line())
-			
-			temp = parsedData
-		
-		loadfile.close()
-	
-	mods_installed = temp["*mods"].duplicate()
-	#print(mods_installed)
 
 
 func delete_save(): 
@@ -1451,14 +1426,7 @@ func replay_filename(new_name : String, create_dir : bool):
 			# warning-ignore:return_value_discarded
 			if create_dir:
 				directory.make_dir_recursive("user://SRReplays/user/" + folder_name)
-		"Mods":
-			folder_path = folder_path.replace("/Scenes/", "/")
-			folder_path = folder_path.substr(folder_path.find("/") + 1, folder_path.length() - folder_path.find("/")) + "/"
-			replay_name = "mods/" + folder_path + replay_name
-			# warning-ignore:return_value_discarded
-			if create_dir:
-				directory.make_dir_recursive("user://SRReplays/mods/" + folder_path)
-	
+		
 	return replay_name
 
 
@@ -1516,9 +1484,6 @@ func load_data():
 	loaded_level_groups.append(["SRLevels","user://"])
 	
 	scan_for_directories("res://Scenes/", loaded_level_groups, "group")
-	for mod_name in mods_installed:
-		scan_for_directories("Mods/" + mod_name + "/Scenes/", loaded_level_groups, "group")
-	scan_for_directories(USER_LEVELS, loaded_level_groups, "group")
 	
 	var temp_level_groups = loaded_level_groups.duplicate()
 	var group_unlocks : Array = []
@@ -1534,16 +1499,10 @@ func load_data():
 		if level_dat.empty():
 			group_unlocks.append([UNLOCK_NEVER, "", ""])
 			continue
-		var depend_test = true
-		for i in level_dat["dependencies"]:
-			if !mods_installed.has(i):
-				temp_level_groups.remove(group)
-				depend_test = false
-		if depend_test:
-			if level_dat.has("unlock"):
-				group_unlocks.append(level_dat["unlock"])
-			else:
-				group_unlocks.append([UNLOCK_ALWAYS, "", ""])
+		if level_dat.has("unlock"):
+			group_unlocks.append(level_dat["unlock"])
+		else:
+			group_unlocks.append([UNLOCK_ALWAYS, "", ""])
 	loaded_level_groups = temp_level_groups.duplicate()
 	
 	for i in range(loaded_level_groups.size()):
@@ -1560,8 +1519,6 @@ func load_data():
 	# CHARACTERS.DAT
 	
 	var scan_places = ["res:/"]
-	for mod_name in mods_installed:
-		scan_places.append("Mods/" + mod_name)
 	for place in scan_places:
 		var dat_file = load_dat_file(place + "/Objects/Player/characters")
 		

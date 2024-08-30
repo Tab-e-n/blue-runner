@@ -4,12 +4,20 @@ onready var parent : Node2D = get_parent()
 
 var achivements_definition : Dictionary = {
 	#"ID" : ["Achievement Name", "Achievement Description", is_hidden, unlock_type, parameter_1, parameter_2]
-	"complete_waterway" : ["Complete WaterWay", "Get 100% completion on WaterWay.", false, 3, "res://Scenes/waterway/", 100],
+	"beat_april" : ["Finished Chump", "Finish every regular level.", false, 7, "@waterway", 19],
+	"par_april" : ["Speedrunner", "Finish every regular level under their respective par times.", false, 8, "@waterway", 19],
+#	"complete_waterway" : ["Complete WaterWay", "Get 100% completion on WaterWay.", false, 3, "@waterway", 100],
+	"bonus_april" : ["Mark That Is Bonus", "Find all 7 bonus bolts.", false, Global.UNLOCK_BONUS, "@waterway", 7],
 	"XT9" : ["Role Reversal", "Unlock XT9.", false, 5, "*character_XT9", null],
-	"code_missing" : ["missing", "code nothing", false, 5, "*character_missing", null],
 	"S1X" : ["Gay Videogame", "Not really...", false, 5, "*character_S1X", null],
+	"MXT9" : ["Magical Girl", "Munpurizumupawa! Meikuappu!", false, 5, "*character_MXT9", null],
 	"greenbox" : ["Simple fun plat-", "This ain`t no kat!", false, 5, "*character_greenbox", null],
 	"granddad" : ["The Grandfather", "Flint and stone brother!", false, 5, "*character_granddad", null],
+	"car" : ["Vroom Vroom!", "Honk Honk!", false, 5, "*character_car", null],
+	"code_missing" : ["missing", "code nothing", false, 5, "*character_missing", null],
+	"groovy" : ["Groovy!", "Get \"Groovy!\" from a discoball.", true, 5, "*groovy", null],
+	"last_bug" : ["The Last Bugger", "Definitely find the only remaining bug in Sonic Runner.", true, 5, "*last_bug", null],
+	"mario_maker" : ["Granddad Maker", "Find a hidden block that kills you.", true, 5, "*mario_maker", null],
 }
 var row_amount : int = 0
 var cursor_pos : Vector2 = Vector2(0, 0)
@@ -25,6 +33,7 @@ func _ready():
 	$achieve_description.modulate.a = 0
 	$mainAnim.play("Enter")
 
+
 func menu_update():
 	if Input.is_action_just_pressed("deny"):
 		parent.switch_menu("MAIN", "ACHIEVEMENTS")
@@ -39,6 +48,7 @@ func menu_update():
 		move_cursor(Vector2(0, -1))
 	if Input.is_action_pressed("menu_down") and parent.move:
 		move_cursor(Vector2(0, 1))
+
 
 func move_cursor(movement : Vector2 = Vector2(0, 0)):
 #	print(cursor_pos)
@@ -57,6 +67,9 @@ func move_cursor(movement : Vector2 = Vector2(0, 0)):
 	var ach_name = achivements_definition.keys()[cursor_pos.y * 3 + cursor_pos.x]
 	if not achivements_definition[ach_name][2]:
 		$achieve_description/description.text = achivements_definition[ach_name][1]
+	else:
+		$achieve_description/description.text = "???"
+
 
 func make_the_achivements():
 	var ach_amount = achivements_definition.size()
@@ -67,6 +80,7 @@ func make_the_achivements():
 		# warning-ignore:integer_division
 		var new_pos : Vector2 = Vector2((-1 + (i % 3)) * 384, ((i) / 3) * 96)
 		create_achievement(ach_names[i], new_pos)
+
 
 func create_achievement(ach_name : String, new_pos : Vector2):
 	var completed : bool = Global.check_unlock_requirements(achivements_definition[ach_name][3], achivements_definition[ach_name][4], achivements_definition[ach_name][5])
@@ -85,6 +99,7 @@ func create_achievement(ach_name : String, new_pos : Vector2):
 	if hidden:
 		if completed:
 			texture = load("res://Visual/Achievement/" + ach_name + ".png")
+			achivements_definition[ach_name][2] = false
 		else:
 			texture = preload("res://Visual/Achievement/missing.png")
 	else:

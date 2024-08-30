@@ -12,11 +12,14 @@ var level_base : Array = ["",""]
 var level_dat : Dictionary 
 var base : Dictionary
 
+
 func _ready():
 	pass
 
+
 func _process(_delta):
 	pass
+
 
 func load_base():
 	level_dat = Global.load_dat_file(level_location + level_name)
@@ -40,7 +43,7 @@ func load_base():
 			
 			level_base[0] = level_dat["level_base"][0]
 			level_base[1] = level_dat["level_base"][1]
-		
+
 
 func reload():
 	load_base()
@@ -79,7 +82,7 @@ func reload():
 				$boltcollect/boltcollect3.visible = collectible_amount >= 3
 				$boltcollect/Anim.play("Idle")
 			
-			if time < par or par == 0:
+			if time <= par or par <= 0:
 				$icon.texture = load(base[level_dat["level_base"][0]][3][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][3][0])
 			else:
 				$icon.texture = load(base[level_dat["level_base"][0]][2][1] + "/Visual/Level/" + base[level_dat["level_base"][0]][2][0])

@@ -1,0 +1,70 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Text/Shixel_Small.tres" type="DynamicFont" id=1]
+[ext_resource path="res://Visual/music_announcement.png" type="Texture" id=2]
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends Node2D
+
+
+const SPEED : float = 6.0
+
+
+export var text : String = \"NO SONG\"
+
+
+var target_pos : float = 0
+onready var starting_pos : float = $text.rect_position.x
+
+var going_in : bool = true
+var start_wait : float = 1.0
+var wait : float = 3.0
+
+
+func _ready():
+	$text.text = text
+	target_pos = $text.get_font(\"font\").get_string_size($text.text).x
+	target_pos += starting_pos + 40
+	var camera = get_parent()
+	if camera is Camera2D:
+		scale = camera.zoom
+		position = Vector2(-640, -320) * scale
+
+func _physics_process(delta):
+	if start_wait > 0.0:
+		start_wait -= delta
+	elif going_in:
+		$text.rect_position.x += SPEED
+		if $text.rect_position.x > target_pos:
+			$text.rect_position.x = target_pos
+			going_in = false
+	elif wait > 0:
+		wait -= delta
+	else:
+		$text.rect_position.x -= SPEED
+		if $text.rect_position.x < starting_pos:
+#			print(\"end\")
+			queue_free()
+"
+
+[node name="MusicAnnouncements" type="Node2D"]
+script = SubResource( 2 )
+
+[node name="text" type="Label" parent="."]
+margin_left = -640.0
+margin_top = -16.0
+margin_right = -32.0
+margin_bottom = 17.0
+custom_fonts/font = ExtResource( 1 )
+text = "NO SONG"
+align = 2
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="music_announcement" type="Sprite" parent="text"]
+show_behind_parent = true
+position = Vector2( 608, 16 )
+texture = ExtResource( 2 )
+offset = Vector2( -288, 0 )

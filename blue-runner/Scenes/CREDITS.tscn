@@ -1,7 +1,15 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Text/Shixel_Credits.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Scripts/Menu/CREDITS.gd" type="Script" id=2]
+[ext_resource path="res://Visual/XT9/portrait.png" type="Texture" id=6]
+[ext_resource path="res://Visual/Greenbox/portrait.png" type="Texture" id=7]
+[ext_resource path="res://Visual/S1/portrait.png" type="Texture" id=8]
+[ext_resource path="res://Visual/S1X/portrait.png" type="Texture" id=11]
+[ext_resource path="res://Visual/Granddad/portrait.png" type="Texture" id=12]
+[ext_resource path="res://Visual/Car/portrait.png" type="Texture" id=14]
+[ext_resource path="res://Visual/MXT9/portrait.png" type="Texture" id=16]
+[ext_resource path="res://Objects/Discoball.tscn" type="PackedScene" id=19]
 
 [sub_resource type="Animation" id=1]
 resource_name = "exit"
@@ -43,13 +51,150 @@ __meta__ = {
 margin_left = -296.0
 margin_top = 384.0
 margin_right = 888.0
-margin_bottom = 4341.0
+margin_bottom = 6653.0
 rect_scale = Vector2( 0.5, 0.5 )
 custom_fonts/font = ExtResource( 1 )
+text = "
+	
+	
+SONIC RUNNER
+v2.0.1
+
+
+
+A game by
+Tabin
+aka
+HowDoesOneName
+
+
+
+- Lead Game Designer -
+Tabin
+
+- Lead Art Director -
+Tabin
+
+- Art Advisors -
+Maxpeeks
+Lux
+
+- Supplementary Character Design -
+vit-cerny
+
+- Lead Programmer -
+Tabin
+
+- UI Roaster - 
+honestAndrew
+
+
+
+- Outline Shader -
+Juulpower
+
+- Sound Effects -
+SoundBFXR
+Pixabay
+Sample Focus
+
+- Development Tools -
+Godot 3.2.3
+Gimp
+Audacity
+SoundBFXR
+FontForge
+GitHub
+
+
+
+- Playtesters -
+Lumir
+honestAndrew
+Lena-hal
+Sunny
+My Dad
+Simon Vladik
+Lucafi
+
+- Blue Runner Best Fan -
+vit-cerny
+
+
+
+- Special Thanks -
+Edmund McMillen
+Hakita
+Jerma
+
+- Shoutouts to -
+Simpleflips
+
+
+
+Thanks for playing
+:D
+"
 align = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="S1" type="Sprite" parent="credits"]
+position = Vector2( 208, 224 )
+texture = ExtResource( 8 )
+
+[node name="S1X" type="Sprite" parent="credits"]
+position = Vector2( 1216, 1088 )
+texture = ExtResource( 11 )
+
+[node name="XT9" type="Sprite" parent="credits"]
+position = Vector2( 976, 224 )
+texture = ExtResource( 6 )
+
+[node name="MXT9" type="Sprite" parent="credits"]
+position = Vector2( -48, 1760 )
+scale = Vector2( 1.2, 1.2 )
+texture = ExtResource( 16 )
+
+[node name="Granddad" type="Sprite" parent="credits"]
+position = Vector2( 1136, 4256 )
+texture = ExtResource( 12 )
+
+[node name="Greenbox" type="Sprite" parent="credits"]
+position = Vector2( 48, 3328 )
+scale = Vector2( 16, 16 )
+texture = ExtResource( 7 )
+
+[node name="car" type="Sprite" parent="credits"]
+position = Vector2( 1184, 2528 )
+texture = ExtResource( 14 )
+
+[node name="Disco" type="Node2D" parent="credits"]
+
+[node name="Disco" parent="credits/Disco" instance=ExtResource( 19 )]
+modulate = Color( 1, 1, 1, 0.5 )
+position = Vector2( -832, 2016 )
+rotation = -2.35619
+scale = Vector2( 3, 3 )
+
+[node name="Disco2" parent="credits/Disco" instance=ExtResource( 19 )]
+modulate = Color( 1, 1, 1, 0.5 )
+position = Vector2( 2016, 2688 )
+rotation = -0.785397
+scale = Vector2( 3, 3 )
+
+[node name="Disco3" parent="credits/Disco" instance=ExtResource( 19 )]
+modulate = Color( 1, 1, 1, 0.5 )
+position = Vector2( -864, 3120 )
+rotation = 7.06857
+scale = Vector2( 3, 3 )
+
+[node name="Disco4" parent="credits/Disco" instance=ExtResource( 19 )]
+modulate = Color( 1, 1, 1, 0.5 )
+position = Vector2( 2000, 3840 )
+rotation = 2.35619
+scale = Vector2( 3, 3 )
 
 [node name="back" type="Label" parent="."]
 margin_left = 344.0

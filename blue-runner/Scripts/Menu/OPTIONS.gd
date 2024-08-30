@@ -86,7 +86,7 @@ const controls_meta_buttons : Array = [
 const audio_buttons : Array = [
 	["== AUDIO ==", "label"],
 	["", "label"],
-	["SFX", "slider", "*audio_sfx", [0, 100], ""],
+	["SFX", "slider", "*audio_sfx", [0, 100], "sfx_slider_update"],
 	["MUSIC", "slider", "*audio_music", [0, 100], "music_slider_update"],
 ]
 
@@ -231,10 +231,12 @@ func menu_update():
 		cursor_row -= 1
 		$cursor/anim.stop()
 		$cursor/anim.play("Spin")
+		Audio.play_sound("click")
 	if Input.is_action_pressed("menu_down") and parent.move and cursor_row < cursor_positions.size() - 1 and !confirmation and !keybinds:
 		cursor_row += 1
 		$cursor/anim.stop()
 		$cursor/anim.play("Spin")
+		Audio.play_sound("click")
 	if Input.is_action_pressed("menu_left") and parent.move and slider:
 		move_slider(-1)
 	if Input.is_action_pressed("menu_right") and parent.move and slider:
@@ -250,6 +252,7 @@ func menu_update():
 		elif cursor_row != cursor_positions.size() - 1:
 			$cursor/anim.stop()
 			$cursor/anim.play("Spin")
+			Audio.play_sound("click")
 			cursor_row = cursor_positions.size() - 1
 		else:
 			$cursor/anim.stop()
@@ -309,6 +312,7 @@ func change_menu(menu : String):
 
 
 func select():
+	Audio.play_sound("click", 0.8)
 	match(buttons[cursor_row][0]):
 		"back":
 			if current_menu != "main":
@@ -374,7 +378,7 @@ func end_slider():
 
 
 func sfx_slider_update(value):
-	pass
+	Audio.play_sound("On", 1, -1, value)
 
 
 func music_slider_update(value):

@@ -108,7 +108,7 @@ func _physics_process(_delta):
 			var fade_timer : float = fade_in_timer - fade_in_darkness_lenght
 			$Fade.color.a = (fade_in_end - fade_timer) / fade_in_end
 		else:
-			$Fade.color.a = 0.0
+			$Fade.color.a = 1.0
 	
 	if fade_out:
 		fade_out_timer += 1

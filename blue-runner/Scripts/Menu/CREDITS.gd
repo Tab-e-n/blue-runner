@@ -7,87 +7,27 @@ export var end_credits : bool = false
 
 var line_lenght : int
 
-
 func _ready():
 	if Global.playtesting:
 		Global.change_level("*MENU")
 		return
 	
-	var credits = """SONIC RUNNER
-	v2.0.0
-	
-	
-	
-	A game by
-	HowDoesOneName
-	aka
-	Tabin
-	
-	
-	
-	- Lead Designer -
-	Tabin
-	
-	- Lead Art Director -
-	Tabin
-	
-	- Lead Programmer -
-	Tabin
-	
-	- Art Advisors -
-	Maxpeeks
-	Lux
-	
-	- UI Roaster - 
-	honestAndrew
-	
-	- Outline Shader -
-	Juulpower
-	
-	
-	
-	- Development Tools -
-	Godot 3
-	Gimp
-	Audacity
-	SoundBFXR
-	FontForge
-	GitHub
-	
-	
-	
-	- Playtesters -
-	Lumir
-	honestAndrew
-	Lena-hal
-	Sunny
-	My Dad
-	Simon Vladik
-	That one girl from game club
-	that played the game, you
-	know who you are ;)
-	
-	- Blue Runner Best Fan -
-	Vitor
-	
-	
-	
-	- Special Thanks -
-	Edmund McMillen
-	Hakita
-	
-	
-	
-	Thanks for playing!
-	:D
-	"""
-	
-	line_lenght = 32 * credits.count("\n")
+	line_lenght = 32 * $credits.text.count("\n")
 #	print(line_lenght)
 	
-	$credits.text = credits
+	$credits/S1X.visible = Global.check_unlock("*character_S1X")
+	$credits/MXT9.visible = Global.check_unlock("*character_MXT9")
+	$credits/Greenbox.visible = Global.check_unlock("*character_greenbox")
+	$credits/Granddad.visible = Global.check_unlock("*character_granddad")
+	$credits/car.visible = Global.check_unlock("*character_car")
+	$credits/Disco.visible = Global.check_unlock("*character_XT9")
+	
 	if end_credits:
 		$back.text = ""
+		if Global.check_unlock("*end_credits"):
+			Global.unlock("*character_S1X")
+		if Global.check_unlock("*end_credits_2"):
+			Global.unlock("*character_MXT9")
 	else:
 		$back.text = "GO BACK - " + Global.key_names(13)
 
