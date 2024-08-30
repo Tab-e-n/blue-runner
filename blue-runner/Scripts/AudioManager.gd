@@ -7,6 +7,11 @@ const FAST_FADE_TIME : float = 0.1
 const FAKE_SILENCE : float = -32.0
 
 
+const SONG_NAMES : Dictionary = {
+	#"Filename.ogg" : "Song Name",
+}
+
+
 var song_name : String = ""
 var current_music : AudioStreamPlayer
 var last_music : AudioStreamPlayer
@@ -105,9 +110,9 @@ func change_music(musicname : String, stop : bool = false, fast : bool = true):
 	elif last_music:
 		last_music.queue_free()
 	
-	if musicname == "FalseParadise.ogg" and get_tree().current_scene.has_node("Camera"):
+	if musicname in SONG_NAMES.keys() and get_tree().current_scene.has_node("Camera"):
 		var music_announce : Node2D = load("res://Objects/MusicAnnouncements.tscn").instance()
-		music_announce.text = "DM DOKURO - False Paradise"
+		music_announce.text = SONG_NAMES[musicname]
 		get_tree().current_scene.get_node("Camera").add_child(music_announce)
 
 
