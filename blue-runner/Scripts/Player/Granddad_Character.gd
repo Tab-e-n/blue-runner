@@ -37,7 +37,7 @@ func _physics_process(_delta):
 		
 	if !player.deny_input:
 		
-		crouching = Input.is_action_pressed("down") and player.state != "air"
+		crouching = (Input.is_action_pressed("down") or Input.is_action_pressed("special")) and player.state != "air"
 		
 		player.collisions[1].position = $col_1.position
 		player.collisions[1].disabled = !$col_1.visible
@@ -110,16 +110,19 @@ func _physics_process(_delta):
 			if player.move_and_collide(Vector2(0,4), false, true, true) or player.ground_buffer > 0:
 				player.jump(JUMP_POWER)
 				jumping = true
+				player.play_sound("GreenboxJump")
 			elif player.move_and_collide(Vector2(4,0), false, true, true):
 				player.momentum.x = int(-MAX_SPEED * 0.4)
 				player.facing = "left"
 				player.jump(JUMP_POWER * 0.75)
 				jumping = true
+				player.play_sound("GreenboxJump")
 			elif player.move_and_collide(Vector2(-4,0), false, true, true):
 				player.momentum.x = int(MAX_SPEED * 0.4)
 				player.facing = "right"
 				player.jump(JUMP_POWER * 0.75)
 				jumping = true
+				player.play_sound("GreenboxJump")
 		
 		if !player.is_jump_input_pressed() and jumping and !player.punted:
 			jumping = false
@@ -156,7 +159,7 @@ func _physics_process(_delta):
 		
 	elif player.dead:
 		if $Anim.current_animation != "Death":
-			player.play_sound("example")
+			player.play_sound("GranddadDeath")
 		$Anim.play("Death")
 		
 		scale.y = 1

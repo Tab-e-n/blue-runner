@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/GlassBreaking1.wav-002039cb33d894a082685be58825f662.sample"
+
+[deps]
+
+source_file="res://Sound/GlassBreaking1.wav"
+dest_files=[ "res://.import/GlassBreaking1.wav-002039cb33d894a082685be58825f662.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

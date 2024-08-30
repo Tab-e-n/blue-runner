@@ -3,6 +3,7 @@ extends BG
 
 export var hill_offset : Vector2 = Vector2(512, 512)
 export var sun_position : Vector2 = Vector2(0, 0)
+export var flip : bool = false
 
 
 func ready_up(camera : Node2D):
@@ -21,13 +22,15 @@ func ready_up(camera : Node2D):
 
 func update_self(cam_target : Vector2):
 	position = cam_target
+	if flip:
+		cam_target.y = -cam_target.y
 	
-	$bg3.position.x = (start_position.x - position.x) * 0.25 + hill_offset.x
-	$bg3.position.y = (start_position.y - position.y) * 0.125 + hill_offset.y
+	$bg3.position.x = (start_position.x - cam_target.x) * 0.25 + hill_offset.x
+	$bg3.position.y = (start_position.y - cam_target.y) * 0.125 + hill_offset.y
 	
-	$bg3/bg2.position.x = (start_position.x - position.x) * 0.0625 + -384
-	$bg3/bg2.position.y = (start_position.y - position.y) * 0.03125 + 48
+	$bg3/bg2.position.x = (start_position.x - cam_target.x) * 0.0625 + -384
+	$bg3/bg2.position.y = (start_position.y - cam_target.y) * 0.03125 + 48
 	
-	$bg3/bg2/bg1.position.x = (start_position.x - position.x) * 0.0625 + -384
-	$bg3/bg2/bg1.position.y = (start_position.y - position.y) * 0.03125 + 48
+	$bg3/bg2/bg1.position.x = (start_position.x - cam_target.x) * 0.0625 + -384
+	$bg3/bg2/bg1.position.y = (start_position.y - cam_target.y) * 0.03125 + 48
 

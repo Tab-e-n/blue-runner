@@ -613,8 +613,8 @@ func set_level_data_text(is_in_user_universe : bool = false):
 	# level picture
 	var picture_filepath : String = selected_level_location + selected_level_name + ".png"
 	var f : File = File.new()
-	if f.file_exists(picture_filepath):
-		Global.load_external_picture(picture_filepath, $level_select/level_data/level_picture)
+	if f.file_exists(picture_filepath + ".import"):
+		Global.load_external_picture(picture_filepath, $level_select/level_data/level_picture, true)
 		Global.scale_down_sprite($level_select/level_data/level_picture, Vector2(1, 1), Vector2(0, 192))
 		$level_select/level_data/level_picture.visible = true
 		$level_select/level_data/level_name.rect_position.y = -216
@@ -699,7 +699,7 @@ func level_selected():
 	
 	var activate_char_select : bool = true
 	
-	if !Global.check_unlock("*char_select_active"):
+	if not Global.check_unlock("*char_select_active"):
 		activate_char_select = false
 	if Global.replay:
 		activate_char_select = false

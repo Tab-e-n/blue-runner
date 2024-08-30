@@ -13,8 +13,11 @@ var remove_time : float = REMOVE_TIME_START
 
 
 func _ready():
-	$wall.scale = wall_scale
 	$wall.position = wall_offset
+	
+	$wall.scale = Vector2(1, 1)
+	$wall/GolfBlock.region_rect.size = wall_scale * 64
+	$wall/coll.scale = wall_scale
 
 
 func _physics_process(delta):

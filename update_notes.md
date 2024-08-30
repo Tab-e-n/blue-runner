@@ -1,8 +1,13 @@
-# 2.0.0 SMALL UPDATE ? NO !!! BIG BREAK !!!
+# 2.0.1 STRAIGHT DOWNGRADE
+
+ - We at HowDoesOneName inc. were notified that the "Sonic Runner Best Version" breaches something called "Copyright Law",
+   this means, as we were told, we need to remove a lot of the new content from 2.0.B to prevent our imminent demise. Oops!
+ - These patch notes document a lot changes from the previous update as well, the guy we hired to make them last time did a terrible job.
 
 <details><summary><h2>GENERAL</h2></summary><p>
 
  - License moment
+ - Removed copyrighted material
 
 </p></details>
 <details><summary><h2>SONIC RUNNER</h2></summary><p>
@@ -10,7 +15,7 @@
 ### NEW ADDITIONS
 
  - The main menu got almost completely redesigned, with every menu that it had originaly either completely overhalled or at least changed in some way.
-   There were no escapees. On top of that, there are now also new menus! And also a new inaccesable menu! God damn!
+   There were no escapees. On top of that, there are now also new menus!
  - Achievements!
  - Cheat Codes!
  - New timer setting, where it will only appear if you had beaten the level you are playing.
@@ -65,7 +70,7 @@
     - __ External Images__! It's the lite version of mods!
     - __ Invisible Ground__! :)
     - __ Floating Label__! HoverText but a bit simpler to use.
-      __ All April Fools Objects__!
+    - __ Best Update Objects__!
  - You can now change the font of HoverText.
  - New text formating or something! It allows you show some game data as text.
    This will be explained in the wiki in more detail if you are interested.
@@ -80,6 +85,7 @@
  - Some object properties were given units.
  - You can now specify the "ui color" for a level group.
  - There are now more variations of dirt tiles.
+ - Dirt has once again changed color.
  - More Blurees! i love trees trees so cool
  - New stalagmite and stalactite sprites added.
  - The .dat creator has been centralized.

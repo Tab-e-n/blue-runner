@@ -101,10 +101,48 @@ func code_interpretor():
 			$did_it.text = "CLOSE, SOMETHING IS MISSING"
 		"TABIN":
 			$did_it.text = "HEY, THATS ME :D"
+		"DICKHEAD":
+			$did_it.text = "HEY, THATS ME :D"
 		"IAMDEVYESYES":
 			done_unlock("*developer_levels", "DEV LEVELS NOW AVAILABLE")
 		"NOTGAYENOUGH":
-			done_unlock("*character_S1X", "YOU GOT SOMEONE")
+			$did_it.text = "YOU CAN GET HIM LEGIT <3"
+#			done_unlock("*character_S1X", "YOU GOT SOMEONE")
+		"MOONPRISMPOWER":
+			$did_it.text = "YOU CAN GET HER LEGIT <3"
+#			done_unlock("*character_MXT9", "YOU GOT SOMEONE")
+		"PH0N35C4M":
+			if not Global.check_unlock("*phone"):
+				Global.change_level_fade_out("*res://Scenes/other/Phone.tscn")
+			else:
+				$did_it.modulate = Color(0.75, 0.5, 0.25, 1)
+				$did_it.text = "ALREADY GOT THIS :)"
+		"HELP":
+				$did_it.text = "GO LEFT IN LEVEL 4"
+		"SEX":
+			$did_it.text = "SEX UPDATE"
+			if Global.check_unlock("*sex_ach"):
+				$did_it.modulate = Color(0.75, 0.5, 0.25, 1)
+				Global.unlocked["*sex"] = true
+			else:
+				$Anim.stop()
+				Global.change_level_fade_out("*res://Scenes/other/RoadToSex.tscn")
+		"SEXLEVEL":
+			$Anim.stop()
+			Global.change_level_fade_out("*res://Scenes/other/RoadToSex.tscn")
+		"ASEXUALMODE":
+			if Global.check_unlock("*sex"):
+				$did_it.modulate = Color(0.75, 0.5, 0.25, 1)
+				$did_it.text = "REVERTED SEX UPDATE"
+				Global.unlocked["*sex"] = false
+			else:
+				$did_it.text = "NO ASEX NEEDED RN"
+		"SRCAR":
+			if Global.check_unlock("*character_car"):
+				$did_it.text = "2 HALFS OF A CAR"
+			else:
+				$did_it.text = "YOU HAVE NO CAR :c"
+#			done_unlock("*character_car")
 		_:
 			$Anim.stop()
 			$Anim.play("Fail")
@@ -112,7 +150,7 @@ func code_interpretor():
 
 func done_unlock(unlock : String, first_text : String = "YOU GOT SOMETHING", after_text : String = "ALREADY GOT THIS"):
 	$did_it.modulate = Color(0.75, 0.5, 0.25, 1)
-	if !Global.check_unlock(unlock):
+	if not Global.check_unlock(unlock):
 		$did_it.text = first_text
 		Global.unlock(unlock)
 	else:

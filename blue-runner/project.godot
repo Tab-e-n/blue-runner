@@ -33,13 +33,19 @@ _global_script_classes=[ {
 "class": "Player",
 "language": "GDScript",
 "path": "res://Scripts/Player/Player.gd"
+}, {
+"base": "Area2D",
+"class": "SpeedArrow",
+"language": "GDScript",
+"path": "res://Scripts/SpeedArrow.gd"
 } ]
 _global_script_class_icons={
 "AttackDestroyable": "",
 "BG": "",
 "GolfDisk": "",
 "LevelControl": "",
-"Player": ""
+"Player": "",
+"SpeedArrow": ""
 }
 
 [application]
@@ -47,7 +53,7 @@ _global_script_class_icons={
 config/name="Sonic Runner"
 run/main_scene="res://Scenes/LOAD.tscn"
 config/use_custom_user_dir=true
-config/custom_user_dir_name="HowDoesOneName"
+config/custom_user_dir_name="HowDoesOneName/SonicRunner"
 config/icon="res://icon.png"
 
 [autoload]

@@ -66,8 +66,10 @@ func stop_music(fast : bool = true):
 
 func change_music(musicname : String, stop : bool = false, fast : bool = true):
 	if lock_music:
+#		print("music locked")
 		return
 	if song_name == musicname and not stop:
+#		print("wont play music")
 		return
 	song_name = musicname
 	
@@ -75,14 +77,15 @@ func change_music(musicname : String, stop : bool = false, fast : bool = true):
 	if not stop:
 		var f : File = File.new()
 		
-		if not f.file_exists("res://Sound/Music/" + musicname + ".wav.import"):
+		if not f.file_exists("res://Sound/Music/" + musicname + ".import"):
+			print("wont play music")
 			return
 		
 	last_music = current_music
 	
 	if not stop:
 		current_music = AudioStreamPlayer.new()
-		current_music.stream = load("res://Sound/Music/" + musicname + ".wav")
+		current_music.stream = load("res://Sound/Music/" + musicname)
 		
 		current_music.volume_db = FAKE_SILENCE
 		
@@ -101,6 +104,11 @@ func change_music(musicname : String, stop : bool = false, fast : bool = true):
 			current_music.play()
 	elif last_music:
 		last_music.queue_free()
+	
+	if musicname == "FalseParadise.ogg" and get_tree().current_scene.has_node("Camera"):
+		var music_announce : Node2D = load("res://Objects/MusicAnnouncements.tscn").instance()
+		music_announce.text = "DM DOKURO - False Paradise"
+		get_tree().current_scene.get_node("Camera").add_child(music_announce)
 
 
 func volume_conversion(opt_volume) -> float:

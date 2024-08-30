@@ -1,11 +1,17 @@
 extends Area2D
 
+
+const COLOR_DISABLED : Color = Color("7c7072")
+
+
 export(int, 1, 3) var id : int = 1
 export var unlock : String = ""
 
 export var decorative : bool = false
 
+
 var collected : bool = false
+
 
 func _ready():
 	if decorative:
@@ -15,14 +21,15 @@ func _ready():
 		$collect.texture = preload("res://Visual/keycollect.png")
 		if Global.check_unlock(unlock):
 			collected = true
-			modulate = Color(0, 0, 0, 0.5)
+			modulate = COLOR_DISABLED
 	elif !Global.level_completion["*collectibles"].has(Global.current_level_location):
 		$Anim.play("Idle")
 	elif Global.level_completion["*collectibles"][Global.current_level_location].has(Global.current_level + "*" + String(id)):
 		collected = true
-		modulate = Color(0, 0, 0, 0.5)
+		modulate = COLOR_DISABLED
 	else:
 		$Anim.play("Idle")
+
 
 func _process(_delta):
 	pass

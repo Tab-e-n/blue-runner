@@ -26,6 +26,10 @@ export var particle_end : Color = Color(0.13, 0.21, 0.38, 1)
 export var particle_star : Color = Color(0.05, 0.9, 0.95, 1)
 var particle_disable : int = 0
 
+export var custom_double_jump_particle : bool = false
+export var use_air_jump_ring : bool = true
+export (PackedScene) var double_jump_particle
+
 var jumping : bool = false
 export var max_jump_amount : int = 1
 var jump_amount : int = max_jump_amount
@@ -44,6 +48,8 @@ var wall_anim : int = 1
 var last_facing : String
 
 export var idle_anim_timer : int = -1
+var current_idle : int = 0
+
 
 func _ready():
 	last_facing = player.facing
@@ -54,6 +60,8 @@ func _ready():
 	
 	# warning-ignore:return_value_discarded
 	player.connect("boosted", self, "_on_boosted")
+	
+	current_idle = Global.rand.randi_range(0, 1)
 
 
 func _physics_process(_delta):
@@ -255,7 +263,10 @@ func _physics_process(_delta):
 		if jump_amount > 0 and player.jump_buffer == 1:
 			jump_amount -= 1
 			jump(JUMP_POWER)
-			player.make_speed_ring(PI * 1.5, Vector2(0, 0), 0.5)
+			if custom_double_jump_particle:
+				double_jump_particle_summon(Vector2(0, 0), PI*0.5)
+			if use_air_jump_ring:
+				player.make_speed_ring(PI * 1.5, Vector2(0, 0), 0.5)
 			#player.jump_buffer = 0
 		
 		if !player.is_jump_input_pressed() and jumping and !player.punted and sliding == 0:
@@ -314,12 +325,13 @@ func _physics_process(_delta):
 				if idle_anim_timer != 0:
 					idle_anim_timer -= 1
 				if idle_anim_timer == 0:
-					var rand = Global.rand.randi_range(1, 2)
-					match(rand):
-						1:
+					match(current_idle):
+						0:
 							$Anim.current_animation = "Idle_1"
-						2:
+							current_idle = 1
+						1:
 							$Anim.current_animation = "Idle_2"
+							current_idle = 0
 					idle_anim_timer -= 1
 				elif not $Anim.current_animation in ["Default", "Idle_1", "Idle_2", "Enter"]:
 					$Anim.current_animation = "Default"
@@ -380,17 +392,38 @@ func jump(jump_power : int):
 
 func particle_summon(particle_position : Vector2, particle_rotation : float, type : int = 0):
 	if particle_disable == 0:
-		var new_particle
-		new_particle = particle.instance()
-		get_tree().current_scene.add_child(new_particle)
+		var new_particle = particle.instance()
+		
 		new_particle.position = player.position + particle_position
 		new_particle.rotation = particle_rotation
+		
 		new_particle.color_start = particle_start
 		new_particle.color_end = particle_end
 		new_particle.color_star = particle_star
+		
 		new_particle.z_index = player.z_index + 1
+		
+		get_tree().current_scene.add_child(new_particle)
+		
 		new_particle.start(type)
+		
 		particle_disable = 6
+
+
+func double_jump_particle_summon(particle_position : Vector2, particle_rotation : float, use_facing : bool = false):
+	var new_particle = double_jump_particle.instance()
+	
+	particle_position.x *= player.get_facing_axis()
+	new_particle.position = player.position + particle_position
+	
+	if use_facing:
+		new_particle.rotation = Vector2(player.get_facing_axis(), 0).angle()
+	else:
+		new_particle.rotation = particle_rotation
+	new_particle.z_index = player.z_index + 1
+	
+	get_tree().current_scene.add_child(new_particle)
+	
 
 
 func _on_boosted(boost):

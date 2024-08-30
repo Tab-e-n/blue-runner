@@ -14,6 +14,13 @@ var menu : String = "MAIN"
 var return_delay : int = 2
 
 func _ready():
+	if Global.check_unlock("*phone"):
+		Audio.play_music("cold-day.ogg", not Global.in_load_previously)
+		Audio.lock_music = true
+		Global.unlock("*was_phoned")
+	else:
+		Audio.play_music("AmenBreakSlowedReverb.ogg", not Global.in_load_previously)
+	
 	Global.replay = false
 	Global.race_mode = false
 	var _start : bool = true

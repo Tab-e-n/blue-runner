@@ -1,8 +1,33 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Scenes/CREDITS.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scripts/Level_Control.gd" type="Script" id=2]
 [ext_resource path="res://Objects/Camera.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Objects/MusicControl.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Text/Shixel_Credits.tres" type="DynamicFont" id=5]
+[ext_resource path="res://Visual/Didit.png" type="Texture" id=6]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Sprite
+
+
+var timer : float = 4
+
+
+func _ready():
+	pass
+
+
+func _physics_process(delta):
+	if timer == 4:
+		Audio.play_sound(\"wow\")
+	timer -= delta
+	if timer < 0:
+		modulate.a -= delta
+		if modulate.a < 0:
+			modulate.a = 0
+			queue_free()
+"
 
 [node name="CreditsStage" type="Node2D"]
 script = ExtResource( 2 )
@@ -12,3 +37,25 @@ end_credits = true
 
 [node name="Camera" parent="." instance=ExtResource( 3 )]
 in_main_menu = true
+
+[node name="MusicControl" parent="." instance=ExtResource( 4 )]
+position = Vector2( -776, -384 )
+stop_music = true
+
+[node name="Didit" type="Sprite" parent="."]
+position = Vector2( 16, -8 )
+scale = Vector2( 16.5, 4.92105 )
+texture = ExtResource( 6 )
+script = SubResource( 1 )
+
+[node name="Label" type="Label" parent="Didit"]
+margin_left = -20.8485
+margin_top = -50.3957
+margin_right = 455.152
+margin_bottom = 10.6043
+rect_scale = Vector2( 0.1, 0.25 )
+custom_fonts/font = ExtResource( 5 )
+text = "WOW YOU DID IT!!!"
+__meta__ = {
+"_edit_use_anchors_": false
+}
