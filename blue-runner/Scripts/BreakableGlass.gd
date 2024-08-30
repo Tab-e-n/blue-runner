@@ -45,6 +45,17 @@ func _physics_process(_delta):
 		$line3.visible = true
 		$particle_circle.visible = true
 		$anim.play("Break")
+		var r : int = int(Global.rand.randi_range(0, 30) * 0.1)
+		match(r):
+			0:
+				Audio.play_sound("GlassBreaking1", 0.8, 1.2)
+			1:
+				Audio.play_sound("GlassBreaking2", 0.8, 1.2)
+			2:
+				Audio.play_sound("GlassBreaking3", 0.8, 1.2)
+			3:
+				Audio.play_sound("GlassBreakingSecret")
+		
 		
 		
 	#if break_active:

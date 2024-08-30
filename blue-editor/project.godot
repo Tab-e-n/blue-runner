@@ -8,9 +8,20 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Node2D",
+"class": "BG",
+"language": "GDScript",
+"path": "res://Scripts/BG.gd"
+}, {
+"base": "Node2D",
+"class": "SpeedArrow",
+"language": "GDScript",
+"path": "res://Scripts/SpeedArrow.gd"
+} ]
 _global_script_class_icons={
-
+"BG": "",
+"SpeedArrow": ""
 }
 
 [application]
@@ -18,7 +29,7 @@ _global_script_class_icons={
 config/name="Sonic Runner Editor"
 run/main_scene="res://Scenes/menu.tscn"
 config/use_custom_user_dir=true
-config/custom_user_dir_name="HowDoesOneName"
+config/custom_user_dir_name="HowDoesOneName/SR"
 config/icon="res://icon.png"
 
 [autoload]
@@ -27,8 +38,8 @@ data="*res://Scenes/data.tscn"
 
 [display]
 
+window/size/width=1280
 window/size/height=768
-window/size/fullscreen=true
 window/stretch/mode="2d"
 window/stretch/aspect="expand"
 
@@ -183,6 +194,14 @@ alt={
 "events": [  ]
 }
 25={
+"deadzone": 0.5,
+"events": [  ]
+}
+26={
+"deadzone": 0.5,
+"events": [  ]
+}
+27={
 "deadzone": 0.5,
 "events": [  ]
 }

@@ -47,7 +47,6 @@ tracks/0/keys = {
 
 [node name="light_point" type="Sprite"]
 modulate = Color( 0, 0.596078, 0.572549, 0.313726 )
-position = Vector2( 0, -256 )
 texture = ExtResource( 1 )
 script = SubResource( 1 )
 

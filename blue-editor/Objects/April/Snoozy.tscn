@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Visual/April/snoozy.png" type="Texture" id=2]
+[ext_resource path="res://Scripts/Snoozy.gd" type="Script" id=3]
+
+[node name="Snoozy" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="snoozy" type="Sprite" parent="."]
+scale = Vector2( 2, 2 )
+texture = ExtResource( 2 )

@@ -7,10 +7,14 @@ var editor_properties : Dictionary = {
 	"layer" : "camera",
 	"rect" : Rect2(0, 0, 128, 64),
 	"editable_properties" : {
-		"limit_x" : [TYPE_VECTOR2, 0, 0, 1, 0],
-		"limit_y" : [TYPE_VECTOR2, 0, 0, 1, 0],
-		"zoom" : [TYPE_VECTOR2, 1, 10, 1, 2],
-		"compatibility_mode" : [TYPE_BOOL, 0, 0, 0, 0],
+		"zoom" : [TYPE_VECTOR2, -10, 10, 1],
+		"limit_x" : [TYPE_VECTOR2, 0, 0, 1, "pixels"],
+		"limit_y" : [TYPE_VECTOR2, 0, 0, 1, "pixels"],
+		"fade_in_darkness_lenght" : [TYPE_INT, 0, 0, 1, "frames"],
+		"fade_in_end" : [TYPE_INT, 0, 0, 1, "frames"],
+		"fade_out_darkness_lenght" : [TYPE_INT, 0, 0, 1, "frames"],
+		"fade_out_end" : [TYPE_INT, 0, 0, 1, "frames"],
+		"compatibility_mode" : [TYPE_BOOL],
 	},
 	"unchangeable_properties" : {
 		"scale" : true,
@@ -26,6 +30,13 @@ export var limit_x : Vector2 = Vector2(0,0)
 export var limit_y : Vector2 = Vector2(0,0)
 
 export var zoom : Vector2 = Vector2(2, 2)
+
+export var fade_in_darkness_lenght : int = 0
+export var fade_in_end : int = 12
+
+export var fade_out_darkness_lenght : int = 0
+export var fade_out_end : int = 12
+
 export var compatibility_mode : bool = false
 
 var zoom_hinge

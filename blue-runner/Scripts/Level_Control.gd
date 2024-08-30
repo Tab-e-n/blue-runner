@@ -1,15 +1,21 @@
 extends Node2D
+class_name LevelControl
 
-export var unicolor_active : bool
+
+export var unicolor_active : bool = false
 var timers_active : bool = false
+var player : Node2D
 
 var dat : Dictionary
+
 
 func _init():
 	dat = Global.load_dat_file(Global.current_level_location + Global.current_level)
 
-#func _ready():
+
+func _ready():
 #	print("level ready")
+	pass
 
 #func _physics_process(_delta):
 #	print(timer_active)

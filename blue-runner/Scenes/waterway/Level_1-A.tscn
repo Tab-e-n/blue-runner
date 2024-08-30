@@ -17,6 +17,8 @@
 [ext_resource path="res://Visual/decor_rock_2.png" type="Texture" id=15]
 [ext_resource path="res://Visual/decor_rock_1.png" type="Texture" id=16]
 
+
+
 [sub_resource type="OccluderPolygon2D" id=1]
 polygon = PoolVector2Array( 64, 64, 0, 64, 0, 0, 64, 0 )
 
@@ -904,6 +906,7 @@ points = PoolVector2Array( 64, 64, 0, 64, 0, 32, 64, 32 )
 [node name="Level_1-A" type="Node2D"]
 
 [node name="Camera" parent="." instance=ExtResource( 1 )]
+zoom = Vector2( 2, 2 )
 limit_y = Vector2( 0, 1536 )
 
 [node name="BG" parent="." instance=ExtResource( 11 )]

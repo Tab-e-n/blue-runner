@@ -21,7 +21,7 @@ const options_span : int = 3136
 var current_keybind : Button
 var current_key : int
 
-const KEYBIND_AMOUNT : int = 26
+const KEYBIND_AMOUNT : int = data.INPUT_AMOUNT
 var last_input_events : Array = range(KEYBIND_AMOUNT)
 
 func _ready():
@@ -34,6 +34,7 @@ func _ready():
 	set_buttons()
 
 func set_buttons():
+	$GUI/editor_defaults/use_speedometer.pressed = data.settings[\"use_speedometer\"]
 	$GUI/editor_defaults/addition_info.pressed = data.settings[\"editor_gui_additional_info\"]
 	$GUI/editor_defaults/grid_snap.pressed = data.settings[\"editor_default_grid_snap\"]
 	$GUI/editor_defaults/default_tab.select(data.settings[\"editor_default_tab\"])
@@ -108,6 +109,7 @@ func set_buttons():
 	$GUI/keysbinds/buttons/reset_transform.text = data.key_names(data.settings[\"editor_keys\"][1])
 	$GUI/keysbinds/buttons/random_transform.text = data.key_names(data.settings[\"editor_keys\"][1])
 	$GUI/keysbinds/buttons/game_camera.text = data.key_names(data.settings[\"editor_keys\"][3])
+	$GUI/keysbinds/buttons/save_level2.text = data.key_names(data.settings[\"editor_keys\"][12])
 	
 	$GUI/editor_defaults/sonic_runner.text = data.settings[\"sonic_runner_folder\"]
 
@@ -256,6 +258,7 @@ margin_top = 80.0
 margin_right = -40.0
 margin_bottom = 576.0
 text = "Sonic Runner
+Use Speedometer
 
 Additional info
 Grid snap
@@ -297,13 +300,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="addition_info" type="CheckBox" parent="GUI/editor_defaults"]
+[node name="use_speedometer" type="CheckBox" parent="GUI/editor_defaults"]
 margin_left = 288.0
-margin_top = 136.0
+margin_top = 104.0
 margin_right = 336.0
-margin_bottom = 184.0
+margin_bottom = 152.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="grid_snap" type="CheckBox" parent="GUI/editor_defaults"]
+[node name="addition_info" type="CheckBox" parent="GUI/editor_defaults"]
 margin_left = 288.0
 margin_top = 168.0
 margin_right = 336.0
@@ -312,11 +318,20 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="grid_snap" type="CheckBox" parent="GUI/editor_defaults"]
+margin_left = 288.0
+margin_top = 200.0
+margin_right = 336.0
+margin_bottom = 248.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="default_tab" type="OptionButton" parent="GUI/editor_defaults"]
 margin_left = 296.0
-margin_top = 208.0
+margin_top = 240.0
 margin_right = 552.0
-margin_bottom = 240.0
+margin_bottom = 272.0
 text = "Tiles"
 items = [ "Tiles", null, false, 0, null, "Objects", null, false, 1, null, "Decor", null, false, 2, null ]
 selected = 0
@@ -326,9 +341,9 @@ __meta__ = {
 
 [node name="default_layer" type="OptionButton" parent="GUI/editor_defaults"]
 margin_left = 296.0
-margin_top = 240.0
+margin_top = 272.0
 margin_right = 552.0
-margin_bottom = 272.0
+margin_bottom = 304.0
 text = "Background"
 items = [ "Background", null, false, 0, null, "Back", null, false, 1, null, "Center", null, false, 2, null, "Front", null, false, 3, null ]
 selected = 0
@@ -338,9 +353,9 @@ __meta__ = {
 
 [node name="default_sublayer" type="OptionButton" parent="GUI/editor_defaults"]
 margin_left = 296.0
-margin_top = 272.0
+margin_top = 304.0
 margin_right = 552.0
-margin_bottom = 304.0
+margin_bottom = 336.0
 text = "0"
 items = [ "0", null, false, 0, null, "1", null, false, 1, null, "2", null, false, 2, null ]
 selected = 0
@@ -350,57 +365,57 @@ __meta__ = {
 
 [node name="bg_color" type="ColorPickerButton" parent="GUI/editor_defaults"]
 margin_left = 296.0
-margin_top = 336.0
+margin_top = 368.0
 margin_right = 328.0
-margin_bottom = 368.0
+margin_bottom = 400.0
 
 [node name="back_color" type="ColorPickerButton" parent="GUI/editor_defaults"]
 margin_left = 296.0
-margin_top = 400.0
+margin_top = 432.0
 margin_right = 328.0
-margin_bottom = 432.0
+margin_bottom = 464.0
 
 [node name="center_color" type="ColorPickerButton" parent="GUI/editor_defaults"]
 margin_left = 296.0
-margin_top = 464.0
+margin_top = 496.0
 margin_right = 328.0
-margin_bottom = 496.0
+margin_bottom = 528.0
 
 [node name="front_color" type="ColorPickerButton" parent="GUI/editor_defaults"]
 margin_left = 296.0
-margin_top = 528.0
+margin_top = 560.0
 margin_right = 328.0
-margin_bottom = 560.0
+margin_bottom = 592.0
 
 [node name="bg_scale" type="SpinBox" parent="GUI/editor_defaults"]
 margin_left = 296.0
-margin_top = 368.0
+margin_top = 400.0
 margin_right = 424.0
-margin_bottom = 400.0
+margin_bottom = 432.0
 step = 0.05
 value = 1.0
 
 [node name="back_scale" type="SpinBox" parent="GUI/editor_defaults"]
 margin_left = 296.0
-margin_top = 432.0
+margin_top = 464.0
 margin_right = 424.0
-margin_bottom = 464.0
+margin_bottom = 496.0
 step = 0.05
 value = 1.0
 
 [node name="center_scale" type="SpinBox" parent="GUI/editor_defaults"]
 margin_left = 296.0
-margin_top = 496.0
+margin_top = 528.0
 margin_right = 424.0
-margin_bottom = 528.0
+margin_bottom = 560.0
 step = 0.05
 value = 1.0
 
 [node name="front_scale" type="SpinBox" parent="GUI/editor_defaults"]
 margin_left = 296.0
-margin_top = 560.0
+margin_top = 592.0
 margin_right = 424.0
-margin_bottom = 592.0
+margin_bottom = 624.0
 step = 0.05
 value = 1.0
 
@@ -684,7 +699,7 @@ Game camera
 Transform
 Reset transform
 Rng transform
-Edit
+Edit / Bucket
 Quick save level
 Save level
 Load level
@@ -732,8 +747,10 @@ Layer back
 Layer center
 Layer front
 Hide layers by pressing Alt instead of Ctrl
+Playtest
+Replace removed
 
-Return (General)"
+Exit (General)"
 
 [node name="guideline2" parent="GUI/keysbinds" instance=ExtResource( 2 )]
 margin_left = 952.0
@@ -753,6 +770,8 @@ Ctrl +
 Ctrl +
 Ctrl +
 
+Ctrl + Shift +
+Press
 
 Press"
 
@@ -1067,6 +1086,30 @@ __meta__ = {
 
 [node name="return" type="Button" parent="GUI/keysbinds/buttons"]
 margin_left = 2792.0
+margin_top = 608.0
+margin_right = 3064.0
+margin_bottom = 640.0
+toggle_mode = true
+clip_text = true
+align = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="playtest" type="Button" parent="GUI/keysbinds/buttons"]
+margin_left = 2912.0
+margin_top = 512.0
+margin_right = 3064.0
+margin_bottom = 544.0
+toggle_mode = true
+clip_text = true
+align = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="redo" type="Button" parent="GUI/keysbinds/buttons"]
+margin_left = 2792.0
 margin_top = 544.0
 margin_right = 3064.0
 margin_bottom = 576.0
@@ -1138,8 +1181,8 @@ margin_bottom = 768.0
 window_title = "Open a File"
 mode = 0
 access = 2
-current_dir = "/home/tabin/godot-projects/blue-runner-vanilla/blue-editor"
-current_path = "/home/tabin/godot-projects/blue-runner-vanilla/blue-editor/"
+current_dir = "/Project/Godot 3.2/sonic_runner_git/blue-editor"
+current_path = "/Project/Godot 3.2/sonic_runner_git/blue-editor/"
 
 [node name="HScrollBar" type="HScrollBar" parent="."]
 margin_top = 688.0
@@ -1184,6 +1227,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 [connection signal="pressed" from="GUI/editor_defaults/sonic_runner" to="." method="sonic_runner_popup"]
+[connection signal="toggled" from="GUI/editor_defaults/use_speedometer" to="." method="settings_change" binds= [ "use_speedometer", "default" ]]
 [connection signal="toggled" from="GUI/editor_defaults/addition_info" to="." method="settings_change" binds= [ "editor_gui_additional_info", "default" ]]
 [connection signal="toggled" from="GUI/editor_defaults/grid_snap" to="." method="settings_change" binds= [ "editor_default_grid_snap", "default" ]]
 [connection signal="item_selected" from="GUI/editor_defaults/default_tab" to="." method="settings_change" binds= [ "editor_default_tab", "default" ]]
@@ -1244,6 +1288,8 @@ __meta__ = {
 [connection signal="toggled" from="GUI/keysbinds/buttons/layer_2" to="." method="start_keybind_check" binds= [ 20 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/layer_3" to="." method="start_keybind_check" binds= [ 20 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/return" to="." method="start_keybind_check" binds= [ 20 ]]
+[connection signal="toggled" from="GUI/keysbinds/buttons/playtest" to="." method="start_keybind_check" binds= [ 20 ]]
+[connection signal="toggled" from="GUI/keysbinds/buttons/redo" to="." method="start_keybind_check" binds= [ 20 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/reset_transform" to="." method="start_keybind_check" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/random_transform" to="." method="start_keybind_check" binds= [ 1 ]]
 [connection signal="toggled" from="GUI/keysbinds/buttons/game_camera" to="." method="start_keybind_check" binds= [ 3 ]]

@@ -1,40 +1,49 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://Scripts/single_color.shader" type="Shader" id=1]
-[ext_resource path="res://Scripts/Player.gd" type="Script" id=18]
+[ext_resource path="res://Visual/parstar.png" type="Texture" id=1]
+[ext_resource path="res://Scripts/Player/Player.gd" type="Script" id=18]
 
-[sub_resource type="ShaderMaterial" id=1]
-shader = ExtResource( 1 )
-shader_param/color = Color( 0, 0, 0, 1 )
-shader_param/active = false
-shader_param/blend = 1.0
-
-[sub_resource type="Curve" id=2]
+[sub_resource type="Curve" id=1]
 _data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 8, 8 )
 
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 8, 8 )
 
-[sub_resource type="RectangleShape2D" id=4]
-extents = Vector2( 8, 8 )
+[sub_resource type="Curve" id=4]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.00454545 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="World" id=5]
 
 [node name="Player" type="KinematicBody2D"]
-material = SubResource( 1 )
 script = ExtResource( 18 )
 
 [node name="trail" type="Line2D" parent="."]
 visible = false
 use_parent_material = true
 position = Vector2( 0, -88 )
-points = PoolVector2Array( -216, -96 )
 width = 15.0
-width_curve = SubResource( 2 )
+width_curve = SubResource( 1 )
 default_color = Color( 1, 1, 1, 1 )
+
+[node name="col_0" type="CollisionShape2D" parent="."]
+visible = false
+z_index = 1
+shape = SubResource( 2 )
+disabled = true
+
+[node name="col_visual" type="Polygon2D" parent="col_0"]
+position = Vector2( -1.58946e-07, -1.19209e-07 )
+color = Color( 1, 0, 0, 0.486275 )
+polygon = PoolVector2Array( -8, -8, 8, -8, 8, 8, -8, 8 )
 
 [node name="col_1" type="CollisionShape2D" parent="."]
 visible = false
 z_index = 1
-shape = SubResource( 3 )
+shape = SubResource( 2 )
+disabled = true
 
 [node name="col_visual" type="Polygon2D" parent="col_1"]
 position = Vector2( -1.58946e-07, -1.19209e-07 )
@@ -44,10 +53,34 @@ polygon = PoolVector2Array( -8, -8, 8, -8, 8, 8, -8, 8 )
 [node name="col_2" type="CollisionShape2D" parent="."]
 visible = false
 z_index = 1
-shape = SubResource( 4 )
+shape = SubResource( 3 )
 disabled = true
 
 [node name="col_visual" type="Polygon2D" parent="col_2"]
 position = Vector2( 0, -4.76837e-07 )
 color = Color( 1, 0, 0, 0.486275 )
 polygon = PoolVector2Array( -8, -8, 8, -8, 8, 8, -8, 8 )
+
+[node name="character_texture" type="Sprite" parent="."]
+use_parent_material = true
+
+[node name="stylish" type="CPUParticles2D" parent="."]
+emitting = false
+lifetime = 0.5
+local_coords = false
+texture = ExtResource( 1 )
+emission_shape = 2
+emission_rect_extents = Vector2( 64, 64 )
+gravity = Vector2( 0, 30 )
+angular_velocity = 100.0
+angular_velocity_random = 1.0
+scale_amount_curve = SubResource( 4 )
+
+[node name="character_viewport" type="Viewport" parent="."]
+size = Vector2( 1024, 1024 )
+own_world = true
+world = SubResource( 5 )
+transparent_bg = true
+disable_3d = true
+usage = 0
+render_target_v_flip = true

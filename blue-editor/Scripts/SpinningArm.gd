@@ -7,8 +7,8 @@ var editor_properties : Dictionary = {
 	"layer" : "selected",
 	"rect" : Rect2(0, -128, 24, 288),
 	"editable_properties" : {
-		"spin_time_frames" : [TYPE_INT, 0, 0, 1],
-		"timer" : [TYPE_INT, 0, 0, 1],
+		"spin_time_frames" : [TYPE_INT, 0, 0, 1, "frames"],
+		"timer" : [TYPE_INT, 0, 0, 1, "frames"],
 		"direction" : [TYPE_BOOL, 0, 0, 0],
 		"lenght" : [TYPE_REAL, 0, 0, 0.05],
 		"attached_nodes" : [TYPE_NIL, 0, 0, 0],
@@ -30,7 +30,7 @@ export var lenght : float = 1
 
 var rotations = []
 
-var attached_nodes = [null]
+export var attached_nodes = [null]
 var scale_hinge : float
 var timer_hinge : int
 
@@ -49,7 +49,7 @@ func _process(_delta):
 	
 	if abs(timer) >= spin_time_frames: timer = (spin_time_frames - 1) * sign(timer)
 	
-	$decor_steel_pipe.rotation_degrees = rotations[timer]
+	$editor_vector.rotation_degrees = rotations[timer]
 	$editor_pointer.rotation_degrees = rotations[timer]
 	
 	$decor_steel_pipe.scale.y = lenght + 0.125

@@ -38,8 +38,10 @@ tracks/1/keys = {
 collision_layer = 24
 collision_mask = 24
 script = ExtResource( 4 )
+is_finish = false
+tele_destination = "*MENU"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="coll" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

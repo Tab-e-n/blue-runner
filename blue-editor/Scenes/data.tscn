@@ -3,7 +3,7 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
-const VERSION : String = \"1.1.0\"
+const VERSION : String = \"2.0.1\"
 
 var tilesets : Array
 var bg : Array
@@ -16,16 +16,13 @@ var characters : Array
 
 var user_directory : String = \"user://sonicRunnerEditor\"
 
-var mods_installed : Array
-var mods_enabled : Dictionary
-
-const INPUT_AMOUNT : int = 26
+const INPUT_AMOUNT : int = 28
 var last_input_events : Array = range(INPUT_AMOUNT)
 
-var default_settings : Dictionary = {}
-var settings : Dictionary = {
+const DEFAULT_SETTINGS : Dictionary = {
 	\"*version\" : VERSION,
 	\"sonic_runner_folder\" : \"\",
+	\"use_speedometer\" : false,
 	
 	\"editor_gui_additional_info\" : false,
 	
@@ -69,30 +66,39 @@ var settings : Dictionary = {
 		KEY_G, #grid snap toggle
 		KEY_Z, #camera mode (camera zoom, game camera snap)
 		KEY_J, #attach
+		
 		KEY_T, #change tab to tiles
 		KEY_D, #change tab to decor
 		KEY_O, #change tab to objects
 		KEY_M, #change mode move
 		KEY_A, #change mode paint
+		
 		KEY_X, #change mode erasor
 		KEY_C, #change mode cog
 		KEY_S, #save level
 		KEY_L, #load level
 		KEY_N, #create new level
+		
 		KEY_E, #edit items
 		KEY_F, #focus file panel
 		KEY_L, #focus layer panel
 		KEY_I, #focus items panel
 		KEY_E, #focus edit panel
+		
 		KEY_P, #focus place panel
 		KEY_1,
 		KEY_2,
 		KEY_3,
 		KEY_4,
+		
 		KEY_ESCAPE, # RETURN
+		KEY_P, # Playtest
+		KEY_BACKSPACE, # Redo
 	],
 	
 	\"editor_random_scale_range\" : [0.5, 3],
+}
+var settings : Dictionary = {
 }
 # Max 8 faves per category
 # Each tileset has its own 8 faves under its name
@@ -114,12 +120,10 @@ func _ready():
 	dir.open(\"user://\")
 	if !dir.dir_exists(\"SRLevels\"): dir.make_dir(\"SRLevels\")
 	
-	default_settings = settings.duplicate()
+	settings = DEFAULT_SETTINGS.duplicate()
 	
 	load_game()
 	load_editor_vanilla()
-	# MOD LOADING IS DISABLED FOR NOW
-	#load_editor_mods()
 
 func _process(_delta):
 	pass
@@ -136,17 +140,7 @@ func save_game():
 	temp[\"recent\"] = recent.duplicate()
 	temp[\"settings\"] = settings.duplicate()
 	
-	check_mods()
-	
 	savefile.open(user_directory, File.WRITE)
-	savefile.store_line(to_json(temp))
-	savefile.close()
-	
-	temp = {}
-	
-	temp[\"*mods\"] = mods_installed.duplicate()
-	
-	savefile.open(\"user://sonicRunnerMods\", File.WRITE)
 	savefile.store_line(to_json(temp))
 	savefile.close()
 
@@ -190,7 +184,7 @@ func load_game(fail = false):
 	
 	# First it uses the default bindings
 	last_input_events = InputMap.get_action_list(\"default\").duplicate()
-	print(last_input_events)
+#	print(last_input_events)
 	# The every binding that has already been bound replaces the defaults
 	for i in range(INPUT_AMOUNT):
 		last_input_events.append(InputEventKey.new())
@@ -227,6 +221,13 @@ func load_editor_vanilla():
 	print(\"scanning vanilla backgrounds\")
 	scan_single_directory(\"res:/\", \"/Objects/Backgrounds/\", bg, \".tscn\", \"background\")
 	
+	for i in range(bg.size()):
+		if bg[i][0] == \"BG_Default.tscn\":
+			var default = bg[i]
+			for j in range(i):
+				bg[i - j] = bg[i - j - 1]
+			bg[0] = default
+	
 	# Other Objects
 	print(\"scanning vanilla objects\")
 	scan_multi_directory(\"res:/\", \"/Objects/\", place_objects, \".tscn\", [\"Tilesets\", \"Backgrounds\"])
@@ -244,51 +245,12 @@ func load_editor_vanilla():
 	print(\"scanning vanilla decor\")
 	scan_multi_directory(\"res:/\", \"/Visual/\", place_decor, \".png.import\")
 
-func load_editor_mods():
-	var directory : Directory = Directory.new()
-	
-	check_mods()
-	
-	for mod_name in mods_installed:
-		print(\"current mod: \" + mod_name)
-		# warning-ignore:return_value_discarded
-		directory.open(\"Mods/\" + mod_name)
-		
-		# Characters
-		print(\"scanning for characters\")
-		load_dat_file(\"Mods/\" + mod_name, \"/Objects/Player/\", characters, \"characters\")
-		
-		# Tilesets
-		print(\"scanning for tilesets\")
-		scan_single_directory(\"Mods/\" + mod_name, \"/Objects/Tilesets/\", tilesets, \".tres\", \"tileset\")
-		
-		# BG
-		print(\"scanning for backgrounds\")
-		scan_single_directory(\"Mods/\" + mod_name, \"/Objects/Backgrounds/\", bg, \".tscn\", \"background\")
-		
-		# Other Objects
-		print(\"scanning for objects\")
-		scan_multi_directory(\"Mods/\" + mod_name, \"/Objects/\", place_objects, \".tscn\", [\"Tilesets\", \"Backgrounds\", \"Player\"])
-		
-		# Level Icons
-		print(\"scanning for level icons\")
-		scan_single_directory(\"Mods/\" + mod_name, \"/Visual/Level/\", level_icon, \".png.import\", \"icon\")
-		
-		print(\"scanning for level base\")
-		load_dat_file(\"Mods/\" + mod_name, \"/Visual/Level/\", level_base, \"base\")
-		
-		load_base(\"res:/\")
-		
-		# Visuals
-		print(\"scanning for decor\")
-		scan_multi_directory(\"Mods/\" + mod_name, \"/Visual/\", place_decor, \".png.import\")
-
 func load_dat_file(main_directory : String, sub_directory : String, storage : Array, file_type : String):
 	var loadfile = File.new()
 	var temp = {}
 	
 	if loadfile.file_exists(main_directory + sub_directory + file_type + \".dat\"): # does file exist
-		print(file_type + \" file was found\")
+#		print(file_type + \" file was found\")
 		loadfile.open(main_directory + sub_directory + file_type + \".dat\", File.READ)
 		
 		while loadfile.get_position() < loadfile.get_len():
@@ -299,7 +261,8 @@ func load_dat_file(main_directory : String, sub_directory : String, storage : Ar
 			for i in temp[\"*\" + file_type]: storage.append([i,main_directory])
 		loadfile.close()
 	else:
-		print(\"no \" + file_type + \" file found\")
+		pass
+#		print(\"no \" + file_type + \" file found\")
 
 func scan_single_directory(main_directory : String, sub_directory : String, storage : Array, file_type : String, file_descriptor : String):
 	var directory : Directory = Directory.new()
@@ -315,7 +278,7 @@ func scan_single_directory(main_directory : String, sub_directory : String, stor
 			if current_file.ends_with(file_type):
 				if current_file.ends_with(\".import\"):
 					current_file = current_file.substr(0,current_file.find(\".import\"))
-				print(\"found \" + file_descriptor + \": \" + current_file)
+#				print(\"found \" + file_descriptor + \": \" + current_file)
 				storage.append([current_file, main_directory])
 			current_file = directory.get_next()
 
@@ -366,102 +329,6 @@ func load_base(main_directory : String):
 	for base in level_base:
 		base_data[main_directory][base[0]] = temp[base[0]]
 
-func check_mods():
-	var directory : Directory = Directory.new()
-	var current_file : String
-	print(\"scanning mods\")
-	var check_exist = directory.open(\"res://Mods\")
-	
-	mods_installed = []
-	
-	if check_exist == OK:
-		print(\"user has mods installed\")
-		
-		# warning-ignore:return_value_discarded
-		directory.list_dir_begin(true)
-		current_file = directory.get_next()
-		while current_file != \"\":
-			mods_installed.append(current_file)
-			current_file = directory.get_next()
-	else:
-		print(\"no mods found, or an error occured\")
-	
-	for mod_name in mods_installed.duplicate():
-		mods_enabled[mod_name] = [true, settings[\"sonic_runner_folder\"] == \"\", \"sonic runner not found\"]
-	for mod_name in mods_installed.duplicate():
-		var enabled = load_mods_data_files(mod_name)
-		if typeof(enabled) == TYPE_INT: enabled = false
-		mods_enabled[mod_name][0] = enabled
-	for mod_name in mods_installed.duplicate():
-		if !mods_enabled[mod_name][0]:
-			mods_installed.erase(mod_name)
-
-func load_mods_data_files(mod_name : String):
-	if mods_enabled[mod_name][0] and mods_enabled[mod_name][1]:
-		return true
-	if !mods_enabled[mod_name][0] and mods_enabled[mod_name][1]:
-		return false
-	if mods_enabled[mod_name][0] and !mods_enabled[mod_name][1]:
-		mods_enabled[mod_name][1] = true
-		
-		var loadfile = File.new()
-		var temp = {}
-		if loadfile.file_exists(\"Mods/\" + mod_name + \"/mod.dat\"): # does file exist
-			
-			
-			loadfile.open(\"Mods/\" + mod_name + \"/mod.dat\", File.READ)
-			
-			while loadfile.get_position() < loadfile.get_len():
-				var parsedData = parse_json(loadfile.get_line())
-				
-				temp = parsedData
-			
-			loadfile.close()
-		else:
-			print(mod_name + \" has no data file\")
-			mods_enabled[mod_name][2] = \"no data file\"
-			return false
-		if !temp[\"active\"]:
-			print(mod_name + \" is disabled\")
-			mods_enabled[mod_name][2] = \"disabled\"
-			return false
-		
-		mods_enabled[mod_name][0] = false
-		for i in temp[\"dependencies\"]:
-			if !mods_installed.has(i):
-				print(mod_name + \" is dependent on a mod that isn't installed\")
-				mods_enabled[mod_name][2] = \"dependencies not installed\"
-				return false
-			else:
-				var check = load_mods_data_files(i)
-				if typeof(check) == TYPE_INT:
-					print(mod_name + \" was in a cyclical dependancy\")
-					mods_enabled[mod_name][2] = \"cyclical dependancy\"
-					return 2
-				if check == false:
-					print(mod_name + \" is dependent on a mod that isn't enabled\")
-					mods_enabled[mod_name][2] = \"dependencies not active\"
-					return false
-		
-		var directory = Directory.new()
-		
-		if !directory.dir_exists(settings[\"sonic_runner_folder\"]):
-			print(mod_name + \" is disabled, because there is no sonic runner\")
-			mods_enabled[mod_name][2] = \"sonic runner not found\"
-			return false
-		
-		if !directory.dir_exists(settings[\"sonic_runner_folder\"] + \"/Mods/\" + mod_name):
-			print(mod_name + \" isn't imported in sonic runner\")
-			mods_enabled[mod_name][2] = \"not imported in sonic runner\"
-			return false
-		
-		print(mod_name + \" is enabled\")
-		mods_enabled[mod_name][2] = \"active\"
-		return true
-		
-	if !mods_enabled[mod_name][0] and !mods_enabled[mod_name][1]:
-		return 2
-
 func load_texture_from_png(path : String = \"\"):
 	if path == \"\": return null
 	
@@ -495,15 +362,20 @@ func scale_down_sprite(sprite : Sprite, final_scale : Vector2 = Vector2(1, 1), d
 		sprite.scale.x = final_scale.y / (sprite_rect.y / desired_rect.y)
 	sprite.scale.y = sprite.scale.x
 
+
 func select_option_button(button : OptionButton, text : String, meta : String):
-	print(text + meta)
+#	print(text + meta)
 	for i in range(button.get_item_count()):
 		if button.get_item_text(i) == text and button.get_item_metadata(i) == meta:
-			print(button.get_item_text(i) + button.get_item_metadata(i))
+#			print(button.get_item_text(i) + button.get_item_metadata(i))
 			button.select(i)
 
 
-enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER}
+enum {UNLOCK_ALWAYS, UNLOCK_BEAT, UNLOCK_PAR, UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_CUSTOM, UNLOCK_NEVER, UNLOCK_GROUP_BEAT, UNLOCK_GROUP_PAR}
+
+func unlock_numerical_para2(type : int) -> bool:
+	return type in [UNLOCK_COMPLETION, UNLOCK_BONUS, UNLOCK_GROUP_BEAT, UNLOCK_GROUP_PAR]
+
 func changed_unlock_type(index : int, unlock_text : RichTextLabel, type_button : OptionButton, text_1 : LineEdit, text_2 : LineEdit, number_2 : SpinBox, extra_text : String = \"\"):
 	if index != -1:
 		type_button.select(index)
@@ -555,6 +427,18 @@ func changed_unlock_type(index : int, unlock_text : RichTextLabel, type_button :
 			text_2.visible = false
 			number_2.visible = false
 			unlock_text.text = \"Unlock Type\" + extra_text
+		UNLOCK_GROUP_BEAT:
+			text_1.visible = true
+			text_2.visible = false
+			number_2.visible = true
+			number_2.allow_greater = true
+			unlock_text.text = \"Unlock Type\" + extra_text + \"\\nLevel Group\" + extra_text + \"\\nLevel Beaten\" + extra_text
+		UNLOCK_GROUP_PAR:
+			text_1.visible = true
+			text_2.visible = false
+			number_2.visible = true
+			number_2.allow_greater = true
+			unlock_text.text = \"Unlock Type\" + extra_text + \"\\nLevel Group\" + extra_text + \"\\nLevels Pared\" + extra_text
 
 func key_names(key_number : int):
 	if key_number >= 33 and key_number <= 255: return char(key_number)

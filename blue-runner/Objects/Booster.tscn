@@ -5,14 +5,14 @@
 [ext_resource path="res://Visual/booster_effect.png" type="Texture" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 24, 12 )
+extents = Vector2( 36, 12 )
 
 [node name="Booster" type="Area2D"]
 monitoring = false
 script = ExtResource( 2 )
 
 [node name="booster" type="Sprite" parent="."]
-position = Vector2( 0, -32 )
+position = Vector2( 0, -16 )
 texture = ExtResource( 1 )
 
 [node name="booster_effect" type="Sprite" parent="."]

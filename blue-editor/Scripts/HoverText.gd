@@ -7,16 +7,15 @@ var editor_properties : Dictionary = {
 	"layer" : "selected",
 	"rect" : Rect2(0, 0, 64, 64),
 	"editable_properties" : {
-		"text" : [TYPE_STRING, 0, 0, 0],
-		"font_path" : [TYPE_STRING, 0, 0, 0],
-		"offset" : [TYPE_VECTOR2, 0, 0, 1],
-		"text_size" : [TYPE_VECTOR2, 0, 0, 1],
+		"text" : [TYPE_STRING],
+		"font_path" : [TYPE_STRING],
+		"offset" : [TYPE_VECTOR2, 0, 0, 1, "pixels"],
+		"text_size" : [TYPE_VECTOR2, 0, 0, 1, "pixels"],
 		"text_scale" : [TYPE_VECTOR2, 0, 0, 0.05],
-		"text_color" : [TYPE_COLOR, 0, 0, 0],
-		"follow_player" : [TYPE_BOOL, 0, 0, 0],
-		"delay_until_appearing" : [TYPE_INT, 0, 0, 1],
-		"appear_time" : [TYPE_INT, 0, 0, 1],
-		#"name" : [TYPE, min, max, step],
+		"text_color" : [TYPE_COLOR],
+		"follow_player" : [TYPE_BOOL],
+		"delay_until_appearing" : [TYPE_INT, 0, 0, 1, "frames"],
+		"appear_time" : [TYPE_INT, 0, 0, 1, "frames"],
 	},
 	"unchangeable_properties" : {
 		"scale" : false,
@@ -38,6 +37,7 @@ export var delay_until_appearing : int = 0
 export var appear_time : int = 60
 export var font_path : String = "res://Text/Lacrimae.tres"
 var last_font_path : String = "res://Text/Lacrimae.tres"
+
 
 func _process(_delta):
 	$Text.rect_scale = text_scale / scale

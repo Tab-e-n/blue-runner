@@ -14,7 +14,7 @@ shape = SubResource( 1 )
 
 [node name="Text" parent="." instance=ExtResource( 1 )]
 modulate = Color( 1, 1, 1, 0 )
-margin_right = 341.0
+margin_right = 85.0
 margin_bottom = 85.0
 rect_scale = Vector2( 0.75, 0.75 )
 text = "Test

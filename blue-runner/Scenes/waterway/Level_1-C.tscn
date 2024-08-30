@@ -137,6 +137,7 @@ z_index = 20
 [node name="Camera" parent="." instance=ExtResource( 8 )]
 position = Vector2( 0, 768 )
 z_index = 100
+zoom = Vector2( 2, 2 )
 limit_x = Vector2( 0, 2048 )
 
 [node name="objects_background" type="Node2D" parent="."]

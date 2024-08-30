@@ -5,6 +5,7 @@
 [node name="BG" type="Node2D"]
 z_index = -100
 script = ExtResource( 1 )
+bg_color = Color( 0, 0.6, 0.57, 1 )
 
 [node name="vis" type="Node2D" parent="."]
 modulate = Color( 0, 0.596078, 0.572549, 1 )

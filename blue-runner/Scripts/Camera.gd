@@ -1,6 +1,7 @@
 extends Camera2D
 
-var color_timer : float = 0
+
+const FADE_IN_OUT_DEFAULT : int = 12
 
 export var compatibility_mode : bool = false
 export var limit_x : Vector2 = Vector2(0,0)
@@ -12,10 +13,10 @@ onready var cam_target : Node2D
 var tele_destination : String
 
 var end_zoom : bool = false
-const end_timer_const : int = 60
-var end_timer : float = end_timer_const
+const END_TIMER_DEFAULT : int = 60
+var end_timer : float = END_TIMER_DEFAULT
 
-var end_zoom_begin : float
+var end_zoom_begin : Vector2
 var end_pos_begin : Vector2
 # Color(0.87451, 0.909804, 0.905882)
 
@@ -23,10 +24,33 @@ var replay_saved : bool = true
 var speedometer_active : bool = false
 var visible_timer : bool = false
 
+var fade_in : bool = true
+var fade_in_timer : float = 0
+export var fade_in_darkness_lenght : int = 0
+export var fade_in_end : int = FADE_IN_OUT_DEFAULT
+
+var fade_out : bool = false
+var fade_out_timer : float = 0
+export var fade_out_darkness_lenght : int = 0
+export var fade_out_end : int = FADE_IN_OUT_DEFAULT
+
+var unlock_fade : bool = false
+
+
+export var in_main_menu : bool = false
+
+
 func _ready():
 	$Fade.visible = true
 	$border.visible = true
-	visible_timer = $"/root/Global".options["*timer_on"]
+	$finish.visible = false
+	$complete_dark.visible = true
+	if Global.options["*timer_on"] == 1:
+		visible_timer = true
+	elif Global.options["*timer_on"] == 2:
+		visible_timer = Global.check_unlock_requirements(Global.UNLOCK_BEAT, Global.current_level_location, Global.current_level)
+	
+	speedometer_active = Global.speedometer_active
 	
 	if get_parent().has_node("BG"):
 		bg = get_parent().get_node("BG")
@@ -39,125 +63,176 @@ func _ready():
 	if cam_target == null:
 		cam_target = self
 	
-	if speedometer_active: visible_timer = false
-	$info.visible = speedometer_active or visible_timer
-	$speed.visible = speedometer_active
+	if speedometer_active:
+		visible_timer = false
+	$info/text.visible = speedometer_active or visible_timer
+#	$info/speed.visible = speedometer_active
 	
-	$camera_inputs/continue.text = $"/root/Global".key_names(4)
-	$camera_inputs/reset.text = $"/root/Global".key_names(6)
+	$finish/continue.text = Global.key_names(4)
+	$finish/reset.text = Global.key_names(6)
 	
-	if Global.compatibility_mode: compatibility_mode = true
+	if Global.compatibility_mode:
+		compatibility_mode = true
 	
 	if compatibility_mode:
 		$border.polygon[0].x = -512
 		$border.polygon[1].x = 512
 		$border.polygon[2].x = 512
 		$border.polygon[7].x = -512
+		
+		$finish/camera_input_continue.position.x = 480
+		$finish/camera_input_reset.position.x = -480
+		$finish/continue.rect_size.x = 512
+		$finish/reset.rect_size.x = 512
+		$finish/reset.rect_position.x = -416
+	
+	if not in_main_menu:
+		$info/level/data.text = Global.text_interpretor(
+"""%level level_name%
+%current_level_location%%current_level%
+By: %level creator%"""
+#As: %current_character%
+)
+
 
 func _physics_process(_delta):
-	if color_timer < 12:
-		var color = $Fade.color
-		$Fade.color = Color(color.r,color.g,color.b,(10-color_timer)/10)
-		
-		color_timer += 1
-		if color_timer == 11: $Fade.visible = false
-	if color_timer > 13:
-		var color = $Fade.color
-		color_timer -= 1
-		
-		# warning-ignore:return_value_discarded
-		if color_timer == 13: 
+	if has_node("complete_dark"):
+		$complete_dark.call_deferred("queue_free")
+	
+	if fade_in:
+		fade_in_timer += 1
+		if fade_in_timer > fade_in_end + fade_in_darkness_lenght:
+			$Fade.visible = false
+			fade_in = false
+		elif fade_in_timer > fade_in_darkness_lenght:
+			var fade_timer : float = fade_in_timer - fade_in_darkness_lenght
+			$Fade.color.a = (fade_in_end - fade_timer) / fade_in_end
+		else:
+			$Fade.color.a = 1.0
+	
+	if fade_out:
+		fade_out_timer += 1
+		if fade_out_timer > fade_out_end + fade_out_darkness_lenght:
+			$Fade.color.a = 1.0
 			if Global.race_mode:
-				Global.change_level("*Menu_Level_Select")
+				Global.change_level("*MENU")
 			else: 
 				Global.change_level(tele_destination)
+		elif fade_out_timer < fade_out_end:
+			$Fade.color.a = fade_out_timer / fade_out_end
 		else:
-			$Fade.color = Color(color.r,color.g,color.b,(24-color_timer)/10)
+			$Fade.color.a = 1.0
+			
+		# warning-ignore:return_value_discarded
 	
 	if !end_zoom:
-		position.x = int(cam_target.position.x / 2) * 2
-		if position.x < limit_x.x: position.x = limit_x.x
-		if position.x > limit_x.y: position.x = limit_x.y
+		position.x = int(cam_target.position.x * 0.5) * 2
+		if position.x < limit_x.x:
+			position.x = limit_x.x
+		if position.x > limit_x.y:
+			position.x = limit_x.y
 		
-		position.y = int(cam_target.position.y / 2) * 2
-		if position.y < limit_y.x: position.y = limit_y.x
-		if position.y > limit_y.y: position.y = limit_y.y
+		position.y = int(cam_target.position.y * 0.5) * 2
+		if position.y < limit_y.x:
+			position.y = limit_y.x
+		if position.y > limit_y.y:
+			position.y = limit_y.y
 		if speedometer_active:
-			var temp_calc = (abs(cam_target.momentum.x) + abs(cam_target.momentum.y)) / 10
-			$speed.rotation_degrees = temp_calc / 2
+			var temp_calc = round(abs(cam_target.momentum.x)) # + abs(cam_target.momentum.y))
+			if temp_calc <= 10:
+				temp_calc = 0
 			$info/text.text = String(temp_calc)
+#			$info/speed.rotation_degrees = temp_calc * 0.05
 		if visible_timer and (cam_target.timer <= cam_target.replay_timer + 0.016 or !cam_target.replay):
-			var minutes : int = int(floor(cam_target.timer) / 60)
-			var seconds : int = int(floor(cam_target.timer)) - minutes * 60
-			var decimal : int = int(floor(cam_target.timer * 100 + 0.1)) % 100
-			
-			# warning-ignore:integer_division
-			# warning-ignore:integer_division
-			$info/text.text = String(minutes)+":"+String(seconds/10)+String(seconds%10)+"."+String(decimal/10)+String(decimal%10)
+			$info/text.text = Global.convert_float_to_time(cam_target.timer)
 	else:
 		$info.visible = false
-		$speed.visible = false
 		
-		zoom.x = 1 + (end_zoom_begin - 1) / end_timer_const * end_timer
-		zoom.y = 1 + (end_zoom_begin - 1) / end_timer_const * end_timer
+		zoom.x = 1 + (end_zoom_begin.x - 1) / END_TIMER_DEFAULT * end_timer
+		zoom.y = 1 + (end_zoom_begin.y - 1) / END_TIMER_DEFAULT * end_timer
 		
-		$border_thing.scale.x = zoom.x + (zoom.x * 0.5) / end_timer_const * end_timer
-		$border_thing.scale.y = zoom.y + (zoom.y * 0.5) / end_timer_const * end_timer
+		$finish.scale.x = zoom.x + (zoom.x * 0.5) / END_TIMER_DEFAULT * end_timer
+		$finish.scale.y = zoom.y + (zoom.y * 0.5) / END_TIMER_DEFAULT * end_timer
 		
-		$camera_inputs.scale = $border_thing.scale
+#		$camera_inputs.scale = $finish.scale
 		
-		$camera_inputs.position.y = 80.0 / end_timer_const * end_timer
+#		$camera_inputs.position.y = 80.0 / END_TIMER_DEFAULT * end_timer
 		
-		position.x = cam_target.position.x + (end_pos_begin.x - cam_target.position.x) / end_timer_const * end_timer
-		position.y = cam_target.position.y + (end_pos_begin.y - cam_target.position.y) / end_timer_const * end_timer
+		position.x = cam_target.position.x + (end_pos_begin.x - cam_target.position.x) / END_TIMER_DEFAULT * end_timer
+		position.y = cam_target.position.y + (end_pos_begin.y - cam_target.position.y) / END_TIMER_DEFAULT * end_timer
 		
 		
-		if end_timer > 0: end_timer -= end_timer / 20
-		if end_timer < 0.1: end_timer = 0
+		if end_timer > 0:
+			end_timer -= end_timer / 20
+		if end_timer < 0.1:
+			end_timer = 0
 		
-		if end_timer < 10 and color_timer < 13:
+		if end_timer < 10 and not fade_out:
 			if Input.is_action_pressed("jump"):
-				color_timer = 24
-				$Fade.visible = true
+				start_fade_out(tele_destination)
 			if Input.is_action_just_pressed("special") and replay_saved:
-				var date = OS.get_datetime()
+				Global.save_replay_with_date(get_parent().name, get_parent().get_node("Player").recording.duplicate())
 				
-				Global.save_replay(get_parent().name
-				+"_"+String(date["year"])
-				+"-"+String(date["month"])
-				+"-"+String(date["day"])
-				+"_"+String(date["hour"])
-				+"-"+String(date["minute"])
-				+"-"+String(date["second"]),
-				get_parent().get_node("Player").recording.duplicate())
-				
-				$border_thing/replay.text = "REPLAY SAVED"
+				$finish/replay.text = "REPLAY SAVED"
 				replay_saved = false
 				
 	if scrolling_objects != []:
 		for i in scrolling_objects:
 			i.update_self(position)
-	if bg != null: bg.update_self(position)
+	if bg != null:
+		bg.update_self(position)
 	$Fade.scale = zoom
 	$border.scale = zoom
 	$info.scale = zoom
+	if unlock_fade:
+		$unlock_fade.scale = zoom
+	
+	if not in_main_menu:
+		$info/level.visible = Input.is_action_pressed("info")
+
 
 func end_zoom_in(target : Node2D, tele, timer : float, par : float):
 	end_zoom = true
 	cam_target = target
 	tele_destination = tele
-	end_zoom_begin = zoom.x
+	if tele_destination == "*CREDITS":
+		Global.credits = true
+	end_zoom_begin = zoom
 	end_pos_begin = position
-	$border_thing.visible = true
-	$camera_inputs.visible = true
-	$border_thing.scale = zoom * 4
-	$camera_inputs.scale = zoom * 4
+	$finish.visible = true
+#	$camera_inputs.visible = true
+	$finish.scale = zoom * 4
+#	$camera_inputs.scale = zoom * 4
 	
-	$border_thing/replay.text = "SAVE REPLAY - " + Global.key_names(5)
+	$finish/replay.text = "SAVE REPLAY - " + Global.key_names(5)
 	
-	$border_thing/camera_square/timer.text = Global.convert_float_to_time(timer)
+	$finish/timer.text = Global.convert_float_to_time(timer)
 	if par == 0:
-		$border_thing/camera_square/par.text = "no par\ntime"
+		$finish/par.text = "no par time"
 	else:
-		$border_thing/camera_square/par.text = "par\n" + Global.convert_float_to_time(par)
+		$finish/par.text = "par " + Global.convert_float_to_time(par)
 	
+	$anim.play("end_zoom_in")
+	$finish/anim.play("shift")
+
+
+func start_fade_out(tele : String = "*MENU", reset_fade : bool = false, fast : bool = false):
+	if reset_fade:
+		fade_out_end = FADE_IN_OUT_DEFAULT
+		fade_out_darkness_lenght = 0
+	if fast:
+		fade_out_end = int(fade_out_end * 0.5)
+	fade_out = true
+	$Fade.visible = true
+	tele_destination = tele
+	$info.visible = false
+
+
+func unlock_fade_in():
+	$anim.play("unlock_fade_in")
+	unlock_fade = true
+
+
+func unlock_fade_out():
+	$anim.play("unlock_fade_out")
+	unlock_fade = false

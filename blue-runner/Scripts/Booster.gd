@@ -34,6 +34,7 @@ func _physics_process(_delta):
 			$booster.position.x = float(disabled_timer) / 30 * 160 * flip
 		
 		if (DISABLED_TIME - disabled_timer) < 20:
+			# warning-ignore:integer_division
 			$booster_effect.frame = (DISABLED_TIME - disabled_timer) / 2
 		else:
 			$booster_effect.frame = 0
@@ -42,5 +43,5 @@ func _physics_process(_delta):
 
 func _on_Booster_body_entered(body):
 	if body.name == "Player":
-		body.punt(boost, overwrite_momentum)
+		body.punt(boost, overwrite_momentum, false)
 		disabled_timer = DISABLED_TIME

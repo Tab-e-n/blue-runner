@@ -1,0 +1,188 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=1]
+[ext_resource path="res://Visual/Editor/editor_load_enabled.png" type="Texture" id=2]
+[ext_resource path="res://Visual/Editor/editor_save_enabled.png" type="Texture" id=3]
+[ext_resource path="res://Visual/Editor/editor_save.png" type="Texture" id=4]
+[ext_resource path="res://Visual/Editor/editor_load.png" type="Texture" id=5]
+[ext_resource path="res://Control/style_disabled.tres" type="StyleBox" id=6]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Control
+
+
+signal reset(list_size)
+
+
+var character_list : Array = []
+
+
+func _ready():
+	pass
+
+
+func character_list_save():
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(\"characters.dat\"): # does file exist
+		loadfile.open(\"characters.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		loadfile.close()
+	
+	var savefile = File.new()
+	
+	temp[\"*order\"] = character_list
+	
+	savefile.open(\"characters.dat\", File.WRITE)
+	savefile.store_line(to_json(temp))
+	savefile.close()
+
+
+func character_list_load():
+	var loadfile = File.new()
+	var temp = {}
+	
+	if loadfile.file_exists(\"characters.dat\"): # does file exist
+		loadfile.open(\"characters.dat\", File.READ)
+		
+		while loadfile.get_position() < loadfile.get_len():
+			var parsedData = parse_json(loadfile.get_line())
+			
+			temp = parsedData
+		loadfile.close()
+	
+	if !temp.has(\"*order\"):
+		return
+	
+	character_list = temp[\"*order\"].duplicate()
+	
+	sync_entries(temp)
+
+
+func sync_entries(char_dat : Dictionary):
+	var character_keys = char_dat[\"*characters\"].keys()
+	for i in character_keys:
+		if not character_list.has(i):
+			character_list.append(i)
+	for i in character_list:
+		if not character_keys.has(i):
+			character_list.remove(i)
+
+
+func setup_item(index : int):
+	var item
+	if $list.has_node(String(index)):
+		item = $list.get_node(String(index))
+	else:
+		item = preload(\"res://Scenes/OrderListItem.tscn\").instance()
+		item.rect_position = Vector2(-72, index * 32)
+		item.connect(\"swap_position\", self, \"swap_position\")
+		item.index = index
+		connect(\"reset\", item, \"setup\")
+		$list.add_child(item)
+	item.setup(character_list.size(), character_list[index])
+
+
+func new_list():
+	for i in range(character_list.size()):
+		setup_item(i)
+	emit_signal(\"reset\", character_list.size())
+	
+	$scroll.visible = character_list.size() > 9
+	$scroll.max_value = character_list.size()
+
+
+func swap_position(old, new):
+	var temp = character_list[new]
+	character_list[new] = character_list[old]
+	character_list[old] = temp
+	setup_item(old)
+	setup_item(new)
+
+
+func _on_load_pressed():
+	character_list_load()
+	new_list()
+
+
+func _on_save_pressed():
+	character_list_save()
+
+
+func _on_scroll_scrolling():
+	$list.rect_position.y = $scroll.value * -32 + 72
+"
+
+[node name="character_dat_order" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -528.0
+margin_bottom = -408.0
+rect_clip_content = true
+theme = ExtResource( 1 )
+script = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="list" type="Control" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_top = 72.0
+margin_bottom = 72.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="hide" type="Panel" parent="."]
+margin_right = 752.0
+margin_bottom = 72.0
+custom_styles/panel = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="load" type="TextureButton" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -160.0
+margin_right = -96.0001
+margin_bottom = 64.0
+texture_normal = ExtResource( 5 )
+texture_pressed = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="save" type="TextureButton" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -64.0001
+margin_right = -0.00012207
+margin_bottom = 64.0
+texture_normal = ExtResource( 4 )
+texture_pressed = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="scroll" type="VScrollBar" parent="."]
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = 320.0
+margin_top = 72.0
+margin_right = 328.0
+margin_bottom = 360.0
+page = 9.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="pressed" from="load" to="." method="_on_load_pressed"]
+[connection signal="pressed" from="save" to="." method="_on_save_pressed"]
+[connection signal="scrolling" from="scroll" to="." method="_on_scroll_scrolling"]

@@ -25,6 +25,7 @@
 [node name="Level_1-7" type="Node2D"]
 
 [node name="Camera" parent="." instance=ExtResource( 1 )]
+zoom = Vector2( 2, 2 )
 limit_x = Vector2( 0, 1280 )
 
 [node name="DECOR_BACKGROUND_1" type="Node2D" parent="."]

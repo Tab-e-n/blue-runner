@@ -1,15 +1,15 @@
 extends Line2D
 
 var editor_properties : Dictionary = {
-	"description" : "A track.\nOther objects can be attached to this one. They will move on path that the creator specifies. You can edit the path only through the edit mode.",
+	"description" : "A track.\nOther objects can be attached to this one. They will move on path that the creator specifies. You can edit the path only through edit mode.",
 	"object_path" : "res://Objects/Track.tscn",
 	"object_type" : "normal",
 	"layer" : "selected",
 	"rect" : Rect2(0, 0, 128, 128),
 	"editable_properties" : {
-		"time" : [TYPE_INT, 0, 0, 1],
+		"time" : [TYPE_INT, 0, 0, 1, "frames"],
 		"is_a_loop" : [TYPE_BOOL, 0, 0, 0],
-		"time_internal" : [TYPE_INT, 0, 0, 1],
+		"time_internal" : [TYPE_INT, 0, 0, 1, "frames"],
 		"time_direction" : [TYPE_BOOL, 0, 0, 0],
 		"points" : [TYPE_NIL, 0, 0, 0],
 		"attached_nodes" : [TYPE_NIL, 0, 0, 0],
@@ -34,7 +34,7 @@ export var pre_pos : Dictionary = {}
 
 var pos : Dictionary = {}
 
-export var attached_nodes = [null]
+export var attached_nodes = []
 
 func editor_ready():
 	reset_points()

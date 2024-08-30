@@ -24,6 +24,7 @@
 [node name="Level_1-11" type="Node2D"]
 
 [node name="Camera" parent="." instance=ExtResource( 1 )]
+zoom = Vector2( 2, 2 )
 limit_y = Vector2( 384, 1536 )
 
 [node name="BG" parent="." instance=ExtResource( 8 )]
