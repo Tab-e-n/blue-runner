@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Scripts/GolfCatcher.gd" type="Script" id=1]
+[ext_resource path="res://Visual/April/GolfCather.png" type="Texture" id=2]
+[ext_resource path="res://Visual/April/GolfBlock.png" type="Texture" id=3]
 
 [node name="GolfCatcher" type="Node2D"]
 script = ExtResource( 1 )
@@ -9,7 +11,14 @@ script = ExtResource( 1 )
 color = Color( 0, 1, 1, 0.25098 )
 polygon = PoolVector2Array( -48, -128, 48, -128, 48, 0, -48, 0 )
 
-[node name="wall" type="Polygon2D" parent="."]
-position = Vector2( 0, 64 )
-color = Color( 0.556863, 0.243137, 0.243137, 1 )
-polygon = PoolVector2Array( -64, -64, 64, -64, 64, 64, -64, 64 )
+[node name="GolfCather" type="Sprite" parent="."]
+position = Vector2( 0, -72 )
+scale = Vector2( 1.125, 1.125 )
+texture = ExtResource( 2 )
+
+[node name="GolfBlock" type="Sprite" parent="."]
+position = Vector2( 0, 32 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 3 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 64, 32 )

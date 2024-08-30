@@ -11,6 +11,8 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
+# I am keeping this because it kinda looks cool and history
+
 var selected_mod : int = 0
 
 func _ready():

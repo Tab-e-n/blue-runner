@@ -1,12 +1,10 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Text/Text_Editor.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Control/Generic_Theme.tres" type="Theme" id=2]
-[ext_resource path="res://Visual/Editor/editor_new_enabled.png" type="Texture" id=3]
 [ext_resource path="res://Visual/Editor/editor_save.png" type="Texture" id=4]
 [ext_resource path="res://Visual/Editor/editor_eraser_enabled.png" type="Texture" id=5]
 [ext_resource path="res://Visual/Editor/editor_eraser.png" type="Texture" id=6]
-[ext_resource path="res://Visual/Editor/editor_new.png" type="Texture" id=7]
 [ext_resource path="res://Visual/Editor/editor_save_enabled.png" type="Texture" id=8]
 [ext_resource path="res://Visual/Editor/editor_exit_enabled.png" type="Texture" id=9]
 [ext_resource path="res://Visual/Editor/editor_exit.png" type="Texture" id=10]
@@ -17,7 +15,7 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
-const options_span : int = 2048
+const options_span : int = 1536
 
 func _ready():
 	ready_optionbutton_setup($GUI/base/base_normal, data.level_icon)
@@ -30,7 +28,6 @@ func _ready():
 	
 	data.changed_unlock_type(0, $GUI/character/text_edit, $GUI/character/type, $\"GUI/character/1_text\", $\"GUI/character/2_text\", $\"GUI/character/2_number\", \"\")
 	
-	$GUI/mod/version.text = data.VERSION
 
 func ready_optionbutton_setup(option_button : OptionButton, data_array : Array):
 	var last_directory : String = \"res:/\"
@@ -213,90 +210,6 @@ func character_remove():
 		temp[\"*characters\"].erase($GUI/character/name.text)
 		
 		savefile.open(\"characters.dat\", File.WRITE)
-		savefile.store_line(to_json(temp))
-		savefile.close()
-
-func mod_load():
-	var savefile = File.new()
-	var temp = {}
-	
-	if savefile.file_exists(\"mod.dat\"): # does file exist
-		savefile.open(\"mod.dat\", File.READ)
-		
-		while savefile.get_position() < savefile.get_len():
-			var parsedData = parse_json(savefile.get_line())
-			
-			temp = parsedData
-		savefile.close()
-	
-	$GUI/mod/name.text = temp[\"mod_name\"]
-	$GUI/mod/author.text = temp[\"creator\"]
-	$GUI/mod/description.text = temp[\"description\"]
-	if temp.has(\"version\"): $GUI/mod/version.text = temp[\"version\"]
-
-func mod_modify():
-	var savefile = File.new()
-	var temp = {}
-	
-	if savefile.file_exists(\"mod.dat\"): # does file exist
-		savefile.open(\"mod.dat\", File.READ)
-		
-		while savefile.get_position() < savefile.get_len():
-			var parsedData = parse_json(savefile.get_line())
-			
-			temp = parsedData
-		savefile.close()
-	
-	temp[\"mod_name\"] = $GUI/mod/name.text
-	temp[\"creator\"] = $GUI/mod/author.text
-	temp[\"description\"] = $GUI/mod/description.text
-	temp[\"active\"] = false
-	if !temp.has(\"dependencies\"): temp[\"dependencies\"] = []
-	
-	savefile.open(\"mod.dat\", File.WRITE)
-	savefile.store_line(to_json(temp))
-	savefile.close()
-
-func dependecies_save():
-	var loadfile = File.new()
-	var temp = {}
-	
-	if loadfile.file_exists(\"mod.dat\"): # does file exist
-		loadfile.open(\"mod.dat\", File.READ)
-		
-		while loadfile.get_position() < loadfile.get_len():
-			var parsedData = parse_json(loadfile.get_line())
-			
-			temp = parsedData
-		loadfile.close()
-	
-	var savefile = File.new()
-	
-	if !temp.has(\"dependencies\"): temp[\"dependencies\"] = []
-	temp[\"dependencies\"].append($GUI/mod/dependecies.text)
-	
-	savefile.open(\"mod.dat\", File.WRITE)
-	savefile.store_line(to_json(temp))
-	savefile.close()
-
-func dependecies_remove():
-	var loadfile = File.new()
-	var temp = {}
-	
-	if loadfile.file_exists(\"mod.dat\"): # does file exist
-		loadfile.open(\"mod.dat\", File.READ)
-		
-		while loadfile.get_position() < loadfile.get_len():
-			var parsedData = parse_json(loadfile.get_line())
-			
-			temp = parsedData
-		loadfile.close()
-		
-		var savefile = File.new()
-		
-		temp[\"dependencies\"].erase($GUI/mod/dependecies.text)
-		
-		savefile.open(\"mod.dat\", File.WRITE)
 		savefile.store_line(to_json(temp))
 		savefile.close()
 
@@ -638,147 +551,6 @@ text = "The order of the characters in the character select.
 
 Update this list whenever you add a character."
 
-[node name="mod" type="Panel" parent="GUI"]
-margin_left = 152.0
-margin_top = 1504.0
-margin_right = 944.0
-margin_bottom = 2056.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="title3" parent="GUI/mod" instance=ExtResource( 1 )]
-margin_left = 16.0
-margin_top = 16.0
-margin_right = 149.0
-margin_bottom = -304.0
-rect_scale = Vector2( 0.75, 0.75 )
-text = "MOD.DAT"
-
-[node name="load" type="TextureButton" parent="GUI/mod"]
-margin_left = 616.0
-margin_top = 8.0
-margin_right = 680.0
-margin_bottom = 72.0
-texture_normal = ExtResource( 12 )
-texture_pressed = ExtResource( 11 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="modify" type="TextureButton" parent="GUI/mod"]
-margin_left = 712.0
-margin_top = 8.0
-margin_right = 776.0
-margin_bottom = 72.0
-texture_normal = ExtResource( 4 )
-texture_pressed = ExtResource( 8 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="text" parent="GUI/mod" instance=ExtResource( 1 )]
-margin_left = 72.0
-margin_top = 88.0
-margin_right = -208.0
-margin_bottom = -232.0
-text = "Mod name"
-
-[node name="name" type="LineEdit" parent="GUI/mod"]
-margin_left = 328.0
-margin_top = 88.0
-margin_right = 712.0
-margin_bottom = 120.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="text2" parent="GUI/mod" instance=ExtResource( 1 )]
-margin_left = 72.0
-margin_top = 136.0
-margin_right = -208.0
-margin_bottom = -184.0
-text = "Creator"
-
-[node name="author" type="LineEdit" parent="GUI/mod"]
-margin_left = 328.0
-margin_top = 136.0
-margin_right = 712.0
-margin_bottom = 168.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="text3" parent="GUI/mod" instance=ExtResource( 1 )]
-margin_left = 72.0
-margin_top = 184.0
-margin_right = -208.0
-margin_bottom = -136.0
-text = "Description"
-
-[node name="description" type="TextEdit" parent="GUI/mod"]
-margin_left = 328.0
-margin_top = 184.0
-margin_right = 712.0
-margin_bottom = 312.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="text5" parent="GUI/mod" instance=ExtResource( 1 )]
-margin_left = 72.0
-margin_top = 328.0
-margin_right = -208.0
-margin_bottom = -136.0
-text = "Version"
-
-[node name="version" type="LineEdit" parent="GUI/mod"]
-margin_left = 328.0
-margin_top = 328.0
-margin_right = 712.0
-margin_bottom = 360.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="save" type="TextureButton" parent="GUI/mod"]
-margin_left = 616.0
-margin_top = 392.0
-margin_right = 680.0
-margin_bottom = 456.0
-texture_normal = ExtResource( 7 )
-texture_pressed = ExtResource( 3 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="remove" type="TextureButton" parent="GUI/mod"]
-margin_left = 712.0
-margin_top = 392.0
-margin_right = 776.0
-margin_bottom = 456.0
-texture_normal = ExtResource( 6 )
-texture_pressed = ExtResource( 5 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="text4" parent="GUI/mod" instance=ExtResource( 1 )]
-margin_left = 72.0
-margin_top = 472.0
-margin_right = -208.0
-margin_bottom = 152.0
-text = "Dependecies"
-
-[node name="dependecies" type="LineEdit" parent="GUI/mod"]
-margin_left = 328.0
-margin_top = 472.0
-margin_right = 712.0
-margin_bottom = 504.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="VScrollBar" type="VScrollBar" parent="."]
 margin_left = 64.0
 margin_right = 80.0
@@ -802,9 +574,5 @@ __meta__ = {
 [connection signal="pressed" from="GUI/character/save" to="." method="character_save"]
 [connection signal="pressed" from="GUI/character/remove" to="." method="character_remove"]
 [connection signal="item_selected" from="GUI/character/type" to="." method="character_changed_unlock_type"]
-[connection signal="pressed" from="GUI/mod/load" to="." method="mod_load"]
-[connection signal="pressed" from="GUI/mod/modify" to="." method="mod_modify"]
-[connection signal="pressed" from="GUI/mod/save" to="." method="dependecies_save"]
-[connection signal="pressed" from="GUI/mod/remove" to="." method="dependecies_remove"]
 [connection signal="scrolling" from="VScrollBar" to="." method="_on_VScrollBar_scrolling"]
 [connection signal="pressed" from="exit" to="." method="_on_exit_pressed"]

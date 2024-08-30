@@ -36,5 +36,5 @@ func _ready():
 
 
 func _physics_process(_delta):
-	$wall.scale = wall_scale
-	$wall.position = wall_offset
+	$GolfBlock.position = wall_offset
+	$GolfBlock.region_rect.size = wall_scale * 64

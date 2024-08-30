@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Visual/Gas.png" type="Texture" id=1]
+[ext_resource path="res://Scripts/Gas.gd" type="Script" id=2]
 
 [sub_resource type="Animation" id=1]
 resource_name = "move"
@@ -19,6 +20,7 @@ tracks/0/keys = {
 }
 
 [node name="Gas" type="Node2D"]
+script = ExtResource( 2 )
 
 [node name="vis" type="Sprite" parent="."]
 modulate = Color( 1, 1, 1, 0.188235 )

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Visual/block.png" type="Texture" id=2]
+[ext_resource path="res://Scripts/Qblock.gd" type="Script" id=3]
+
+[node name="Qblock" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="block" type="Sprite" parent="."]
+scale = Vector2( 4, 4 )
+texture = ExtResource( 2 )

@@ -1,7 +1,7 @@
 extends Node2D
 
 var editor_properties : Dictionary = {
-	"description" : "A disk that is use for golf.",
+	"description" : "A disk that is used for golf.",
 	"object_path" : "res://Objects/April/GolfDisk.tscn",
 	"object_type" : "normal",
 	"layer" : "selected",

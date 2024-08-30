@@ -8,6 +8,11 @@
 
  - License moment
  - Removed copyrighted material
+ - Removed mod support related code
+ - The folder where the savefile, user levels, replays and other is stored. To move your old save so the game can load it, do this:
+   First launch the game, then when you get to the title screen, close it.
+   Then go to your AppData folder, into Roaming/HowDoesOneName, and move SRLevels, SRReplays, sonicRunner, sonicRunnerEditor to a folder just named SR.
+   You can delete sonicRunnerMods.
 
 </p></details>
 <details><summary><h2>SONIC RUNNER</h2></summary><p>
@@ -23,6 +28,7 @@
  - You can now screenshot the game with F2.
  - You can now save replays while playing the level with F6. This will save a replay without you needing to finish the level.
  - While looking at a replay, you can now pause it by pressing the jump button.
+ - You now can change the volume of SR non-existent music! Yay!
 
 ### VISUAL
 
@@ -71,7 +77,9 @@
     - __ External Images__! It's the lite version of mods!
     - __ Invisible Ground__! :)
     - __ Floating Label__! HoverText but a bit simpler to use.
-    - __ Best Update Objects__!
+    - __ Starting Position__! Very useful for playtesting.
+    - __ + Best Update Objects and Backgrounds__!
+ - You can know specify an unlock for a level when the player beats it under par.
  - You can now change the font of HoverText.
  - New text formating or something! It allows you show some game data as text.
    This will be explained in the wiki in more detail if you are interested.
