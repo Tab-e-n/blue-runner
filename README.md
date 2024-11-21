@@ -5,7 +5,7 @@ The game is made using Godot 3.2.3
 
 ## Downloading SR
 
-You can download SR on itch ([Itch.io](https://howdoesonename.itch.io/sonic-runner)) or here under releases.
+You can download SR on [Itch.io](https://howdoesonename.itch.io/sonic-runner) or here under releases.
 
 For the development version, download the repository and [Godot 3.2.3](https://downloads.tuxfamily.org/godotengine/3.2.3/).
 
