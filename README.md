@@ -12,8 +12,9 @@ For the development version, download the repository and [Godot 3.2.3](https://d
 ## SR's Future
 
 This version of SR has ended development. I was not happy with how the game was turning out, and it was too late to shift course with this project.
-SR will maybe return one day, but in a different form that shown here.
+SR may return one day, but in a different form than what is shown here.
 
 ### Bug reports
 
 I am not fixing anything found right now. Do not bother.
+
